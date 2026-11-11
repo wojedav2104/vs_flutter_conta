@@ -1,0 +1,367 @@
+===============================================================================
+CONTEXTO DEL PROYECTO VS_CONTA — Para retomar donde quedamos
+===============================================================================
+Fecha de esta sesión: 2026-07-11 (hasta 01:33 a.m.)
+Rol: súper experto en programación con Dart/Flutter
+
+===============================================================================
+1. DESCRIPCIÓN GENERAL
+===============================================================================
+Aplicación contable multiplataforma (web + celular) desarrollada en Flutter
+con base de datos Firebird 5. Nombre: VS_CONTA.
+
+Usuarios: personas que NO están acostumbradas a usar computadoras ni celulares
+(incluye personas de edad avanzada), por lo tanto la UI/UX debe ser de
+primerísimo nivel y extremadamente fácil de usar.
+
+Países: Paraguay, Perú y Francia (quizás más adelante Argentina y Uruguay).
+Los usuarios de Francia SOLO pueden mirar/visualizar datos.
+Los de los demás países también pueden agregar, borrar y modificar.
+
+Idiomas: español y francés (elegibles en login y pantalla principal).
+Formatos de números y fechas: latinoamericano y francés (elegibles en
+pantalla principal). Formato inicial: Paraguay (latino).
+Tema: claro u oscuro (elegible en login y pantalla principal).
+Las elecciones se graban en el dispositivo con SharedPreferences.
+
+Credenciales iniciales: admin / 1234 (más adelante vendrán del ABM Usuarios
+y de la Base de Datos Firebird).
+
+===============================================================================
+2. UBICACIÓN Y ESTRUCTURA DEL PROYECTO
+===============================================================================
+SO: Windows 10 Profesional
+Ubicación: D:\Flutter_aplicaciones\vs_conta\
+
+lib\
+├── main.dart                           ← Punto de entrada (CREADO)
+│
+├── generales\
+│   ├── basesdatos\                     ← Conexión a Firebird (PENDIENTE)
+│   ├── errores\                        ← Manejo de errores (PENDIENTE)
+│   ├── idiomas\
+│   │   └── idiomas.dart                ← ClaseIdiomas (CREADO)
+│   ├── inicio\
+│   │   ├── login.dart                  ← ClaseLogin (CREADO)
+│   │   ├── pantalla_principal.dart     ← ClasePantallaPrincipal (CREADO)
+│   │   └── menu_lateral.dart           ← ClaseMenuLateral (CREADO)
+│   ├── modelos\
+│   │   ├── campo_abm.dart              ← ClaseCampoAbm (CREADO, MODIFICADO con sGrupo)
+│   │   ├── opcion_menu.dart            ← ClaseOpcionMenu (CREADO)
+│   │   └── sesion.dart                 ← ClaseSesion (CREADO)
+│   ├── preferencias\
+│   │   └── preferencias.dart           ← ClasePreferencias (CREADO)
+│   ├── temas\
+│   │   ├── colores.dart                ← ClaseGenColores (CREADO)
+│   │   ├── espacios.dart               ← ClaseGenEspacios (CREADO)
+│   │   ├── estilos_textos.dart         ← ClaseGenEstilosTexto (CREADO, MODIFICADO)
+│   │   ├── layout.dart                 ← ClaseGenLayout (CREADO, MODIFICADO)
+│   │   ├── radios.dart                 ← ClaseGenRadios (CREADO)
+│   │   └── temas.dart                  ← ClaseGenTemas (CREADO)
+│   ├── utilitarios\
+│   │   └── formatos.dart               ← funcFormatearNumero (CREADO)
+│   ├── validaciones\
+│   │   ├── cap_validar.dart            ← ClaseCapValidar (CREADO)
+│   │   └── can_validar.dart            ← PENDIENTE (validaciones con BD)
+│   ├── varios\
+│   │   └── pantalla_proximamente.dart  ← ClasePantallaProximamente (CREADO)
+│   └── widgets\
+│       ├── controles_preferencias.dart ← ClaseControlesPreferencias (CREADO)
+│       ├── formulario_abm.dart         ← ClaseFormularioAbm (CREADO, MODIFICADO)
+│       ├── ventana_configuracion.dart  ← funcMostrarConfiguracion (CREADO)
+│       └── ventana_mensaje.dart        ← funcMostrarConfirmacion, funcMostrarMensaje (CREADO)
+│
+├── opciones\
+│   ├── archivos\                       ← PENDIENTES (cuentas, asientos, compras, ventas,
+│   │                                      retenciones_clientes, retenciones_proveedores)
+│   ├── consultas\                      ← ¿sobra por el momento?
+│   ├── gráficos\                       ← ¿sobra por el momento?
+│   ├── impresiones\                    ← ¿sobra por el momento?
+│   ├── informes\                       ← PENDIENTES (4.1–4.9, uno .dart por informe)
+│   ├── procesos\                       ← PENDIENTES (3.1–3.4, incluye marangatu.dart)
+│   ├── sistema\                        ← PENDIENTE (bases_datos.dart)
+│   ├── tablas\
+│   │   ├── empresa.dart                ← ClaseEmpresa (CREADO)
+│   │   ├── configuracion.dart          ← ClaseConfiguracion (CREADO)
+│   │   ├── sucursales.dart             ← ClaseSucursales (CREADO)
+│   │   ├── clientes.dart               ← ClaseClientes (CREADO)
+│   │   ├── proveedores.dart            ← PENDIENTE
+│   │   ├── timbrados_propios.dart      ← PENDIENTE
+│   │   ├── timbrados_proveedores.dart  ← PENDIENTE
+│   │   └── cuentas_asignadas.dart      ← PENDIENTE
+│   └── utilitarios\                    ← PENDIENTE (usuarios.dart)
+│
+└── rutas\
+    ├── rutas.dart                      ← ClaseRutas (CREADO)
+    └── generador_rutas.dart            ← funcGenerarRuta + oObservadorRutas (CREADO, MODIFICADO)
+
+test\
+└── widget_test.dart                    ← CORREGIDO
+
+pubspec.yaml                            ← REVISADO (fonts: debe estar indentado dentro de flutter:)
+
+===============================================================================
+3. ARCHIVOS CLAVE RECIBIDOS DEL USUARIO (especificaciones)
+===============================================================================
+- pubspec.yaml (dependencias, fuentes Roboto y Roboto Mono)
+- 19 reglas de formularios ABM (documento "ABMs.txt")
+- Reglas de UI/UX y NOMENCLATURA
+- Especificación tabla Empresa (3 pestañas: Generales, Varios, Impuestos)
+- Especificación tabla Configuración (2 pestañas: Empresa, Backups)
+- Especificación tabla Sucursales (5 campos, sin pestañas)
+- Especificación tabla Clientes (11 campos, sin pestañas)
+- Estructura del drawer (7 secciones: Archivos, Tablas, Procesos, Informes,
+  Utilitarios, Sistema, Fin)
+- XSD monedas ISO 4217 (para usar en el futuro)
+- XSD países ISO 3166 (para usar en el futuro)
+- Estado del proyecto (resumen con pendientes)
+
+===============================================================================
+4. REGLAS DE FORMULARIOS ABM (19 reglas del documento ABMs.txt)
+===============================================================================
+1.  AppBar: nombre del formulario + nombres de pestañas si las hay
+2.  Parte media: datos amigables con hints
+3.  Campos texto/numéricos/fecha/hora: "X" a la derecha para borrar
+4.  Campos obligatorios: asterisco rojo después de la etiqueta
+5.  Campos comentarios: contador "27/500" en la misma fila, extremo derecho
+6.  Campos ocupan ancho mínimo para los caracteres especificados
+7.  Fuente monoespaciada en texto, numéricos, fecha, hora, listas
+8.  Máscara de entrada determina ancho del campo (ej: 999-999-9999999 = 15)
+9.  Numéricos con máscara: al perder foco, justificar a la derecha
+10. Botones: Agregar, Borrar, Modificar, Grabar, Cancelar, Encontrar, Fin
+    TODOS con el mismo ancho y la misma altura
+11. Tabla sin datos: solo Agregar y Fin habilitados
+12. Tabla con datos: Agregar, Borrar, Modificar, Encontrar, Fin habilitados;
+    Grabar y Cancelar deshabilitados
+13. Al clic Agregar o Modificar: invertir estados de botones
+14. Grabar: validar todos los campos; si error, foco en primer campo con error
+15. Cancelar: mostrar campos deshabilitados con valores anteriores
+16. Al ingresar al formulario: todos los campos deshabilitados
+17. Campos siempre deshabilitados: propiedad bSiempreDeshabilitado
+18. Fecha: formato dd/mm/aaaa, ancho 10 caracteres
+19. Hora: formato hh:mm, ancho 5 caracteres
+
+REGLA ADICIONAL (reformulada en esta sesión):
+10 (revisada): Los 7 botones deben tener EXACTAMENTE el mismo ancho y la
+misma altura (implementado con SizedBox + dAnchoBotonAbm/dAltoBotonAbm).
+
+===============================================================================
+5. REGLAS DE NOMENCLATURA
+===============================================================================
+Prefijos de variables/propiedades:
+  d = decimales (SQL, hasta 4 decimales)    Ej: dPrecio
+  f = fechas                                 Ej: fFechaVenta
+  i = enteros (int)                          Ej: iContador
+  b = lógicos (bool)                         Ej: bEstaActivo
+  n = numérico (num)                         Ej: nNumero
+  o = objetos de clases propias              Ej: oFactura
+  s = cadenas (String)                       Ej: sNombre
+  w = widget                                 Ej: wColor
+
+Colecciones: list, set, map, Enum (antes del nombre en lowerCamelCase)
+Funciones propias: prefijo func (ej: funcCalcularTotal)
+Clases propias: prefijo Clase (ej: ClaseConexionBD)
+Métodos: sin prefijo (ej: grabar, validarFecha)
+Getters: prefijo get (ej: getNombre)
+Setters: prefijo set (ej: setNombre)
+Idioma: español salvo raras excepciones
+Orden: por tipo de dato y dentro de cada tipo alfabético, alineados
+Alineación: símbolos = y : todos en la misma columna
+Fuente: Roboto Mono para datos del usuario y montos
+Botones: todos con icono a la izquierda
+176 caracteres por fila para comentarios y asignaciones
+Sin valores hardcoded: colores solo en ClaseGenColores,
+espacios solo en ClaseGenEspacios, etc.
+
+===============================================================================
+6. REGLAS DE UI/UX
+===============================================================================
+- UI/UX de primerísimo nivel, muy fácil para usuarios noveles
+- Principios: SOLID, KISS, DRY, YAGNI, alta cohesión, bajo acoplamiento
+- Web + celular, entendible en ambos
+- Preferir paquetes de la comunidad sobre controles propios
+- Grilla imprescindible en aplicación contable
+- Login: app name, Nombre*, Contraseña* (con ojo), "¿Olvidaste tu contraseña?",
+  Ingresar, Cancelar, icono tema (arriba derecha), icono idioma (arriba derecha)
+- Drawer al ingresar a pantalla principal y al regresar de cualquier formulario
+  (implementado con RouteAware + RouteObserver)
+- Pantalla principal: vacía por ahora (futuro dashboard)
+
+===============================================================================
+7. MENÚ DEL DRAWER (con traducciones en ClaseIdiomas)
+===============================================================================
+1. Archivos: Plan de Cuentas, Asientos, Libro Compras, Libro Ventas,
+   Retenciones a Clientes, Retenciones de Proveedores
+2. Tablas: Empresa, Configuración, Sucursales, Clientes, Proveedores,
+   Timbrados Propios, Timbrados Proveedores, Cuentas asignadas
+3. Procesos: Reorganizar asientos, Cierre Anual del Ejercicio,
+   Reapertura de Cuentas, Marangatú (solo Paraguay)
+4. Informes: Verificación de datos, Plan de Cuentas, Libro Diario,
+   Libro Mayor, Balance de Sumas y Saldos, Balance General,
+   Estado de Resultados, Libro Compras, Libro Ventas
+5. Utilitarios: Usuarios
+6. Sistema: Bases de Datos
+7. Fin
+
+ClaseOpcionMenu: oIcono, sClave, sRuta, listPaises (opcional)
+ClaseSesion: mapPaisPorBase (ASUNCION→PY, LA_PLATA→AR, LIMA→PE,
+POZO_COLORADO→PY); getPais(), getClavePais()
+
+===============================================================================
+8. ABMs IMPLEMENTADOS
+===============================================================================
+
+--- EMPRESA (opciones/tablas/empresa.dart) ---
+Un solo registro. Sin grilla lateral. Sin Encontrar.
+3 pestañas (sGrupo):
+  Generales: Nombre(50,oblig), Apellidos(25), Nombres(25), Ramo(60),
+    Dirección(60), Teléfono(15), País(lista oblig: ARG/PRY/PER),
+    Departamento(29,oblig), Localidad(40,oblig), Email(40), RUC(10,oblig)
+  Varios: Ejercicio(numérico,4,oblig)
+  Impuestos: IVA(lista: General/Simplificado/No paga),
+    IRE Simple(lista: Sí/No), IRP(lista: Sí/No)
+
+--- CONFIGURACIÓN (opciones/tablas/configuracion.dart) ---
+Un solo registro. Sin grilla lateral. Sin Encontrar.
+2 pestañas (sGrupo):
+  Empresa: Sucursal actual(44,oblig), Carpeta Marangatú(100,oblig)
+  Backups: Crear backup a las(hora,5), Cantidad backups(numérico,3,oblig)
+
+--- SUCURSALES (opciones/tablas/sucursales.dart) ---
+Múltiples registros. Con grilla lateral. Con Encontrar. Sin pestañas.
+  Código(4,oblig), Nombre(40,oblig), Dirección(60),
+  Teléfono(15), Localidad(40,oblig)
+
+--- CLIENTES (opciones/tablas/clientes.dart) ---
+Múltiples registros. Con grilla lateral. Con Encontrar. Sin pestañas.
+  Código(6,oblig), Nombre(40,oblig), Dirección(60),
+  Teléfono(15), Celular(15), Localidad(40), Email(40),
+  Tipo identificación(lista: RUC/Cédula/Pasaporte/Cédula Extranjera/
+    Sin Nombre/Diplomático), Identificación N°(15,oblig),
+  Tipo cliente(lista: Local/Exterior),
+  Es agente diplomático(lista: Sí/No)
+
+===============================================================================
+9. ClaseFormularioAbm — CLASE COMPARTIDA DE FORMULARIOS
+===============================================================================
+Archivo: generales/widgets/formulario_abm.dart
+
+Parámetros:
+  required listCampos (List<ClaseCampoAbm>)
+  required listRegistros (List<Map<String, dynamic>>)
+  required oPreferencias (ClasePreferencias)
+  required sTitulo (String)
+  bPermitirEncontrar (bool, default true)
+  bTablaUnSoloRegistro (bool, default false)
+  funcAlBorrar, funcAlGrabar (opcionales)
+
+Enum EnumEstadoAbm: agregando, encontrando, inicial, modificando
+Enum EnumTipoCampoAbm: comentario, fecha, hora, lista, logico, numero, texto
+
+ClaseCampoAbm propiedades:
+  oTipo, sClave, sEtiqueta (required)
+  bEnGrilla(true), bObligatorio(false), bSiempreDeshabilitado(false),
+  bSoloLecturaPorRol(false), iAnchoCaracteres(10), iMaxComentario(500),
+  listOpciones, sGrupo, sHint, sMascara
+
+Funcionalidades implementadas:
+  - Pestañas (TabBar/TabBarView) cuando los campos tienen sGrupo
+  - Grilla lateral con paginación (iFilasPorPagina = 25)
+  - Grilla: campos filtrados por caracteres máximos (ver punto 10)
+  - Botones con mismo ancho (dAnchoBotonAbm=150) y altura (dAltoBotonAbm=48)
+  - Estados de botones según reglas 11-13
+  - Tabla de un solo registro: sin grilla, Agregar deshabilitado si hay registro
+  - Validación de obligatorios con foco en primer error
+  - Cancelar restaura valores anteriores
+  - Campos deshabilitados al inicio (regla 16)
+  - "X" siempre visible cuando campo habilitado
+  - Contador caracteres en comentarios
+  - Hint: sHint o dd/mm/aaaa / hh:mm según tipo
+  - Numéricos: alineación derecha + formateo al perder foco con máscara
+  - Formato números: separador miles ' ' (francés) o '.' (latino)
+
+===============================================================================
+10. AJUSTE DE GRILLA (último cambio de esta sesión)
+===============================================================================
+Constantes en ClaseGenLayout:
+  iCaracteresGrillaCerrada  = 25   (contraída: 2-3 campos)
+  iCaracteresGrillaAbierta  = 75   (expandida: varios campos)
+  iMaxCaracteresCampoGrilla = 20   (máximo chars por campo en grilla)
+
+Métodos en ClaseEstadoFormularioAbm:
+  getAnchoGrilla(oCampo) → min(iAnchoCaracteres, 20)
+  getCamposGrilla() → campos que caben en el límite (mínimo 2)
+  truncarTextoGrilla(sValor, oCampo) → texto truncado a 20 chars
+
+Las columnas usan flex: getAnchoGrilla(oCampo) para dimensionar proporcional.
+
+===============================================================================
+11. CAMBIOS REALIZADOS EN ESTA SESIÓN
+===============================================================================
+- formulario_abm.dart: pestañas, bTablaUnSoloRegistro, bPermitirEncontrar,
+  grilla filtrada por caracteres, botones mismo tamaño, "x" siempre visible,
+  onChanged siempre refresca
+- campo_abm.dart: agregada propiedad sGrupo
+- layout.dart: dAnchoIconoBorrar(48), dAnchoIconoFlecha(32),
+  dAltoBotonAbm(48), dAnchoBotonAbm(150), iCaracteresGrillaCerrada(25),
+  iCaracteresGrillaAbierta(75), iMaxCaracteresCampoGrilla(20)
+- estilos_textos.dart: textoCampo con letterSpacing:0 (monoespaciado real);
+  etiquetaCampo usa bodyLarge (16px, era labelSmall 11px)
+- pantalla_principal.dart: StatefulWidget con RouteAware, abre drawer
+  automáticamente al ingresar y al regresar de formularios
+- generador_rutas.dart: recibe oPreferencias, casos para Empresa,
+  Configuración, Sucursales, Clientes; oObservadorRutas
+- main.dart: ClaseAplicacion con tema claro/oscuro, onGenerateRoute,
+  navigatorObservers con oObservadorRutas
+- widget_test.dart: corregido para pasar oPreferencias
+- idiomas.dart: claves para Empresa, Configuración, Sucursales, Clientes
+- configuracion.dart, sucursales.dart, clientes.dart: creados
+
+===============================================================================
+12. PENDIENTES
+===============================================================================
+POR HACER (ABMs):
+  [ ] Proveedores (tablas) — usuario enviará campos
+  [ ] Timbrados Propios (tablas) — usuario enviará campos
+  [ ] Timbrados Proveedores (tablas) — usuario enviará campos
+  [ ] Cuentas asignadas (tablas) — usuario enviará campos
+  [ ] Cuentas / Plan de Cuentas (archivos)
+  [ ] Asientos (archivos)
+  [ ] Libro Compras (archivos)
+  [ ] Libro Ventas (archivos)
+  [ ] Retenciones a Clientes (archivos)
+  [ ] Retenciones de Proveedores (archivos)
+  [ ] Usuarios (utilitarios)
+  [ ] Bases de Datos (sistema)
+
+POR HACER (funcionalidad):
+  [ ] Conexión a Firebird (fbdb) — carpeta generales/basesdatos
+  [ ] can_validar.dart — validaciones que acceden a BD
+  [ ] generales/errores — manejo de errores
+  [ ] Roles/permisos (Francia solo lectura → bSoloLecturaPorRol)
+  [ ] Proceso Perú equivalente a Marangatú (averiguar requisitos SUNAT)
+  [ ] Datos de prueba → reemplazar por Firebird
+  [ ] Idioma en router: pasar idioma real a ClaseEmpresa (actualmente 'es')
+  [ ] Integrar ClaseCapValidar en validación de formularios
+  [ ] XSD monedas y países → usar en formularios si corresponde
+
+DECISIONES PENDIENTES:
+  [ ] ¿Usar paquete de grilla de la comunidad o mantener grilla propia?
+  [ ] Paquete de conexión a Firebird (fbdb u otro)
+
+===============================================================================
+13. NOTAS TÉCNICAS IMPORTANTES
+===============================================================================
+- pubspec.yaml: fonts: DEBE estar indentado dentro de flutter:
+- Hot reload NO recarga fuentes; siempre hacer compilación completa
+- Roboto Mono Regular/Bold en assets/fonts/
+- Flutter SDK: ^3.13.7
+- Dependencias: flutter_localizations, cupertino_icons, shared_preferences, intl
+- Dev: flutter_test, flutter_lints
+- dAnchoCaracter = 8.6 (ancho de 1 carácter en Roboto Mono)
+- ClaseSesion.sBaseDatos = 'ASUNCION' (valor por defecto)
+- ClasePreferencias: idioma 'es', tema 'claro', formatos 'latino'
+
+===============================================================================
+FIN DEL CONTEXTO — Continuar con los pendientes de la lista 12
+===============================================================================

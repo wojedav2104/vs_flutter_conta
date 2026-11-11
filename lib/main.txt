@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'generales/inicio/login.dart';
+import 'generales/preferencias/preferencias.dart';
+import 'generales/temas/layout.dart';
+import 'generales/temas/temas.dart';
+import 'rutas/generador_rutas.dart';
+
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const ClaseAplicacion());
+}
+
+
+/// Raíz de la aplicación VS_CONTA.
+class ClaseAplicacion extends StatefulWidget {
+  const ClaseAplicacion({super.key});
+
+  @override
+  State<ClaseAplicacion> createState() => ClaseEstadoAplicacion();
+}
+
+
+class ClaseEstadoAplicacion extends State<ClaseAplicacion> {
+
+  bool bCargado = false;
+
+  final ClasePreferencias oPreferencias = ClasePreferencias();
+
+  @override
+  void initState() {
+    super.initState();
+    cargar();
+  }
+
+  Future<void> cargar() async {
+    await oPreferencias.cargar();
+    if (mounted) {
+      setState(() => bCargado = true);
+    }
+  }
+
+  void actualizar() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    if (!bCargado) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(strokeWidth: ClaseGenLayout.dGrosorSpinner),
+          ),
+        ),
+      );
+    }
+    return MaterialApp(
+      title                     : 'VS_CONTA',
+      debugShowCheckedModeBanner: false,
+      darkTheme                 : ClaseGenTemas.getTemaOscuro,
+      locale                    : Locale(oPreferencias.getIdioma()),
+      localizationsDelegates    : const <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      onGenerateRoute : funcGenerarRuta,
+      supportedLocales: const <Locale>[Locale('es'), Locale('fr')],
+      theme           : ClaseGenTemas.getTemaClaro,
+      themeMode       : oPreferencias.getTema() == 'oscuro' ? ThemeMode.dark : ThemeMode.light,
+      home            : ClaseLogin(
+        oPreferencias : oPreferencias,
+        funcAlCambiar : actualizar,
+      ),
+    );
+  }
+}

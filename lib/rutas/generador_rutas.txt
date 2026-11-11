@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+
+import '../generales/varios/pantalla_proximamente.dart';
+import '../opciones/tablas/empresa.dart';
+import 'rutas.dart';
+
+
+/// Genera la pantalla correspondiente a cada ruta.
+///
+/// A medida que se implemente cada módulo se agrega su caso aquí; las opciones aún no implementadas muestran ClasePantallaProximamente.
+Route<dynamic> funcGenerarRuta(RouteSettings oConfiguracion) {
+  final String sTitulo = (oConfiguracion.arguments as String?) ?? '';
+
+  if (oConfiguracion.name == ClaseRutas.rutaEmpresa) {
+    return MaterialPageRoute<dynamic>(
+      settings : oConfiguracion,
+      builder  : (oContexto) => const ClaseEmpresa(sIdioma: 'es'),
+    );
+  }
+
+  // Resto de las opciones: pantalla provisoria
+  return MaterialPageRoute<dynamic>(
+    settings : oConfiguracion,
+    builder  : (oContexto) => ClasePantallaProximamente(sTitulo: sTitulo),
+  );
+
+}

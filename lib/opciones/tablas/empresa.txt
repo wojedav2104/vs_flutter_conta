@@ -1,0 +1,657 @@
+// ============================================================================
+//  ARCHIVO: lib/opciones/tablas/empresa.dart
+//  ABM de la tabla Empresa (la tabla debe tener un solo registro)
+//  Reglas de este formulario:
+//    - Agregar   : siempre deshabilitado si la tabla ya tiene un registro
+//    - Encontrar : siempre deshabilitado
+// ============================================================================
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../generales/temas/espacios.dart';
+import '../../generales/temas/estilos_textos.dart';
+import '../../generales/temas/layout.dart';
+import '../../generales/temas/radios.dart';
+import '../../generales/validaciones/cap_validar.dart';
+
+// ---------------------------------------------------------------------------
+//  Enumeraciones
+// ---------------------------------------------------------------------------
+enum enumTipoIva       { general, simplificado, noPaga }
+
+enum enumRespuestaSiNo { si, no }
+
+// ---------------------------------------------------------------------------
+//  País: código internacional ISO 3166 y nombre del país
+// ---------------------------------------------------------------------------
+class ClasePais {
+  const ClasePais({required this.sCodigo, required this.sNombre});
+
+  final String sCodigo;
+  final String sNombre;
+
+  @override
+  String toString() => '$sCodigo   $sNombre';
+}
+
+const List<ClasePais> listPaises = <ClasePais>[
+  ClasePais(sCodigo: 'ARG', sNombre: 'Argentina'),
+  ClasePais(sCodigo: 'PRY', sNombre: 'Paraguay'),
+  ClasePais(sCodigo: 'PER', sNombre: 'Perú'),
+];
+
+// ---------------------------------------------------------------------------
+//  Modelo de la tabla Empresa
+//  Propiedades ordenadas por tipo de dato y en forma alfabética
+// ---------------------------------------------------------------------------
+class ClaseEmpresa {
+
+  int               iEjercicio     = 0;
+  enumRespuestaSiNo enumIreSimple  = enumRespuestaSiNo.no;
+  enumRespuestaSiNo enumIrp        = enumRespuestaSiNo.no;
+  enumTipoIva       enumIva        = enumTipoIva.general;
+  String            sApellidos     = '';
+  String            sDepartamento  = '';
+  String            sDireccion     = '';
+  String            sEmail         = '';
+  String            sLocalidad     = '';
+  String            sNombreEmpresa = '';
+  String            sNombres       = '';
+  String            sPais          = '';
+  String            sRamoActividad = '';
+  String            sRuc           = '';
+  String            sTelefono      = '';
+}
+
+// ---------------------------------------------------------------------------
+//  Formulario ABM de la tabla Empresa
+// ---------------------------------------------------------------------------
+class ClaseFormularioEmpresa extends StatefulWidget {
+  const ClaseFormularioEmpresa({super.key});
+
+  @override
+  State<ClaseFormularioEmpresa> createState() => _EstadoFormularioEmpresa();
+}
+
+class _EstadoFormularioEmpresa extends State<ClaseFormularioEmpresa> with SingleTickerProviderStateMixin {
+
+  // ── Propiedades ──────────────────────────────────────────────────────────
+  // Ordenadas por tipo de dato y, dentro de cada tipo, en forma alfabética
+
+  bool                    bExisteRegistro       = false;
+  int                     iEstado               = 0; // 0=consulta 1=alta 2=modificación
+  ClaseEmpresa?           oRegistro;
+  late final TabController oControladorPestanias;
+
+  final List<String> listOrdenCampos = <String>[
+    'sNombreEmpresa', 'sApellidos', 'sNombres', 'sRamoActividad', 'sDireccion', 'sTelefono',
+    'sPais', 'sDepartamento', 'sLocalidad', 'sEmail', 'sRuc',
+    'iEjercicio',
+    'enumIva', 'enumIreSimple', 'enumIrp',
+  ];
+
+  final Map<String, int> mapAnchos = <String, int>{
+    'sNombreEmpresa' : 50,
+    'sApellidos'     : 25,
+    'sNombres'       : 25,
+    'sRamoActividad' : 60,
+    'sDireccion'     : 60,
+    'sTelefono'      : 15,
+    'sPais'          : 25,
+    'sDepartamento'  : 29,
+    'sLocalidad'     : 40,
+    'sEmail'         : 40,
+    'sRuc'           : 10,
+    'iEjercicio'     :  4,
+    'enumIva'        : 25,
+    'enumIreSimple'  : 25,
+    'enumIrp'        : 25,
+  };
+
+  final Map<String, TextEditingController> mapControladores = <String, TextEditingController>{};
+  final Map<String, String?>               mapErrores       = <String, String?>{};
+  final Map<String, FocusNode>             mapFocos         = <String, FocusNode>{};
+
+  final Map<String, String> mapEtiquetas = <String, String>{
+    'sNombreEmpresa' : 'Nombre de la Empresa',
+    'sApellidos'     : 'Apellidos',
+    'sNombres'       : 'Nombres',
+    'sRamoActividad' : 'Ramo o actividad',
+    'sDireccion'     : 'Dirección',
+    'sTelefono'      : 'Teléfono N°',
+    'sPais'          : 'País',
+    'sDepartamento'  : 'Departamento',
+    'sLocalidad'     : 'Localidad',
+    'sEmail'         : 'E-mail',
+    'sRuc'           : 'R.U.C.',
+    'iEjercicio'     : 'Ejercicio',
+    'enumIva'        : '¿Cuál I.V.A. paga?',
+    'enumIreSimple'  : '¿Paga I.R.E. simple?',
+    'enumIrp'        : '¿Paga I.R.P.?',
+  };
+
+  final Map<String, String> mapHints = <String, String>{
+    'sNombreEmpresa' : 'Nombre de la Empresa o nombre de fantasía',
+    'sApellidos'     : 'Apellidos si es unipersonal',
+    'sNombres'       : 'Nombres si es unipersonal',
+    'sRamoActividad' : 'Ramo o actividad a la cual se dedica',
+    'sDireccion'     : 'Ubicación del domicilio',
+    'sTelefono'      : 'Nro de teléfono',
+    'sPais'          : '',
+    'sDepartamento'  : 'Nombre del departamento',
+    'sLocalidad'     : 'Nombre de la localidad',
+    'sEmail'         : 'Correo electrónico',
+    'sRuc'           : 'Número RUC',
+    'iEjercicio'     : '',
+    'enumIva'        : '',
+    'enumIreSimple'  : '',
+    'enumIrp'        : '',
+  };
+
+  final Set<String> setObligatorios = <String>{
+    'sNombreEmpresa',
+    'sDepartamento',
+    'sLocalidad',
+    'sRuc',
+    'iEjercicio',
+  };
+
+  // Campos que siempre deben estar deshabilitados (propiedad del campo)
+  final Set<String> setSiempreDeshabilitados = <String>{};
+
+  // ── Ciclo de vida ────────────────────────────────────────────────────────
+
+  @override
+  void initState() {
+    super.initState();
+    oControladorPestanias = TabController(length: 3, vsync: this);
+    for (final String sCampo in listOrdenCampos) {
+      mapControladores[sCampo] = TextEditingController();
+      mapFocos[sCampo]         = FocusNode();
+    }
+    cargarRegistro();
+  }
+
+  @override
+  void dispose() {
+    oControladorPestanias.dispose();
+    for (final String sCampo in listOrdenCampos) {
+      mapControladores[sCampo]!.dispose();
+      mapFocos[sCampo]!.dispose();
+    }
+    super.dispose();
+  }
+
+  // ── Métodos de negocio ───────────────────────────────────────────────────
+
+  // ---------------------------------------------------------------------------
+  //  Carga el único registro de la tabla Empresa
+  //  (pendiente: conexión a Firebird)
+  // ---------------------------------------------------------------------------
+  void cargarRegistro() {
+    // pendiente: conexión a Firebird para cargar el registro
+    oRegistro       = null;
+    bExisteRegistro = false;
+    for (final String sCampo in listOrdenCampos) {
+      mapControladores[sCampo]!.text = '';
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Botón Agregar
+  // ---------------------------------------------------------------------------
+  void iniciarAlta() {
+    setState(() {
+      oRegistro = ClaseEmpresa();
+      for (final String sCampo in listOrdenCampos) {
+        mapControladores[sCampo]!.text = '';
+      }
+      iEstado = 1;
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Botón Modificar
+  // ---------------------------------------------------------------------------
+  void iniciarModificacion() {
+    setState(() => iEstado = 2);
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Botón Borrar
+  // ---------------------------------------------------------------------------
+  void borrar() {
+    showDialog<void>(
+      context : context,
+      builder : (BuildContext oContexto) => AlertDialog(
+        title   : const Text('Borrar'),
+        content : const Text('¿Está seguro que desea borrar el registro de la Empresa?'),
+        actions : <Widget>[
+          TextButton(
+            onPressed : () => Navigator.of(oContexto).pop(),
+            child     : const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed : () {
+              Navigator.of(oContexto).pop();
+              // pendiente: borrado en Firebird
+              setState(() {
+                bExisteRegistro = false;
+                for (final String sCampo in listOrdenCampos) {
+                  mapControladores[sCampo]!.text = '';
+                }
+              });
+              mostrarMensaje('Borrar', 'El registro fue borrado exitosamente');
+            },
+            child : const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Validación de todos los campos (capa de presentación, sin Base de Datos)
+  // ---------------------------------------------------------------------------
+  bool validarFormulario() {
+    mapErrores.clear();
+    for (final String sCampo in listOrdenCampos) {
+      mapErrores[sCampo] = null;
+      if (setObligatorios.contains(sCampo)) {
+        mapErrores[sCampo] = ClaseCapValidar.validarObligatorio(mapControladores[sCampo]!.text, mapEtiquetas[sCampo]!);
+      }
+      mapErrores[sCampo] ??= ClaseCapValidar.validarLongitudMaxima(mapControladores[sCampo]!.text, mapEtiquetas[sCampo]!, mapAnchos[sCampo]!);
+    }
+    mapErrores['iEjercicio'] ??= ClaseCapValidar.validarEnteroDeLongitud(mapControladores['iEjercicio']!.text, mapEtiquetas['iEjercicio']!, mapAnchos['iEjercicio']!);
+    return !mapErrores.values.any((String? sError) => sError != null);
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Coloca el foco en el primer campo que tuvo un error
+  // ---------------------------------------------------------------------------
+  void enfocarPrimerError() {
+    for (final String sCampo in listOrdenCampos) {
+      if (mapErrores[sCampo] != null) {
+        mapFocos[sCampo]!.requestFocus();
+        return;
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Botón Grabar
+  // ---------------------------------------------------------------------------
+  void grabar() {
+    if (!validarFormulario()) {
+      setState(() {});
+      enfocarPrimerError();
+      mostrarMensaje('Grabar', 'No se pudo grabar. Revise los campos marcados con error');
+      return;
+    }
+    // pendiente: grabación en Firebird
+    setState(() {
+      bExisteRegistro = true;
+      iEstado         = 0;
+    });
+    mostrarMensaje('Grabar', 'La grabación fue exitosa');
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Botón Cancelar: restaura los valores anteriores y deshabilita los campos
+  // ---------------------------------------------------------------------------
+  void cancelar() {
+    setState(() {
+      cargarRegistro();
+      iEstado = 0;
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Mensajes al usuario
+  // ---------------------------------------------------------------------------
+  void mostrarMensaje(String sTitulo, String sMensaje) {
+    showDialog<void>(
+      context : context,
+      builder : (BuildContext oContexto) => AlertDialog(
+        title   : Text(sTitulo),
+        content : Text(sMensaje),
+        actions : <Widget>[
+          TextButton(
+            onPressed : () => Navigator.of(oContexto).pop(),
+            child     : const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Constructores de widgets privados ────────────────────────────────────
+
+  // ---------------------------------------------------------------------------
+  //  Borde redondeado con el color indicado y radio de ClaseGenRadios
+  // ---------------------------------------------------------------------------
+  OutlineInputBorder _borde(Color oColor) {
+    return OutlineInputBorder(
+      borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+      borderSide   : BorderSide(color: oColor),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Etiqueta del campo: texto + asterisco rojo si es obligatorio
+  //  y, si el campo es de comentarios, el contador de caracteres a la derecha
+  // ---------------------------------------------------------------------------
+  Widget _etiqueta(String sCampo, {bool bConContador = false, TextEditingController? oControlador}) {
+    final bool bObligatorio = setObligatorios.contains(sCampo);
+    return Row(
+      mainAxisAlignment : MainAxisAlignment.spaceBetween,
+      children          : <Widget>[
+        Flexible(
+          child : RichText(
+            overflow : TextOverflow.ellipsis,
+            text     : TextSpan(
+              text     : mapEtiquetas[sCampo]!,
+              style    : ClaseGenEstilosTexto.etiquetaCampo(context),
+              children : <InlineSpan>[
+                if (bObligatorio)
+                  TextSpan(
+                    text  : ' *',
+                    style : ClaseGenEstilosTexto.etiquetaCampo(context).copyWith(
+                      color : Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (bConContador && oControlador != null)
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable : oControlador,
+            builder         : (BuildContext oContexto, TextEditingValue oValor, Widget? oHijo) => Text(
+              '${oValor.text.length}/${mapAnchos[sCampo]!}',
+              style : ClaseGenEstilosTexto.normalChico(oContexto),
+            ),
+          ),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Opción individual para un DropdownMenuItem con fuente Roboto Mono
+  // ---------------------------------------------------------------------------
+  DropdownMenuItem<String> _opcionDropdown(String sValor, String sTexto) {
+    return DropdownMenuItem<String>(
+      value : sValor,
+      child : Text(
+        sTexto,
+        style : ClaseGenEstilosTexto.textoCampo(context),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Campo de texto / numérico / fecha / hora
+  //  - ancho mínimo según la cantidad de caracteres del campo
+  //  - fuente monoespaciada (Roboto Mono) para datos del usuario
+  //  - "X" a la derecha para borrar el contenido
+  //  - hint
+  //  - asterisco rojo si es obligatorio
+  // ---------------------------------------------------------------------------
+  Widget _campoTexto({
+    required String                    sCampo,
+    required bool                      bHabilitado,
+    bool                               bConContador = false,
+    TextInputType?                     oTipoTeclado,
+    List<TextInputFormatter>?          listFormatos,
+  }) {
+    final ColorScheme          oEsquema     = Theme.of(context).colorScheme;
+    final TextEditingController oControlador = mapControladores[sCampo]!;
+    final int                   iMaximo      = mapAnchos[sCampo]!;
+    final bool                  bEditable    = bHabilitado && !setSiempreDeshabilitados.contains(sCampo);
+
+    return Padding(
+      padding : EdgeInsets.symmetric(vertical: ClaseGenEspacios.dEspacio06),
+      child   : SizedBox(
+        width : (iMaximo * ClaseGenLayout.dAnchoCaracter) + ClaseGenEspacios.dEspacio48,
+        child : TextField(
+          controller      : oControlador,
+          focusNode       : mapFocos[sCampo],
+          enabled         : bEditable,
+          maxLength       : iMaximo,
+          keyboardType    : oTipoTeclado,
+          inputFormatters : listFormatos,
+          style           : ClaseGenEstilosTexto.textoCampo(context),
+          decoration      : InputDecoration(
+            label             : _etiqueta(sCampo, bConContador: bConContador, oControlador: oControlador),
+            hintText          : mapHints[sCampo]!.isEmpty ? null : mapHints[sCampo],
+            counterText       : '',
+            errorText         : mapErrores[sCampo],
+            suffixIcon        : IconButton(
+              tooltip   : 'Borrar el contenido del campo',
+              icon      : const Icon(Icons.clear),
+              onPressed : bEditable ? () {
+                oControlador.clear();
+                setState(() {});
+              } : null,
+            ),
+            border             : _borde(oEsquema.outline),
+            focusedBorder      : _borde(oEsquema.primary),
+            errorBorder        : _borde(oEsquema.error),
+            focusedErrorBorder : _borde(oEsquema.error),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Campo de selección de una lista (País, I.V.A., Sí/No)
+  // ---------------------------------------------------------------------------
+  Widget _campoLista({
+    required String                         sCampo,
+    required String                         sValor,
+    required bool                           bHabilitado,
+    required List<DropdownMenuItem<String>> listItems,
+    required void Function(String)          onChanged,
+  }) {
+    final ColorScheme oEsquema = Theme.of(context).colorScheme;
+    final int         iMaximo  = mapAnchos[sCampo]!;
+
+    return Padding(
+      padding : EdgeInsets.symmetric(vertical: ClaseGenEspacios.dEspacio06),
+      child   : SizedBox(
+        width : (iMaximo * ClaseGenLayout.dAnchoCaracter) + ClaseGenEspacios.dEspacio48,
+        child : DropdownButtonFormField<String>(
+          value      : sValor.isEmpty ? null : sValor,
+          items      : listItems,
+          onChanged  : bHabilitado ? (String? sNuevo) => onChanged(sNuevo ?? '') : null,
+          style      : ClaseGenEstilosTexto.textoCampo(context),
+          decoration : InputDecoration(
+            label             : _etiqueta(sCampo),
+            errorText         : mapErrores[sCampo],
+            border             : _borde(oEsquema.outline),
+            focusedBorder      : _borde(oEsquema.primary),
+            errorBorder        : _borde(oEsquema.error),
+            focusedErrorBorder : _borde(oEsquema.error),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Pestaña 1: Generales
+  // ---------------------------------------------------------------------------
+  Widget _paginaGenerales(bool bHabilitado) {
+    return SingleChildScrollView(
+      padding : EdgeInsets.all(ClaseGenEspacios.dEspacio12),
+      child   : Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children           : <Widget>[
+          _campoTexto(sCampo: 'sNombreEmpresa', bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sApellidos',     bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sNombres',       bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sRamoActividad', bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sDireccion',     bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sTelefono',      bHabilitado: bHabilitado, oTipoTeclado: TextInputType.phone),
+          _campoLista(
+            sCampo      : 'sPais',
+            sValor      : oRegistro?.sPais ?? '',
+            bHabilitado : bHabilitado,
+            listItems   : listPaises.map((ClasePais oPais) => _opcionDropdown(oPais.sCodigo, oPais.toString())).toList(),
+            onChanged   : (String sNuevo) => setState(() => oRegistro!.sPais = sNuevo),
+          ),
+          _campoTexto(sCampo: 'sDepartamento',  bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sLocalidad',     bHabilitado: bHabilitado),
+          _campoTexto(sCampo: 'sEmail',         bHabilitado: bHabilitado, oTipoTeclado: TextInputType.emailAddress),
+          _campoTexto(sCampo: 'sRuc',           bHabilitado: bHabilitado),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Pestaña 2: Varios
+  // ---------------------------------------------------------------------------
+  Widget _paginaVarios(bool bHabilitado) {
+    return SingleChildScrollView(
+      padding : EdgeInsets.all(ClaseGenEspacios.dEspacio12),
+      child   : Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children           : <Widget>[
+          _campoTexto(
+            sCampo       : 'iEjercicio',
+            bHabilitado  : bHabilitado,
+            oTipoTeclado : TextInputType.number,
+            listFormatos : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Pestaña 3: Impuestos
+  // ---------------------------------------------------------------------------
+  Widget _paginaImpuestos(bool bHabilitado) {
+    return SingleChildScrollView(
+      padding : EdgeInsets.all(ClaseGenEspacios.dEspacio12),
+      child   : Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children           : <Widget>[
+          _campoLista(
+            sCampo      : 'enumIva',
+            sValor      : oRegistro?.enumIva.name ?? '',
+            bHabilitado : bHabilitado,
+            listItems   : <DropdownMenuItem<String>>[
+              _opcionDropdown('general',      'I.V.A. General'),
+              _opcionDropdown('simplificado', 'I.V.A. simplificado'),
+              _opcionDropdown('noPaga',       'No paga I.V.A.'),
+            ],
+            onChanged   : (String sNuevo) => setState(() => oRegistro!.enumIva = enumTipoIva.values.byName(sNuevo)),
+          ),
+          _campoLista(
+            sCampo      : 'enumIreSimple',
+            sValor      : oRegistro?.enumIreSimple.name ?? '',
+            bHabilitado : bHabilitado,
+            listItems   : <DropdownMenuItem<String>>[
+              _opcionDropdown('si', 'Sí'),
+              _opcionDropdown('no', 'No'),
+            ],
+            onChanged   : (String sNuevo) => setState(() => oRegistro!.enumIreSimple = enumRespuestaSiNo.values.byName(sNuevo)),
+          ),
+          _campoLista(
+            sCampo      : 'enumIrp',
+            sValor      : oRegistro?.enumIrp.name ?? '',
+            bHabilitado : bHabilitado,
+            listItems   : <DropdownMenuItem<String>>[
+              _opcionDropdown('si', 'Sí'),
+              _opcionDropdown('no', 'No'),
+            ],
+            onChanged   : (String sNuevo) => setState(() => oRegistro!.enumIrp = enumRespuestaSiNo.values.byName(sNuevo)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Un botón de la barra inferior: icono a la izquierda, mismo ancho y altura
+  // ---------------------------------------------------------------------------
+  Widget _boton({
+    required IconData    oIcono,
+    required String      sTexto,
+    required bool        bHabilitado,
+    required VoidCallback onPressed,
+  }) {
+    return Expanded(
+      child : Padding(
+        padding : EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
+        child   : SizedBox(
+          height : ClaseGenEspacios.dEspacio48,
+          child  : FilledButton.tonalIcon(
+            icon      : Icon(oIcono, size: ClaseGenEspacios.dEspacio20),
+            label     : FittedBox(fit: BoxFit.scaleDown, child: Text(sTexto)),
+            style     : FilledButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04)),
+            onPressed : bHabilitado ? onPressed : null,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  //  Barra inferior de botones
+  //  Agregar: deshabilitado si la tabla ya tiene un registro
+  //  Encontrar: siempre deshabilitado
+  // ---------------------------------------------------------------------------
+  Widget _barraBotones() {
+    final bool bEnEdicion = (iEstado != 0);
+    return SafeArea(
+      child : Padding(
+        padding : EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+        child   : Row(
+          children : <Widget>[
+            _boton(oIcono: Icons.add,            sTexto: 'Agregar',   bHabilitado: (!bEnEdicion && !bExisteRegistro), onPressed: iniciarAlta),
+            _boton(oIcono: Icons.delete_outline, sTexto: 'Borrar',    bHabilitado: (!bEnEdicion &&  bExisteRegistro), onPressed: borrar),
+            _boton(oIcono: Icons.edit_outlined,  sTexto: 'Modificar', bHabilitado: (!bEnEdicion &&  bExisteRegistro), onPressed: iniciarModificacion),
+            _boton(oIcono: Icons.save_outlined,  sTexto: 'Grabar',    bHabilitado: bEnEdicion,                       onPressed: grabar),
+            _boton(oIcono: Icons.close,          sTexto: 'Cancelar',  bHabilitado: bEnEdicion,                       onPressed: cancelar),
+            _boton(oIcono: Icons.search,         sTexto: 'Encontrar', bHabilitado: false,                            onPressed: () {}),
+            _boton(oIcono: Icons.exit_to_app,    sTexto: 'Fin',       bHabilitado: !bEnEdicion,                      onPressed: () => Navigator.of(context).pop()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Build ────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    final bool bHabilitado = (iEstado != 0);
+    return Scaffold(
+      appBar : AppBar(
+        title : Text('Empresa', style: ClaseGenEstilosTexto.tituloMediano(context)),
+        bottom : TabBar(
+          controller : oControladorPestanias,
+          tabs       : const <Tab>[
+            Tab(text: 'Generales'),
+            Tab(text: 'Varios'),
+            Tab(text: 'Impuestos'),
+          ],
+        ),
+      ),
+      body : TabBarView(
+        controller : oControladorPestanias,
+        children   : <Widget>[
+          _paginaGenerales(bHabilitado),
+          _paginaVarios(bHabilitado),
+          _paginaImpuestos(bHabilitado),
+        ],
+      ),
+      bottomNavigationBar : _barraBotones(),
+    );
+  }
+}

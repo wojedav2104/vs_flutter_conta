@@ -1,0 +1,26 @@
+PROYECTO: VS_CONTA (Flutter + Firebird 5)
+Ubicación: D:\Flutter_aplicaciones\vs_conta\
+
+ESTADO ACTUAL:
+- Login funcional (admin/1234), tema/idioma/formatos grabados en el dispositivo
+- Pantalla principal + drawer por país (Marangatú solo Paraguay)
+- ClaseFormularioAbm completa (grilla lateral, paginación, expandir/contraer,
+  botones Agregar/Borrar/Modificar/Grabar/Cancelar/Encontrar/Fin con icono)
+- Primer ABM: Empresa (con datos de prueba)
+- Sin teclas de función, sin botón Rango (futuro)
+
+ARCHIVOS CLAVE: los 8 archivos .dart que envié (especificaciones, colores,
+espacios, estilos_textos, layout, radios, temas, opciones drawer)
+
+REGLAS: nomenclatura con prefijos (d/f/i/b/n/o/s/w, list/set/map/enum,
+func, Clase, getX/setX), métodos en minúscula, español, colores solo en
+ClaseGenColores, espacios solo en ClaseGenEspacios, Roboto Mono para datos
+del usuario y montos, todo botón con icono, sin valores hardcoded
+
+PENDIENTES:
+- Campos reales del ABM Empresa
+- Primer ABM con pestañas
+- Conexión a Firebird (fbdb)
+- Roles/permisos (Francia solo lectura)
+- Proceso Perú equivalente a Marangatú (averiguar requisitos SUNAT)
+- ABM Timbrados y Retenciones (el usuario enviará los campos)

@@ -1,0 +1,42 @@
+name: vs_conta
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:      # para los textos en español/francés
+    sdk: flutter
+  cupertino_icons: ^2.0.0
+  shared_preferences: ^2.5.6
+  intl: ^0.20.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+
+  uses-material-design: true
+
+fonts:
+  - family: Roboto
+    fonts:
+      - asset: assets/fonts/Roboto-Regular.ttf
+      - asset: assets/fonts/Roboto-Medium.ttf
+        weight: 500
+      - asset: assets/fonts/Roboto-Bold.ttf
+        weight: 700
+  - family: Roboto Mono
+    fonts:
+      - asset: assets/fonts/RobotoMono-Regular.ttf
+      - asset: assets/fonts/RobotoMono-Bold.ttf
+        weight: 700

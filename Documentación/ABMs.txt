@@ -1,0 +1,23 @@
+Todos los formularios para los ABM (Agregar, Borrar, Modificar) deben tener la misma estructura básica. De tal manera que si el usuario aprende a usar uno de ellos entonces ya aprendió a usarlos a todos.
+
+1. En la AppBar debe mostrar el nombre del formulario, y si el formulario tiene pestañas entonces los nombres de esas pestañas. Si el usuario hace clic en alguna de las pestañas, debe mostrarle otra página para que introduzca/vea más datos
+2. En la parte media debe mostrar y pedir datos. Siempre de forma muy amigable para que al usuario le resulte muy fácil entender todo. Los campos de texto deben tener un "hint" si el ancho del campo de texto así lo permite.
+3. Los campos de texto, numéricos, de fecha, y de hora, deben tener una "X" a la derecha para borrar todo el contenido del campo
+4. Los campos obligatorios deben tener un asterisco de color rojo a continuación de la etiqueta del campo
+5. Los campos de comentarios deben mostrar en la misma fila que la etiqueta pero en el extremo derecho, la cantidad de caracteres introducidos y la cantidad máxima de caracteres permitidos. Por ejemplo: 27/500
+6. Todos los campos deben ocupar el ancho mínimo posible para que entren los caracteres especificados. Por ejemplo si un campo es carácter, 15, eso significa que debe ocupar el espacio suficiente para que en ese campo se muestren 15 caracteres y no más que 15
+7. En los campos de texto, numéricos, de fecha, de hora, y los seleccionados de una lista, el tipo de fuente debe ser no proporcional, monoespaciado, de ancho fijo.
+8. Si un campo de tipo texto tiene una máscara de entrada, el ancho del campo lo determina la máscara de entrada. Por ejemplo, la máscara de entrada: 999-999-9999999 significa que donde hay un 9 puede escribirse cualquier dígito entre 0 y 9, y los guiones son fijos, no se mueven. El ancho de ese campo será de 15 caracteres
+9. Si un campo numérico tiene una máscara de entrada entonces cuando el usuario sale del campo (el campo pierde el foco) el número escrito deberá justificarse hacia la derecha y respetando a la máscara de entrada. Por ejemplo, si el usuario escribió 1234 y la máscara de entrada es 999.999.999 al salir del campo debe verse: 1.234, justificado a la derecha
+10. En la parte inferior del formulario deben encontrarse los botones: Agregar, Borrar, Modificar, Grabar, Cancelar, Encontrar, Fin. Todos esos botones deben tener el mismo ancho y la misma altura
+11. Si la tabla aún no tiene datos, los botones Agregar y Fin deben estar habilitados y todos los demás botones deben estar deshabilitados
+12. Si la tabla ya tiene datos, los botones Agregar, Borrar, Modificar, Encontrar, Fin, deben estar habilitados. Los botones Grabar y Cancelar deben estar deshabilitados
+13. Cuando el usuario hace clic en el botón Agregar o en el botón Modificar (si corresponde, porque la tabla tiene datos) los botones Agregar, Borrar, Modificar, Encontrar, Fin, deben deshabilitarse y los botones Grabar y Cancelar deben habilitarse
+14. Si el usuario hace clic en el botón Grabar primero se validan todos los campos y si todo está correcto entonces se intenta la grabación. Un mensaje le debe avisar al usuario si la grabación fue exitosa o no. En el caso de que no haya sido exitosa entonces el foco debe colocarse en el primer campo que tuvo un error
+15. Si el usuario presiona el botón Cancelar entonces se deben mostrar todos los campos deshabilitados con los mismos valores que tenían antes de haberse presionado el botón Agregar o el botón Modificar
+16. Cuando el usuario ingresa al formulario todos los campos deben estar deshabilitados. Los campos solamente se habilitan después de que el usuario hizo clic en el botón Agregar o en el botón Modificar
+17. Pueden existir campos que siempre deben estar deshabilitados. Una propiedad del campo debe servir para indicar eso.
+18. Los campos de tipo fecha siempre deben tener el formato: dd/mm/aaaa y por lo tanto un ancho de 10 caracteres
+19. Los campos de tipo hora siempre deben tener el formato: hh:mm y por lo tanto un ancho de 5 caracteres
+
+

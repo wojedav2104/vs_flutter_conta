@@ -1,0 +1,123 @@
+Esta aplicación debe tener una UI/UX de primerísimo nivel, debe ser muy fácil de usar porque los futuros usuarios no están acostumbrados a usar computadoras ni teléfonos celulares, por lo tanto se les debe facilitar todos y cada uno de los pasos que deben seguir.
+
+Esta aplicación debe seguir todos los principios de programación más ampliamente recomendados por la comunidad, tales como: SOLID, KISS, DRY, YAGNI, alta cohesión, bajo acoplamiento.
+
+Esta aplicación será usada como aplicación web y como aplicación de teléfono celular, por lo tanto debe ser entendible y fácil de usar en ambos casos.
+
+En lugar de crear controles propios es preferible descargar algún paquete de controles muy recomendado por la comunidad. Un control es un widget con el cual el usuario interactúa, por ejemplo para escribir un texto, un número, una fecha, una hora, o para seleccionar una opción.
+
+Un control que es imprescindible en una aplicación contable es una grilla. El usuario debe poder ver datos en una grilla cuando la interfaz así lo requiera.
+
+Esta aplicación será usada en Paraguay, en Perú, y en Francia. Quizás más adelante haya usuarios de Argentina y de Uruguay. Los usuarios de Francia solamente deben poder mirar, visualizar, los datos. Los usuarios de los demás países también deben tener la posibilidad de agregar, borrar, y modificar.
+
+En la pantalla de login y en la pantalla principal de la aplicación el usuario debe tener la posibilidad de elegir el tema: claro u oscuro, y también el idioma: español o francés. En la pantalla principal también podrá elegir el formato de los números y de las fechas: latinoamericano o francés. Sus elecciones deben quedar grabadas en su dispositivo para que la siguiente vez que utilice la aplicación se conserve el último tema, el último idioma, el último formato de números, y el último formato de fechas, que hubiera elegido.
+
+Todos los mensajes deben mostrarse en español o en francés, según sea el idioma elegido por el usuario. La primera vez que un usuario ejecuta la aplicación deben mostrarse en español pero luego deben mostrarse en el idioma que el usuario haya elegido.
+
+El formato de los números y de las fechas debe corresponder inicialmente a Paraguay.
+
+El nombre de la aplicación es: VS_CONTA
+
+En la pantalla de login deben mostrarse:
+1. El nombre de la aplicación
+2. El campo "Nombre" y a continuación un asterisco para indicar que es obligatorio
+3. El campo "Contraseña" y a continuación un asterisco para indicar que es obligatorio y también el iconito de un ojo para que el usuario vea/oculte el texto del campo "Contraseña"
+4. Una etiqueta con el texto "¿Olvidaste tu contraseña?"
+5. Un botón "Ingresar"
+6. Un botón "Cancelar"
+7. Un iconito para que elija el tema: claro u oscuro (arriba y a la derecha de la pantalla)
+8. Un iconito para que elija el idioma: español o francés (arriba y a la derecha de la pantalla)
+
+Inicialmente el "Nombre" debe ser "admin" y la "Contraseña" debe ser "1234" (sin las comillas dobles).
+
+Si el usuario escribe las credenciales correctas entonces la pantalla de login debe desaparecer y en su lugar debe mostrarse la pantalla principal.
+
+La pantalla principal tendrá un menú lateral izquierdo (drawer) cuyas opciones te diré después.
+
+
+NOMENCLATURA
+------------
+Aunque sé muy bien que en Dart no se usa esto, es lo que estoy acostumbrado a usar yo, me resulta muy claro y muy sencillo de entender cuando para los nombres de variables, funciones, propiedades, clases, y métodos, se siguen estas convenciones:
+
+Variables y propiedades: Cada variable o propiedad llevará un prefijo en minúscula que indicará su tipo de dato fundamental:
+d	Decimales (decimal SQL, con hasta 4 decimales)	Ejemplos: dPrecio, dTemperatura
+f	Fechas						Ejemplos: fFechaNacimiento, fFechaVenta
+i	Enteros (int)					Ejemplos: iContador, iEdad
+b	Lógicos o booleanos (bool)			Ejemplos: bEstaActivo, bTienePermiso
+n	Numérico (num)					Ejemplos: nNumero, nOtroNumero
+o	Objetos de clases propias			Ejemplos: oFactura, oUsuario
+s	Cadenas de texto (String)			Ejemplos: sDireccion, sNombre, sTelefono
+w	Widget						Ejemplos: wColor, wGestoDetectado, wTexto
+
+Colecciones: Para los tipos de datos que agrupan múltiples elementos, se usarán prefijos específicos antes del nombre en lowerCamelCase:
+list		Para listas (List).		Ejemplos: listAlumnos, listProductos
+set		Para conjuntos (Set).		Ejemplos: setFrutas, setTiposDocumentos
+map		Para clave-valor (Map).		Ejemplos: mapConfiguraciones, mapMarcas
+Enum		Para enumerar (Enum).		Ejemplos: EnumCalificaciones, EnumEstados
+
+Funciones propias: Para diferenciar fácilmente una función creada por nosotros de una función nativa de Dart (como print() o main()), el nombre de todas las funciones propias comenzará con el prefijo func.
+Ejemplos: funcCalcularTotal(), funcImprimirFactura(), funcValidarUsuario()
+
+Clases propias: Al igual que con las funciones, para saber rápidamente que se está instanciando una clase creada en nuestro proyecto y no una clase nativa del SDK de Dart (como String o DateTime), las clases propias llevarán el prefijo Clase.
+Ejemplos: ClaseConexionBD, ClaseFactura, ClaseUsuario
+
+Métodos: Los nombres de los métodos no empiezan con func porque no es necesario, como están dentro de una clase es muy fácil saber que se trata de un método propio.
+Ejemplos: grabar, mostrar, validarFecha
+
+Getters y Setters: Los getters siempre empiezan con el prefijo get y los setters siempre empiezan con el prefijo set.
+Ejemplos: getNombre, getEmail, setNombre, setEmail
+
+Idioma: Salvo muy raras excepciones, los nombres de todas las variables, colecciones, funciones propias, clases propias, y métodos, deben estar en español, no en inglés.
+
+Orden de las variables y de las propiedades:
+Se ordenan por tipo de dato y dentro de cada tipo de datos en forma alfabética. Yo sé que en Dart cuando se usan parámetros nombrados se los puede escribir en cualquier orden pero a mí me gusta que estén muy bien ordenados, porque eso me facilita mucho la lectura del código fuente.
+Ejemplos: 
+  bool   bEstaActivo
+  bool   bTienePermiso
+  int    iContador
+  int    iEdad
+  String sDireccion
+  String sNombre
+  String sTelefono
+
+como se puede ver en las líneas anteriores, los nombres de todas las variables/propiedades empiezan en la misma columna. Eso facilita la lectura
+
+Alineación del símbolo =
+Para mejorar la legibilidad del código fuente, todos los símbolos = deben encontrarse en la misma columna. Ejemplos:
+  static const colorAmarillo1   = Color(0xFFF5A623);
+  static const colorAzulOscuro1 = Color(0xFF0080B0);
+  static const colorAzulPuro1   = Color(0xFF0000FF);
+  static const colorBlanco      = Color(0xFFFFFFFF);
+
+Alineación del símbolo :
+Análogamente al símbolo = cuando hay varias asignaciones usando el símbolo : se debe poner a todos los símbolos : en la misma columna.
+Ejemplos:
+      inputDecorationTheme : InputDecorationTheme(
+        border             : _Borde(oEsquema.outline),
+        disabledBorder     : _Borde(oEsquema.outline.withValues(alpha: 0.4)),
+        enabledBorder      : _Borde(oEsquema.outline),
+        errorBorder        : _Borde(oEsquema.error, dGrosor: ClaseGenLayout.dGrosorBorde),
+        fillColor          : oEsquema.surfaceContainerHighest.withValues(alpha: 0.40),
+        filled             : true,
+        focusedBorder      : _Borde(oEsquema.primary, dGrosor: ClaseGenLayout.dGrosorBorde),
+        focusedErrorBorder : _Borde(oEsquema.error, dGrosor: ClaseGenLayout.dGrosorBorde),
+      ),
+
+Tipo de fuente:
+En todos los controles, sea de lo que sea (texto, numérico, fecha, hora, combobox, listbox) se debe usar una fuente no proporcional, monoespaciada, de ancho fijo, para que sea fácil calcular el ancho en pixeles que ocupará ese control.
+Ejemplo: RobotoMono-Regular.ttf
+
+Botones:
+Todos los botones deben tener un icono a la izquierda
+
+Caracteres por fila:
+Mi monitor me permite ver 176 caracteres en cada fila de un archivo .dart entonces para los comentarios y para las asignaciones se deben usar esos 176 caracteres.
+
+VENTANAS:
+En la carpeta lib\generales\widgets\ se crearán los popup siguientes:
+- Ventana advertencia. Para indicarle al usuario que algo puede ser potencialmente peligroso
+- Ventana confirmación. Para preguntarle al usuario si quiere confirmar algo. Debe tener los botones: Sí, No, Cancelar, y programáticamente se debe poder decidir cuales de esos botones estarán visibles
+- Ventana error. Para mostrarle al usuario que un error ha sido detectado
+- Ventana información. Para informarle de algo al usuario
+Todos estos popus deben tener un icono para identificarlos
+
