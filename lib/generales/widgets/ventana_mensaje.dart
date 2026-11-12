@@ -5,6 +5,8 @@ import '../temas/colores.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 
+import '../utilitarios/formatos.dart';
+
 
 /// Pide confirmación al usuario; devuelve true si confirma.
 Future<bool> funcMostrarConfirmacion(
@@ -84,3 +86,41 @@ Future<void> funcMostrarMensaje(
   );
 
 }
+
+
+  /// Muestra el selector de fecha y devuelve dd/mm/aaaa, o null si cancela.
+  Future<String?> funcMostrarSelectorFecha(BuildContext oContexto, String sValorActual) async {
+    DateTime fInicial = DateTime.now();
+    final DateTime? fParseada = funcParsearFecha(sValorActual);
+    if (fParseada != null) fInicial = fParseada;
+    final DateTime? fFecha = await showDatePicker(
+      context    : oContexto,
+      initialDate: fInicial,
+      firstDate  : DateTime(2020, 1, 1),
+      lastDate   : DateTime(2100, 12, 31),
+    );
+    if (fFecha == null) return null;
+    return '${fFecha.day.toString().padLeft(2, '0')}/'
+           '${fFecha.month.toString().padLeft(2, '0')}/'
+           '${fFecha.year}';
+}
+
+  /// Muestra el selector de hora y devuelve hh:mm, o null si cancela.
+  Future<String?> funcMostrarSelectorHora(BuildContext oContexto, String sValorActual) async {
+    TimeOfDay oHoraInicial = TimeOfDay.now();
+    final List<String> listPartes = sValorActual.trim().split(':');
+    if (listPartes.length == 2) {
+      final int? iH = int.tryParse(listPartes[0]);
+      final int? iM = int.tryParse(listPartes[1]);
+      if (iH != null && iM != null) oHoraInicial = TimeOfDay(hour: iH, minute: iM);
+    }
+    final TimeOfDay? oHora = await showTimePicker(
+      context      : oContexto,
+      initialTime  : oHoraInicial,
+    );
+    if (oHora == null) return null;
+    return '${oHora.hour.toString().padLeft(2, '0')}:'
+           '${oHora.minute.toString().padLeft(2, '0')}';
+  }
+
+  

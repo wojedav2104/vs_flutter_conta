@@ -1,0 +1,14 @@
+Los campos de la tabla de Proveedores son:
+- Código (carácter, 6, obligatorio)
+- Nombre (carácter, 40, "Nombre de este proveedor", obligatorio)
+- Dirección (carácter, 60, "Calle y N° donde reside", opcional)
+- Teléfono N° (carácter, 15, "Nro teléfono", opcional)
+- Celular N° (carácter, 15, "Nro celular", opcional)
+- Localidad (carácter, 40, "Localidad de su domicilio", opcional)
+- E-mail (carácter, 40, "Correo electrónico", opcional)
+- Tipo de identificación (debe seleccionar entre: R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera, Sin Nombre, Diplomático)
+- Identificación N° (carácter, 15, "N° documento", obligatorio)
+- Tipo de proveedor (debe seleccionar entre: Local, Exterior)
+- Es Servicio Público (debe seleccionar entre: Sí, No)
+
+Lo que está entre comillas debe mostrarse como "hint" del campo.

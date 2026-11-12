@@ -1,5 +1,5 @@
 /// Tipo de dato de un campo de un formulario ABM.
-enum EnumTipoCampoAbm { comentario, fecha, hora, lista, logico, numero, texto }
+enum EnumTipoCampoAbm { casillas, comentario, fecha, hora, lista, logico, numero, texto }
 
 
 /// Especificación de un campo de un formulario ABM.
@@ -13,9 +13,11 @@ class ClaseCampoAbm {
     this.bObligatorio           = false,
     this.bSiempreDeshabilitado  = false,
     this.bSoloLecturaPorRol     = false,
-    this.iAnchoCaracteres       =  10,
+    this.iAnchoCaracteres       = 10,
     this.iMaxComentario         = 500,
     this.listOpciones,
+    this.funcActualizarEstado,
+    this.funcValidarCampo,
     this.sGrupo,
     this.sHint,
     this.sMascara,
@@ -32,8 +34,16 @@ class ClaseCampoAbm {
   EnumTipoCampoAbm  oTipo;
   String            sClave;
   String            sEtiqueta;
-  String?           sGrupo;        // clave del grupo/pestaña (se traduce con ClaseIdiomas)
+  String?           sGrupo;
   String?           sHint;
   String?           sMascara;
+
+  // ── Validación específica del campo ─────────────────────────────────────
+  final String? Function(String sValor)? funcValidarCampo;
+
+  // ── Habilitación dinámica ───────────────────────────────────────────────
+  /// Devuelve true si el campo debe estar habilitado, según los valores
+  /// actuales de todos los campos del formulario.
+  final bool Function(Map<String, String> mapValores)? funcActualizarEstado;
 
 }

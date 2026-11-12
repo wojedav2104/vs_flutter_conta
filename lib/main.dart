@@ -4,11 +4,15 @@ import 'generales/idiomas/idiomas.dart';
 import 'generales/inicio/login.dart';
 import 'generales/preferencias/preferencias.dart';
 import 'generales/temas/temas.dart';
+import 'generales/utilitarios/menu_navegador_web.dart'
+    if (dart.library.io) 'generales/utilitarios/menu_navegador_movil.dart';
+
 import 'rutas/generador_rutas.dart';
 
 
 /// Punto de entrada de VS_CONTA.
 Future<void> main() async {
+  funcDesactivarMenuNavegador();
   WidgetsFlutterBinding.ensureInitialized();
   final ClasePreferencias oPreferencias = ClasePreferencias();
   await oPreferencias.cargar();
@@ -54,3 +58,6 @@ class ClaseEstadoAplicacion extends State<ClaseAplicacion> {
   }
 
 }
+
+
+
