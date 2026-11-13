@@ -113,6 +113,9 @@ Todos los botones deben tener un icono a la izquierda
 Caracteres por fila:
 Mi monitor me permite ver 176 caracteres en cada fila de un archivo .dart entonces para los comentarios y para las asignaciones se deben usar esos 176 caracteres.
 
+Nombres de las variables, de las propiedades, de las funciones, de las clases, de los métodos:
+Deben estar en idioma español y la letra ñ debe reemplazarse por n. Ejemplos: iAnoMinimo, iAnoMaximo
+
 VENTANAS:
 En la carpeta lib\generales\widgets\ se crearán los popup siguientes:
 - Ventana advertencia. Para indicarle al usuario que algo puede ser potencialmente peligroso

@@ -6,7 +6,6 @@ import '../../generales/preferencias/preferencias.dart';
 import '../../generales/validaciones/cap_validar.dart';
 import '../../generales/widgets/formulario_abm.dart';
 
-
 /// Pantalla de la tabla Cuentas asignadas (ABM de múltiples registros).
 ///
 /// Estas cuentas se utilizarán cuando la aplicación necesite realizar
@@ -16,6 +15,7 @@ import '../../generales/widgets/formulario_abm.dart';
 ///
 /// Todos los campos de cuentas son opcionales y deben contener números
 /// con el formato 9.99.99.99 (ejemplos: 1, 1.01, 1.01.04, 2.03.05.17).
+/// Al conectar la Base de Datos serán búsquedas desde el Plan de Cuentas.
 class ClaseCuentasAsignadas extends StatefulWidget {
 
   const ClaseCuentasAsignadas({
@@ -47,26 +47,24 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
       listCampos    : listCampos,
       listRegistros : listRegistros,
       oPreferencias : widget.oPreferencias,
-      sTitulo       : ClaseIdiomas.getTexto(
-                        widget.oPreferencias.getIdioma(), 'menuCuentasAsignadas'),
+      sTitulo       : ClaseIdiomas.getTexto(getIdioma(), 'menuCuentasAsignadas'),
     );
   }
 
-  // ── Utilidades ──────────────────────────────────────────────────────────
-
   String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Utilidades ──────────────────────────────────────────────────────────
 
   /// Crea un campo de cuenta con validación de formato y hint específico.
   ClaseCampoAbm crearCampoCuenta(String sClave, String sClaveEtiqueta, String sClaveHint) {
-    final String sIdioma = getIdioma();
     return ClaseCampoAbm(
-      funcValidarCampo : (sValor) => ClaseCapValidar.validarFormatoCuenta(
-          sValor, ClaseIdiomas.getTexto(sIdioma, sClaveEtiqueta), sIdioma),
       iAnchoCaracteres : 58,
       oTipo            : EnumTipoCampoAbm.texto,
       sClave           : sClave,
-      sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, sClaveEtiqueta),
-      sHint            : ClaseIdiomas.getTexto(sIdioma, sClaveHint),
+      sEtiqueta        : ClaseIdiomas.getTexto(getIdioma(), sClaveEtiqueta),
+      sHint            : ClaseIdiomas.getTexto(getIdioma(), sClaveHint),
+      funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
+          sValor, ClaseIdiomas.getTexto(sIdioma, sClaveEtiqueta), sIdioma),
     );
   }
 
@@ -78,15 +76,16 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
 
     return <ClaseCampoAbm>[
 
-      // ── Identificación del registro ──────────────────────────────────────────────────
+      // ── Identificación del registro ──────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor) => ClaseCapValidar.validarEjercicio(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'ctaEjercicio'), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'ctaEjercicio'),
+        sValorDefecto    : DateTime.now().year.toString(),
       ),
 
       ClaseCampoAbm(
@@ -98,7 +97,7 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'ctaHintSucursal'),
       ),
 
-      // ── Cuentas ──────────────────────────────────────────────────────────────────────
+      // ── Cuentas ──────────────────────────────────────────────────────────
       crearCampoCuenta('caja',                  'ctaCaja',                  'ctaHintCaja'),
       crearCampoCuenta('ivaCredito10',          'ctaIvaCredito10',          'ctaHintIvaCredito10'),
       crearCampoCuenta('ivaCredito5',           'ctaIvaCredito5',           'ctaHintIvaCredito5'),

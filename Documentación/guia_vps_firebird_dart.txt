@@ -1,0 +1,145 @@
+================================================================================
+GUIA RAPIDA DE CONFIGURACION VPS (500 MB RAM) - FIREBIRD 2.5.9 + API EN DART
+Sistema Operativo Recomendado: Ubuntu 22.04 LTS o Debian 11/12
+================================================================================
+
+1. ACTUALIZAR EL SISTEMA
+--------------------------------------------------------------------------------
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl wget ufw nano tar libncurses5 libtommath1
+
+
+2. CREAR MEMORIA SWAP DE 2 GB (OBLIGATORIO PARA 500 MB DE RAM)
+--------------------------------------------------------------------------------
+# Crear archivo swap de 2GB
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# Hacerlo permanente tras reinicios
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+# Optimizar uso de swap para servidores con poca RAM
+sudo sysctl vm.swappiness=10
+echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+
+# Verificar que la swap este activa
+free -h
+
+
+3. CONFIGURAR FIREWALL BASICO (UFW)
+--------------------------------------------------------------------------------
+# Permitir SSH (Puerto 22) y HTTP/HTTPS (80 y 443 para tu API)
+# IMPORTANTE: NO abrir el puerto 3050 de Firebird hacia internet
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+sudo ufw status
+
+
+4. INSTALAR FIREBIRD 2.5.9 (SUPERCLASSIC O SUPERSERVER)
+--------------------------------------------------------------------------------
+# Nota: En Debian/Ubuntu reciente se crea enlace simbolico para libtommath
+sudo ln -s /usr/lib/x86_64-linux-gnu/libtommath.so.1 /usr/lib/x86_64-linux-gnu/libtommath.so.0
+
+# Descargar Firebird 2.5.9 (64-bit SuperServer - menor consumo de RAM para pruebas)
+cd /tmp
+wget https://github.com/FirebirdSQL/firebird/releases/download/R2_5_9/FirebirdSS-2.5.9.27139-0.amd64.tar.gz
+tar -xzvf FirebirdSS-2.5.9.27139-0.amd64.tar.gz
+cd FirebirdSS-2.5.9.27139-0.amd64
+
+# Ejecutar instalador (te pedira crear la contrasena para SYSDBA)
+sudo ./install.sh
+
+# Verificar que Firebird este corriendo en localhost
+sudo systemctl status firebird || ps aux | grep fbserver
+
+
+5. OPTIMIZAR MEMORIA DE FIREBIRD (PARA 500 MB RAM)
+--------------------------------------------------------------------------------
+# Editar configuracion de Firebird
+sudo nano /opt/firebird/firebird.conf
+
+# Buscar y ajustar estas lineas (quitar el # inicial si lo tiene):
+# DefaultDbCachePages = 2048
+# TempCacheLimit = 8388608
+
+# Reiniciar Firebird para aplicar cambios
+sudo /etc/init.d/firebird restart
+
+
+6. PREPARAR DIRECTORIOS PARA TU BASE DE DATOS Y API EN DART
+--------------------------------------------------------------------------------
+# Crear carpeta para tus bases de datos .fdb
+sudo mkdir -p /var/lib/firebird/data
+sudo chown -R firebird:firebird /var/lib/firebird/data
+
+# Crear carpeta para el binario compilado de tu API en Dart
+sudo mkdir -p /opt/mi_api_dart
+sudo chown -R $USER:$USER /opt/mi_api_dart
+
+
+7. EJECUTAR TU API DE DART COMO SERVICIO EN SEGUNDO PLANO (SYSTEMD)
+--------------------------------------------------------------------------------
+# Subir tu binario compilado en Linux (ej: api_server) a /opt/mi_api_dart/api_server
+# Darle permisos de ejecucion:
+chmod +x /opt/mi_api_dart/api_server
+
+# Crear el servicio systemd:
+sudo nano /etc/systemd/system/dart_api.service
+
+# Pegar el siguiente contenido dentro del archivo y guardar (Ctrl+O, Enter, Ctrl+X):
+[Unit]
+Description=API Backend en Dart para Flutter
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mi_api_dart
+ExecStart=/opt/mi_api_dart/api_server
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+
+# Activar e iniciar el servicio:
+sudo systemctl daemon-reload
+sudo systemctl enable dart_api
+sudo systemctl start dart_api
+sudo systemctl status dart_api
+
+
+8. INSTALAR CADDY (PROXY INVERSO CON HTTPS AUTOMATICO PARA FLUTTER)
+--------------------------------------------------------------------------------
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt update
+sudo apt install -y caddy
+
+# Configurar Caddyfile (apuntar tu subdominio al puerto de tu API Dart, ej: 8080)
+sudo nano /etc/caddy/Caddyfile
+
+# Reemplazar el contenido por:
+# tudominio.com.py {
+#     reverse_proxy localhost:8080
+# }
+
+# Reiniciar Caddy para generar el certificado SSL gratuito:
+sudo systemctl restart caddy
+
+
+9. NOTAS PARA LA FUTURA MIGRACION A FIREBIRD 5.X
+--------------------------------------------------------------------------------
+# Antes de desinstalar Firebird 2.5.9, respaldar tu base de datos en formato transportable:
+/opt/firebird/bin/gbak -b -v -user SYSDBA -password TU_CLAVE /var/lib/firebird/data/tu_base.fdb /tmp/respaldo_25.fbk
+
+# Luego de instalar Firebird 5.x, restaurar el respaldo:
+/opt/firebird/bin/gbak -c -v -user SYSDBA -password TU_CLAVE /tmp/respaldo_25.fbk /var/lib/firebird/data/tu_base_v5.fdb
+================================================================================

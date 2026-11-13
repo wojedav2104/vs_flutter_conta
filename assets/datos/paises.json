@@ -1,0 +1,8 @@
+[
+  { "codigo": "ARG", "clave": "paisArgentina" },
+  { "codigo": "FRA", "clave": "paisFrancia" },
+  { "codigo": "PRY", "clave": "paisParaguay" },
+  { "codigo": "PER", "clave": "paisPeru" },
+  { "codigo": "URY", "clave": "paisUruguay" }
+]
+

@@ -1,5 +1,5 @@
 Los campos de la tabla de Clientes son:
-- Código (carácter, 6, obligatorio)
+- Código (carácter, 6, obligatorio). Validación: debe tener siempre 6 dígitos, completándose con ceros a la izquierda si fuera necesario. Ejemplos: 000001, 000123
 - Nombre (carácter, 40, "Nombre de este cliente", obligatorio)
 - Dirección (carácter, 60, "Calle y N° donde reside", opcional)
 - Teléfono N° (carácter, 15, "Nro teléfono", opcional)

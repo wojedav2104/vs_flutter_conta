@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
 import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
 import '../../generales/widgets/formulario_abm.dart';
-
 
 /// Pantalla de la tabla Clientes (ABM de múltiples registros).
 ///
@@ -37,51 +39,41 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioAbm(
-      listCampos    : listCampos,
-      listRegistros : listRegistros,
-      oPreferencias : widget.oPreferencias,
-      sTitulo       : ClaseIdiomas.getTexto(
-                        widget.oPreferencias.getIdioma(), 'menuClientes'),
+      funcValidarRegistro : validarRegistro,
+      listCampos          : listCampos,
+      listRegistros       : listRegistros,
+      oPreferencias       : widget.oPreferencias,
+      sTitulo             : ClaseIdiomas.getTexto(getIdioma(), 'menuClientes'),
     );
   }
 
-  // ── Utilidades ──────────────────────────────────────────────────────────
+  String getIdioma() => widget.oPreferencias.getIdioma();
 
-  /// Ancho mínimo del campo: caracteres de la opción más larga.
-  int calcularAncho(List<String> listOpciones) {
-    int iAncho = 0;
-    for (final String sOpcion in listOpciones) {
-      if (sOpcion.length > iAncho) iAncho = sOpcion.length;
-    }
-    return iAncho;
+  // ── Validación cruzada ──────────────────────────────────────────────────
+
+  /// El formato de la identificación depende del Tipo de identificación.
+  String? validarRegistro(Map<String, dynamic> oRegistro) {
+    final String sIdioma = getIdioma();
+    return ClaseCapValidar.validarIdentificacion(
+      (oRegistro['identificacion']      ?? '').toString(),
+      (oRegistro['tipoIdentificacion']  ?? '').toString(),
+      ClaseIdiomas.getTexto(sIdioma, 'cliIdentificacion'),
+      sIdioma,
+    );
   }
 
   // ── Campos ──────────────────────────────────────────────────────────────
 
   List<ClaseCampoAbm> crearCampos() {
 
-    final String sIdioma = widget.oPreferencias.getIdioma();
-
-    final List<String> listTipoIdentificacion = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'docRuc'),
-      ClaseIdiomas.getTexto(sIdioma, 'docCedulaIdentidad'),
-      ClaseIdiomas.getTexto(sIdioma, 'docPasaporte'),
-      ClaseIdiomas.getTexto(sIdioma, 'docCedulaExtranjera'),
-      ClaseIdiomas.getTexto(sIdioma, 'cliSinNombre'),
-      ClaseIdiomas.getTexto(sIdioma, 'docDiplomatico'),
-    ];
-    final List<String> listTipoCliente = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-      ClaseIdiomas.getTexto(sIdioma, 'cliExterior'),
-    ];
-    final List<String> listSiNo = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'si'),
-      ClaseIdiomas.getTexto(sIdioma, 'no'),
-    ];
+    final String sIdioma = getIdioma();
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
+        bCompletarCeros  : true,
         bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
+            sValor, ClaseIdiomas.getTexto(sIdioma, 'cliCodigo'), sIdioma),
         iAnchoCaracteres : 6,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'codigo',
@@ -131,11 +123,14 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintEmail'),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listTipoIdentificacion),
-        listOpciones     : listTipoIdentificacion,
+        iAnchoCaracteres : funcAnchoOpcion(
+            ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
+        listValores      : ClaseTipoIdentificacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoIdentificacion',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliTipoIdentificacion'),
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -146,18 +141,22 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintIdentificacion'),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listTipoCliente),
-        listOpciones     : listTipoCliente,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
+        listOpciones     : ClaseLocalExterior.getListOpciones(sIdioma),
+        listValores      : ClaseLocalExterior.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoCliente',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliTipoCliente'),
+        sValorDefecto    : ClaseLocalExterior.local,
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listSiNo),
-        listOpciones     : listSiNo,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'esDiplomatico',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliEsDiplomatico'),
+        sValorDefecto    : ClaseSiNo.no,
       ),
     ];
   }
@@ -165,46 +164,45 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
-    final String sIdioma = widget.oPreferencias.getIdioma();
     return <Map<String, dynamic>>[
       <String, dynamic>{
         'celular'            : '0981 123 456',
         'codigo'             : '000001',
         'direccion'          : 'Av. España 1234',
         'email'              : 'juan@email.com',
-        'esDiplomatico'      : ClaseIdiomas.getTexto(sIdioma, 'no'),
-        'identificacion'     : '80012345-6',
+        'esDiplomatico'      : ClaseSiNo.no,
+        'identificacion'     : '1234567-9',
         'localidad'          : 'Asunción',
         'nombre'             : 'Juan Pérez',
         'telefono'           : '021 500 400',
-        'tipoCliente'        : ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-        'tipoIdentificacion' : ClaseIdiomas.getTexto(sIdioma, 'docRuc'),
+        'tipoCliente'        : ClaseLocalExterior.local,
+        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
       },
       <String, dynamic>{
         'celular'            : '0982 654 321',
         'codigo'             : '000002',
         'direccion'          : 'Mariscal López 567',
         'email'              : 'maria@email.com',
-        'esDiplomatico'      : ClaseIdiomas.getTexto(sIdioma, 'no'),
-        'identificacion'     : '1234567',
+        'esDiplomatico'      : ClaseSiNo.no,
+        'identificacion'     : '2345678',
         'localidad'          : 'Luque',
         'nombre'             : 'María González',
         'telefono'           : '021 600 500',
-        'tipoCliente'        : ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-        'tipoIdentificacion' : ClaseIdiomas.getTexto(sIdioma, 'docCedulaIdentidad'),
+        'tipoCliente'        : ClaseLocalExterior.local,
+        'tipoIdentificacion' : ClaseTipoIdentificacion.cedula,
       },
       <String, dynamic>{
         'celular'            : '+33 6 12 34 56 78',
         'codigo'             : '000003',
         'direccion'          : 'Ruta 1 Km 8',
         'email'              : 'pierre@email.com',
-        'esDiplomatico'      : ClaseIdiomas.getTexto(sIdioma, 'si'),
+        'esDiplomatico'      : ClaseSiNo.si,
         'identificacion'     : 'AB123456',
         'localidad'          : 'Encarnación',
         'nombre'             : 'Pierre Dupont',
         'telefono'           : '071 200 300',
-        'tipoCliente'        : ClaseIdiomas.getTexto(sIdioma, 'cliExterior'),
-        'tipoIdentificacion' : ClaseIdiomas.getTexto(sIdioma, 'docPasaporte'),
+        'tipoCliente'        : ClaseLocalExterior.exterior,
+        'tipoIdentificacion' : ClaseTipoIdentificacion.pasaporte,
       },
     ];
   }

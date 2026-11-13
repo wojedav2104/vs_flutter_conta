@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vs_conta/generales/widgets/controles_preferencias.dart';
 
 import '../idiomas/idiomas.dart';
 import '../preferencias/preferencias.dart';
@@ -9,18 +8,20 @@ import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
+import 'controles_preferencias.dart';
 import 'pantalla_principal.dart';
+import 'ventana_mensaje.dart';
 
 /// Pantalla de login de VS_CONTA.
 class ClaseLogin extends StatefulWidget {
   const ClaseLogin({
     super.key,
-    required this.oPreferencias,
     required this.funcAlCambiar,
+    required this.oPreferencias,
   });
 
-  final ClasePreferencias oPreferencias;
   final VoidCallback      funcAlCambiar;
+  final ClasePreferencias oPreferencias;
 
   @override
   State<ClaseLogin> createState() => ClaseEstadoLogin();
@@ -52,21 +53,6 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
   }
 
   // ── Acciones ────────────────────────────────────────────────────────────
-  Future<void> actualizarIdioma(String? sValor) async {
-    if (sValor == null) return;
-    await widget.oPreferencias.setIdioma(sValor);
-    if (!mounted) return;
-    setState(() {});
-    widget.funcAlCambiar();
-  }
-
-  Future<void> actualizarTema(String? sValor) async {
-    if (sValor == null) return;
-    await widget.oPreferencias.setTema(sValor);
-    if (!mounted) return;
-    setState(() {});
-    widget.funcAlCambiar();
-  }
 
   void cancelar() {
     SystemNavigator.pop();
@@ -74,117 +60,64 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
 
   Future<void> ingresar() async {
 
-    final String sContrasena = oControlContrasena.text;
     final String sIdioma     = widget.oPreferencias.getIdioma();
     final String sNombre     = oControlNombre.text.trim();
+    final String sContrasena = oControlContrasena.text;
 
     if (sNombre.isEmpty || sContrasena.isEmpty) {
-      await mostrarMensaje(ClaseIdiomas.getTexto(sIdioma, 'campoObligatorio'));
+      await funcMostrarMensaje(
+        context,
+        sIdioma,
+        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+        ClaseIdiomas.getTexto(sIdioma, 'campoObligatorio'),
+        ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+        ClaseGenLayout.iAnchoColumnasMensaje,
+      );
       return;
     }
     if (sNombre != sNombreInicial || sContrasena != sContrasenaInicial) {
-      await mostrarMensaje(ClaseIdiomas.getTexto(sIdioma, 'credencialesIncorrectas'));
+      await funcMostrarMensaje(
+        context,
+        sIdioma,
+        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+        ClaseIdiomas.getTexto(sIdioma, 'credencialesIncorrectas'),
+        ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+        ClaseGenLayout.iAnchoColumnasMensaje,
+      );
       return;
     }
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
         builder: (oContexto) => ClasePantallaPrincipal(
-          oPreferencias : widget.oPreferencias,
           funcAlCambiar : widget.funcAlCambiar,
+          oPreferencias : widget.oPreferencias,
         ),
       ),
     );
 
   }
 
-
-  Future<void> mostrarMensaje(String sMensaje) async {
-    final String sAceptar    = ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'aceptar');
-    final String sAplicacion = ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'aplicacion');
-    await showDialog<void>(
-      context            : context,
-      barrierDismissible : false,
-      builder            : (oContexto) {
-        return AlertDialog(
-          title: Row(
-            children: <Widget>[
-              const Icon(Icons.error_outline, color: ClaseGenColores.colorError),
-              const SizedBox(width: ClaseGenEspacios.dEspacio08),
-              Expanded(child: Text(sAplicacion, style: ClaseGenEstilosTexto.subtituloMediano(oContexto))),
-              IconButton(
-                icon      : const Icon(Icons.close),
-                onPressed : () => Navigator.of(oContexto).pop(),
-              ),
-            ],
-          ),
-          content : Text(sMensaje, style: ClaseGenEstilosTexto.normalMediano(oContexto)),
-          actions : <Widget>[
-            FilledButton.icon(
-              onPressed : () => Navigator.of(oContexto).pop(),
-              icon      : const Icon(Icons.check),
-              label     : Text(sAceptar, style: ClaseGenEstilosTexto.normalMediano(oContexto)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   // ── Construcción de la interfaz ─────────────────────────────────────────
+
   @override
   Widget build(BuildContext oContexto) {
     return Scaffold(
+      backgroundColor : Theme.of(oContexto).colorScheme.surface,
       body: Stack(
         children: <Widget>[
-          construirFondo(oContexto),
-          Positioned(
-            top   : ClaseGenEspacios.dEspacio16,
-            right : ClaseGenEspacios.dEspacio16,
-            child : ClaseControlesPreferencias(
-              oPreferencias : widget.oPreferencias,
-              funcAlCambiar : widget.funcAlCambiar,
-            ),
-          ),
           Center(
             child: SingleChildScrollView(
               padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio24),
               child   : construirTarjeta(oContexto),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget construirFondo(BuildContext oContexto) {
-    final ThemeData oTema = Theme.of(oContexto);
-    return Container(
-      color : oTema.colorScheme.surface,
-      child : Stack(
-        children: <Widget>[
           Positioned(
-            top   : -120,
-            right : -80,
-            child : Container(
-              width       : 320,
-              height      : 320,
-              decoration  : BoxDecoration(
-                color        : oTema.colorScheme.primaryContainer.withValues(alpha: 0.35),
-                borderRadius : BorderRadius.circular(ClaseGenRadios.dCompleto),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom : -140,
-            left   : -100,
-            child  : Container(
-              width       : 320,
-              height      : 320,
-              decoration  : BoxDecoration(
-                color        : oTema.colorScheme.secondaryContainer.withValues(alpha: 0.35),
-                borderRadius : BorderRadius.circular(ClaseGenRadios.dCompleto),
-              ),
+            top   : ClaseGenEspacios.dEspacio16,
+            right : ClaseGenEspacios.dEspacio16,
+            child : ClaseControlesPreferencias(
+              funcAlCambiar : widget.funcAlCambiar,
+              oPreferencias : widget.oPreferencias,
             ),
           ),
         ],
@@ -298,29 +231,32 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
   }
 
   Widget construirBotones(BuildContext oContexto) {
-    final String sCancelar = ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'cancelar');
-    final String sIngresar = ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'ingresar');
+    final String sIdioma   = widget.oPreferencias.getIdioma();
+    final String sCancelar = ClaseIdiomas.getTexto(sIdioma, 'cancelar');
+    final String sIngresar = ClaseIdiomas.getTexto(sIdioma, 'ingresar');
     return Row(
       children: <Widget>[
         Expanded(
           child: FilledButton.icon(
             onPressed : ingresar,
-            style     : FilledButton.styleFrom(minimumSize: const Size(0, 52)),
+            style     : FilledButton.styleFrom(
+              minimumSize: const Size(0, ClaseGenLayout.dAltoBoton),
+            ),
             icon      : const Icon(Icons.login),
             label     : Text(sIngresar,
-                        style: ClaseGenEstilosTexto.normalGrande(oContexto)
-                                 .copyWith(fontWeight: FontWeight.w600)),
+                        style: ClaseGenEstilosTexto.botonGrande(oContexto)),
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio16),
         Expanded(
           child: OutlinedButton.icon(
             onPressed : cancelar,
-            style     : OutlinedButton.styleFrom(minimumSize: const Size(0, 52)),
+            style     : OutlinedButton.styleFrom(
+              minimumSize: const Size(0, ClaseGenLayout.dAltoBoton),
+            ),
             icon      : const Icon(Icons.cancel_outlined),
             label     : Text(sCancelar,
-                        style: ClaseGenEstilosTexto.normalGrande(oContexto)
-                                 .copyWith(fontWeight: FontWeight.w600)),
+                        style: ClaseGenEstilosTexto.botonGrande(oContexto)),
           ),
         ),
       ],

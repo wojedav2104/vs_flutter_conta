@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
 import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+import '../../generales/varios/paises.dart';
 import '../../generales/widgets/formulario_abm.dart';
-
 
 /// Pantalla de la tabla Empresa (primer ABM con pestañas).
 ///
@@ -44,46 +47,29 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
       listCampos           : listCampos,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
-      sTitulo              : ClaseIdiomas.getTexto(
-                               widget.oPreferencias.getIdioma(), 'menuEmpresa'),
+      sTitulo              : ClaseIdiomas.getTexto(getIdioma(), 'menuEmpresa'),
     );
   }
 
-  // ── Utilidades ──────────────────────────────────────────────────────────
-
-  /// Ancho mínimo del campo: caracteres de la opción más larga.
-  int calcularAncho(List<String> listOpciones) {
-    int iAncho = 0;
-    for (final String sOpcion in listOpciones) {
-      if (sOpcion.length > iAncho) iAncho = sOpcion.length;
-    }
-    return iAncho;
-  }
+  String getIdioma() => widget.oPreferencias.getIdioma();
 
   // ── Campos de los tres grupos ───────────────────────────────────────────
 
   List<ClaseCampoAbm> crearCampos() {
 
-    final String sIdioma = widget.oPreferencias.getIdioma();
+    final String sIdioma = getIdioma();
 
-    final List<String> listIva = <String>[
+    // Códigos internos del tipo de IVA (solo se usan en esta pantalla).
+    final List<String> listIvaOpciones = <String>[
       ClaseIdiomas.getTexto(sIdioma, 'empIvaGeneral'),
       ClaseIdiomas.getTexto(sIdioma, 'empIvaSimplificado'),
       ClaseIdiomas.getTexto(sIdioma, 'empNoPagaIva'),
     ];
-    final List<String> listPaises = <String>[
-      'ARG - ${ClaseIdiomas.getTexto(sIdioma, 'paisArgentina')}',
-      'PRY - ${ClaseIdiomas.getTexto(sIdioma, 'paisParaguay')}',
-      'PER - ${ClaseIdiomas.getTexto(sIdioma, 'paisPeru')}',
-    ];
-    final List<String> listSiNo = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'si'),
-      ClaseIdiomas.getTexto(sIdioma, 'no'),
-    ];
+    const List<String> listIvaValores = <String>['GEN', 'SIM', 'NPG'];
 
     return <ClaseCampoAbm>[
 
-      // ── Grupo 1: Generales ──────────────────────────────────────────────────────────
+      // ── Grupo 1: Generales ──────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 50,
@@ -135,12 +121,14 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        iAnchoCaracteres : calcularAncho(listPaises),
-        listOpciones     : listPaises,
+        iAnchoCaracteres : funcAnchoOpcion(ClasePaises.getListOpciones(sIdioma)),
+        listOpciones     : ClasePaises.getListOpciones(sIdioma),
+        listValores      : ClasePaises.getListValores(),
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'pais',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'empPais'),
         sGrupo           : 'empGrupoGenerales',
+        sValorDefecto    : 'PRY',
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -170,6 +158,8 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRuc(
+            sValor, ClaseIdiomas.getTexto(sIdioma, 'empRuc'), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'ruc',
@@ -178,9 +168,11 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'empHintRuc'),
       ),
 
-      // ── Grupo 2: Varios ─────────────────────────────────────────────────────────────
+      // ── Grupo 2: Varios ─────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
+            sValor, ClaseIdiomas.getTexto(sIdioma, 'empEjercicio'), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
@@ -188,30 +180,36 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         sGrupo           : 'empGrupoVarios',
       ),
 
-      // ── Grupo 3: Impuestos ──────────────────────────────────────────────────────────
+      // ── Grupo 3: Impuestos ──────────────────────────────────────────────
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listIva),
-        listOpciones     : listIva,
+        iAnchoCaracteres : funcAnchoOpcion(listIvaOpciones),
+        listOpciones     : listIvaOpciones,
+        listValores      : listIvaValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'iva',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'empIva'),
         sGrupo           : 'empGrupoImpuestos',
+        sValorDefecto    : 'GEN',
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listSiNo),
-        listOpciones     : listSiNo,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'ireSimple',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'empIreSimple'),
         sGrupo           : 'empGrupoImpuestos',
+        sValorDefecto    : ClaseSiNo.no,
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listSiNo),
-        listOpciones     : listSiNo,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'irp',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'empIrp'),
         sGrupo           : 'empGrupoImpuestos',
+        sValorDefecto    : ClaseSiNo.no,
       ),
     ];
   }
@@ -219,7 +217,6 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
-    final String sIdioma = widget.oPreferencias.getIdioma();
     return <Map<String, dynamic>>[
       <String, dynamic>{
         'apellidos'    : '',
@@ -227,15 +224,15 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         'direccion'    : 'Av. España 1234',
         'ejercicio'    : '2026',
         'email'        : 'info@empresa.com.py',
-        'ireSimple'    : ClaseIdiomas.getTexto(sIdioma, 'no'),
-        'irp'          : ClaseIdiomas.getTexto(sIdioma, 'si'),
-        'iva'          : ClaseIdiomas.getTexto(sIdioma, 'empIvaGeneral'),
+        'ireSimple'    : ClaseSiNo.no,
+        'irp'          : ClaseSiNo.si,
+        'iva'          : 'GEN',
         'localidad'    : 'Luque',
         'nombre'       : 'Empresa de Prueba S.A.',
         'nombres'      : '',
-        'pais'         : 'PRY - ${ClaseIdiomas.getTexto(sIdioma, 'paisParaguay')}',
+        'pais'         : 'PRY',
         'ramo'         : 'Servicios contables',
-        'ruc'          : '80012345-6',
+        'ruc'          : '80012345-0',
         'telefono'     : '021 500 400',
       },
     ];

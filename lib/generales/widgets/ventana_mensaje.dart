@@ -46,81 +46,97 @@ Future<bool> funcMostrarConfirmacion(
   return bConfirmo;
 }
 
-
-/// Muestra un mensaje con botón Aceptar y "X"; el usuario debe cerrarlo.
+/// Muestra un mensaje modal con un botón Aceptar.
+/// Los textos llegan traducidos desde la pantalla; sIdioma se usa para los
+/// textos fijos del diálogo (tooltip de la X).
 Future<void> funcMostrarMensaje(
   BuildContext oContexto,
-  String       sIdioma,
-  String       sTitulo,
-  String       sMensaje,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+  String        sAceptar,
+  int           iAnchoColumnas,
 ) async {
-  final String sAceptar = ClaseIdiomas.getTexto(sIdioma, 'aceptar');
   await showDialog<void>(
     context            : oContexto,
     barrierDismissible : false,
-    builder            : (oContextoVentana) {
+    builder            : (oContextoDialogo) {
       return AlertDialog(
         title: Row(
           children: <Widget>[
-            const Icon(Icons.info_outline, color: ClaseGenColores.colorAzulOscuro1),
-            const SizedBox(width: ClaseGenEspacios.dEspacio08),
-            Expanded(child: Text(sTitulo,
-                        style: ClaseGenEstilosTexto.subtituloMediano(oContextoVentana))),
+            Expanded(
+              child: Text(sTitulo,
+                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoDialogo)),
+            ),
             IconButton(
+              tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
               icon      : const Icon(Icons.close),
-              onPressed : () => Navigator.of(oContextoVentana).pop(),
+              onPressed : () => Navigator.of(oContextoDialogo).pop(),
             ),
           ],
         ),
-        content : Text(sMensaje, style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
-        actions : <Widget>[
+        content: SizedBox(
+          width : iAnchoColumnas * ClaseGenLayout.dAnchoCaracter,
+          child : Text(sTexto,
+              style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+        ),
+        actions: <Widget>[
           FilledButton.icon(
-            onPressed : () => Navigator.of(oContextoVentana).pop(),
+            onPressed : () => Navigator.of(oContextoDialogo).pop(),
             icon      : const Icon(Icons.check),
             label     : Text(sAceptar,
-                        style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
+                style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
           ),
         ],
       );
     },
   );
+}
 
+/// Muestra el selector de fecha y devuelve la fecha elegida (o null si se
+/// cancela). La fecha inicial se formatea como dd/mm/aaaa.
+/// Si la fecha inicial está fuera del rango, se ofrece el extremo más cercano.
+Future<DateTime?> funcMostrarSelectorFecha(
+  BuildContext oContexto,
+  String        sIdioma,
+  DateTime      fFecha,
+  DateTime      fPrimeraFecha,
+  DateTime      fUltimaFecha,
+) async {
+  DateTime fInicial = fFecha;
+  if (fInicial.isBefore(fPrimeraFecha)) fInicial = fPrimeraFecha;
+  if (fInicial.isAfter(fUltimaFecha))   fInicial = fUltimaFecha;
+  return showDatePicker(
+    context      : oContexto,
+    locale       : Locale(sIdioma),
+    initialDate  : fInicial,
+    firstDate    : fPrimeraFecha,
+    lastDate     : fUltimaFecha,
+  );
+}
+
+/// Muestra el selector de hora (formato 24 horas) y devuelve los minutos
+/// contados desde las 00:00 (o null si se cancela).
+/// Si la hora actual no es válida, se ofrece la hora del sistema.
+Future<int?> funcMostrarSelectorHora(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sHora,
+) async {
+  final int? iMinutos = funcParsearHora(sHora);
+  final TimeOfDay fInicial = (iMinutos != null)
+      ? TimeOfDay(hour: iMinutos ~/ 60, minute: iMinutos % 60)
+      : TimeOfDay.now();
+  final TimeOfDay? fElegida = await showTimePicker(
+    context     : oContexto,
+    initialTime : fInicial,
+    builder     : (oContextoDialogo, oHijo) => MediaQuery(
+      data: MediaQuery.of(oContextoDialogo)
+              .copyWith(alwaysUse24HourFormat: true),
+      child: oHijo!,
+    ),
+  );
+  return (fElegida == null) ? null : fElegida.hour * 60 + fElegida.minute;
 }
 
 
-  /// Muestra el selector de fecha y devuelve dd/mm/aaaa, o null si cancela.
-  Future<String?> funcMostrarSelectorFecha(BuildContext oContexto, String sValorActual) async {
-    DateTime fInicial = DateTime.now();
-    final DateTime? fParseada = funcParsearFecha(sValorActual);
-    if (fParseada != null) fInicial = fParseada;
-    final DateTime? fFecha = await showDatePicker(
-      context    : oContexto,
-      initialDate: fInicial,
-      firstDate  : DateTime(2020, 1, 1),
-      lastDate   : DateTime(2100, 12, 31),
-    );
-    if (fFecha == null) return null;
-    return '${fFecha.day.toString().padLeft(2, '0')}/'
-           '${fFecha.month.toString().padLeft(2, '0')}/'
-           '${fFecha.year}';
-}
-
-  /// Muestra el selector de hora y devuelve hh:mm, o null si cancela.
-  Future<String?> funcMostrarSelectorHora(BuildContext oContexto, String sValorActual) async {
-    TimeOfDay oHoraInicial = TimeOfDay.now();
-    final List<String> listPartes = sValorActual.trim().split(':');
-    if (listPartes.length == 2) {
-      final int? iH = int.tryParse(listPartes[0]);
-      final int? iM = int.tryParse(listPartes[1]);
-      if (iH != null && iM != null) oHoraInicial = TimeOfDay(hour: iH, minute: iM);
-    }
-    final TimeOfDay? oHora = await showTimePicker(
-      context      : oContexto,
-      initialTime  : oHoraInicial,
-    );
-    if (oHora == null) return null;
-    return '${oHora.hour.toString().padLeft(2, '0')}:'
-           '${oHora.minute.toString().padLeft(2, '0')}';
-  }
-
-  

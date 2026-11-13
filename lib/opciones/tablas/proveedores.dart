@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
 import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
 import '../../generales/widgets/formulario_abm.dart';
-
 
 /// Pantalla de la tabla Proveedores (ABM de múltiples registros).
 ///
@@ -37,51 +39,41 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioAbm(
-      listCampos    : listCampos,
-      listRegistros : listRegistros,
-      oPreferencias : widget.oPreferencias,
-      sTitulo       : ClaseIdiomas.getTexto(
-                        widget.oPreferencias.getIdioma(), 'menuProveedores'),
+      funcValidarRegistro : validarRegistro,
+      listCampos          : listCampos,
+      listRegistros       : listRegistros,
+      oPreferencias       : widget.oPreferencias,
+      sTitulo             : ClaseIdiomas.getTexto(getIdioma(), 'menuProveedores'),
     );
   }
 
-  // ── Utilidades ──────────────────────────────────────────────────────────
+  String getIdioma() => widget.oPreferencias.getIdioma();
 
-  /// Ancho mínimo del campo: caracteres de la opción más larga.
-  int calcularAncho(List<String> listOpciones) {
-    int iAncho = 0;
-    for (final String sOpcion in listOpciones) {
-      if (sOpcion.length > iAncho) iAncho = sOpcion.length;
-    }
-    return iAncho;
+  // ── Validación cruzada ──────────────────────────────────────────────────
+
+  /// El formato de la identificación depende del Tipo de identificación.
+  String? validarRegistro(Map<String, dynamic> oRegistro) {
+    final String sIdioma = getIdioma();
+    return ClaseCapValidar.validarIdentificacion(
+      (oRegistro['identificacion']      ?? '').toString(),
+      (oRegistro['tipoIdentificacion']  ?? '').toString(),
+      ClaseIdiomas.getTexto(sIdioma, 'prvIdentificacion'),
+      sIdioma,
+    );
   }
 
   // ── Campos ──────────────────────────────────────────────────────────────
 
   List<ClaseCampoAbm> crearCampos() {
 
-    final String sIdioma = widget.oPreferencias.getIdioma();
-
-    final List<String> listTipoIdentificacion = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'docRuc'),
-      ClaseIdiomas.getTexto(sIdioma, 'docCedulaIdentidad'),
-      ClaseIdiomas.getTexto(sIdioma, 'docPasaporte'),
-      ClaseIdiomas.getTexto(sIdioma, 'docCedulaExtranjera'),
-      ClaseIdiomas.getTexto(sIdioma, 'prvSinNombre'),
-      ClaseIdiomas.getTexto(sIdioma, 'docDiplomatico'),
-    ];
-    final List<String> listTipoProveedor = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-      ClaseIdiomas.getTexto(sIdioma, 'prvExterior'),
-    ];
-    final List<String> listSiNo = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'si'),
-      ClaseIdiomas.getTexto(sIdioma, 'no'),
-    ];
+    final String sIdioma = getIdioma();
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
+        bCompletarCeros  : true,
         bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
+            sValor, ClaseIdiomas.getTexto(sIdioma, 'prvCodigo'), sIdioma),
         iAnchoCaracteres : 6,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'codigo',
@@ -131,11 +123,14 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintEmail'),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listTipoIdentificacion),
-        listOpciones     : listTipoIdentificacion,
+        iAnchoCaracteres : funcAnchoOpcion(
+            ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
+        listValores      : ClaseTipoIdentificacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoIdentificacion',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvTipoIdentificacion'),
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -146,18 +141,22 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintIdentificacion'),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listTipoProveedor),
-        listOpciones     : listTipoProveedor,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
+        listOpciones     : ClaseLocalExterior.getListOpciones(sIdioma),
+        listValores      : ClaseLocalExterior.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoProveedor',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvTipoProveedor'),
+        sValorDefecto    : ClaseLocalExterior.local,
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listSiNo),
-        listOpciones     : listSiNo,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'esServicioPublico',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvEsServicioPublico'),
+        sValorDefecto    : ClaseSiNo.no,
       ),
     ];
   }
@@ -165,46 +164,45 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
-    final String sIdioma = widget.oPreferencias.getIdioma();
     return <Map<String, dynamic>>[
       <String, dynamic>{
         'celular'            : '0981 987 654',
         'codigo'             : '000001',
         'direccion'          : 'Av. Mariscal López 2500',
         'email'              : 'pedro@email.com',
-        'esServicioPublico'  : ClaseIdiomas.getTexto(sIdioma, 'no'),
-        'identificacion'     : '80098765-4',
+        'esServicioPublico'  : ClaseSiNo.no,
+        'identificacion'     : '80098765-9',
         'localidad'          : 'Asunción',
         'nombre'             : 'Distribuidora del Sur S.A.',
         'telefono'           : '021 300 200',
-        'tipoProveedor'      : ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-        'tipoIdentificacion' : ClaseIdiomas.getTexto(sIdioma, 'docRuc'),
+        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
+        'tipoProveedor'      : ClaseLocalExterior.local,
       },
       <String, dynamic>{
         'celular'            : '0983 456 789',
         'codigo'             : '000002',
         'direccion'          : 'Ruta Transchaco Km 5',
         'email'              : 'contacto@essap.com.py',
-        'esServicioPublico'  : ClaseIdiomas.getTexto(sIdioma, 'si'),
-        'identificacion'     : '80011223-9',
+        'esServicioPublico'  : ClaseSiNo.si,
+        'identificacion'     : '80011223-7',
         'localidad'          : 'Loma Plata',
         'nombre'             : 'Energía S.A.',
         'telefono'           : '021 400 300',
-        'tipoProveedor'      : ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-        'tipoIdentificacion' : ClaseIdiomas.getTexto(sIdioma, 'docRuc'),
+        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
+        'tipoProveedor'      : ClaseLocalExterior.local,
       },
       <String, dynamic>{
         'celular'            : '+55 11 98765 4321',
         'codigo'             : '000003',
         'direccion'          : 'Av. Paulista 1000',
         'email'              : 'import@brasil.com.br',
-        'esServicioPublico'  : ClaseIdiomas.getTexto(sIdioma, 'no'),
+        'esServicioPublico'  : ClaseSiNo.no,
         'identificacion'     : 'EX789012',
         'localidad'          : 'Ciudad del Este',
         'nombre'             : 'Importadora Brasil Ltda.',
         'telefono'           : '061 500 400',
-        'tipoProveedor'      : ClaseIdiomas.getTexto(sIdioma, 'prvExterior'),
-        'tipoIdentificacion' : ClaseIdiomas.getTexto(sIdioma, 'docPasaporte'),
+        'tipoIdentificacion' : ClaseTipoIdentificacion.cedulaExtranjera,
+        'tipoProveedor'      : ClaseLocalExterior.exterior,
       },
     ];
   }

@@ -2,6 +2,7 @@
 /// Complementa a `ClaseGenEspacios` (que solo maneja margins/paddings) y a `ClaseGenRadios` (que solo maneja radios).
 abstract final class ClaseGenLayout {
 
+  static const double dAltoBoton                      =   52.0;
   static const double dAltoBotonAbm                   =   48.0;
   static const double dAltoEncabezadoDetalleCompacto  =   36.0;
   static const double dAltoFilaDetalleCompacta        =   48.0;
@@ -25,6 +26,7 @@ abstract final class ClaseGenLayout {
   static const double dFactorEscalaMin                =    0.8;
   static const double dGrosorSpinner                  =    2.0;
 
+  static const int    iAnchoColumnasMensaje     =   40;
   static const int    iCaracteresGrillaAbierta  =   75;
   static const int    iCaracteresGrillaCerrada  =   25;
   static const int    iFilasPorPagina           =   25;

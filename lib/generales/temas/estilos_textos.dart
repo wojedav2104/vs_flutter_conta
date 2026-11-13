@@ -49,4 +49,10 @@ abstract final class ClaseGenEstilosTexto {
 
   /// Etiqueta flotante de los campos de texto (11 px, semibold).
   static TextStyle etiquetaCampo   (BuildContext oContexto) => _estilo(oContexto, oTextTheme.bodyLarge    , sFamilia: _sFamiliaBase, oPeso: FontWeight.w600);
+
+  /// Texto de los botones grandes (Ingresar, Cancelar).
+  static TextStyle botonGrande(BuildContext oContexto) {
+    return normalGrande(oContexto).copyWith(fontWeight: FontWeight.w700);
+  }
+    
 }

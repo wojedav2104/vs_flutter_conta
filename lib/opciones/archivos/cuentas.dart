@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
 import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
 import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
 import '../../generales/widgets/formulario_abm.dart';
-
 
 /// Pantalla del Plan de Cuentas (ABM de múltiples registros con pestañas).
 ///
@@ -13,6 +14,8 @@ import '../../generales/widgets/formulario_abm.dart';
 /// Cuentas de Francia). Datos comunes (Ejercicio, Sucursal) fuera de pestañas.
 ///
 /// Correspondencia uno a uno entre cada cuenta local y la cuenta de Francia.
+/// Al conectar la Base de Datos, Cuenta Superior será búsqueda desde el
+/// propio Plan de Cuentas.
 class ClaseCuentas extends StatefulWidget {
 
   const ClaseCuentas({
@@ -46,23 +49,11 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       listCampos           : listCampos,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
-      sTitulo              : ClaseIdiomas.getTexto(
-                               widget.oPreferencias.getIdioma(), 'menuPlanCuentas'),
+      sTitulo              : ClaseIdiomas.getTexto(getIdioma(), 'menuPlanCuentas'),
     );
   }
 
-  // ── Utilidades ──────────────────────────────────────────────────────────
-
   String getIdioma() => widget.oPreferencias.getIdioma();
-
-  /// Ancho mínimo del campo: caracteres de la opción más larga.
-  int calcularAncho(List<String> listOpciones) {
-    int iAncho = 0;
-    for (final String sOpcion in listOpciones) {
-      if (sOpcion.length > iAncho) iAncho = sOpcion.length;
-    }
-    return iAncho;
-  }
 
   // ── Habilitación dinámica ───────────────────────────────────────────────
 
@@ -74,17 +65,29 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
   // ── Actualización automática de campos dependientes ─────────────────────
 
-  /// Si la cuenta tiene 1 dígito, se vacía automáticamente la cuenta superior.
+  /// Por cada grupo (pri y alt):
+  ///   · Nivel: se deriva de la cantidad de grupos de la cuenta (1.01.04 → 3).
+  ///   · Cuenta superior: sugerida quitando el último grupo (1.01.04 → 1.01),
+  ///     solo si está vacía (la jerarquía puede no seguir la numeración).
+  ///     Se vacía sola si la cuenta tiene 1 dígito (es raíz).
   Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
     final Map<String, String> mapActualizaciones = <String, String>{};
     for (final String sPrefijo in <String>['pri', 'alt']) {
-      final String sCuenta   = mapValores['${sPrefijo}NumeroCuenta'] ?? '';
-      final String sSuperior = mapValores['${sPrefijo}CuentaSuperior'] ?? '';
+      final String sCuenta   = (mapValores['${sPrefijo}NumeroCuenta']    ?? '').trim();
+      final String sSuperior = (mapValores['${sPrefijo}CuentaSuperior']  ?? '').trim();
+
+      if (ClaseCapValidar.esFormatoCuenta(sCuenta)) {
+        mapActualizaciones['${sPrefijo}Nivel'] =
+            '${ClaseCapValidar.contarGruposCuenta(sCuenta)}';
+      }
       if (ClaseCapValidar.contarDigitosCuenta(sCuenta) <= 1 && sSuperior.isNotEmpty) {
         mapActualizaciones['${sPrefijo}CuentaSuperior'] = '';
+      } else if (ClaseCapValidar.contarGruposCuenta(sCuenta) > 1 && sSuperior.isEmpty) {
+        mapActualizaciones['${sPrefijo}CuentaSuperior'] =
+            sCuenta.substring(0, sCuenta.lastIndexOf('.'));
       }
     }
-    return mapActualizaciones.isNotEmpty ? mapActualizaciones : null;
+    return mapActualizaciones.isEmpty ? null : mapActualizaciones;
   }
 
   // ── Validación del registro completo ────────────────────────────────────
@@ -92,8 +95,8 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   String? validarRegistro(Map<String, dynamic> oRegistro) {
     for (final String sPrefijo in <String>['pri', 'alt']) {
       final String? sError = ClaseCapValidar.validarCuentaSuperior(
-        (oRegistro['${sPrefijo}NumeroCuenta'] ?? '').toString(),
-        (oRegistro['${sPrefijo}CuentaSuperior'] ?? '').toString(),
+        (oRegistro['${sPrefijo}NumeroCuenta']    ?? '').toString(),
+        (oRegistro['${sPrefijo}CuentaSuperior']  ?? '').toString(),
         getIdioma(),
       );
       if (sError != null) return sError;
@@ -105,18 +108,14 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
   /// Crea los 7 campos de un grupo (Principal o Alternativo).
   List<ClaseCampoAbm> crearCamposGrupo(String sPrefijo, String sGrupo) {
-    final String sIdioma = getIdioma();
 
-    final List<String> listSiNo = <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'si'),
-      ClaseIdiomas.getTexto(sIdioma, 'no'),
-    ];
+    final String sIdioma = getIdioma();
 
     return <ClaseCampoAbm>[
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor) => ClaseCapValidar.validarFormatoCuenta(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'planNumeroCuenta'), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
@@ -128,7 +127,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor) => ClaseCapValidar.validarLongitudMinima(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'planNombreCuenta'), 3, sIdioma),
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
@@ -139,7 +138,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       ),
 
       ClaseCampoAbm(
-        funcValidarCampo : (sValor) => ClaseCapValidar.validarNumeroSubcuenta(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'planNumeroSubcuenta'), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
@@ -170,7 +169,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor) => ClaseCapValidar.validarNivelCuenta(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'planNivel'), sIdioma),
         iAnchoCaracteres : 1,
         oTipo            : EnumTipoCampoAbm.numero,
@@ -180,8 +179,9 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       ),
 
       ClaseCampoAbm(
-        iAnchoCaracteres : calcularAncho(listSiNo),
-        listOpciones     : listSiNo,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : '${sPrefijo}Asentable',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planAsentable'),
@@ -191,19 +191,21 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   }
 
   List<ClaseCampoAbm> crearCampos() {
+
     final String sIdioma = getIdioma();
 
     return <ClaseCampoAbm>[
 
-      // ── Datos comunes (sin grupo, siempre visibles) ──────────────────────────────────
+      // ── Datos comunes (sin grupo, siempre visibles) ──────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor) => ClaseCapValidar.validarEjercicio(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'planEjercicio'), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planEjercicio'),
+        sValorDefecto    : DateTime.now().year.toString(),
       ),
 
       ClaseCampoAbm(
@@ -215,10 +217,10 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'planHintSucursal'),
       ),
 
-      // ── Grupo Principal (Plan de Cuentas local) ──────────────────────────────────────
+      // ── Grupo Principal (Plan de Cuentas local) ──────────────────────────
       ...crearCamposGrupo('pri', 'planPrincipal'),
 
-      // ── Grupo Alternativo (Plan de Cuentas Francia) ──────────────────────────────────
+      // ── Grupo Alternativo (Plan de Cuentas Francia) ──────────────────────
       ...crearCamposGrupo('alt', 'planAlternativo'),
     ];
   }
@@ -226,10 +228,9 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
-    final String sIdioma = getIdioma();
     return <Map<String, dynamic>>[
       <String, dynamic>{
-        'altAsentable'         : ClaseIdiomas.getTexto(sIdioma, 'si'),
+        'altAsentable'         : ClaseSiNo.si,
         'altCuentaSuperior'    : '1',
         'altNivel'             : '2',
         'altNombreCuenta'      : 'Fonds commercial',
@@ -237,7 +238,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         'altNumeroCuenta'      : '2.01',
         'altNumeroSubcuenta'   : '',
         'ejercicio'            : '2026',
-        'priAsentable'         : ClaseIdiomas.getTexto(sIdioma, 'si'),
+        'priAsentable'         : ClaseSiNo.si,
         'priCuentaSuperior'    : '1',
         'priNivel'             : '2',
         'priNombreCuenta'      : 'Caja y Bancos',
@@ -247,7 +248,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         'sucursal'             : '0001 - Sucursal Central',
       },
       <String, dynamic>{
-        'altAsentable'         : ClaseIdiomas.getTexto(sIdioma, 'no'),
+        'altAsentable'         : ClaseSiNo.no,
         'altCuentaSuperior'    : '',
         'altNivel'             : '1',
         'altNombreCuenta'      : 'Actif',
@@ -255,7 +256,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         'altNumeroCuenta'      : '1',
         'altNumeroSubcuenta'   : '',
         'ejercicio'            : '2026',
-        'priAsentable'         : ClaseIdiomas.getTexto(sIdioma, 'no'),
+        'priAsentable'         : ClaseSiNo.no,
         'priCuentaSuperior'    : '',
         'priNivel'             : '1',
         'priNombreCuenta'      : 'Activo',
