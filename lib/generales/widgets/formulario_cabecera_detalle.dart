@@ -21,8 +21,6 @@ enum EnumEstadoCabDet { agregando, encontrando, inicial, modificando }
 /// Formulario ABM de tipo cabecera/detalle.
 ///
 /// Soporta pestañas si los campos de cabecera tienen sGrupo.
-/// Los campos sin sGrupo no se muestran (se colocan en sPie si aplica).
-///
 /// La grilla lateral se ordena con clic en la cabecera de la columna
 /// (ascendente/descendente, con flecha indicadora) y tiene menú contextual
 /// con clic derecho (escritorio/web) o presión larga (teléfono).
@@ -141,7 +139,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
 
   String getTexto(String sClave) => ClaseIdiomas.getTexto(getIdioma(), sClave);
 
-  /// Ancho de un campo en la grilla de detalles.
   double calcularAnchoCampo(ClaseCampoAbm oCampo) {
     final int iCaracteres = (oCampo.sMascara != null)
         ? oCampo.sMascara!.length
@@ -149,7 +146,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return iCaracteres * ClaseGenLayout.dAnchoCaracter + ClaseGenEspacios.dEspacio48;
   }
 
-  /// Ancho total de las columnas anteriores al Debe.
   double calcularAnchoAntesDelDebe() {
     double dTotal = 0;
     for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
@@ -159,8 +155,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return dTotal;
   }
 
-  /// Obtiene el valor para mostrar en la grilla lateral.
-  /// Para campos numéricos elimina ceros a la izquierda.
   String getValorGrilla(Map<String, dynamic> oRegistro, ClaseCampoAbm oCampo) {
     String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
     if (oCampo.oTipo == EnumTipoCampoAbm.numero &&
@@ -170,7 +164,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return (sValor.length > 20) ? sValor.substring(0, 20) : sValor;
   }
 
-  /// Obtiene los valores actuales de todos los campos de cabecera y pie.
   Map<String, String> getValoresActuales() {
     final Map<String, String> mapValores = <String, String>{};
     for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
@@ -182,8 +175,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return mapValores;
   }
 
-  /// Se llama cuando cambia cualquier campo de cabecera o pie.
-  /// Ejecuta funcActualizarCampos para auto-cálculos.
   void alCambiarCampo() {
     if (widget.funcActualizarCampos != null) {
       final Map<String, String>? mapActualizaciones =
@@ -198,7 +189,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
   }
 
   // ── Orden de la grilla lateral ──────────────────────────────────────────
-  /// Número con separadores de miles/decimales a num (para ordenar).
   num? getNumeroOrden(String sValor) {
     final String sLimpio = sValor.trim()
         .replaceAll(' ', '')
@@ -207,7 +197,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return num.tryParse(sLimpio);
   }
 
-  /// Fecha (dd/mm/aaaa o similar) a DateTime (para ordenar).
   DateTime? getFechaOrden(String sValor) {
     final List<String> listPartes = sValor.split(RegExp(r'[/-]'));
     if (listPartes.length == 3) {
@@ -221,7 +210,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return DateTime.tryParse(sValor);
   }
 
-  /// Hora (hh:mm) a minutos totales (para ordenar).
   int? getMinutosOrden(String sValor) {
     final List<String> listPartes = sValor.split(':');
     if (listPartes.length != 2) return null;
@@ -231,8 +219,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return iHora * 60 + iMinuto;
   }
 
-  /// Compara dos registros según la columna ordenada (iColOrden).
-  /// Los valores vacíos van siempre al final, en ambos sentidos.
   int compararRegistros(Map<String, dynamic> oA, Map<String, dynamic> oB) {
     if (iColOrden < 0) return 0;
     final ClaseCampoAbm oCampo = widget.listCamposCabecera[iColOrden];
@@ -289,13 +275,11 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     return bOrdenAscendente ? iComp : -iComp;
   }
 
-  /// Ordena la lista según iColOrden (si hay columna ordenada).
   void aplicarOrden(List<Map<String, dynamic>> listDatos) {
     if (iColOrden < 0) return;
     listDatos.sort(compararRegistros);
   }
 
-  /// Ordena la grilla lateral por una columna: alterna ascendente/descendente.
   void ordenarPor(ClaseCampoAbm oCampo) {
     final Map<String, dynamic>? oSel = (iRegistro >= 0 && iRegistro < listFiltrada.length)
         ? listFiltrada[iRegistro] : null;
@@ -337,7 +321,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     });
   }
 
-  /// Sube una fila de detalle (solo en edición). El orden es el orden contable.
   void subirFila(int iFila) {
     if (iFila <= 0 || iFila >= listDetalles.length) return;
     setState(() {
@@ -350,7 +333,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     });
   }
 
-  /// Baja una fila de detalle (solo en edición). El orden es el orden contable.
   void bajarFila(int iFila) {
     if (iFila < 0 || iFila >= listDetalles.length - 1) return;
     setState(() {
@@ -363,7 +345,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     });
   }
 
-  /// Lleva la vista a una fila de detalle (primera o última).
   Future<void> irAFilaDetalle(int iFila) async {
     if (iFila < 0 || iFila >= listLlavesFilas.length) return;
     final BuildContext? oCtxFila = listLlavesFilas[iFila].currentContext;
@@ -409,8 +390,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     alCambiarCampo();
   }
 
-  /// Actualiza la grilla: limpia el filtro y, si hay funcAlActualizar,
-  /// recarga los registros desde la Base de Datos.
   Future<void> actualizar() async {
     String? sError;
     if (widget.funcAlActualizar != null) {
@@ -480,7 +459,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     if (iRegistro >= 0) cargarRegistro(iRegistro);
   }
 
-  /// Precarga Encontrar con el valor de la celda y ejecuta la búsqueda.
   void buscarPorValor(int iIndice, ClaseCampoAbm oCampo) {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     final String sValor = (listFiltrada[iIndice][oCampo.sClave] ?? '').toString();
@@ -546,7 +524,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     }
   }
 
-  /// Copia el valor crudo de una celda al portapapeles.
   Future<void> copiarValor(int iIndice, ClaseCampoAbm oCampo) async {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     final String sValor = (listFiltrada[iIndice][oCampo.sClave] ?? '').toString();
@@ -556,7 +533,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
         context, getIdioma(), widget.sTitulo, getTexto('copiadoPortapapeles'));
   }
 
-  /// Copia la fila de la grilla (columnas visibles separadas por tabulación).
   Future<void> copiarFila(int iIndice) async {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     final List<String> listValores = <String>[];
@@ -625,7 +601,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     await funcMostrarMensaje(context, getIdioma(), widget.sTitulo, getTexto('grabacionExitosa'));
   }
 
-  /// Selecciona una fila de la grilla lateral y la muestra en los campos.
   void irAFila(int iIndice) {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     setState(() {
@@ -738,7 +713,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
                 Expanded(
                   child: Column(
                     children: <Widget>[
-                      // Campos de cabecera (con o sin pestañas)
                       if (bConPestanas)
                         Expanded(
                           child: TabBarView(
@@ -759,7 +733,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
                             child   : construirCamposCabecera(oContexto, null),
                           ),
                         ),
-                      // Grilla de detalles y comentarios (siempre visibles)
                       Padding(
                         padding : const EdgeInsets.symmetric(
                           horizontal : ClaseGenEspacios.dEspacio16,
@@ -785,8 +758,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Campos de cabecera. Si sGrupo es null, muestra todos los campos
-  /// sin grupo. Si sGrupo tiene valor, muestra solo los campos de ese grupo.
   Widget construirCamposCabecera(BuildContext oContexto, String? sGrupo) {
     final bool bHabilitado = enumEstado == EnumEstadoCabDet.agregando ||
                              enumEstado == EnumEstadoCabDet.modificando;
@@ -833,13 +804,18 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar;
     }
 
+    // Punto 20: etiquetas de campos numéricos justificadas a la derecha
+    final bool bEtiquetaDerecha = oCampo.oTipo == EnumTipoCampoAbm.numero;
     final Widget wEtiqueta = Row(
       mainAxisSize : MainAxisSize.min,
       children     : <Widget>[
-        Text(oCampo.sEtiqueta, style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+        Text(oCampo.sEtiqueta,
+            overflow : TextOverflow.ellipsis,
+            style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
         if (oCampo.bObligatorio)
-          Text(' *', style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
-                            .copyWith(color: ClaseGenColores.colorError)),
+          Text(' *',
+              style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                        .copyWith(color: ClaseGenColores.colorError)),
       ],
     );
 
@@ -1093,11 +1069,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
   }
 
   // ── Grilla de detalles (editable, responsive) ───────────────────────────
-  /// Grilla editable de detalles, responsive.
-  /// Pantallas anchas (>= dAnchoMinimoGrillaDetalles): grilla horizontal
-  /// con todas las columnas.
-  /// Pantallas angostas (teléfono): tarjetas verticales con todos los
-  /// campos de cada fila apilados.
   Widget construirGrillaDetalle(BuildContext oContexto) {
     final bool bHabilitado = enumEstado == EnumEstadoCabDet.agregando ||
                              enumEstado == EnumEstadoCabDet.modificando;
@@ -1137,7 +1108,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Encabezado de columnas de la grilla de detalles (modo grilla).
   Widget construirEncabezadoDetalle(BuildContext oContexto) {
     final ThemeData oTema = Theme.of(oContexto);
 
@@ -1170,7 +1140,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Fila editable de la grilla de detalles (modo grilla horizontal).
   Widget construirFilaDetalle(BuildContext oContexto, int iFila, bool bHabilitado) {
     final Map<String, TextEditingController> oFila = listDetalles[iFila];
 
@@ -1244,8 +1213,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Fila con el botón "Agregar fila" y los totales Debe/Haber en la misma fila,
-  /// alineados exactamente bajo sus columnas (modo grilla).
   Widget construirFilaBotonYTotales(BuildContext oContexto, bool bHabilitado) {
     final bool  bSumasIguales = getSumaDebe() == getSumaHaber();
     final int   iIndiceDebe   = widget.listCamposDetalle.indexWhere((o) => o.sClave == 'debe');
@@ -1393,28 +1360,49 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     final bool                               bComentario = oCampo.oTipo == EnumTipoCampoAbm.comentario;
     final bool                               bNumero     = oCampo.oTipo == EnumTipoCampoAbm.numero;
 
-    final Widget wEtiqueta = Row(
-      mainAxisAlignment : MainAxisAlignment.spaceBetween,
-      children          : <Widget>[
-        Row(
-          mainAxisSize : MainAxisSize.min,
-          children     : <Widget>[
-            Text(oCampo.sEtiqueta, style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
-            if (oCampo.bObligatorio)
-              Text(' *', style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
-                                .copyWith(color: ClaseGenColores.colorError)),
-          ],
-        ),
-        if (bComentario)
-          Text('${oControl.text.length}/${oCampo.iMaxComentario}',
-               style: ClaseGenEstilosTexto.normalChico(oContexto)),
-      ],
-    );
-
+    // Punto 20: etiquetas de campos numéricos justificadas a la derecha
+    final Widget wEtiqueta = bComentario
+        ? SizedBox(
+            width : double.infinity,
+            child : Row(
+              mainAxisAlignment : MainAxisAlignment.spaceBetween,
+              children          : <Widget>[
+                Row(
+                  mainAxisSize : MainAxisSize.min,
+                  children     : <Widget>[
+                    Text(oCampo.sEtiqueta,
+                        overflow : TextOverflow.ellipsis,
+                        style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+                    if (oCampo.bObligatorio)
+                      Text(' *',
+                          style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                                    .copyWith(color: ClaseGenColores.colorError)),
+                  ],
+                ),
+                Text('${oControl.text.length}/${oCampo.iMaxComentario}',
+                     style: ClaseGenEstilosTexto.normalChico(oContexto)),
+              ],
+            ),
+          )
+        : Row(
+            mainAxisSize : MainAxisSize.min,
+            children     : <Widget>[
+              Text(oCampo.sEtiqueta,
+                  overflow : TextOverflow.ellipsis,
+                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+              if (oCampo.bObligatorio)
+                Text(' *',
+                    style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                              .copyWith(color: ClaseGenColores.colorError)),
+            ],
+          );
     return Padding(
       padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio08),
-      child   : Column(
-        crossAxisAlignment : CrossAxisAlignment.start,
+    // Después:
+        child   : Column(
+          crossAxisAlignment : bNumero
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
         children            : <Widget>[
           wEtiqueta,
           const SizedBox(height: ClaseGenEspacios.dEspacio04),
@@ -1565,7 +1553,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     }
   }
 
-  /// Ítem con icono para los menús contextuales.
   PopupMenuItem<String> crearItemMenu(
     BuildContext oContexto,
     String       sValor,
@@ -1740,7 +1727,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Cabecera de columna de la grilla lateral: clic para ordenar, con flecha.
   Widget construirCabeceraColumna(BuildContext oContexto, ClaseCampoAbm oCampo) {
     final bool bActivo = iColOrden == widget.listCamposCabecera.indexOf(oCampo);
     return Tooltip(
@@ -1772,8 +1758,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Menú contextual de la grilla lateral: clic derecho (escritorio/web)
-  /// o presión larga (teléfono) sobre una celda.
   Future<void> mostrarMenuGrilla(
     BuildContext  oContexto,
     Offset        oPosicion,
@@ -1822,11 +1806,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
   }
 
   // ── Botones ABM ─────────────────────────────────────────────────────────
-  /// Barra de botones ABM. Estados según reglas 11-13.
-  /// Colores tomados de ColorScheme (temas.dart): se adaptan automáticamente
-  /// al tema claro y al tema oscuro.
-  /// Si solo Grabar y Cancelar están habilitados (modo edición),
-  /// Grabar usa un color más llamativo.
   Widget construirBotones(BuildContext oContexto) {
     final bool bEnEdicion      = enumEstado == EnumEstadoCabDet.agregando ||
                                  enumEstado == EnumEstadoCabDet.modificando ||
@@ -1857,10 +1836,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     );
   }
 
-  /// Botón ABM uniforme: mismo ancho y alto, icono a la izquierda.
-  /// Colores tomados de ColorScheme (temas.dart): se adaptan al tema
-  /// claro y oscuro automáticamente.
-  /// bEsDestacado = true solo para Grabar en modo edición (más llamativo).
   Widget construirBoton(
     BuildContext  oContexto,
     IconData      oIcono,

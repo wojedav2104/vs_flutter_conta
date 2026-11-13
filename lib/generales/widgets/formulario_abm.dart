@@ -188,7 +188,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
   }
 
   // ── Orden de la grilla ──────────────────────────────────────────────────
-  /// Número con separadores de miles/decimales a num (para ordenar).
   num? getNumeroOrden(String sValor) {
     final String sLimpio = sValor.trim()
         .replaceAll(' ', '')
@@ -197,7 +196,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     return num.tryParse(sLimpio);
   }
 
-  /// Fecha (dd/mm/aaaa o similar) a DateTime (para ordenar).
   DateTime? getFechaOrden(String sValor) {
     final List<String> listPartes = sValor.split(RegExp(r'[/-]'));
     if (listPartes.length == 3) {
@@ -211,7 +209,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     return DateTime.tryParse(sValor);
   }
 
-  /// Hora (hh:mm) a minutos totales (para ordenar).
   int? getMinutosOrden(String sValor) {
     final List<String> listPartes = sValor.split(':');
     if (listPartes.length != 2) return null;
@@ -221,8 +218,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     return iHora * 60 + iMinuto;
   }
 
-  /// Compara dos registros según la columna ordenada (iColOrden).
-  /// Los valores vacíos van siempre al final, en ambos sentidos.
   int compararRegistros(Map<String, dynamic> oA, Map<String, dynamic> oB) {
     if (iColOrden < 0) return 0;
     final ClaseCampoAbm oCampo = widget.listCampos[iColOrden];
@@ -279,13 +274,11 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     return bOrdenAscendente ? iComp : -iComp;
   }
 
-  /// Ordena la lista según iColOrden (si hay columna ordenada).
   void aplicarOrden(List<Map<String, dynamic>> listDatos) {
     if (iColOrden < 0) return;
     listDatos.sort(compararRegistros);
   }
 
-  /// Ordena la grilla por una columna: alterna ascendente/descendente.
   void ordenarPor(ClaseCampoAbm oCampo) {
     final Map<String, dynamic>? oSel = (iRegistro >= 0 && iRegistro < listFiltrada.length)
         ? listFiltrada[iRegistro] : null;
@@ -313,10 +306,9 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
         mapControladores[oCampo.sClave]!.clear();
       }
     });
+    alCambiarCampo();
   }
 
-  /// Actualiza la grilla: limpia el filtro y, si hay funcAlActualizar,
-  /// recarga los registros desde la Base de Datos.
   Future<void> actualizar() async {
     String? sError;
     if (widget.funcAlActualizar != null) {
@@ -391,7 +383,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     if (iRegistro >= 0) cargarRegistro(iRegistro);
   }
 
-  /// Precarga Encontrar con el valor de la celda y ejecuta la búsqueda.
   void buscarPorValor(int iIndice, ClaseCampoAbm oCampo) {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     final String sValor = (listFiltrada[iIndice][oCampo.sClave] ?? '').toString();
@@ -423,7 +414,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     }
   }
 
-  /// Copia el valor crudo de una celda al portapapeles.
   Future<void> copiarValor(int iIndice, ClaseCampoAbm oCampo) async {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     final String sValor = (listFiltrada[iIndice][oCampo.sClave] ?? '').toString();
@@ -433,7 +423,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
         context, getIdioma(), widget.sTitulo, getTexto('copiadoPortapapeles'));
   }
 
-  /// Copia la fila de la grilla (columnas visibles separadas por tabulación).
   Future<void> copiarFila(int iIndice) async {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     final List<String> listValores = <String>[];
@@ -495,7 +484,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     await funcMostrarMensaje(context, getIdioma(), widget.sTitulo, getTexto('grabacionExitosa'));
   }
 
-  /// Selecciona una fila de la grilla y la muestra en los campos.
   void irAFila(int iIndice) {
     if (iIndice < 0 || iIndice >= listFiltrada.length) return;
     setState(() {
@@ -523,7 +511,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
   bool validar() {
     for (final ClaseCampoAbm oCampo in widget.listCampos) {
       final String sValor = mapControladores[oCampo.sClave]!.text.trim();
-      // 1) Obligatorio (siempre primero)
       if (oCampo.bObligatorio) {
         final String? sError = ClaseCapValidar.validarObligatorio(sValor, oCampo.sEtiqueta, getIdioma());
         if (sError != null) {
@@ -532,7 +519,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
           return false;
         }
       }
-      // 2) Validación específica del campo
       if (oCampo.funcValidarCampo != null) {
         final String? sError = oCampo.funcValidarCampo!(sValor);
         if (sError != null) {
@@ -542,7 +528,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
         }
       }
     }
-    // 3) Validación cruzada del registro completo
     if (widget.funcValidarRegistro != null) {
       final Map<String, dynamic> oRegistro = <String, dynamic>{};
       for (final ClaseCampoAbm oCampo in widget.listCampos) {
@@ -616,7 +601,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
       );
     }
 
-    // Campos comunes arriba, pestañas debajo
     return Column(
       crossAxisAlignment : CrossAxisAlignment.start,
       children: <Widget>[
@@ -767,7 +751,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     );
   }
 
-  /// Cabecera de columna de la grilla: clic para ordenar, con flecha de estado.
   Widget construirCabeceraColumna(BuildContext oContexto, ClaseCampoAbm oCampo) {
     final bool bActivo = iColOrden == widget.listCampos.indexOf(oCampo);
     return Tooltip(
@@ -799,8 +782,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     );
   }
 
-  /// Menú contextual de la grilla: clic derecho (escritorio/web)
-  /// o presión larga (teléfono) sobre una celda.
   Future<void> mostrarMenuGrilla(
     BuildContext  oContexto,
     Offset        oPosicion,
@@ -848,7 +829,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     }
   }
 
-  /// Ítem con icono para los menús contextuales.
   PopupMenuItem<String> crearItemMenu(
     BuildContext oContexto,
     String       sValor,
@@ -912,23 +892,47 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar;
     }
 
-    final Widget wEtiqueta = Row(
-      mainAxisSize : MainAxisSize.min,
-      children     : <Widget>[
-        Text(oCampo.sEtiqueta, style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
-        if (oCampo.bObligatorio)
-          Text(' *', style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
-                            .copyWith(color: ClaseGenColores.colorError)),
-        if (oCampo.oTipo == EnumTipoCampoAbm.comentario) ...<Widget>[
-          const SizedBox(width: ClaseGenEspacios.dEspacio08),
-          Text('${oControl.text.length}/${oCampo.iMaxComentario}',
-               style: ClaseGenEstilosTexto.normalChico(oContexto)),
-        ],
-      ],
-    );
-
+    // Punto 20: etiquetas de campos numéricos justificadas a la derecha
+    final bool bEtiquetaDerecha = oCampo.oTipo == EnumTipoCampoAbm.numero;
+    final bool bComentario     = oCampo.oTipo == EnumTipoCampoAbm.comentario;
+    final Widget wEtiqueta = bComentario
+        ? SizedBox(
+            width : dAncho,
+            child : Row(
+              mainAxisAlignment : MainAxisAlignment.spaceBetween,
+              children           : <Widget>[
+                Row(
+                  mainAxisSize : MainAxisSize.min,
+                  children     : <Widget>[
+                    Text(oCampo.sEtiqueta,
+                        style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+                    if (oCampo.bObligatorio)
+                      Text(' *',
+                          style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                                    .copyWith(color: ClaseGenColores.colorError)),
+                  ],
+                ),
+                Text('${oControl.text.length}/${oCampo.iMaxComentario}',
+                     style: ClaseGenEstilosTexto.normalChico(oContexto)),
+              ],
+            ),
+          )
+        : Row(
+            mainAxisSize : MainAxisSize.min,
+            children     : <Widget>[
+              Text(oCampo.sEtiqueta,
+                  overflow : TextOverflow.ellipsis,
+                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+              if (oCampo.bObligatorio)
+                Text(' *',
+                    style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                              .copyWith(color: ClaseGenColores.colorError)),
+            ],
+          );
     return Column(
-      crossAxisAlignment : CrossAxisAlignment.start,
+      crossAxisAlignment : bEtiquetaDerecha
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       mainAxisSize        : MainAxisSize.min,
       children: <Widget>[
         wEtiqueta,
@@ -1019,7 +1023,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
       );
     }
 
-    // ── Fecha: campo readOnly con date picker ─────────────────────────────
     if (oCampo.oTipo == EnumTipoCampoAbm.fecha) {
       return TextField(
         controller : oControl,
@@ -1053,7 +1056,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
       );
     }
 
-    // ── Hora: campo readOnly con time picker ──────────────────────────────
     if (oCampo.oTipo == EnumTipoCampoAbm.hora) {
       return TextField(
         controller : oControl,
@@ -1087,7 +1089,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
       );
     }
 
-    // ── Texto / Número (genérico) ─────────────────────────────────────────
     final bool bNumero = oCampo.oTipo == EnumTipoCampoAbm.numero;
     return Focus(
       onFocusChange: (bTieneFoco) {
@@ -1132,11 +1133,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
   }
 
   // ── Botones ABM ─────────────────────────────────────────────────────────
-  /// Barra de botones ABM. Estados según reglas 11-13.
-  /// Colores tomados de ColorScheme (temas.dart): se adaptan automáticamente
-  /// al tema claro y al tema oscuro.
-  /// Si solo Grabar y Cancelar están habilitados (modo edición),
-  /// Grabar usa un color más llamativo.
   Widget construirBotones(BuildContext oContexto) {
     final bool bEnEdicion      = enumEstado == EnumEstadoAbm.agregando ||
                                  enumEstado == EnumEstadoAbm.modificando ||
@@ -1145,7 +1141,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     final bool bPuedeAgregar   = !bEnEdicion &&
                                  (!widget.bTablaUnSoloRegistro || widget.listRegistros.isEmpty);
     final bool bPuedeEncontrar = !bEnEdicion && bHayDatos && widget.bPermitirEncontrar;
-
     final String sTextoGrabar = (enumEstado == EnumEstadoAbm.encontrando)
         ? getTexto('abmBuscar') : getTexto('abmGrabar');
 
@@ -1176,10 +1171,6 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     );
   }
 
-  /// Botón ABM uniforme: mismo ancho y alto, icono a la izquierda.
-  /// Colores tomados de ColorScheme (temas.dart): se adaptan al tema
-  /// claro y oscuro automáticamente.
-  /// bEsDestacado = true solo para Grabar en modo edición (más llamativo).
   Widget construirBoton(
     BuildContext oContexto, {
     required IconData      oIcono,

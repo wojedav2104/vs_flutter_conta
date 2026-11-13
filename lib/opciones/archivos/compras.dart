@@ -12,6 +12,7 @@ import '../../generales/widgets/formulario_cabecera_detalle.dart';
 ///
 /// Grupo 1 "Generales": campos de cabecera + grilla de detalles + comentarios.
 /// Grupo 2 "Resolución 90/2021": importes para Marangatú.
+/// Punto 21: grilla lateral solo muestra los 6 campos más importantes.
 class ClaseCompras extends StatefulWidget {
 
   const ClaseCompras({
@@ -60,30 +61,20 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
   // ── Auto-cálculo ────────────────────────────────────────────────────────
 
-  /// Actualiza automáticamente los campos calculados:
-  /// - Total (Grupo 1) = Gravadas 10% + IVA 10% + Gravadas 5% + IVA 5% + Exentas
-  /// - Importe gravado 10% = Gravadas 10% + IVA 10% (inicial)
-  /// - Importe gravado 5% = Gravadas 5% + IVA 5% (inicial)
-  /// - Importe exento = Exentas (inicial)
-  /// - Total del comprobante = suma de todos los importes del Grupo 2
-  /// - Cantidad de cuotas = 0 si no es Factura Crédito
   Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
     final Map<String, String> mapCambio = <String, String>{};
 
-    // Valores del Grupo 1
     final int iGravadas10 = funcParsearEnteroMiles(mapValores['gravadas10'] ?? '');
     final int iIva10      = funcParsearEnteroMiles(mapValores['iva10']      ?? '');
     final int iGravadas5  = funcParsearEnteroMiles(mapValores['gravadas5']  ?? '');
     final int iIva5       = funcParsearEnteroMiles(mapValores['iva5']       ?? '');
     final int iExentas    = funcParsearEnteroMiles(mapValores['exentas']    ?? '');
 
-    // 1) Total del Grupo 1 (siempre calculado, campo deshabilitado)
+    // Total del Grupo 1
     final int iTotal = iGravadas10 + iIva10 + iGravadas5 + iIva5 + iExentas;
     mapCambio['total'] = (iTotal == 0) ? '' : funcFormatearEnteroMiles(iTotal);
 
-    // 2) Importes iniciales del Grupo 2
-    //    Solo se actualizan si están vacíos, en cero, o coinciden con el
-    //    valor esperado (para no pisar modificaciones manuales del usuario).
+    // Importes iniciales del Grupo 2
     final int iEsperadoGravado10 = iGravadas10 + iIva10;
     final int iEsperadoGravado5  = iGravadas5  + iIva5;
     final int iEsperadoExento    = iExentas;
@@ -105,7 +96,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
           (iEsperadoExento == 0) ? '' : funcFormatearEnteroMiles(iEsperadoExento);
     }
 
-    // 3) Total del comprobante (siempre calculado desde el Grupo 2)
+    // Total del comprobante
     final int iImpGravado10 = funcParsearEnteroMiles(
         mapCambio['importeGravado10'] ?? mapValores['importeGravado10'] ?? '');
     final int iImpGravado5 = funcParsearEnteroMiles(
@@ -121,7 +112,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
     mapCambio['totalComprobante'] =
         (iTotalComprobante == 0) ? '' : funcFormatearEnteroMiles(iTotalComprobante);
 
-    // 4) Cantidad de cuotas: 0 si no es Factura Crédito
+    // Cantidad de cuotas: 0 si no es Factura Crédito
     final String sTipoDoc = mapValores['tipoDocumento'] ?? '';
     if (sTipoDoc != ClaseIdiomas.getTexto(getIdioma(), 'comTipoDoc02')) {
       mapCambio['cantidadCuotas'] = '0';
@@ -132,11 +123,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
   // ── Validación cruzada ──────────────────────────────────────────────────
 
-  /// Validaciones que dependen de más de un campo.
   String? validarRegistro(Map<String, dynamic> oRegistro) {
     final String sIdioma = getIdioma();
 
-    // 1) Fecha de la compra dentro del rango del ejercicio
     final String sEjercicio = (oRegistro['ejercicio'] ?? '').toString().trim();
     final String sFecha     = (oRegistro['fechaCompra'] ?? '').toString().trim();
     final int?   iEjercicio = int.tryParse(sEjercicio);
@@ -146,25 +135,21 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       if (sErrorFecha != null) return sErrorFecha;
     }
 
-    // 2) Formato del Número de documento según Tipo de documento
     final String sTipoDoc = (oRegistro['tipoDocumento'] ?? '').toString().trim();
     final String sNumero  = (oRegistro['numeroDocumento'] ?? '').toString().trim();
     final bool bConMascara = esTipoDocumentoConMascara(sTipoDoc);
     if (sNumero.isNotEmpty) {
       if (bConMascara) {
-        // Formato: 999-999-9999999
         if (!RegExp(r'^\d{3}-\d{3}-\d{7}$').hasMatch(sNumero)) {
           return ClaseIdiomas.getTexto(sIdioma, 'comErrorNumeroFormato');
         }
       } else {
-        // Solo letras mayúsculas y dígitos
         if (!RegExp(r'^[A-Z0-9]+$').hasMatch(sNumero)) {
           return ClaseIdiomas.getTexto(sIdioma, 'comErrorNumeroFormato');
         }
       }
     }
 
-    // 3) Timbrado: obligatorio y 8 dígitos si la máscara es 999-999-9999999
     final String sTimbrado = (oRegistro['timbradoNumero'] ?? '').toString().trim();
     if (bConMascara) {
       if (sTimbrado.isEmpty) {
@@ -175,7 +160,6 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       }
     }
 
-    // 4) Marangatú: "Enviar a Marangatú" es No  O  Total comprobante = suma Debe
     final String sMarangatu = (oRegistro['enviarMarangatu'] ?? '').toString().trim();
     if (sMarangatu != ClaseIdiomas.getTexto(sIdioma, 'comNo')) {
       final int iTotalComprobante =
@@ -190,7 +174,6 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
     return null;
   }
 
-  /// Determina si el Tipo de documento usa la máscara 999-999-9999999.
   bool esTipoDocumentoConMascara(String sTipoDoc) {
     if (sTipoDoc.isEmpty) return false;
     final String sIdioma = getIdioma();
@@ -203,12 +186,14 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
            sTipoDoc == ClaseIdiomas.getTexto(sIdioma, 'comTipoDoc10');
   }
 
-  /// Determina si el Tipo de documento es Factura Crédito.
   bool esFacturaCredito(String sTipoDoc) {
     return sTipoDoc == ClaseIdiomas.getTexto(getIdioma(), 'comTipoDoc02');
   }
 
   // ── Campos de cabecera ──────────────────────────────────────────────────
+  // Punto 21: solo 6 campos visibles en la grilla lateral (bEnGrilla = true):
+  //   ejercicio, fechaCompra, tipoDocumento, numeroDocumento, proveedor, total
+  // Los demás 25 campos tienen bEnGrilla : false.
 
   List<ClaseCampoAbm> crearCamposCabecera() {
     final String sIdioma = getIdioma();
@@ -227,6 +212,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         bObligatorio     : true,
         iAnchoCaracteres : 44,
         oTipo            : EnumTipoCampoAbm.texto,
@@ -243,6 +229,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         bObligatorio     : true,
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.hora,
@@ -251,6 +238,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 6,
         oTipo                 : EnumTipoCampoAbm.numero,
@@ -295,13 +283,13 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         bObligatorio     : true,
         funcActualizarEstado : (mapValores) =>
             esFacturaCredito(mapValores['tipoDocumento'] ?? ''),
-        funcValidarCampo : (sValor) {
-          return ClaseCapValidar.validarNoNegativo(
-              sValor, ClaseIdiomas.getTexto(getIdioma(), 'comCantidadCuotas'), getIdioma());
-        },
+        funcValidarCampo : (sValor) =>
+            ClaseCapValidar.validarNoNegativo(
+                sValor, ClaseIdiomas.getTexto(getIdioma(), 'comCantidadCuotas'), getIdioma()),
         iAnchoCaracteres : 3,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'cantidadCuotas',
@@ -318,6 +306,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'comHintProveedor'),
       ),
       ClaseCampoAbm(
+        bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 20,
         listOpciones          : <String>[
@@ -334,6 +323,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 10,
         oTipo                 : EnumTipoCampoAbm.texto,
@@ -342,6 +332,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla          : false,
         funcActualizarEstado : (mapValores) =>
             esTipoDocumentoConMascara(mapValores['tipoDocumento'] ?? ''),
         funcValidarCampo : (sValor) {
@@ -358,6 +349,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 10,
         oTipo                 : EnumTipoCampoAbm.fecha,
@@ -366,6 +358,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 10,
         oTipo                 : EnumTipoCampoAbm.fecha,
@@ -374,6 +367,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 5,
         listOpciones     : <String>[
           ClaseIdiomas.getTexto(sIdioma, 'comSi'),
@@ -385,6 +379,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comGravadas10'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -395,6 +390,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comIva10'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -405,6 +401,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comGravadas5'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -415,6 +412,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comIva5'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -425,6 +423,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comExentas'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -444,6 +443,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara              : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 25,
         listOpciones     : <String>[
           ClaseIdiomas.getTexto(sIdioma, 'comAfectDirecto'),
@@ -457,6 +457,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 5,
         listOpciones     : <String>[
           ClaseIdiomas.getTexto(sIdioma, 'comSi'),
@@ -472,6 +473,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       // Grupo 2: Resolución 90/2021
       // ════════════════════════════════════════════════════════════════════
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 5,
         listOpciones     : <String>[
           ClaseIdiomas.getTexto(sIdioma, 'comSi'),
@@ -483,6 +485,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado10',
@@ -491,6 +494,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado5',
@@ -499,6 +503,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeExento',
@@ -507,6 +512,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comImporteIreSimple'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -517,6 +523,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comImporteIrpSimple'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -527,6 +534,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla        : false,
         funcValidarCampo : (sValor) => ClaseCapValidar.validarNoNegativo(
             sValor, ClaseIdiomas.getTexto(getIdioma(), 'comImporteNoImputable'), getIdioma()),
         iAnchoCaracteres : 15,
@@ -537,6 +545,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         oTipo                 : EnumTipoCampoAbm.numero,
@@ -548,7 +557,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
     ];
   }
 
-  // ── Campos de detalle (grilla editable / tarjetas) ─────────────────────
+  // ── Campos de detalle ───────────────────────────────────────────────────
 
   List<ClaseCampoAbm> crearCamposDetalle() {
     final String sIdioma = getIdioma();
@@ -655,6 +664,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         'numeroDocumento'      : '001-002-0003456',
         'proveedor'            : 'Distribuidora ABC S.A.',
         'rucCedula'            : '80012345-6',
+        'sucursal'             : '0001 - Sucursal Central',
         'timbradoNumero'       : '12345678',
         'tipoAfectacion'       : 'Directo',
         'tipoDocumento'        : 'Factura Contado',
@@ -714,6 +724,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         'numeroDocumento'      : 'SVC-2026-0042',
         'proveedor'            : 'Servicios XYZ',
         'rucCedula'            : '1234567',
+        'sucursal'             : '0001 - Sucursal Central',
         'timbradoNumero'       : '',
         'tipoAfectacion'       : 'Indistinto',
         'tipoDocumento'        : 'Control Interno',
