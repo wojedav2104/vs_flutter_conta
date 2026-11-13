@@ -19,5 +19,5 @@ Todos los formularios para los ABM (Agregar, Borrar, Modificar) deben tener la m
 17. Pueden existir campos que siempre deben estar deshabilitados. Una propiedad del campo debe servir para indicar eso.
 18. Los campos de tipo fecha siempre deben tener el formato: dd/mm/aaaa y por lo tanto un ancho de 10 caracteres
 19. Los campos de tipo hora siempre deben tener el formato: hh:mm y por lo tanto un ancho de 5 caracteres
-
-
+20. Las etiquetas de los campos numéricos siempre deben justificarse hacia la derecha
+21. En la grilla lateral izquierda se deben mostrar pocos campos, los suficientes para que el usuario pueda leer el contenido de dichos campos los cuales serían los más importantes de la tabla respectiva.

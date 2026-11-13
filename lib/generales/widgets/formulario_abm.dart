@@ -1,4 +1,4 @@
-import 'dart:math' show min;
+import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -656,12 +656,17 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     final ThemeData oTema   = Theme.of(oContexto);
     final int       iInicio = iPagina * ClaseGenLayout.iFilasPorPagina;
     final int       iFin    = min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrada.length);
+    final double    dAnchoExpandido = max(
+        ClaseGenLayout.dAnchoGrillaAbm,
+        min(ClaseGenLayout.dAnchoReferencia * 0.75,
+            MediaQuery.sizeOf(oContexto).width * 0.75),
+    );
     final List<Map<String, dynamic>> listPagina =
         (iInicio < listFiltrada.length) ? listFiltrada.sublist(iInicio, iFin) : <Map<String, dynamic>>[];
 
     return AnimatedContainer(
       duration  : const Duration(milliseconds: 250),
-      width     : bGrillaExpandida ? ClaseGenLayout.dAnchoReferencia * 0.75
+      width     : bGrillaExpandida ? dAnchoExpandido
                                    : ClaseGenLayout.dAnchoGrillaAbm,
       decoration: BoxDecoration(
         color  : oTema.colorScheme.surfaceContainerLow,
@@ -1126,6 +1131,12 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     );
   }
 
+  // ── Botones ABM ─────────────────────────────────────────────────────────
+  /// Barra de botones ABM. Estados según reglas 11-13.
+  /// Colores tomados de ColorScheme (temas.dart): se adaptan automáticamente
+  /// al tema claro y al tema oscuro.
+  /// Si solo Grabar y Cancelar están habilitados (modo edición),
+  /// Grabar usa un color más llamativo.
   Widget construirBotones(BuildContext oContexto) {
     final bool bEnEdicion      = enumEstado == EnumEstadoAbm.agregando ||
                                  enumEstado == EnumEstadoAbm.modificando ||
@@ -1153,7 +1164,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
           construirBoton(oContexto, oIcono: Icons.edit_outlined,       sTexto: getTexto('abmModificar'),
               funcAlPulsar: (!bEnEdicion && bHayDatos && iRegistro >= 0) ? modificar : null),
           construirBoton(oContexto, oIcono: Icons.check,               sTexto: sTextoGrabar,
-              funcAlPulsar: bEnEdicion ? grabar : null, bEsPrimario: true),
+              funcAlPulsar: bEnEdicion ? grabar : null, bEsDestacado: true),
           construirBoton(oContexto, oIcono: Icons.cancel_outlined,     sTexto: getTexto('abmCancelar'),
               funcAlPulsar: bEnEdicion ? cancelar : null),
           construirBoton(oContexto, oIcono: Icons.search,              sTexto: getTexto('abmEncontrar'),
@@ -1165,32 +1176,40 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm>
     );
   }
 
+  /// Botón ABM uniforme: mismo ancho y alto, icono a la izquierda.
+  /// Colores tomados de ColorScheme (temas.dart): se adaptan al tema
+  /// claro y oscuro automáticamente.
+  /// bEsDestacado = true solo para Grabar en modo edición (más llamativo).
   Widget construirBoton(
     BuildContext oContexto, {
     required IconData      oIcono,
     required String        sTexto,
     required VoidCallback? funcAlPulsar,
-    bool                   bEsPrimario = false,
+    bool                   bEsDestacado = false,
   }) {
+    final ColorScheme oEsquema = Theme.of(oContexto).colorScheme;
     final Widget wEtiqueta = Text(sTexto,
         overflow : TextOverflow.ellipsis,
         style    : ClaseGenEstilosTexto.normalMediano(oContexto));
     return SizedBox(
       width  : ClaseGenLayout.dAnchoBotonAbm,
       height : ClaseGenLayout.dAltoBotonAbm,
-      child  : bEsPrimario
-          ? FilledButton.icon(
-              onPressed : funcAlPulsar,
-              icon      : Icon(oIcono),
-              label     : wEtiqueta,
-            )
-          : OutlinedButton.icon(
-              onPressed : funcAlPulsar,
-              icon      : Icon(oIcono),
-              label     : wEtiqueta,
-            ),
+      child  : FilledButton.icon(
+        onPressed : funcAlPulsar,
+        icon      : Icon(oIcono),
+        label     : wEtiqueta,
+        style     : FilledButton.styleFrom(
+          backgroundColor         : bEsDestacado
+                                      ? oEsquema.tertiary
+                                      : oEsquema.primary,
+          foregroundColor         : bEsDestacado
+                                      ? oEsquema.onTertiary
+                                      : oEsquema.onPrimary,
+          disabledBackgroundColor : oEsquema.surfaceContainerHigh,
+          disabledForegroundColor : oEsquema.onSurfaceVariant,
+        ),
+      ),
     );
   }
 
 }
-

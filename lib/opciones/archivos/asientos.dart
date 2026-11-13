@@ -106,7 +106,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
     ];
   }
 
-  // ── Campos de detalle (grilla editable) ─────────────────────────────────
+  // ── Campos de detalle (grilla editable / tarjetas) ─────────────────────
 
   List<ClaseCampoAbm> crearCamposDetalle() {
     final String sIdioma = getIdioma();

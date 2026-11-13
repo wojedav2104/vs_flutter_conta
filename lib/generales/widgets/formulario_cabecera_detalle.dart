@@ -1,4 +1,4 @@
-import 'dart:math' show min;
+import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,11 +20,18 @@ enum EnumEstadoCabDet { agregando, encontrando, inicial, modificando }
 
 /// Formulario ABM de tipo cabecera/detalle.
 ///
+/// Soporta pestañas si los campos de cabecera tienen sGrupo.
+/// Los campos sin sGrupo no se muestran (se colocan en sPie si aplica).
+///
 /// La grilla lateral se ordena con clic en la cabecera de la columna
 /// (ascendente/descendente, con flecha indicadora) y tiene menú contextual
 /// con clic derecho (escritorio/web) o presión larga (teléfono).
 /// La grilla editable de detalles permite subir/bajar filas por menú
 /// contextual (el orden de las filas es el orden contable del asiento).
+/// La grilla de detalles es responsive: en pantallas anchas se muestra como
+/// grilla horizontal con todas las columnas; en pantallas angostas (teléfono)
+/// se muestra como tarjetas verticales con todos los campos de cada fila
+/// apilados.
 class ClaseFormularioCabeceraDetalle extends StatefulWidget {
 
   const ClaseFormularioCabeceraDetalle({
@@ -39,6 +46,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
     this.funcAlActualizar,
     this.funcAlBorrar,
     this.funcAlGrabar,
+    this.funcActualizarCampos,
     this.funcValidarRegistro,
   });
 
@@ -46,6 +54,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
   final Future<String?> Function()?                                              funcAlActualizar;
   final Future<String?> Function(Map<String, dynamic> oRegistro)?                funcAlBorrar;
   final Future<String?> Function(Map<String, dynamic> oRegistro, bool bEsNuevo)? funcAlGrabar;
+  final Map<String, String>? Function(Map<String, String> mapValores)?           funcActualizarCampos;
   final List<ClaseCampoAbm>                                                      listCamposCabecera;
   final List<ClaseCampoAbm>                                                      listCamposDetalle;
   final List<ClaseCampoAbm>                                                      listCamposPie;
@@ -58,7 +67,8 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
   State<ClaseFormularioCabeceraDetalle> createState() => ClaseEstadoCabDet();
 }
 
-class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
+class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
+    with SingleTickerProviderStateMixin {
 
   bool bGrillaExpandida = false;
   bool bOrdenAscendente = true;
@@ -69,11 +79,14 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
   int iPagina   = 0;
   int iRegistro = -1;
 
+  late TabController oControlPestanas;
+
   final Map<String, FocusNode>              mapFocos         = <String, FocusNode>{};
   final Map<String, TextEditingController>  mapControladores = <String, TextEditingController>{};
 
   List<Map<String, dynamic>>               listFiltrada    = <Map<String, dynamic>>[];
   List<Map<String, TextEditingController>> listDetalles    = <Map<String, TextEditingController>>[];
+  List<String>                             listGrupos      = <String>[];
   List<GlobalKey>                          listLlavesFilas = <GlobalKey>[];
 
   @override
@@ -82,11 +95,18 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
       mapControladores[oCampo.sClave] = TextEditingController();
       mapFocos[oCampo.sClave]         = FocusNode();
+      if (oCampo.sGrupo != null && !listGrupos.contains(oCampo.sGrupo)) {
+        listGrupos.add(oCampo.sGrupo!);
+      }
     }
     for (final ClaseCampoAbm oCampo in widget.listCamposPie) {
       mapControladores[oCampo.sClave] = TextEditingController();
       mapFocos[oCampo.sClave]         = FocusNode();
     }
+    oControlPestanas = TabController(
+      vsync  : this,
+      length : listGrupos.isEmpty ? 1 : listGrupos.length,
+    );
     listFiltrada = List<Map<String, dynamic>>.of(widget.listRegistros);
     if (listFiltrada.isNotEmpty) {
       iRegistro = 0;
@@ -107,6 +127,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
         oControl.dispose();
       }
     }
+    oControlPestanas.dispose();
     super.dispose();
   }
 
@@ -147,6 +168,33 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       sValor = (int.tryParse(sValor) ?? 0).toString();
     }
     return (sValor.length > 20) ? sValor.substring(0, 20) : sValor;
+  }
+
+  /// Obtiene los valores actuales de todos los campos de cabecera y pie.
+  Map<String, String> getValoresActuales() {
+    final Map<String, String> mapValores = <String, String>{};
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      mapValores[oCampo.sClave] = mapControladores[oCampo.sClave]!.text;
+    }
+    for (final ClaseCampoAbm oCampo in widget.listCamposPie) {
+      mapValores[oCampo.sClave] = mapControladores[oCampo.sClave]!.text;
+    }
+    return mapValores;
+  }
+
+  /// Se llama cuando cambia cualquier campo de cabecera o pie.
+  /// Ejecuta funcActualizarCampos para auto-cálculos.
+  void alCambiarCampo() {
+    if (widget.funcActualizarCampos != null) {
+      final Map<String, String>? mapActualizaciones =
+          widget.funcActualizarCampos!(getValoresActuales());
+      if (mapActualizaciones != null) {
+        for (final MapEntry<String, String> oEntrada in mapActualizaciones.entries) {
+          mapControladores[oEntrada.key]?.text = oEntrada.value;
+        }
+      }
+    }
+    setState(() {});
   }
 
   // ── Orden de la grilla lateral ──────────────────────────────────────────
@@ -358,6 +406,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       listDetalles.clear();
       listLlavesFilas.clear();
     });
+    alCambiarCampo();
   }
 
   /// Actualiza la grilla: limpia el filtro y, si hay funcAlActualizar,
@@ -475,6 +524,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       listLlavesFilas.add(GlobalKey());
     }
     setState(() => iRegistro = iIndice);
+    alCambiarCampo();
   }
 
   void cancelar() {
@@ -492,7 +542,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       }
       listDetalles.clear();
       listLlavesFilas.clear();
-      setState(() {});
+      alCambiarCampo();
     }
   }
 
@@ -642,6 +692,8 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       for (final ClaseCampoAbm oCampo in listTodos) {
         oRegistro[oCampo.sClave] = mapControladores[oCampo.sClave]!.text;
       }
+      oRegistro['_sumaDebe']  = getSumaDebe().toString();
+      oRegistro['_sumaHaber'] = getSumaHaber().toString();
       final String? sError = widget.funcValidarRegistro!(oRegistro);
       if (sError != null) {
         funcMostrarMensaje(context, getIdioma(), widget.sTitulo, sError);
@@ -660,9 +712,22 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
   // ── Construcción de la interfaz ─────────────────────────────────────────
   @override
   Widget build(BuildContext oContexto) {
+    final bool bConPestanas = listGrupos.isNotEmpty;
+
     return Scaffold(
-      appBar : AppBar(title: Text(widget.sTitulo,
-                    style: ClaseGenEstilosTexto.subtituloGrande(oContexto))),
+      appBar : AppBar(
+        title : Text(widget.sTitulo,
+                    style: ClaseGenEstilosTexto.subtituloGrande(oContexto)),
+        bottom: bConPestanas
+            ? TabBar(
+                controller : oControlPestanas,
+                tabs       : <Widget>[
+                  for (final String sGrupo in listGrupos)
+                    Tab(text: getTexto(sGrupo)),
+                ],
+              )
+            : null,
+      ),
       body   : Column(
         children: <Widget>[
           Expanded(
@@ -671,18 +736,44 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
               children: <Widget>[
                 construirGrilla(oContexto),
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
-                    child   : Column(
-                      crossAxisAlignment : CrossAxisAlignment.start,
-                      children          : <Widget>[
-                        construirCamposCabecera(oContexto),
-                        const SizedBox(height: ClaseGenEspacios.dEspacio16),
-                        construirGrillaDetalle(oContexto),
-                        const SizedBox(height: ClaseGenEspacios.dEspacio16),
-                        construirCampoComentarios(oContexto),
-                      ],
-                    ),
+                  child: Column(
+                    children: <Widget>[
+                      // Campos de cabecera (con o sin pestañas)
+                      if (bConPestanas)
+                        Expanded(
+                          child: TabBarView(
+                            controller : oControlPestanas,
+                            children   : <Widget>[
+                              for (final String sGrupo in listGrupos)
+                                SingleChildScrollView(
+                                  padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+                                  child   : construirCamposCabecera(oContexto, sGrupo),
+                                ),
+                            ],
+                          ),
+                        )
+                      else
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+                            child   : construirCamposCabecera(oContexto, null),
+                          ),
+                        ),
+                      // Grilla de detalles y comentarios (siempre visibles)
+                      Padding(
+                        padding : const EdgeInsets.symmetric(
+                          horizontal : ClaseGenEspacios.dEspacio16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment : CrossAxisAlignment.start,
+                          children          : <Widget>[
+                            construirGrillaDetalle(oContexto),
+                            const SizedBox(height: ClaseGenEspacios.dEspacio16),
+                            construirCampoComentarios(oContexto),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -694,32 +785,51 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     );
   }
 
-  // ── Campos cabecera ─────────────────────────────────────────────────────
-  Widget construirCamposCabecera(BuildContext oContexto) {
+  /// Campos de cabecera. Si sGrupo es null, muestra todos los campos
+  /// sin grupo. Si sGrupo tiene valor, muestra solo los campos de ese grupo.
+  Widget construirCamposCabecera(BuildContext oContexto, String? sGrupo) {
     final bool bHabilitado = enumEstado == EnumEstadoCabDet.agregando ||
                              enumEstado == EnumEstadoCabDet.modificando;
+    final List<ClaseCampoAbm> listFiltrados = (sGrupo == null)
+        ? widget.listCamposCabecera.where((o) => o.sGrupo == null).toList()
+        : widget.listCamposCabecera.where((o) => o.sGrupo == sGrupo).toList();
+
     return Wrap(
       runSpacing : ClaseGenEspacios.dEspacio12,
       spacing    : ClaseGenEspacios.dEspacio24,
       children   : <Widget>[
-        for (final ClaseCampoAbm oCampo in widget.listCamposCabecera)
+        for (final ClaseCampoAbm oCampo in listFiltrados)
           construirCampoCabecera(oContexto, oCampo, bHabilitado),
       ],
     );
   }
 
-  // ── Campo cabecera (con soporte fecha/hora con picker) ──────────────────
+  // ── Campo cabecera (casillas / lista / logico / fecha / hora / texto) ──
   Widget construirCampoCabecera(BuildContext oContexto, ClaseCampoAbm oCampo, bool bHabilitado) {
     final TextEditingController oControl = mapControladores[oCampo.sClave]!;
-    final bool bEdit = bHabilitado && !oCampo.bSiempreDeshabilitado;
+    final bool bEdit = bHabilitado &&
+        !oCampo.bSiempreDeshabilitado &&
+        !oCampo.bSoloLecturaPorRol &&
+        (oCampo.funcActualizarEstado == null ||
+         oCampo.funcActualizarEstado!(getValoresActuales()));
 
     double dAncho;
-    if (oCampo.oTipo == EnumTipoCampoAbm.fecha || oCampo.oTipo == EnumTipoCampoAbm.hora) {
+    if (oCampo.oTipo == EnumTipoCampoAbm.comentario) {
+      dAncho = ClaseGenLayout.dAnchoCampoComentario;
+    } else if (oCampo.oTipo == EnumTipoCampoAbm.lista ||
+               oCampo.oTipo == EnumTipoCampoAbm.casillas) {
+      dAncho = oCampo.iAnchoCaracteres * ClaseGenLayout.dAnchoCaracter
+               + ClaseGenLayout.dAnchoIconoFlecha;
+    } else if (oCampo.oTipo == EnumTipoCampoAbm.fecha ||
+               oCampo.oTipo == EnumTipoCampoAbm.hora) {
       dAncho = oCampo.iAnchoCaracteres * ClaseGenLayout.dAnchoCaracter
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar
                + ClaseGenLayout.dAnchoIconoFlecha;
     } else {
-      dAncho = oCampo.iAnchoCaracteres * ClaseGenLayout.dAnchoCaracter
+      final int iCaracteres = (oCampo.sMascara != null)
+          ? oCampo.sMascara!.length
+          : oCampo.iAnchoCaracteres;
+      dAncho = iCaracteres * ClaseGenLayout.dAnchoCaracter
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar;
     }
 
@@ -733,7 +843,107 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       ],
     );
 
-    // ── Campo fecha (date picker) ─────────────────────────────────────────
+    // ── Casillas (checkbox múltiple) ─────────────────────────────────────
+    if (oCampo.oTipo == EnumTipoCampoAbm.casillas) {
+      final Set<String> setSeleccionadas = oControl.text
+          .split(',').where((s) => s.isNotEmpty).toSet();
+      return Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        mainAxisSize        : MainAxisSize.min,
+        children: <Widget>[
+          wEtiqueta,
+          const SizedBox(height: ClaseGenEspacios.dEspacio04),
+          SizedBox(
+            width : dAncho,
+            child : Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
+              children           : <Widget>[
+                for (final String sOpcion in (oCampo.listOpciones ?? <String>[]))
+                  CheckboxListTile(
+                    contentPadding  : EdgeInsets.zero,
+                    controlAffinity : ListTileControlAffinity.leading,
+                    dense           : true,
+                    title           : Text(sOpcion,
+                                        style: ClaseGenEstilosTexto.textoCampo(oContexto)),
+                    value           : setSeleccionadas.contains(sOpcion),
+                    onChanged       : bEdit ? (bValor) {
+                      final Set<String> setActual = oControl.text
+                          .split(',').where((s) => s.isNotEmpty).toSet();
+                      if (bValor == true) {
+                        setActual.add(sOpcion);
+                      } else {
+                        setActual.remove(sOpcion);
+                      }
+                      oControl.text = setActual.join(',');
+                      alCambiarCampo();
+                    } : null,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // ── Lista (dropdown) ─────────────────────────────────────────────────
+    if (oCampo.oTipo == EnumTipoCampoAbm.lista) {
+      return Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        mainAxisSize        : MainAxisSize.min,
+        children: <Widget>[
+          wEtiqueta,
+          const SizedBox(height: ClaseGenEspacios.dEspacio04),
+          SizedBox(
+            width : dAncho,
+            child : DropdownButton<String>(
+              borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+              isExpanded   : true,
+              items        : <DropdownMenuItem<String>>[
+                for (final String sOpcion in (oCampo.listOpciones ?? <String>[]))
+                  DropdownMenuItem<String>(
+                    value : sOpcion,
+                    child : Text(sOpcion,
+                        overflow : TextOverflow.ellipsis,
+                        style    : ClaseGenEstilosTexto.textoCampo(oContexto)),
+                  ),
+              ],
+              onChanged : bEdit ? (sValor) {
+                oControl.text = sValor ?? '';
+                alCambiarCampo();
+              } : null,
+              underline : const SizedBox.shrink(),
+              value     : (oCampo.listOpciones ?? <String>[]).contains(oControl.text)
+                              ? oControl.text : null,
+            ),
+          ),
+        ],
+      );
+    }
+
+    // ── Lógico (Sí/No con checkbox) ──────────────────────────────────────
+    if (oCampo.oTipo == EnumTipoCampoAbm.logico) {
+      return Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        mainAxisSize        : MainAxisSize.min,
+        children: <Widget>[
+          wEtiqueta,
+          CheckboxListTile(
+            contentPadding  : EdgeInsets.zero,
+            controlAffinity : ListTileControlAffinity.leading,
+            dense           : true,
+            title           : Text(oCampo.sEtiqueta,
+                               style: ClaseGenEstilosTexto.textoCampo(oContexto)),
+            value           : oControl.text.toUpperCase() == 'S',
+            onChanged       : bEdit ? (bValor) {
+              oControl.text = (bValor ?? false) ? 'S' : 'N';
+              alCambiarCampo();
+            } : null,
+          ),
+        ],
+      );
+    }
+
+    // ── Campo fecha (date picker) ────────────────────────────────────────
     if (oCampo.oTipo == EnumTipoCampoAbm.fecha) {
       return Column(
         crossAxisAlignment : CrossAxisAlignment.start,
@@ -749,7 +959,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
               readOnly   : true,
               onTap      : bEdit ? () async {
                 final String? sFecha = await funcMostrarSelectorFecha(oContexto, oControl.text);
-                if (sFecha != null) setState(() => oControl.text = sFecha);
+                if (sFecha != null) { oControl.text = sFecha; alCambiarCampo(); }
               } : null,
               style      : ClaseGenEstilosTexto.textoCampo(oContexto),
               decoration : InputDecoration(
@@ -764,7 +974,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
                       IconButton(
                         tooltip   : getTexto('borrarCampo'),
                         icon      : const Icon(Icons.close, size: 18),
-                        onPressed : () => setState(() => oControl.clear()),
+                        onPressed : () { oControl.clear(); alCambiarCampo(); },
                       ),
                   ],
                 ),
@@ -778,7 +988,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       );
     }
 
-    // ── Campo hora (time picker) ──────────────────────────────────────────
+    // ── Campo hora (time picker) ─────────────────────────────────────────
     if (oCampo.oTipo == EnumTipoCampoAbm.hora) {
       return Column(
         crossAxisAlignment : CrossAxisAlignment.start,
@@ -794,7 +1004,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
               readOnly   : true,
               onTap      : bEdit ? () async {
                 final String? sHora = await funcMostrarSelectorHora(oContexto, oControl.text);
-                if (sHora != null) setState(() => oControl.text = sHora);
+                if (sHora != null) { oControl.text = sHora; alCambiarCampo(); }
               } : null,
               style      : ClaseGenEstilosTexto.textoCampo(oContexto),
               decoration : InputDecoration(
@@ -809,7 +1019,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
                       IconButton(
                         tooltip   : getTexto('borrarCampo'),
                         icon      : const Icon(Icons.close, size: 18),
-                        onPressed : () => setState(() => oControl.clear()),
+                        onPressed : () { oControl.clear(); alCambiarCampo(); },
                       ),
                   ],
                 ),
@@ -823,7 +1033,8 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
       );
     }
 
-    // ── Campo genérico (texto/número/comentario) ──────────────────────────
+    // ── Campo genérico (texto/número/comentario) ─────────────────────────
+    final bool bNumero = oCampo.oTipo == EnumTipoCampoAbm.numero;
     return Column(
       crossAxisAlignment : CrossAxisAlignment.start,
       mainAxisSize        : MainAxisSize.min,
@@ -832,29 +1043,47 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
         const SizedBox(height: ClaseGenEspacios.dEspacio04),
         SizedBox(
           width : dAncho,
-          child : TextField(
-            controller      : oControl,
-            enabled         : bEdit,
-            focusNode       : mapFocos[oCampo.sClave],
-            maxLength       : oCampo.oTipo == EnumTipoCampoAbm.comentario ? oCampo.iMaxComentario : null,
-            maxLines        : oCampo.oTipo == EnumTipoCampoAbm.comentario ? 3 : 1,
-            onChanged       : (sValor) => setState(() {}),
-            style           : ClaseGenEstilosTexto.textoCampo(oContexto),
-            textAlign       : oCampo.oTipo == EnumTipoCampoAbm.numero ? TextAlign.right : TextAlign.left,
-            decoration      : InputDecoration(
-              counterText : '',
-              hintText    : oCampo.sHint,
-              hintStyle   : ClaseGenEstilosTexto.textoCampo(oContexto)
-                              .copyWith(color: Theme.of(oContexto).colorScheme.onSurfaceVariant),
-              suffixIcon  : bEdit
-                  ? IconButton(
-                      tooltip   : getTexto('borrarCampo'),
-                      icon      : const Icon(Icons.close, size: 18),
-                      onPressed : () => setState(() => oControl.clear()),
-                    )
+          child : Focus(
+            onFocusChange: (bTieneFoco) {
+              if (!bTieneFoco && bNumero && oCampo.sMascara != null) {
+                final String sSeparador =
+                    (widget.oPreferencias.getFormatoNumeros() == 'frances') ? ' ' : '.';
+                setState(() {
+                  oControl.text = funcFormatearNumero(oControl.text, oCampo.sMascara!, sSeparador);
+                });
+              }
+            },
+            child: TextField(
+              controller      : oControl,
+              enabled         : bEdit,
+              focusNode       : mapFocos[oCampo.sClave],
+              maxLength       : oCampo.oTipo == EnumTipoCampoAbm.comentario ? oCampo.iMaxComentario : null,
+              maxLines        : oCampo.oTipo == EnumTipoCampoAbm.comentario ? 3 : 1,
+              onChanged       : (sValor) => alCambiarCampo(),
+              style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+              textAlign       : bNumero ? TextAlign.right : TextAlign.left,
+              inputFormatters : (oCampo.sMascara != null)
+                  ? (bNumero)
+                      ? <TextInputFormatter>[ClaseFormatoMiles(
+                          iMaxDigitos: oCampo.sMascara!.split('')
+                              .where((c) => c == '9').length)]
+                      : <TextInputFormatter>[ClaseFormatoMascara(sMascara: oCampo.sMascara!)]
                   : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+              decoration      : InputDecoration(
+                counterText : '',
+                hintText    : oCampo.sHint,
+                hintStyle   : ClaseGenEstilosTexto.textoCampo(oContexto)
+                                .copyWith(color: Theme.of(oContexto).colorScheme.onSurfaceVariant),
+                suffixIcon  : bEdit
+                    ? IconButton(
+                        tooltip   : getTexto('borrarCampo'),
+                        icon      : const Icon(Icons.close, size: 18),
+                        onPressed : () { oControl.clear(); alCambiarCampo(); },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+                ),
               ),
             ),
           ),
@@ -863,10 +1092,29 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     );
   }
 
-  // ── Grilla de detalles (editable) ───────────────────────────────────────
+  // ── Grilla de detalles (editable, responsive) ───────────────────────────
+  /// Grilla editable de detalles, responsive.
+  /// Pantallas anchas (>= dAnchoMinimoGrillaDetalles): grilla horizontal
+  /// con todas las columnas.
+  /// Pantallas angostas (teléfono): tarjetas verticales con todos los
+  /// campos de cada fila apilados.
   Widget construirGrillaDetalle(BuildContext oContexto) {
     final bool bHabilitado = enumEstado == EnumEstadoCabDet.agregando ||
                              enumEstado == EnumEstadoCabDet.modificando;
+
+    return LayoutBuilder(
+      builder: (BuildContext oCtxLayout, BoxConstraints oRestricciones) {
+        final bool bTarjetas = oRestricciones.maxWidth <
+            ClaseGenLayout.dAnchoMinimoGrillaDetalles;
+        return bTarjetas
+            ? construirDetalleEnTarjetas(oContexto, bHabilitado)
+            : construirDetalleEnGrilla(oContexto, bHabilitado);
+      },
+    );
+  }
+
+  // ── Detalle en grilla horizontal (pantallas anchas) ─────────────────────
+  Widget construirDetalleEnGrilla(BuildContext oContexto, bool bHabilitado) {
     final ThemeData oTema = Theme.of(oContexto);
 
     return Container(
@@ -879,38 +1127,9 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
         child: Column(
           crossAxisAlignment : CrossAxisAlignment.start,
           children          : <Widget>[
-            // Encabezado de columnas
-            Container(
-              color   : oTema.colorScheme.secondaryContainer,
-              padding : const EdgeInsets.symmetric(
-                horizontal : ClaseGenEspacios.dEspacio04,
-                vertical   : ClaseGenEspacios.dEspacio04,
-              ),
-              child: Row(
-                children: <Widget>[
-                  for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
-                    SizedBox(
-                      width : calcularAnchoCampo(oCampo),
-                      child : Padding(
-                        padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
-                        child   : Text(oCampo.sEtiqueta,
-                            textAlign  : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                             ? TextAlign.right : TextAlign.left,
-                            overflow   : TextOverflow.ellipsis,
-                            style      : ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
-                      ),
-                    ),
-                  SizedBox(
-                    width : ClaseGenLayout.dAnchoIconoBorrar,
-                    child : Text('', style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
-                  ),
-                ],
-              ),
-            ),
-            // Filas editables
+            construirEncabezadoDetalle(oContexto),
             for (int iFila = 0; iFila < listDetalles.length; iFila++)
               construirFilaDetalle(oContexto, iFila, bHabilitado),
-            // Fila: botón Agregar fila + Totales (misma fila)
             construirFilaBotonYTotales(oContexto, bHabilitado),
           ],
         ),
@@ -918,8 +1137,43 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     );
   }
 
+  /// Encabezado de columnas de la grilla de detalles (modo grilla).
+  Widget construirEncabezadoDetalle(BuildContext oContexto) {
+    final ThemeData oTema = Theme.of(oContexto);
+
+    return Container(
+      color   : oTema.colorScheme.secondaryContainer,
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio04,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        children: <Widget>[
+          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+            SizedBox(
+              width : calcularAnchoCampo(oCampo),
+              child : Padding(
+                padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
+                child   : Text(oCampo.sEtiqueta,
+                    textAlign  : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                     ? TextAlign.right : TextAlign.left,
+                    overflow   : TextOverflow.ellipsis,
+                    style      : ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+              ),
+            ),
+          SizedBox(
+            width : ClaseGenLayout.dAnchoIconoBorrar,
+            child : Text('', style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Fila editable de la grilla de detalles (modo grilla horizontal).
   Widget construirFilaDetalle(BuildContext oContexto, int iFila, bool bHabilitado) {
     final Map<String, TextEditingController> oFila = listDetalles[iFila];
+
     return GestureDetector(
       key                : listLlavesFilas[iFila],
       behavior           : HitTestBehavior.opaque,
@@ -948,7 +1202,6 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
                     textAlign       : (oCampo.oTipo == EnumTipoCampoAbm.numero)
                                           ? TextAlign.right : TextAlign.left,
                     onChanged       : (sValor) {
-                      // Debe y Haber son mutuamente excluyentes
                       if (oCampo.sClave == 'debe' && sValor.isNotEmpty) {
                         oFila['haber']?.text = '0';
                       } else if (oCampo.sClave == 'haber' && sValor.isNotEmpty) {
@@ -991,81 +1244,17 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     );
   }
 
-  /// Menú contextual de una fila de detalle: clic derecho (escritorio/web)
-  /// o presión larga (teléfono). Subir/bajar fila solo en edición.
-  Future<void> mostrarMenuDetalle(
-    BuildContext oContexto,
-    Offset      oPosicion,
-    int         iFila,
-  ) async {
-    final bool bHabilitado = enumEstado == EnumEstadoCabDet.agregando ||
-                             enumEstado == EnumEstadoCabDet.modificando;
-    final String? sElegido = await showMenu<String>(
-      context  : oContexto,
-      position : RelativeRect.fromRect(
-        Rect.fromLTWH(oPosicion.dx, oPosicion.dy, 0, 0),
-        Offset.zero & MediaQuery.sizeOf(oContexto),
-      ),
-      items: <PopupMenuEntry<String>>[
-        crearItemMenu(oContexto, 'subirFila', getTexto('menuSubirFila'), Icons.arrow_upward,
-            bHabilitado: bHabilitado && iFila > 0),
-        crearItemMenu(oContexto, 'bajarFila', getTexto('menuBajarFila'), Icons.arrow_downward,
-            bHabilitado: bHabilitado && iFila < listDetalles.length - 1),
-        const PopupMenuDivider(),
-        crearItemMenu(oContexto, 'primeraFila', getTexto('menuPrimeraFila'), Icons.first_page,
-            bHabilitado: listDetalles.isNotEmpty),
-        crearItemMenu(oContexto, 'ultimaFila', getTexto('menuUltimaFila'), Icons.last_page,
-            bHabilitado: listDetalles.isNotEmpty),
-      ],
-    );
-    if (sElegido == null) return;
-    if (sElegido == 'subirFila') {
-      subirFila(iFila);
-    } else if (sElegido == 'bajarFila') {
-      bajarFila(iFila);
-    } else if (sElegido == 'primeraFila') {
-      await irAFilaDetalle(0);
-    } else if (sElegido == 'ultimaFila') {
-      await irAFilaDetalle(listDetalles.length - 1);
-    }
-  }
-
-  /// Ítem con icono para los menús contextuales.
-  PopupMenuItem<String> crearItemMenu(
-    BuildContext oContexto,
-    String       sValor,
-    String       sTexto,
-    IconData     oIcono, {
-    bool bHabilitado = true,
-  }) {
-    return PopupMenuItem<String>(
-      value   : sValor,
-      enabled : bHabilitado,
-      child   : Row(
-        children: <Widget>[
-          Icon(oIcono, size: 18),
-          const SizedBox(width: ClaseGenEspacios.dEspacio08),
-          Flexible(
-            child: Text(sTexto,
-                overflow : TextOverflow.ellipsis,
-                style    : ClaseGenEstilosTexto.normalChico(oContexto)),
-          ),
-        ],
-      ),
-    );
-  }
-
   /// Fila con el botón "Agregar fila" y los totales Debe/Haber en la misma fila,
-  /// alineados exactamente bajo sus columnas.
+  /// alineados exactamente bajo sus columnas (modo grilla).
   Widget construirFilaBotonYTotales(BuildContext oContexto, bool bHabilitado) {
-    final bool bSumasIguales = getSumaDebe() == getSumaHaber();
-    final Color colorFondo   = bSumasIguales
+    final bool  bSumasIguales = getSumaDebe() == getSumaHaber();
+    final int   iIndiceDebe   = widget.listCamposDetalle.indexWhere((o) => o.sClave == 'debe');
+    final Color colorFondo    = bSumasIguales
         ? ClaseGenColores.colorVerde1
         : ClaseGenColores.colorNaranja1;
-    final Color colorTexto   = ClaseGenColores.colorBlanco;
+    final Color colorTexto    = ClaseGenColores.colorBlanco;
 
     final double dAnchoAntes = calcularAnchoAntesDelDebe();
-    final int iIndiceDebe    = widget.listCamposDetalle.indexWhere((o) => o.sClave == 'debe');
     final double dAnchoDebe  = calcularAnchoCampo(widget.listCamposDetalle[iIndiceDebe]);
     final double dAnchoHaber = calcularAnchoCampo(widget.listCamposDetalle[iIndiceDebe + 1]);
 
@@ -1132,6 +1321,275 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     );
   }
 
+  // ── Detalle en tarjetas (pantallas angostas / teléfono) ─────────────────
+  Widget construirDetalleEnTarjetas(BuildContext oContexto, bool bHabilitado) {
+    final ThemeData oTema = Theme.of(oContexto);
+
+    return Container(
+      decoration : BoxDecoration(
+        border       : Border.all(color: oTema.colorScheme.outlineVariant),
+        borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+      ),
+      child: Column(
+        mainAxisSize : MainAxisSize.min,
+        children     : <Widget>[
+          for (int iFila = 0; iFila < listDetalles.length; iFila++)
+            construirTarjetaDetalle(oContexto, iFila, bHabilitado),
+          construirFilaTotalesTarjeta(oContexto, bHabilitado),
+        ],
+      ),
+    );
+  }
+
+  Widget construirTarjetaDetalle(BuildContext oContexto, int iFila, bool bHabilitado) {
+    final int iNumeroFila = iFila + 1;
+
+    return GestureDetector(
+      key                : listLlavesFilas[iFila],
+      behavior           : HitTestBehavior.opaque,
+      onSecondaryTapDown : (oDet) => mostrarMenuDetalle(oContexto, oDet.globalPosition, iFila),
+      onLongPressStart   : (oDet) => mostrarMenuDetalle(oContexto, oDet.globalPosition, iFila),
+      child: Card(
+        margin : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio04,
+        ),
+        child: Padding(
+          padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+          child   : Column(
+            crossAxisAlignment : CrossAxisAlignment.start,
+            children            : <Widget>[
+              Row(
+                children: <Widget>[
+                  Text('${getTexto('asiFila')} $iNumeroFila',
+                      style: ClaseGenEstilosTexto.subtituloMediano(oContexto)),
+                  const Spacer(),
+                  if (bHabilitado)
+                    IconButton(
+                      tooltip   : getTexto('asiBorrarFila'),
+                      icon      : const Icon(Icons.delete_outline, size: 20),
+                      onPressed : () => borrarDetalle(iFila),
+                    ),
+                ],
+              ),
+              const SizedBox(height: ClaseGenEspacios.dEspacio04),
+              for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+                construirCampoTarjetaDetalle(oContexto, iFila, oCampo, bHabilitado),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget construirCampoTarjetaDetalle(
+    BuildContext  oContexto,
+    int           iFila,
+    ClaseCampoAbm oCampo,
+    bool          bHabilitado,
+  ) {
+    final Map<String, TextEditingController> oFila       = listDetalles[iFila];
+    final TextEditingController              oControl    = oFila[oCampo.sClave]!;
+    final bool                               bComentario = oCampo.oTipo == EnumTipoCampoAbm.comentario;
+    final bool                               bNumero     = oCampo.oTipo == EnumTipoCampoAbm.numero;
+
+    final Widget wEtiqueta = Row(
+      mainAxisAlignment : MainAxisAlignment.spaceBetween,
+      children          : <Widget>[
+        Row(
+          mainAxisSize : MainAxisSize.min,
+          children     : <Widget>[
+            Text(oCampo.sEtiqueta, style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+            if (oCampo.bObligatorio)
+              Text(' *', style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                                .copyWith(color: ClaseGenColores.colorError)),
+          ],
+        ),
+        if (bComentario)
+          Text('${oControl.text.length}/${oCampo.iMaxComentario}',
+               style: ClaseGenEstilosTexto.normalChico(oContexto)),
+      ],
+    );
+
+    return Padding(
+      padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio08),
+      child   : Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children            : <Widget>[
+          wEtiqueta,
+          const SizedBox(height: ClaseGenEspacios.dEspacio04),
+          TextField(
+            controller      : oControl,
+            enabled         : bHabilitado,
+            maxLength       : bComentario ? oCampo.iMaxComentario : null,
+            maxLines        : bComentario ? 3 : 1,
+            onChanged       : (sValor) {
+              if (oCampo.sClave == 'debe' && sValor.isNotEmpty) {
+                oFila['haber']?.text = '0';
+              } else if (oCampo.sClave == 'haber' && sValor.isNotEmpty) {
+                oFila['debe']?.text = '0';
+              }
+              setState(() {});
+            },
+            style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+            textAlign       : bNumero ? TextAlign.right : TextAlign.left,
+            inputFormatters : (oCampo.sMascara != null)
+                ? (bNumero)
+                    ? <TextInputFormatter>[ClaseFormatoMiles(
+                        iMaxDigitos: oCampo.sMascara!.split('')
+                            .where((c) => c == '9').length)]
+                    : <TextInputFormatter>[ClaseFormatoMascara(sMascara: oCampo.sMascara!)]
+                : null,
+            decoration      : InputDecoration(
+              counterText : '',
+              hintText    : oCampo.sHint,
+              hintStyle   : ClaseGenEstilosTexto.textoCampo(oContexto)
+                              .copyWith(color: Theme.of(oContexto).colorScheme.onSurfaceVariant),
+              suffixIcon  : bHabilitado
+                  ? IconButton(
+                      tooltip   : getTexto('borrarCampo'),
+                      icon      : const Icon(Icons.close, size: 18),
+                      onPressed : () => setState(() => oControl.clear()),
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget construirFilaTotalesTarjeta(BuildContext oContexto, bool bHabilitado) {
+    final bool  bSumasIguales = getSumaDebe() == getSumaHaber();
+    final Color colorFondo    = bSumasIguales
+        ? ClaseGenColores.colorVerde1
+        : ClaseGenColores.colorNaranja1;
+    final Color colorTexto    = ClaseGenColores.colorBlanco;
+
+    return Padding(
+      padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+      child   : Column(
+        children: <Widget>[
+          if (bHabilitado)
+            SizedBox(
+              width  : double.infinity,
+              child  : OutlinedButton.icon(
+                onPressed : agregarDetalle,
+                icon      : const Icon(Icons.add),
+                label     : Text(getTexto('asiAgregarFila'),
+                            style: ClaseGenEstilosTexto.normalChico(oContexto)),
+              ),
+            ),
+          const SizedBox(height: ClaseGenEspacios.dEspacio08),
+          Container(
+            width      : double.infinity,
+            padding    : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+            decoration : BoxDecoration(
+              color        : colorFondo,
+              borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+            ),
+            child: Column(
+              children: <Widget>[
+                Text(getTexto('asiTotales'),
+                    style: ClaseGenEstilosTexto.subtituloMediano(oContexto)
+                        .copyWith(color: colorTexto)),
+                const SizedBox(height: ClaseGenEspacios.dEspacio04),
+                Row(
+                  mainAxisAlignment : MainAxisAlignment.spaceBetween,
+                  children          : <Widget>[
+                    Text(getTexto('asiDebe'),
+                        style: ClaseGenEstilosTexto.textoCampo(oContexto)
+                            .copyWith(fontWeight: FontWeight.w700, color: colorTexto)),
+                    Text(funcFormatearEnteroMiles(getSumaDebe()),
+                        style: ClaseGenEstilosTexto.textoCampo(oContexto)
+                            .copyWith(fontWeight: FontWeight.w700, color: colorTexto)),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment : MainAxisAlignment.spaceBetween,
+                  children          : <Widget>[
+                    Text(getTexto('asiHaber'),
+                        style: ClaseGenEstilosTexto.textoCampo(oContexto)
+                            .copyWith(fontWeight: FontWeight.w700, color: colorTexto)),
+                    Text(funcFormatearEnteroMiles(getSumaHaber()),
+                        style: ClaseGenEstilosTexto.textoCampo(oContexto)
+                            .copyWith(fontWeight: FontWeight.w700, color: colorTexto)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Menú contextual de filas de detalle ─────────────────────────────────
+  Future<void> mostrarMenuDetalle(
+    BuildContext oContexto,
+    Offset      oPosicion,
+    int         iFila,
+  ) async {
+    final bool bHabilitado = enumEstado == EnumEstadoCabDet.agregando ||
+                             enumEstado == EnumEstadoCabDet.modificando;
+    final String? sElegido = await showMenu<String>(
+      context  : oContexto,
+      position : RelativeRect.fromRect(
+        Rect.fromLTWH(oPosicion.dx, oPosicion.dy, 0, 0),
+        Offset.zero & MediaQuery.sizeOf(oContexto),
+      ),
+      items: <PopupMenuEntry<String>>[
+        crearItemMenu(oContexto, 'subirFila', getTexto('menuSubirFila'), Icons.arrow_upward,
+            bHabilitado: bHabilitado && iFila > 0),
+        crearItemMenu(oContexto, 'bajarFila', getTexto('menuBajarFila'), Icons.arrow_downward,
+            bHabilitado: bHabilitado && iFila < listDetalles.length - 1),
+        const PopupMenuDivider(),
+        crearItemMenu(oContexto, 'primeraFila', getTexto('menuPrimeraFila'), Icons.first_page,
+            bHabilitado: listDetalles.isNotEmpty),
+        crearItemMenu(oContexto, 'ultimaFila', getTexto('menuUltimaFila'), Icons.last_page,
+            bHabilitado: listDetalles.isNotEmpty),
+      ],
+    );
+    if (sElegido == null) return;
+    if (sElegido == 'subirFila') {
+      subirFila(iFila);
+    } else if (sElegido == 'bajarFila') {
+      bajarFila(iFila);
+    } else if (sElegido == 'primeraFila') {
+      await irAFilaDetalle(0);
+    } else if (sElegido == 'ultimaFila') {
+      await irAFilaDetalle(listDetalles.length - 1);
+    }
+  }
+
+  /// Ítem con icono para los menús contextuales.
+  PopupMenuItem<String> crearItemMenu(
+    BuildContext oContexto,
+    String       sValor,
+    String       sTexto,
+    IconData     oIcono, {
+    bool bHabilitado = true,
+  }) {
+    return PopupMenuItem<String>(
+      value   : sValor,
+      enabled : bHabilitado,
+      child   : Row(
+        children: <Widget>[
+          Icon(oIcono, size: 18),
+          const SizedBox(width: ClaseGenEspacios.dEspacio08),
+          Flexible(
+            child: Text(sTexto,
+                overflow : TextOverflow.ellipsis,
+                style    : ClaseGenEstilosTexto.normalChico(oContexto)),
+          ),
+        ],
+      ),
+    );
+  }
+
   // ── Campo Comentarios ───────────────────────────────────────────────────
   Widget construirCampoComentarios(BuildContext oContexto) {
     final ClaseCampoAbm oCampo = widget.listCamposPie.first;
@@ -1156,7 +1614,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
           enabled     : bHabilitado,
           maxLines    : 3,
           maxLength   : oCampo.iMaxComentario,
-          onChanged   : (sValor) => setState(() {}),
+          onChanged   : (sValor) => alCambiarCampo(),
           style       : ClaseGenEstilosTexto.textoCampo(oContexto),
           decoration  : InputDecoration(
             counterText : '',
@@ -1177,12 +1635,17 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     final ThemeData oTema   = Theme.of(oContexto);
     final int       iInicio = iPagina * ClaseGenLayout.iFilasPorPagina;
     final int       iFin    = min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrada.length);
+    final double    dAnchoExpandido = max(
+        ClaseGenLayout.dAnchoGrillaAbm,
+        min(ClaseGenLayout.dAnchoReferencia * 0.75,
+            MediaQuery.sizeOf(oContexto).width * 0.75),
+    );
     final List<Map<String, dynamic>> listPagina =
         (iInicio < listFiltrada.length) ? listFiltrada.sublist(iInicio, iFin) : <Map<String, dynamic>>[];
 
     return AnimatedContainer(
       duration  : const Duration(milliseconds: 250),
-      width     : bGrillaExpandida ? ClaseGenLayout.dAnchoReferencia * 0.75
+      width     : bGrillaExpandida ? dAnchoExpandido
                                    : ClaseGenLayout.dAnchoGrillaAbm,
       decoration: BoxDecoration(
         color  : oTema.colorScheme.surfaceContainerLow,
@@ -1359,6 +1822,11 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
   }
 
   // ── Botones ABM ─────────────────────────────────────────────────────────
+  /// Barra de botones ABM. Estados según reglas 11-13.
+  /// Colores tomados de ColorScheme (temas.dart): se adaptan automáticamente
+  /// al tema claro y al tema oscuro.
+  /// Si solo Grabar y Cancelar están habilitados (modo edición),
+  /// Grabar usa un color más llamativo.
   Widget construirBotones(BuildContext oContexto) {
     final bool bEnEdicion      = enumEstado == EnumEstadoCabDet.agregando ||
                                  enumEstado == EnumEstadoCabDet.modificando ||
@@ -1380,7 +1848,7 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
           construirBoton(oContexto, Icons.add,                getTexto('abmAgregar'),   bPuedeAgregar ? agregar : null),
           construirBoton(oContexto, Icons.remove,             getTexto('abmBorrar'),    (!bEnEdicion && bHayDatos && iRegistro >= 0) ? borrar : null),
           construirBoton(oContexto, Icons.edit_outlined,      getTexto('abmModificar'), (!bEnEdicion && bHayDatos && iRegistro >= 0) ? modificar : null),
-          construirBoton(oContexto, Icons.check,              sTextoGrabar,             bEnEdicion ? grabar : null, bEsPrimario: true),
+          construirBoton(oContexto, Icons.check,              sTextoGrabar,             bEnEdicion ? grabar : null, bEsDestacado: true),
           construirBoton(oContexto, Icons.cancel_outlined,    getTexto('abmCancelar'),  bEnEdicion ? cancelar : null),
           construirBoton(oContexto, Icons.search,             getTexto('abmEncontrar'), bPuedeEncontrar ? encontrar : null),
           construirBoton(oContexto, Icons.power_settings_new, getTexto('abmFin'),       bEnEdicion ? null : fin),
@@ -1389,22 +1857,39 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle> {
     );
   }
 
+  /// Botón ABM uniforme: mismo ancho y alto, icono a la izquierda.
+  /// Colores tomados de ColorScheme (temas.dart): se adaptan al tema
+  /// claro y oscuro automáticamente.
+  /// bEsDestacado = true solo para Grabar en modo edición (más llamativo).
   Widget construirBoton(
-    BuildContext oContexto,
-    IconData     oIcono,
-    String       sTexto,
+    BuildContext  oContexto,
+    IconData      oIcono,
+    String        sTexto,
     VoidCallback? funcAlPulsar, {
-    bool bEsPrimario = false,
+    bool bEsDestacado = false,
   }) {
+    final ColorScheme oEsquema = Theme.of(oContexto).colorScheme;
     final Widget wEtiqueta = Text(sTexto,
         overflow : TextOverflow.ellipsis,
         style    : ClaseGenEstilosTexto.normalMediano(oContexto));
     return SizedBox(
       width  : ClaseGenLayout.dAnchoBotonAbm,
       height : ClaseGenLayout.dAltoBotonAbm,
-      child  : bEsPrimario
-          ? FilledButton.icon(onPressed: funcAlPulsar, icon: Icon(oIcono), label: wEtiqueta)
-          : OutlinedButton.icon(onPressed: funcAlPulsar, icon: Icon(oIcono), label: wEtiqueta),
+      child  : FilledButton.icon(
+        onPressed : funcAlPulsar,
+        icon      : Icon(oIcono),
+        label     : wEtiqueta,
+        style     : FilledButton.styleFrom(
+          backgroundColor         : bEsDestacado
+                                      ? oEsquema.tertiary
+                                      : oEsquema.primary,
+          foregroundColor         : bEsDestacado
+                                      ? oEsquema.onTertiary
+                                      : oEsquema.onPrimary,
+          disabledBackgroundColor : oEsquema.surfaceContainerHigh,
+          disabledForegroundColor : oEsquema.onSurfaceVariant,
+        ),
+      ),
     );
   }
 

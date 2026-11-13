@@ -1,0 +1,83 @@
+El formulario de compras es cabecera/detalle.
+
+Tiene dos grupos.
+
+Grupo 1: Generales
+Los campos de la cabecera son:
+- Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio).
+- Fecha de la compra (fecha, obligatorio). Validación: la fecha debe estar entre el 1 de enero del ejercicio contable y a) si el ejercicio contable es el año actual entonces hasta la fecha de hoy, o b) si el ejercicio contable es anterior al año actual entonces hasta el 31 de diciembre del ejercicio contable
+- Hora (hora, obligatorio)
+- Número del asiento (numérico, 6, deshabilitado). Este número se irá poniendo automáticamente cuando haya conexión con una Base de Datos
+- Tipo de documento (selección de uno de los siguientes:
+    Factura Contado
+    Factura Crédito
+    Comprobante de Venta I.V.A incluido
+    AutoFactura (Facturas Compras)
+    Comprobante de Tributo Único
+    Ticket máquina registradora
+    Factura Importación
+    Resolución S.S.E.T.
+    Nota de Débito
+    Nota de Crédito
+    Despacho de Importación
+    Boleta de Ventas
+    Control Interno
+    Boleta de Transporte Público de Pasajero
+    Boleta ReSimple
+    Boleto de Loterías, juegos de azar
+    Boleto o Ticket de Transporte Aéreo
+    Entrada a espectáculos públicos
+  , 
+- N° (carácter, 16, obligatorio). Validación: Si el "Tipo de Documento" es: Factura Contado, Factura Crédito, Comprobante de Venta I.V.A. incluido, AutoFactura, Ticket máquina registradora, Nota de Débito, Nota de Crédito, entonces la máscara de entrada debe ser 999-999-9999999 donde cada 9 representa un dígito entre 0 y 9. Si el "Tipo de Documento" es otro entonces no hay máscara de entrada y el usuario puede escribir letras mayúsculas y dígitos de 0 a 9
+- Cantidad de cuotas (numérico, 3, obligatorio). Validación: si el "Tipo de Documento" es Factura Crédito el valor tiene que ser 1 y este campo tiene que estar habilitado. En todos los demás casos el valor tiene que ser 0 y este campo tiene que estar deshabilitado
+- Proveedor (carácter, 48, "Nombre del proveedor", obligatorio). Validación: se buscará el proveedor en una tabla y se colocarán automáticamente su Tipo de Identificación y su RUC/Cédula en los siguientes campos
+- Tipo de identificación (se mostrará uno de los siguientes: R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera, Sin Nombre, Diplomático). NOTA: Será puesto automáticamente cuando se seleccione a un proveedor 
+- RUC/Cédula (carácter, 10, deshabilitado). NOTA: Será puesto automáticamente cuando se seleccione a un proveedor
+- Timbrado N° (carácter, 8). NOTA: Es obligatorio si la máscara de entrada es 999-999-9999999 y en tal caso debe contener 8 dígitos, ni más ni menos. Debe estar en blanco y deshabilitado en los demás casos
+- Vigente desde el día (fecha). NOTA: La fecha de inicio de vigencia será obtenida de una tabla SQL
+- Vigente hasta el día (fecha). NOTA: La fecha de fin de vigencia será obtenida de una tabla SQL
+- Es Factura Electrónica (debe seleccionarse entre: Sí, No). NOTA: Por defecto este valor tiene que ser: Sí
+- Gravadas 10% (numérico, 15, máscara de entrada: 999.999.999.999). Validación: debe ser mayor o igual que cero
+- I.V.A. 10% (numérico, 15, máscara de entrada: 999.999.999.999). Validación: debe ser mayor o igual que cero
+- Gravadas 5% (numérico, 15, máscara de entrada: 999.999.999.999). Validación: debe ser mayor o igual que cero
+- I.V.A. 5% (numérico, 15, máscara de entrada: 999.999.999.999). Validación: debe ser mayor o igual que cero
+- Exentas (numérico, 15, máscara de entrada: 999.999.999.999). Validación: debe ser mayor o igual que cero
+- Total (numérico, 15, máscara de entrada: 999.999.999.999, siempre deshabilitado). Validación: debe ser calculado automáticamente como la suma de: Gravadas 10% + I.V.A. 10% + Gravadas 5% + I.V.A. 5% + Exentas
+- Tipo de afectación (debe seleccionar entre: Directo, Indistinto, Directo Exportación, Directo Importación)
+- Mostrar en Libro Compras (debe seleccionar entre: Sí, No). NOTA: Por defecto este valor tiene que ser: Sí
+- Comentarios (texto largo, 500, "Comentarios sobre esta compra", opcional). NOTA: Debe colocarse al final del formulario, después de los detalles
+
+Para los detalles se deben pedir los siguientes datos, los cuales se irán colocando en una grilla que estará ubicada justo debajo de los campos de la cabecera:
+- Cuenta N° (carácter, 16, "Número de cuenta", opcional). NOTA: Cuando haya conexión con la Base de Datos si a) el campo está vacío y el usuario presionó la tecla [ENTER] o la tecla [TAB] o hizo tap, se le mostrarán todas las cuentas para que seleccione una de ellas y si, b) escribió un número de cuenta, se validará que esa cuenta exista. En ambos casos, si la cuenta existe se la mostrará en el campo "Nombre de la cuenta"
+- Subc. (carácter, 5, opcional). Validación: cuando haya conexión con la Base de Datos si se escribe un número de subcuenta entonces se validará que existan el número de la cuenta y el número de la subcuenta
+- Nombre de la cuenta (carácter, 40, "Nombre de la cuenta contable", obligatorio si existe Cuenta N°). NOTA: Siempre tiene que estar deshabilitado, su valor será obtenido desde una tabla SQL
+- Debe (numérico, 15, obligatorio si existe Cuenta N°). La máscara de entrada es: 999.999.999.999
+- Haber (numérico, 15, obligatorio si existe Cuenta N°). La máscara de entrada es: 999.999.999.999
+- Concepto (carácter, 60, opcional)
+
+Nota 1: Los campos de detalle se colocarán en una grilla la cual tendrá un icono en cada fila para que si el usuario hace clic/tap sobre ese icono el contenido de toda esa fila se borre
+
+Nota 2: Debajo de la columna del Debe se mostrará la suma de esa columna, con un backcolor y un forecolor diferentes al de la grilla, para que esa suma resalte
+
+Nota 3: Debajo de la columna del Haber se mostrará la suma de esa columna, con un backcolor y un forecolor diferentes al de la grilla, para que esa suma resalte
+
+Nota 4: El backcolor y el forecolor del total del Debe y del total del Haber tienen que ser idénticos a los usados en asientos.dart
+
+Nota 5: Debajo de esos totales estará el campo de "Comentarios" que corresponde a la cabecera.
+
+Grupo 2: Resolución 90/2021
+- Enviar a Marangatú (debe seleccionar entre: Sí, No). NOTA: Por defecto este valor tiene que ser: Sí
+- Importe gravado 10% (numérico, 15, inicialmente debe ser igual al valor de Gravadas 10% + I.V.A. 10% que están en el grupo 1). La máscara de entrada es: 999.999.999.999
+- Importe gravado 5% (numérico, 15, inicialmente debe ser igual al valor de Gravadas 5% + I.V.A. 5% que están en el grupo 1). La máscara de entrada es: 999.999.999.999
+- Importe exento (numérico, 15, inicialmente debe ser igual al valor de Exentas que están en el grupo 1). La máscara de entrada es: 999.999.999.999
+- Importe I.R.E. Simple (numérico, 15, inicialmente debe ser 0). La máscara de entrada es: 999.999.999.999
+- Importe I.R.P. Simple (numérico, 15, inicialmente debe ser 0). La máscara de entrada es: 999.999.999.999
+- Importe no imputable (numérico, 15, inicialmente debe ser 0). La máscara de entrada es: 999.999.999.999
+- Total del comprobante (numérico, 15, tiene que ser igual a la suma de todos los importes del Grupo 2.). La máscara de entrada es: 999.999.999.999 NOTA: cada vez que se modifica alguno de los importes del grupo 2 se debe actualizar este Total del comprobante
+
+Validación: La compra solamente se grabará si:
+a) la suma de la columna del Debe es exactamente igual a la suma de la columna del Haber, y
+b) "Enviar a Marangatú" es No o "Total del comprobante" es igual a la suma de la columna del Debe
+
+Si por algún motivo no se pudo grabar, se mostrará una ventana popup con el mensaje de error respectivo

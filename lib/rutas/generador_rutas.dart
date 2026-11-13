@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vs_conta/opciones/archivos/compras.dart';
 
 import '../generales/preferencias/preferencias.dart';
 import '../generales/varios/pantalla_proximamente.dart';
@@ -103,7 +104,14 @@ Route<dynamic> funcGenerarRuta(
     );
   }
 
-  
+    if (oConfiguracion.name == ClaseRutas.rutaCompras) {
+    return MaterialPageRoute<dynamic>(
+      settings : oConfiguracion,
+      builder  : (oContexto) => ClaseCompras(oPreferencias: oPreferencias),
+    );
+  }
+
+
 
 
 

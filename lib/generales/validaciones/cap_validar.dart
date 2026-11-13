@@ -214,4 +214,44 @@ class ClaseCapValidar {
     return null;
   }
 
+  /// Valida que una fecha esté dentro del rango del ejercicio contable.
+  /// Rango: 01/01/iEjercicio hasta 31/12/iEjercicio (si iEjercicio < año actual)
+  /// o hasta hoy (si iEjercicio == año actual).
+  static String? validarFechaCompra(
+    String sValor,
+    String sEtiqueta,
+    int    iEjercicio,
+    String sIdioma,
+  ) {
+    if (sValor.isEmpty) return null;
+    final DateTime? fFecha = funcParsearFecha(sValor);
+    if (fFecha == null) {
+      return _traducir(sIdioma, 'validFechaInvalida', [sEtiqueta]);
+    }
+    final DateTime fInicio = DateTime(iEjercicio, 1, 1);
+    final DateTime fAhora  = DateTime.now();
+    final DateTime fFin    = (iEjercicio >= fAhora.year)
+        ? fAhora
+        : DateTime(iEjercicio, 12, 31);
+    if (fFecha.isBefore(fInicio) || fFecha.isAfter(fFin)) {
+      return _traducir(sIdioma, 'validFechaRango', [sEtiqueta]);
+    }
+    return null;
+  }
+
+  /// Valida que un valor numérico sea mayor o igual que cero.
+  static String? validarNoNegativo(
+    String sValor,
+    String sEtiqueta,
+    String sIdioma,
+  ) {
+    if (sValor.isEmpty) return null;
+    final int iValor = funcParsearEnteroMiles(sValor);
+    if (iValor < 0) {
+      return _traducir(sIdioma, 'validNoNegativo', [sEtiqueta]);
+    }
+    return null;
+  }
+  
 }
+
