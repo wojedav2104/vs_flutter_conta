@@ -1012,7 +1012,9 @@ class ClaseEstadoCabDet extends State<ClaseFormularioCabeceraDetalle>
     // ── Campo genérico (texto/número/comentario) ─────────────────────────
     final bool bNumero = oCampo.oTipo == EnumTipoCampoAbm.numero;
     return Column(
-      crossAxisAlignment : CrossAxisAlignment.start,
+      crossAxisAlignment : bEtiquetaDerecha
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       mainAxisSize        : MainAxisSize.min,
       children: <Widget>[
         wEtiqueta,
