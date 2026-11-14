@@ -7,8 +7,8 @@ import '../idiomas/idiomas.dart';
 import '../utilitarios/formatos.dart';
 import '../varios/listas.dart';
 
-class ClaseCapValidar {
-
+abstract final class ClaseCapValidar {
+  
   // ── Auxiliares privados ─────────────────────────────────────────────────
 
   /// Devuelve el mensaje traducido con los parámetros {0}, {1}, etc.

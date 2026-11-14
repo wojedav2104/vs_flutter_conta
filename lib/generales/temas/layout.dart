@@ -15,7 +15,7 @@ abstract final class ClaseGenLayout {
   static const double dAnchoCaracter                  =    8.6;   // ancho de 1 carácter en Roboto Mono
   static const double dAnchoEtiquetaCampo             =  220.0;
   static const double dAnchoGrillaAbm                 =  280.0;
-  static const double dAnchoGrillaRegistros           =  340.0;
+  static const double dAnchoGrillaRegistros           =  500.0;
   static const double dAnchoIconoBorrar               =   48.0;   // espacio que ocupa el icono "X" de borrado
   static const double dAnchoIconoFlecha               =   32.0;   // espacio que ocupa la flecha de una lista
   static const double dAnchoMaximoColumnaCompacta     =  165.0;

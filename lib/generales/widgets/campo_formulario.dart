@@ -5,6 +5,7 @@ import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
+import '../temas/layout.dart';
 import '../utilitarios/formatos.dart';
 import '../varios/listas.dart';
 import 'ventana_mensaje.dart';
@@ -42,6 +43,7 @@ class ClaseCampoFormulario extends StatefulWidget {
 
   const ClaseCampoFormulario({
     super.key,
+    this.bAutoFocus = false,
     required this.bHabilitado,
     required this.funcAlCambiar,
     required this.mapValores,
@@ -50,6 +52,8 @@ class ClaseCampoFormulario extends StatefulWidget {
     required this.sValor,
   });
 
+  /// true para mover el foco a este campo al entrar en modo edición.
+  final bool                                bAutoFocus;
   final bool                                bHabilitado;
   final void Function(String sValor)         funcAlCambiar;
   final Map<String, String>                  mapValores;
@@ -64,12 +68,18 @@ class ClaseCampoFormulario extends StatefulWidget {
 class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   late TextEditingController oControl;
+  final FocusNode oFoco = FocusNode();
   String sMascaraActual = '';
 
   @override
   void initState() {
     super.initState();
     oControl = TextEditingController(text: widget.sValor);
+    if (widget.bAutoFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) oFoco.requestFocus();
+      });
+    }
   }
 
   @override
@@ -78,11 +88,17 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     if (oldWidget.sValor != widget.sValor && oControl.text != widget.sValor) {
       oControl.text = widget.sValor;
     }
+    if (widget.bAutoFocus && !oldWidget.bAutoFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) oFoco.requestFocus();
+      });
+    }
   }
 
   @override
   void dispose() {
     oControl.dispose();
+    oFoco.dispose();
     super.dispose();
   }
 
@@ -91,6 +107,33 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   String? _getMascara() {
     final String? sMascara = widget.oCampo.funcMascara?.call(widget.mapValores);
     return sMascara ?? widget.oCampo.sMascara;
+  }
+
+  // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
+
+  double _getAnchoCampo() {
+    final String? sMascara = _getMascara();
+    final int iCaracteres = (sMascara != null)
+        ? sMascara.length
+        : widget.oCampo.iAnchoCaracteres;
+    switch (widget.oCampo.oTipo) {
+      case EnumTipoCampoAbm.comentario:
+        return ClaseGenLayout.dAnchoCampoComentario;
+      case EnumTipoCampoAbm.casillas:
+      case EnumTipoCampoAbm.lista:
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
+             + ClaseGenLayout.dAnchoIconoFlecha;
+      case EnumTipoCampoAbm.fecha:
+      case EnumTipoCampoAbm.hora:
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
+             + ClaseGenEspacios.dEspacio24
+             + ClaseGenLayout.dAnchoIconoBorrar
+             + ClaseGenLayout.dAnchoIconoFlecha;
+      default:
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
+             + ClaseGenEspacios.dEspacio24
+             + ClaseGenLayout.dAnchoIconoBorrar;
+    }
   }
 
   // ── Construcción de la interfaz ──────────────────────────────────────────
@@ -103,17 +146,23 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : 220,
+            width : ClaseGenLayout.dAnchoEtiquetaCampo,
             child : Padding(
-              padding : const EdgeInsets.only(top: ClaseGenEspacios.dEspacio14),
-              child   : Text(
+              padding : const EdgeInsets.only(
+                top   : ClaseGenEspacios.dEspacio14,
+                right : ClaseGenEspacios.dEspacio04,
+              ),
+              child : Text(
                 widget.oCampo.sEtiqueta,
-                style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+                textAlign : TextAlign.right,
+                style     : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
               ),
             ),
           ),
-          const SizedBox(width: ClaseGenEspacios.dEspacio12),
-          Expanded(child: _construirControl(oContexto)),
+          SizedBox(
+            width : _getAnchoCampo(),
+            child : _construirControl(oContexto),
+          ),
         ],
       ),
     );
@@ -164,6 +213,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     return TextField(
       controller      : oControl,
       enabled         : widget.bHabilitado,
+      focusNode       : oFoco,
       style           : ClaseGenEstilosTexto.textoCampo(oContexto),
       textAlign       : bNumero ? TextAlign.right : TextAlign.left,
       inputFormatters : _getFormateadores(bNumero),
@@ -239,6 +289,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           child: TextField(
             controller : oControl,
             enabled    : widget.bHabilitado,
+            focusNode  : oFoco,
             style      : ClaseGenEstilosTexto.textoCampo(oContexto),
             onChanged  : (String sValor) => widget.funcAlCambiar(sValor),
             decoration : InputDecoration(
@@ -289,14 +340,16 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       children: <Widget>[
         Expanded(
           child: TextField(
-            controller : oControl,
-            enabled    : widget.bHabilitado,
-            style      : ClaseGenEstilosTexto.textoCampo(oContexto),
-            onChanged  : (String sValor) => widget.funcAlCambiar(sValor),
-            decoration : InputDecoration(
-              isDense    : true,
-              hintText   : 'hh:mm',
-              border     : const OutlineInputBorder(),
+            controller  : oControl,
+            enabled     : widget.bHabilitado,
+            focusNode   : oFoco,
+            style       : ClaseGenEstilosTexto.textoCampo(oContexto),
+            onChanged   : _alCambiarHora,
+            onSubmitted : (_) => _normalizarHora(),
+            decoration  : InputDecoration(
+              isDense     : true,
+              hintText    : 'hh:mm',
+              border      : const OutlineInputBorder(),
             ),
           ),
         ),
@@ -330,6 +383,36 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           ),
       ],
     );
+  }
+
+  /// Normaliza la hora mientras se teclea: el valor interno siempre queda
+  /// en formato hh:mm. El display solo se corrige cuando los minutos ya
+  /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
+  void _alCambiarHora(String sValor) {
+    final int? iMinutos = funcParsearHora(sValor);
+    final String sHora = (iMinutos != null)
+        ? funcFormatearHora(iMinutos ~/ 60, iMinutos % 60)
+        : sValor;
+    widget.funcAlCambiar(sHora);
+    if (sHora != oControl.text && RegExp(r':\d{2}$').hasMatch(sValor.trim())) {
+      oControl.value = TextEditingValue(
+        text      : sHora,
+        selection : TextSelection.collapsed(offset: sHora.length),
+      );
+    }
+  }
+
+  /// Normaliza el display al confirmar (Enter): rellena con ceros.
+  /// Ej: '1:30' → '01:30', '12:5' → '12:05', '9:8' → '09:08'.
+  void _normalizarHora() {
+    final int? iMinutos = funcParsearHora(oControl.text);
+    if (iMinutos != null) {
+      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+      if (sHora != oControl.text) {
+        oControl.text = sHora;
+        widget.funcAlCambiar(sHora);
+      }
+    }
   }
 
   // ── Lista (dropdown) ─────────────────────────────────────────────────────
@@ -392,6 +475,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     return TextField(
       controller    : oControl,
       enabled       : widget.bHabilitado,
+      focusNode     : oFoco,
       maxLines      : 3,
       style         : ClaseGenEstilosTexto.textoCampo(oContexto),
       onChanged     : (String sValor) {

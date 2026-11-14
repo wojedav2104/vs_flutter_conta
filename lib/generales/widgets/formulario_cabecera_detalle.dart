@@ -89,6 +89,9 @@ class ClaseEstadoFormularioCabeceraDetalle
   bool   bModoEdicion = false;
   int    iRegistro    = -1;
 
+  /// true después de Agregar/Modificar → mover foco al primer campo.
+  bool   bPedirFoco   = false;                          // ← CAMBIO item 10
+
   /// Filas de detalle que se están editando (valores internos).
   List<Map<String, String>> listDetalles = <Map<String, String>>[];
 
@@ -152,6 +155,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       _reemplazarDetalles(<Map<String, String>>[_crearFilaVacia()]);
       iRegistro    = -1;
       bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
     });
   }
 
@@ -162,6 +166,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       mapValores = _desdeRegistro(oRegistro);
       _reemplazarDetalles(_desdeDetalles(oRegistro));
       bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
     });
   }
 
@@ -499,6 +504,14 @@ class ClaseEstadoFormularioCabeceraDetalle
 
   @override
   Widget build(BuildContext oContexto) {
+
+    // Resetear el pedido de foco después de este frame.                   ← CAMBIO item 10
+    if (bPedirFoco) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bPedirFoco = false;
+      });
+    }
+
     return ClaseAndamiajeAbm(
       funcAlClicar    : _alClicarBoton,
       funcSeleccionar : seleccionar,
@@ -511,6 +524,7 @@ class ClaseEstadoFormularioCabeceraDetalle
           Expanded(
             flex  : 2,
             child : ClaseFormularioCampos(
+              bAutoFocus        : bPedirFoco,             // ← CAMBIO item 10
               funcAlCambiarCampo : _alCambiarCampo,
               funcEsHabilitado   : _getHabilitado,
               listCampos         : widget.listCamposCabecera,
@@ -687,7 +701,16 @@ class ClaseEstadoFormularioCabeceraDetalle
           enabled         : bHabilitado,
           style           : ClaseGenEstilosTexto.normalChico(oContexto),
           textAlign       : TextAlign.right,
-          inputFormatters : <TextInputFormatter>[oCampo.bTieneDecimales ? ClaseFormateadorImporte() : FilteringTextInputFormatter.digitsOnly,],          onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          inputFormatters : <TextInputFormatter>[
+            // ← CAMBIO: arreglo de formato (todo estaba en una línea)
+            if (oCampo.bTieneDecimales)
+              ClaseFormateadorImporte()
+            else
+              FilteringTextInputFormatter.digitsOnly,
+            if (oCampo.iAnchoCaracteres > 0)
+              LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres),
+          ],
+          onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
           decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
         );
       default:
@@ -747,8 +770,8 @@ class ClaseEstadoFormularioCabeceraDetalle
                     ? ClaseIdiomas.getTexto(getIdioma(), 'detTotales')
                     : ((i == iPrimeraSuma || mapSumas
                             .containsKey(widget.listCamposDetalle[i].sClave))
-                                        ? funcFormatearImporte(
-                    mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
+                        ? funcFormatearImporte(
+                            mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
                         : ''),
                 style     : oEstilo,
                 textAlign : TextAlign.right,

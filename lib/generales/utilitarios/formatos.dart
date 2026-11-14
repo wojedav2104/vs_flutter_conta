@@ -50,7 +50,7 @@ DateTime? funcParsearFecha(String sValor) {
 /// del rango 00:00–23:59.
 int? funcParsearHora(String sValor) {
   final RegExpMatch? oMatch =
-      RegExp(r'^(\d{1,2}):(\d{2})$').firstMatch(sValor.trim());
+      RegExp(r'^(\d{1,2}):(\d{1, 2})$').firstMatch(sValor.trim());
   if (oMatch == null) return null;
   final int? iHora   = int.tryParse(oMatch.group(1)!);
   final int? iMinuto = int.tryParse(oMatch.group(2)!);

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
+import '../temas/colores.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
@@ -90,6 +91,7 @@ class ClaseFormularioCampos extends StatelessWidget {
 
   const ClaseFormularioCampos({
     super.key,
+    this.bAutoFocus = false,
     required this.funcAlCambiarCampo,
     required this.funcEsHabilitado,
     required this.listCampos,
@@ -97,14 +99,26 @@ class ClaseFormularioCampos extends StatelessWidget {
     required this.sIdioma,
   });
 
+  /// true para mover el foco al primer campo habilitado (item 10).
+  final bool                                       bAutoFocus;
   final void Function(String sClave, String sValor) funcAlCambiarCampo;
-  final bool Function(ClaseCampoAbm oCampo)          funcEsHabilitado;
-  final List<ClaseCampoAbm>                          listCampos;
-  final Map<String, String>                          mapValores;
-  final String                                       sIdioma;
+  final bool Function(ClaseCampoAbm oCampo)        funcEsHabilitado;
+  final List<ClaseCampoAbm>                        listCampos;
+  final Map<String, String>                        mapValores;
+  final String                                     sIdioma;
 
   @override
   Widget build(BuildContext oContexto) {
+
+    // Primer campo habilitado → recibir foco al entrar en edición.
+    ClaseCampoAbm? oPrimeroHabilitado;
+    for (final ClaseCampoAbm oCampo in listCampos) {
+      if (funcEsHabilitado(oCampo)) {
+        oPrimeroHabilitado = oCampo;
+        break;
+      }
+    }
+
     final List<String> listGrupos = <String>[];
     for (final ClaseCampoAbm oCampo in listCampos) {
       final String? sGrupo = oCampo.sGrupo;
@@ -117,7 +131,9 @@ class ClaseFormularioCampos extends StatelessWidget {
         child   : Column(
           crossAxisAlignment : CrossAxisAlignment.start,
           children: <Widget>[
-            for (final ClaseCampoAbm oCampo in listCampos) _construirCampo(oCampo),
+            for (final ClaseCampoAbm oCampo in listCampos)
+              _construirCampo(oCampo,
+                  bAutoFocus: bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
           ],
         ),
       );
@@ -137,7 +153,9 @@ class ClaseFormularioCampos extends StatelessWidget {
               child   : Column(
                 crossAxisAlignment : CrossAxisAlignment.start,
                 children: <Widget>[
-                  for (final ClaseCampoAbm oCampo in listComunes) _construirCampo(oCampo),
+                  for (final ClaseCampoAbm oCampo in listComunes)
+                    _construirCampo(oCampo,
+                        bAutoFocus: bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
                 ],
               ),
             ),
@@ -158,7 +176,8 @@ class ClaseFormularioCampos extends StatelessWidget {
                       children: <Widget>[
                         for (final ClaseCampoAbm oCampo in listCampos
                             .where((ClaseCampoAbm o) => o.sGrupo == sGrupo))
-                          _construirCampo(oCampo),
+                          _construirCampo(oCampo,
+                              bAutoFocus: bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
                       ],
                     ),
                   ),
@@ -170,8 +189,10 @@ class ClaseFormularioCampos extends StatelessWidget {
     );
   }
 
-  Widget _construirCampo(ClaseCampoAbm oCampo) {
+  // ← CAMBIO item 10: aceptar y propagar bAutoFocus
+  Widget _construirCampo(ClaseCampoAbm oCampo, {bool bAutoFocus = false}) {
     return ClaseCampoFormulario(
+      bAutoFocus    : bAutoFocus,
       bHabilitado   : funcEsHabilitado(oCampo),
       funcAlCambiar : (String sValor) => funcAlCambiarCampo(oCampo.sClave, sValor),
       mapValores    : mapValores,
@@ -405,6 +426,10 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                         message : ClaseIdiomas.getTexto(widget.sIdioma, 'ordenarPor'),
                         child   : Text(
                           oCampo.sEtiqueta,
+                          // ← CAMBIO item 8: alinear números a la derecha en encabezados
+                          textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                              ? TextAlign.right
+                              : TextAlign.left,
                           style    : ClaseGenEstilosTexto.normalChico(oContexto),
                           maxLines : 1,
                           overflow : TextOverflow.ellipsis,
@@ -442,6 +467,10 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                                   oContexto, oRegistro, oCampo, oDetalle.globalPosition),
                               child: Text(
                                 (oRegistro[oCampo.sClave] ?? '').toString(),
+                                // ← CAMBIO item 8: alinear números a la derecha en celdas
+                                textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                    ? TextAlign.right
+                                    : TextAlign.left,
                                 style    : ClaseGenEstilosTexto.normalChico(oContexto),
                                 maxLines : 1,
                                 overflow : TextOverflow.ellipsis,
@@ -504,8 +533,11 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
 }
 
 
-/// Estructura común de un formulario ABM: título, botonera, grilla lateral de
-/// registros y el área de formulario (pasada como widget) a la derecha.
+/// Estructura común de un formulario ABM: título, grilla lateral de registros
+/// y el área de formulario (pasada como widget) a la derecha.
+/// La botonera se ubica al pie del formulario.
+// ← CAMBIO items 1,2,3,6: botonera delegada a ClaseBotoneraAbm, al pie,
+//   con orden, tamaño y colores correctos.
 class ClaseAndamiajeAbm extends StatelessWidget {
 
   const ClaseAndamiajeAbm({
@@ -541,7 +573,7 @@ class ClaseAndamiajeAbm extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          _construirBotonera(oContexto),
+          // ← CAMBIO item 3: contenido arriba, botonera abajo
           Expanded(
             child: Row(
               crossAxisAlignment : CrossAxisAlignment.stretch,
@@ -558,53 +590,114 @@ class ClaseAndamiajeAbm extends StatelessWidget {
               ],
             ),
           ),
+          // ← CAMBIO items 1,2,3,6: botonera al pie, delegada a ClaseBotoneraAbm
+          ClaseBotoneraAbm(
+            esHabilitado : (EnumBotonAbm oBoton) => setHabilitados.contains(oBoton),
+            funcAccion   : funcAlClicar,
+            sIdioma      : sIdioma,
+          ),
         ],
       ),
     );
   }
 
-  Widget _construirBotonera(BuildContext oContexto) {
-    return Padding(
-      padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
-      child   : Wrap(
-        spacing    : ClaseGenEspacios.dEspacio08,
-        runSpacing : ClaseGenEspacios.dEspacio04,
-        children   : <Widget>[
-          _construirBoton(oContexto, EnumBotonAbm.agregar,   Icons.add,             'abmAgregar',   bPrimario: true),
-          _construirBoton(oContexto, EnumBotonAbm.modificar, Icons.edit,            'abmModificar'),
-          _construirBoton(oContexto, EnumBotonAbm.borrar,    Icons.delete,          'abmBorrar'),
-          _construirBoton(oContexto, EnumBotonAbm.encontrar, Icons.search,          'abmEncontrar'),
-          _construirBoton(oContexto, EnumBotonAbm.grabar,    Icons.save,            'abmGrabar',    bPrimario: true),
-          _construirBoton(oContexto, EnumBotonAbm.cancelar,  Icons.cancel_outlined, 'abmCancelar'),
-          _construirBoton(oContexto, EnumBotonAbm.fin,       Icons.close,           'abmFin'),
-        ],
-      ),
-    );
-  }
+}
 
-  Widget _construirBoton(
-    BuildContext oContexto,
-    EnumBotonAbm oBoton,
-    IconData     oIcono,
-    String       sClave, {
-    bool bPrimario = false,
-  }) {
-    final Widget oEtiqueta = Text(ClaseIdiomas.getTexto(sIdioma, sClave),
-        style: ClaseGenEstilosTexto.normalMediano(oContexto));
-    final Widget oIconoWidget = Icon(oIcono);
-    final void Function()? funcAccion =
-        setHabilitados.contains(oBoton) ? () => funcAlClicar(oBoton) : null;
-    if (bPrimario) {
-      return FilledButton.icon(
-        onPressed : funcAccion,
-        icon      : oIconoWidget,
-        label     : oEtiqueta,
-      );
+
+/// Barra de botones ABM al pie del formulario.
+///
+/// Orden visual fijo, tamaño uniforme y colores consistentes:
+/// mismo color para todos los habilitados, mismo color para todos los
+/// deshabilitados.
+class ClaseBotoneraAbm extends StatelessWidget {
+
+  const ClaseBotoneraAbm({
+    super.key,
+    required this.esHabilitado,
+    required this.funcAccion,
+    required this.sIdioma,
+  });
+
+  /// Devuelve true si el botón debe estar habilitado en el estado actual.
+  final bool Function(EnumBotonAbm oBoton) esHabilitado;
+
+  /// Acción a ejecutar cuando se presiona un botón.
+  final void Function(EnumBotonAbm oBoton) funcAccion;
+
+  final String sIdioma;
+
+  /// Orden visual fijo de los botones (item 1).
+  static const List<EnumBotonAbm> _listOrden = <EnumBotonAbm>[
+    EnumBotonAbm.agregar,
+    EnumBotonAbm.borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
+    EnumBotonAbm.encontrar,
+    EnumBotonAbm.fin,
+  ];
+
+  String _getEtiqueta(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto(sIdioma, 'abmAgregar');
+      case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto(sIdioma, 'abmBorrar');
+      case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto(sIdioma, 'abmCancelar');
+      case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto(sIdioma, 'abmEncontrar');
+      case EnumBotonAbm.fin:       return ClaseIdiomas.getTexto(sIdioma, 'abmFin');
+      case EnumBotonAbm.grabar:    return ClaseIdiomas.getTexto(sIdioma, 'abmGrabar');
+      case EnumBotonAbm.modificar: return ClaseIdiomas.getTexto(sIdioma, 'abmModificar');
     }
-    return OutlinedButton.icon(
-      onPressed : funcAccion,
-      icon      : oIconoWidget,
-      label     : oEtiqueta,
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return Padding(
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio16,
+        vertical   : ClaseGenEspacios.dEspacio12,
+      ),
+      child : Row(
+        mainAxisAlignment : MainAxisAlignment.center,
+        children : <Widget>[
+          for (int i = 0; i < _listOrden.length; i++) ...<Widget>[
+            if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio08),
+            _construirBoton(_listOrden[i], oContexto),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
+    final bool bHabilitado = esHabilitado(oBoton);
+    return SizedBox(
+      width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
+      height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
+      child  : ElevatedButton(
+        onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
+        style     : ElevatedButton.styleFrom(
+          backgroundColor         : bHabilitado
+              ? ClaseGenColores.colorBotonHabilitado          // item 6
+              : ClaseGenColores.colorBotonDeshabilitado,
+          foregroundColor         : bHabilitado
+              ? ClaseGenColores.colorTextoBotonHabilitado
+              : ClaseGenColores.colorTextoBotonDeshabilitado,
+          disabledBackgroundColor : ClaseGenColores.colorBotonDeshabilitado,
+          disabledForegroundColor : ClaseGenColores.colorTextoBotonDeshabilitado,
+          shape  : RoundedRectangleBorder(
+            borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+          ),
+          padding : EdgeInsets.zero,
+        ),
+        child : Text(
+          _getEtiqueta(oBoton),
+          style : ClaseGenEstilosTexto.normalMediano(oContexto).copyWith(
+            color : bHabilitado
+                ? ClaseGenColores.colorTextoBotonHabilitado
+                : ClaseGenColores.colorTextoBotonDeshabilitado,
+          ),
+        ),
+      ),
     );
   }
 

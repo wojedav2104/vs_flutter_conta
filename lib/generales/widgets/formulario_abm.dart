@@ -62,6 +62,10 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
 
   bool   bModoEdicion = false;
   int    iRegistro    = -1;
+
+  /// true después de Agregar/Modificar → mover foco al primer campo.
+  bool   bPedirFoco   = false;                          // ← CAMBIO item 10
+
   Map<String, String> mapValores = <String, String>{};
 
   String getIdioma() => widget.oPreferencias.getIdioma();
@@ -76,6 +80,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       };
       iRegistro    = -1;
       bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
     });
   }
 
@@ -84,6 +89,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
     setState(() {
       mapValores   = _desdeRegistro(widget.listRegistros[iRegistro]);
       bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
     });
   }
 
@@ -254,6 +260,14 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
 
   @override
   Widget build(BuildContext oContexto) {
+
+    // Resetear el pedido de foco después de este frame.                   ← CAMBIO item 10
+    if (bPedirFoco) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bPedirFoco = false;
+      });
+    }
+
     return ClaseAndamiajeAbm(
       funcAlClicar    : _alClicarBoton,
       funcSeleccionar : seleccionar,
@@ -261,6 +275,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       listCampos      : widget.listCampos,
       listRegistros   : widget.listRegistros,
       oFormulario     : ClaseFormularioCampos(
+        bAutoFocus       : bPedirFoco,                   // ← CAMBIO item 10
         funcAlCambiarCampo : _alCambiarCampo,
         funcEsHabilitado   : _getHabilitado,
         listCampos         : widget.listCampos,
