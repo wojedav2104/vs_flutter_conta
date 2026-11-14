@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vs_conta/generales/widgets/controles_preferencias.dart';
+import 'package:vs_conta/generales/widgets/ventana_mensaje.dart';
 
 import '../idiomas/idiomas.dart';
 import '../preferencias/preferencias.dart';

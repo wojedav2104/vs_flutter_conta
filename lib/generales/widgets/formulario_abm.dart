@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
 import '../preferencias/preferencias.dart';
-import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../utilitarios/formatos.dart';
 import 'abm_comun.dart';
