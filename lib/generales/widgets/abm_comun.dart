@@ -7,11 +7,11 @@ import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
 import '../modelos/permisos.dart';
 import '../modelos/sesion.dart';
-import '../temas/colores.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
+import '../temas/temas.dart';
 import '../validaciones/cap_validar.dart';
 import 'campo_formulario.dart';
 import 'ventana_mensaje.dart';
@@ -317,13 +317,11 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                 .join('\t');
       await Clipboard.setData(ClipboardData(text: sTexto));
       if (!mounted) return;
-      await funcMostrarMensaje(
+      await funcMostrarInformacion(
         context,
         widget.sIdioma,
         ClaseIdiomas.getTexto(widget.sIdioma, 'aplicacion'),
         ClaseIdiomas.getTexto(widget.sIdioma, 'copiadoPortapapeles'),
-        ClaseIdiomas.getTexto(widget.sIdioma, 'aceptar'),
-        ClaseGenLayout.iAnchoColumnasMensaje,
       );
     } else {
       setState(() {
@@ -608,13 +606,13 @@ class ClaseAndamiajeAbm extends StatelessWidget {
 
 /// Barra de botones ABM al pie del formulario.
 ///
-/// Orden visual fijo, tamaño uniforme y colores consistentes:
-/// mismo color para todos los habilitados, mismo color para todos los
-/// deshabilitados.
+/// Orden visual fijo, tamaño uniforme y colores consistentes: mismo color
+/// para todos los habilitados, mismo color para todos los deshabilitados.
+/// Los colores provienen de ClaseGenTemas (respetan el modo claro/oscuro).
 ///
-/// Punto 3: Borrar siempre pide confirmación antes de actuar.
-/// Punto 4: los botones de edición quedan deshabilitados en los países
-/// sin permiso de edición (Francia: solo visualización).
+/// Los botones de edición quedan deshabilitados en los países sin permiso
+/// de edición (Francia: solo visualización). La confirmación de Borrar
+/// vive en el borrar() de cada formulario, no aquí.
 class ClaseBotoneraAbm extends StatelessWidget {
 
   const ClaseBotoneraAbm({
@@ -643,7 +641,7 @@ class ClaseBotoneraAbm extends StatelessWidget {
     EnumBotonAbm.fin,
   ];
 
-  /// Botones de edición (punto 4): no operan en países solo visualización.
+  /// Botones de edición: no operan en países solo visualización.
   static const Set<EnumBotonAbm> _setBotonesEdicion = <EnumBotonAbm>{
     EnumBotonAbm.agregar,
     EnumBotonAbm.borrar,
@@ -652,7 +650,7 @@ class ClaseBotoneraAbm extends StatelessWidget {
     EnumBotonAbm.cancelar,
   };
 
-  /// Devuelve true si el país conectado permite edición (punto 4).
+  /// Devuelve true si el país conectado permite edición.
   bool _puedeOperar(EnumBotonAbm oBoton) =>
       !_setBotonesEdicion.contains(oBoton)
       || ClasePermisos.puedeEditar(ClaseSesion.getPais());
@@ -688,39 +686,22 @@ class ClaseBotoneraAbm extends StatelessWidget {
     );
   }
 
-  /// Punto 3: Borrar pide confirmación; el resto actúa de inmediato.
-  Future<void> _alPresionar(EnumBotonAbm oBoton, BuildContext oContexto) async {
-    if (oBoton == EnumBotonAbm.borrar) {
-      final bool bConfirmo = await funcMostrarConfirmar(
-        oContexto,
-        sIdioma,
-        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
-        ClaseIdiomas.getTexto(sIdioma, 'confirmarBorrar'),
-        ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
-        ClaseIdiomas.getTexto(sIdioma, 'cancelar'),
-        ClaseGenLayout.iAnchoColumnasMensaje,
-      );
-      if (!bConfirmo) return;
-    }
-    funcAccion(oBoton);
-  }
-
   Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
     final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
     return SizedBox(
       width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
       height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
       child  : ElevatedButton(
-        onPressed : bHabilitado ? () => _alPresionar(oBoton, oContexto) : null,
+        onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
         style     : ElevatedButton.styleFrom(
           backgroundColor         : bHabilitado
-              ? _colorBotonHabilitado(oContexto)          // item 6
-              : _colorBotonDeshabilitado(oContexto),
+              ? ClaseGenTemas.colorBotonHabilitado(oContexto)          // item 6
+              : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
           foregroundColor         : bHabilitado
-              ? _colorTextoBotonHabilitado(oContexto)
-              : _colorTextoBotonDeshabilitado(oContexto),
-          disabledBackgroundColor : _colorBotonDeshabilitado(oContexto),
-          disabledForegroundColor : _colorTextoBotonDeshabilitado(oContexto),
+              ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+              : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+          disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
+          disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
           shape  : RoundedRectangleBorder(
             borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
           ),
@@ -730,25 +711,12 @@ class ClaseBotoneraAbm extends StatelessWidget {
           _getEtiqueta(oBoton),
           style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
             color : bHabilitado
-                ? _colorTextoBotonHabilitado(oContexto)
-                : _colorTextoBotonDeshabilitado(oContexto),
+                ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
           ),
         ),
       ),
     );
   }
-
-  // ── Colores (PROVISORIO hasta recibir temas.dart) ───────────────────────
-  // Pendiente punto 2: reemplazar estas cuatro funciones por los accesos de
-  // temas.dart (respetan el modo claro/oscuro). Mientras tanto usan los
-  // tokens de la paleta interna.
-  Color _colorBotonHabilitado(BuildContext oContexto) =>
-      ClaseGenColores.colorBotonHabilitado;
-  Color _colorBotonDeshabilitado(BuildContext oContexto) =>
-      ClaseGenColores.colorBotonDeshabilitado;
-  Color _colorTextoBotonHabilitado(BuildContext oContexto) =>
-      ClaseGenColores.colorTextoBotonHabilitado;
-  Color _colorTextoBotonDeshabilitado(BuildContext oContexto) =>
-      ClaseGenColores.colorTextoBotonDeshabilitado;
 
 }

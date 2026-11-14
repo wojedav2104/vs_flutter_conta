@@ -30,6 +30,7 @@ abstract final class ClaseGenLayout {
   static const double dFactorEscalaMax                =    1.3;
   static const double dFactorEscalaMin                =    0.8;
   static const double dGrosorSpinner                  =    2.0;
+  static const double dTamanoIconoVentana             =   28.0;
 
   static const int    iAnchoColumnasMensaje     =   40;
   static const int    iCaracteresGrillaAbierta  =   75;

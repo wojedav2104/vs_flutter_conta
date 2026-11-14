@@ -172,16 +172,14 @@ class ClaseEstadoFormularioCabeceraDetalle
 
   Future<void> borrar() async {
     if (iRegistro < 0) return;
-    final bool bAceptar = await funcMostrarConfirmar(
+    final EnumRespuestaConfirmacion oRespuesta = await funcMostrarConfirmacion(
       context,
       getIdioma(),
       widget.sTitulo,
       ClaseIdiomas.getTexto(getIdioma(), 'confirmarBorrar'),
-      ClaseIdiomas.getTexto(getIdioma(), 'aceptar'),
-      ClaseIdiomas.getTexto(getIdioma(), 'cancelar'),
-      ClaseGenLayout.iAnchoColumnasMensaje,
+      bMostrarCancelar : false,
     );
-    if (!bAceptar || !mounted) return;
+    if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
     setState(() {
       widget.listRegistros.removeAt(iRegistro);
       mapValores   = <String, String>{};
@@ -189,7 +187,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       iRegistro    = -1;
       bModoEdicion = false;
     });
-    await _mostrarMensaje(ClaseIdiomas.getTexto(getIdioma(), 'mensajeBorrado'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto(getIdioma(), 'mensajeBorrado'));
   }
 
   void cancelar() {
@@ -214,7 +212,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       final String? sError =
           funcValidarCampoAbm(oCampo, mapValores[oCampo.sClave] ?? '', sIdioma);
       if (sError != null) {
-        await _mostrarMensaje(sError);
+        await _mostrarError(sError);
         return;
       }
     }
@@ -222,7 +220,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     // 2) Filas de detalle.
     final String? sErrorDetalle = _validarDetalles(sIdioma);
     if (sErrorDetalle != null) {
-      await _mostrarMensaje(sErrorDetalle);
+      await _mostrarError(sErrorDetalle);
       return;
     }
 
@@ -232,7 +230,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       ..[ClaseFormularioCabeceraDetalle.sClaveDetalles] = listLimpias;
     final String? sError = widget.funcValidarRegistro?.call(oRegistro);
     if (sError != null) {
-      await _mostrarMensaje(sError);
+      await _mostrarError(sError);
       return;
     }
 
@@ -255,7 +253,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       }
       bModoEdicion = false;
     });
-    await _mostrarMensaje(ClaseIdiomas.getTexto(sIdioma, 'grabacionExitosa'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto(sIdioma, 'grabacionExitosa'));
   }
 
   Future<void> encontrar() async {
@@ -271,7 +269,7 @@ class ClaseEstadoFormularioCabeceraDetalle
         return;
       }
     }
-    await _mostrarMensaje(ClaseIdiomas.getTexto(sIdioma, 'abmNoEncontrado'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto(sIdioma, 'abmNoEncontrado'));
   }
 
   // ── Filas de detalle ─────────────────────────────────────────────────────
@@ -489,15 +487,25 @@ class ClaseEstadoFormularioCabeceraDetalle
     }
   }
 
-  Future<void> _mostrarMensaje(String sTexto) async {
+  // ── Ventanas de mensajes ─────────────────────────────────────────────────
+
+  Future<void> _mostrarError(String sTexto) async {
     if (!mounted) return;
-    await funcMostrarMensaje(
+    await funcMostrarError(
       context,
       getIdioma(),
       ClaseIdiomas.getTexto(getIdioma(), 'aplicacion'),
       sTexto,
-      ClaseIdiomas.getTexto(getIdioma(), 'aceptar'),
-      ClaseGenLayout.iAnchoColumnasMensaje,
+    );
+  }
+
+  Future<void> _mostrarInformacion(String sTexto) async {
+    if (!mounted) return;
+    await funcMostrarInformacion(
+      context,
+      getIdioma(),
+      ClaseIdiomas.getTexto(getIdioma(), 'aplicacion'),
+      sTexto,
     );
   }
 
@@ -703,7 +711,6 @@ class ClaseEstadoFormularioCabeceraDetalle
           style           : ClaseGenEstilosTexto.normalChico(oContexto),
           textAlign       : TextAlign.right,
           inputFormatters : <TextInputFormatter>[
-            // ← CAMBIO: arreglo de formato (todo estaba en una línea)
             if (oCampo.bTieneDecimales)
               ClaseFormateadorImporte()
             else

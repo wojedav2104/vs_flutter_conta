@@ -1,96 +1,237 @@
 import 'package:flutter/material.dart';
 
 import '../idiomas/idiomas.dart';
+import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
-
+import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
 
 
-/// Pide confirmación al usuario; devuelve true si confirma.
-Future<bool> funcMostrarConfirmacion(
-  BuildContext oContexto,
-  String       sIdioma,
-  String       sMensaje,
-) async {
-  final String sAceptar  = ClaseIdiomas.getTexto(sIdioma, 'aceptar');
-  final String sCancelar = ClaseIdiomas.getTexto(sIdioma, 'cancelar');
-  bool bConfirmo = false;
-  await showDialog<void>(
-    context            : oContexto,
-    barrierDismissible : false,
-    builder            : (oContextoVentana) {
-      return AlertDialog(
-        content : Text(sMensaje, style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
-        actions : <Widget>[
-          OutlinedButton.icon(
-            onPressed : () => Navigator.of(oContextoVentana).pop(),
-            icon      : const Icon(Icons.cancel_outlined),
-            label     : Text(sCancelar,
-                        style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
-          ),
-          FilledButton.icon(
-            onPressed : () {
-              bConfirmo = true;
-              Navigator.of(oContextoVentana).pop();
-            },
-            icon      : const Icon(Icons.check),
-            label     : Text(sAceptar,
-                        style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
-          ),
-        ],
-      );
-    },
-  );
-  return bConfirmo;
-}
+/// Respuesta de la ventana de confirmación.
+enum EnumRespuestaConfirmacion { si, no, cancelar }
 
-/// Muestra un mensaje modal con un botón Aceptar.
-/// Los textos llegan traducidos desde la pantalla; sIdioma se usa para los
-/// textos fijos del diálogo (tooltip de la X).
-Future<void> funcMostrarMensaje(
+
+/// Ventanas popup de la aplicación (documento 00-00):
+///
+///   · funcMostrarAdvertencia  — algo puede ser potencialmente peligroso.
+///   · funcMostrarConfirmacion — pregunta con los botones Sí, No y Cancelar;
+///     cada botón se muestra u oculta según bMostrarSi, bMostrarNo y
+///     bMostrarCancelar.
+///   · funcMostrarError        — se detectó un error.
+///   · funcMostrarInformacion  — informar algo al usuario.
+///
+/// Todas las ventanas muestran un icono que las identifica. Los colores
+/// provienen de temas.dart / Theme.of (regla de colores del proyecto) y los
+/// textos de los botones se traducen con ClaseIdiomas.getTexto.
+///
+/// También viven aquí los selectores de fecha y de hora.
+
+// ── Ventana advertencia ─────────────────────────────────────────────────────
+
+Future<void> funcMostrarAdvertencia(
   BuildContext oContexto,
   String        sIdioma,
   String        sTitulo,
   String        sTexto,
-  String        sAceptar,
-  int           iAnchoColumnas,
 ) async {
   await showDialog<void>(
     context            : oContexto,
     barrierDismissible : false,
-    builder            : (oContextoDialogo) {
-      return AlertDialog(
-        title: Row(
-          children: <Widget>[
-            Expanded(
-              child: Text(sTitulo,
-                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoDialogo)),
-            ),
-            IconButton(
-              tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
-              icon      : const Icon(Icons.close),
-              onPressed : () => Navigator.of(oContextoDialogo).pop(),
-            ),
-          ],
-        ),
-        content: SizedBox(
-          width : iAnchoColumnas * ClaseGenLayout.dAnchoCaracter,
-          child : Text(sTexto,
-              style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
-        ),
-        actions: <Widget>[
-          FilledButton.icon(
-            onPressed : () => Navigator.of(oContextoDialogo).pop(),
-            icon      : const Icon(Icons.check),
-            label     : Text(sAceptar,
-                style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
-          ),
-        ],
+    builder            : (BuildContext oContextoVentana) {
+      return funcConstruirVentana(
+        oContexto    : oContextoVentana,
+        sIdioma      : sIdioma,
+        sTitulo      : sTitulo,
+        sTexto       : sTexto,
+        oIcono       : Icons.warning_amber_rounded,
+        colorIcono   : ClaseGenTemas.colorIconoAdvertencia(oContextoVentana),
+        listAcciones : <Widget>[funcConstruirBotonAceptar(oContextoVentana, sIdioma)],
       );
     },
   );
 }
+
+// ── Ventana confirmación ────────────────────────────────────────────────────
+
+/// Pregunta de confirmación con los botones Sí, No y Cancelar (el código
+/// decide cuáles se muestran). Devuelve la respuesta del usuario; si se
+/// cierra sin elegir (botón X o tecla Atrás) se considera Cancelar.
+Future<EnumRespuestaConfirmacion> funcMostrarConfirmacion(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto, {
+  bool bMostrarSi       = true,
+  bool bMostrarNo       = true,
+  bool bMostrarCancelar = true,
+}) async {
+  final EnumRespuestaConfirmacion? oRespuesta =
+      await showDialog<EnumRespuestaConfirmacion>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (BuildContext oContextoVentana) {
+      return funcConstruirVentana(
+        oContexto    : oContextoVentana,
+        sIdioma      : sIdioma,
+        sTitulo      : sTitulo,
+        sTexto       : sTexto,
+        oIcono       : Icons.help_outline,
+        colorIcono   : Theme.of(oContextoVentana).colorScheme.primary,
+        listAcciones : <Widget>[
+          if (bMostrarCancelar)
+            funcConstruirBoton(
+              oContexto : oContextoVentana,
+              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'cancelar'),
+              oIcono    : Icons.cancel_outlined,
+              bRelleno  : false,
+              oAlClicar : () => Navigator.of(oContextoVentana)
+                  .pop(EnumRespuestaConfirmacion.cancelar),
+            ),
+          if (bMostrarNo)
+            funcConstruirBoton(
+              oContexto : oContextoVentana,
+              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'no'),
+              oIcono    : Icons.close,
+              bRelleno  : false,
+              oAlClicar : () => Navigator.of(oContextoVentana)
+                  .pop(EnumRespuestaConfirmacion.no),
+            ),
+          if (bMostrarSi)
+            funcConstruirBoton(
+              oContexto : oContextoVentana,
+              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'si'),
+              oIcono    : Icons.check,
+              oAlClicar : () => Navigator.of(oContextoVentana)
+                  .pop(EnumRespuestaConfirmacion.si),
+            ),
+        ],
+      );
+    },
+  );
+  return oRespuesta ?? EnumRespuestaConfirmacion.cancelar;
+}
+
+// ── Ventana error ───────────────────────────────────────────────────────────
+
+Future<void> funcMostrarError(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+) async {
+  await showDialog<void>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (BuildContext oContextoVentana) {
+      return funcConstruirVentana(
+        oContexto    : oContextoVentana,
+        sIdioma      : sIdioma,
+        sTitulo      : sTitulo,
+        sTexto       : sTexto,
+        oIcono       : Icons.error_outline,
+        colorIcono   : Theme.of(oContextoVentana).colorScheme.error,
+        listAcciones : <Widget>[funcConstruirBotonAceptar(oContextoVentana, sIdioma)],
+      );
+    },
+  );
+}
+
+// ── Ventana información ─────────────────────────────────────────────────────
+
+Future<void> funcMostrarInformacion(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+) async {
+  await showDialog<void>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (BuildContext oContextoVentana) {
+      return funcConstruirVentana(
+        oContexto    : oContextoVentana,
+        sIdioma      : sIdioma,
+        sTitulo      : sTitulo,
+        sTexto       : sTexto,
+        oIcono       : Icons.info_outline,
+        colorIcono   : Theme.of(oContextoVentana).colorScheme.primary,
+        listAcciones : <Widget>[funcConstruirBotonAceptar(oContextoVentana, sIdioma)],
+      );
+    },
+  );
+}
+
+// ── Piezas compartidas (uso interno de este archivo) ────────────────────────
+
+/// Cuerpo común de las ventanas: icono identificatorio, título, botón X para
+/// cerrar y el texto del mensaje.
+Widget funcConstruirVentana({
+  required BuildContext oContexto,
+  required String       sIdioma,
+  required String       sTitulo,
+  required String       sTexto,
+  required IconData     oIcono,
+  required Color        colorIcono,
+  required List<Widget> listAcciones,
+}) {
+  return AlertDialog(
+    title: Row(
+      children: <Widget>[
+        Icon(oIcono, color: colorIcono, size: ClaseGenLayout.dTamanoIconoVentana),
+        const SizedBox(width: ClaseGenEspacios.dEspacio08),
+        Expanded(
+          child: Text(sTitulo, style: ClaseGenEstilosTexto.subtituloMediano(oContexto)),
+        ),
+        IconButton(
+          tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
+          icon      : const Icon(Icons.close),
+          onPressed : () => Navigator.of(oContexto).pop(),
+        ),
+      ],
+    ),
+    content: SizedBox(
+      width : ClaseGenLayout.iAnchoColumnasMensaje * ClaseGenLayout.dAnchoCaracter,
+      child : Text(sTexto, style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+    ),
+    actions: listAcciones,
+  );
+}
+
+/// Botón con icono a la izquierda (regla 00-00). bRelleno=false para los
+/// botones secundarios (No, Cancelar).
+Widget funcConstruirBoton({
+  required BuildContext oContexto,
+  required String       sTexto,
+  required IconData     oIcono,
+  required VoidCallback oAlClicar,
+  bool                  bRelleno = true,
+}) {
+  final TextStyle oEstilo = ClaseGenEstilosTexto.normalMediano(oContexto);
+  return bRelleno
+      ? FilledButton.icon(
+          onPressed : oAlClicar,
+          icon      : Icon(oIcono),
+          label     : Text(sTexto, style: oEstilo),
+        )
+      : OutlinedButton.icon(
+          onPressed : oAlClicar,
+          icon      : Icon(oIcono),
+          label     : Text(sTexto, style: oEstilo),
+        );
+}
+
+/// Botón Aceptar estándar de las ventanas advertencia, error e información.
+Widget funcConstruirBotonAceptar(BuildContext oContexto, String sIdioma) {
+  return funcConstruirBoton(
+    oContexto : oContexto,
+    sTexto    : ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+    oIcono    : Icons.check,
+    oAlClicar : () => Navigator.of(oContexto).pop(),
+  );
+}
+
+// ── Selectores de fecha y de hora (sin cambios) ─────────────────────────────
 
 /// Muestra el selector de fecha y devuelve la fecha elegida (o null si se
 /// cancela). La fecha inicial se formatea como dd/mm/aaaa.
@@ -138,64 +279,85 @@ Future<int?> funcMostrarSelectorHora(
   return (fElegida == null) ? null : fElegida.hour * 60 + fElegida.minute;
 }
 
+// ── Ventana de entrada de texto (ej: e-mail de recuperación) ────────────────
 
-/// Muestra una pregunta de confirmación con dos botones y devuelve true si
-/// se presiona el botón aceptar.
-Future<bool> funcMostrarConfirmar(
+/// Pide un texto al usuario (campo único). Devuelve el texto escrito
+/// (recortado) o null si se cancela o se cierra la ventana.
+Future<String?> funcMostrarPedirTexto(
   BuildContext oContexto,
   String        sIdioma,
   String        sTitulo,
   String        sTexto,
-  String        sAceptar,
-  String        sCancelar,
-  int           iAnchoColumnas,
-) async {
-  bool bAceptar = false;
-  await showDialog<void>(
+  String        sEtiquetaCampo, {
+  bool bMostrarCancelar = true,
+}) async {
+  final TextEditingController oControl = TextEditingController();
+  final String? sAccion = await showDialog<String>(
     context            : oContexto,
     barrierDismissible : false,
-    builder            : (oContextoDialogo) {
+    builder            : (BuildContext oContextoVentana) {
       return AlertDialog(
         title: Row(
           children: <Widget>[
+            Icon(Icons.edit_outlined,
+                 color: Theme.of(oContextoVentana).colorScheme.primary,
+                 size : ClaseGenLayout.dTamanoIconoVentana),
+            const SizedBox(width: ClaseGenEspacios.dEspacio08),
             Expanded(
               child: Text(sTitulo,
-                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoDialogo)),
+                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoVentana)),
             ),
             IconButton(
               tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
               icon      : const Icon(Icons.close),
-              onPressed : () => Navigator.of(oContextoDialogo).pop(),
+              onPressed : () => Navigator.of(oContextoVentana).pop(),
             ),
           ],
         ),
         content: SizedBox(
-          width : iAnchoColumnas * ClaseGenLayout.dAnchoCaracter,
-          child : Text(sTexto,
-              style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+          width : ClaseGenLayout.iAnchoColumnasMensaje * ClaseGenLayout.dAnchoCaracter,
+          child : Column(
+            mainAxisSize : MainAxisSize.min,
+            crossAxisAlignment : CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(sTexto,
+                  style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
+              const SizedBox(height: ClaseGenEspacios.dEspacio16),
+              TextField(
+                controller   : oControl,
+                autofocus    : true,
+                keyboardType : TextInputType.emailAddress,
+                style        : ClaseGenEstilosTexto.textoCampo(oContextoVentana),
+                decoration   : InputDecoration(
+                  labelText : sEtiquetaCampo,
+                  border    : const OutlineInputBorder(),
+                ),
+                onSubmitted : (String sValor) =>
+                    Navigator.of(oContextoVentana).pop('aceptar'),
+              ),
+            ],
+          ),
         ),
         actions: <Widget>[
-          OutlinedButton.icon(
-            onPressed : () => Navigator.of(oContextoDialogo).pop(),
-            icon      : const Icon(Icons.cancel_outlined),
-            label     : Text(sCancelar,
-                style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
-          ),
-          FilledButton.icon(
-            onPressed : () {
-              bAceptar = true;
-              Navigator.of(oContextoDialogo).pop();
-            },
-            icon      : const Icon(Icons.check),
-            label     : Text(sAceptar,
-                style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+          if (bMostrarCancelar)
+            funcConstruirBoton(
+              oContexto : oContextoVentana,
+              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'cancelar'),
+              oIcono    : Icons.cancel_outlined,
+              bRelleno  : false,
+              oAlClicar : () => Navigator.of(oContextoVentana).pop(),
+            ),
+          funcConstruirBoton(
+            oContexto : oContextoVentana,
+            sTexto    : ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+            oIcono    : Icons.check,
+            oAlClicar : () => Navigator.of(oContextoVentana).pop('aceptar'),
           ),
         ],
       );
     },
   );
-  return bAceptar;
+  final String sTextoIngresado = oControl.text.trim();
+  oControl.dispose();
+  return (sAccion == null) ? null : sTextoIngresado;
 }
-
-
-

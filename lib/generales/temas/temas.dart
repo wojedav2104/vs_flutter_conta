@@ -91,6 +91,15 @@ abstract final class ClaseGenTemas {
   static Color colorBotonHabilitado(BuildContext oContexto) =>
       ClaseGenColores.colorBotonHabilitado;
 
+  /// Color del icono de la ventana de advertencia (respetando el modo).
+  static Color colorIconoAdvertencia(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorAmarillo1
+          : ClaseGenColores.colorAmarilloOscuro1;
+
+  /// Color de acento decorativo (línea bajo el título del login).
+  static Color colorAcento(BuildContext oContexto) => ClaseGenColores.colorAmarillo1;
+            
   static Color colorTextoBotonHabilitado(BuildContext oContexto) =>
       ClaseGenColores.colorTextoBotonHabilitado;
 

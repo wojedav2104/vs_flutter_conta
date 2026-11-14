@@ -15,17 +15,18 @@ abstract final class ClaseGenColores {
   static const colorGris4 = Color(0xFF374151);
 
   // ── Paleta extendida ─────────────────────────────────────────────────────
-  static const colorAmarillo1   = Color(0xFFF5A623);
-  static const colorAzulOscuro1 = Color(0xFF0080B0);
-  static const colorAzulPuro1   = Color(0xFF0000FF); // antes: colorAzulClaro1 (mal nombrado)
-  static const colorBlanco      = Color(0xFFFFFFFF);
-  static const colorCyan1       = Color(0xFF06B6D4);
-  static const colorMorado1     = Color(0xFF8B5CF6);
-  static const colorNaranja1    = Color(0xFFF97316);
-  static const colorNegro       = Color(0xFF000000);
-  static const colorRojo1       = Color(0xFFB00000);
-  static const colorRosa1       = Color(0xFFF472B6);
-  static const colorVerde1      = Color(0xFF10B981);
+  static const colorAmarillo1       = Color(0xFFF5A623);
+  static const colorAmarilloOscuro1 = Color(0xFFB26A00);
+  static const colorAzulOscuro1     = Color(0xFF0080B0);
+  static const colorAzulPuro1       = Color(0xFF0000FF); // antes: colorAzulClaro1 (mal nombrado)
+  static const colorBlanco          = Color(0xFFFFFFFF);
+  static const colorCyan1           = Color(0xFF06B6D4);
+  static const colorMorado1         = Color(0xFF8B5CF6);
+  static const colorNaranja1        = Color(0xFFF97316);
+  static const colorNegro           = Color(0xFF000000);
+  static const colorRojo1           = Color(0xFFB00000);
+  static const colorRosa1           = Color(0xFFF472B6);
+  static const colorVerde1          = Color(0xFF10B981);
 
   // ── Semánticos ───────────────────────────────────────────────────────────
   // #D32F2F ≈ 5.9:1 sobre blanco (WCAG AA). Antes #FF0000 ≈ 4.0:1 (insuficiente).

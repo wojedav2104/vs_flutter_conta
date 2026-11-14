@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 
 import '../idiomas/idiomas.dart';
 import '../preferencias/preferencias.dart';
-import '../temas/colores.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
+import '../temas/temas.dart';
 import '../widgets/controles_preferencias.dart';
 import '../widgets/ventana_mensaje.dart';
 import 'pantalla_principal.dart';
@@ -55,8 +55,21 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
 
   // ── Acciones ────────────────────────────────────────────────────────────
 
-  void cancelar() {
-    SystemNavigator.pop();
+  /// Sale de la aplicación, previa confirmación para evitar salidas
+  /// accidentales.
+  Future<void> cancelar() async {
+    final String sIdioma = widget.oPreferencias.getIdioma();
+    if (!mounted) return;
+    final EnumRespuestaConfirmacion oRespuesta = await funcMostrarConfirmacion(
+      context,
+      sIdioma,
+      ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+      ClaseIdiomas.getTexto(sIdioma, 'confirmarSalir'),
+      bMostrarCancelar : false,
+    );
+    if (oRespuesta == EnumRespuestaConfirmacion.si && mounted) {
+      SystemNavigator.pop();
+    }
   }
 
   Future<void> ingresar() async {
@@ -66,24 +79,22 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
     final String sContrasena = oControlContrasena.text;
 
     if (sNombre.isEmpty || sContrasena.isEmpty) {
-      await funcMostrarMensaje(
+      if (!mounted) return;
+      await funcMostrarError(
         context,
         sIdioma,
         ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
         ClaseIdiomas.getTexto(sIdioma, 'campoObligatorio'),
-        ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
-        ClaseGenLayout.iAnchoColumnasMensaje,
       );
       return;
     }
     if (sNombre != sNombreInicial || sContrasena != sContrasenaInicial) {
-      await funcMostrarMensaje(
+      if (!mounted) return;
+      await funcMostrarError(
         context,
         sIdioma,
         ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
         ClaseIdiomas.getTexto(sIdioma, 'credencialesIncorrectas'),
-        ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
-        ClaseGenLayout.iAnchoColumnasMensaje,
       );
       return;
     }
@@ -98,6 +109,43 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
     );
 
   }
+
+  /// Recuperación de contraseña: pide el e-mail y muestra el aviso estándar.
+  /// TODO: cuando exista conexión con la BD, verificar que el e-mail esté
+  /// registrado y enviar el mensaje para crear la nueva contraseña.
+  Future<void> recuperarContrasena() async {
+    final String sIdioma = widget.oPreferencias.getIdioma();
+    if (!mounted) return;
+    final String? sCorreo = await funcMostrarPedirTexto(
+      context,
+      sIdioma,
+      ClaseIdiomas.getTexto(sIdioma, 'olvidasteContrasena'),
+      ClaseIdiomas.getTexto(sIdioma, 'olvidasteMensaje'),
+      ClaseIdiomas.getTexto(sIdioma, 'correoElectronico'),
+    );
+    if (sCorreo == null || !mounted) return;
+    if (!funcEsCorreoValido(sCorreo)) {
+      await funcMostrarError(
+        context,
+        sIdioma,
+        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+        ClaseIdiomas.getTexto(sIdioma, 'correoInvalido'),
+      );
+      return;
+    }
+    await funcMostrarInformacion(
+      context,
+      sIdioma,
+      ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+      ClaseIdiomas.getTexto(sIdioma, 'olvidasteConfirmacion'),
+    );
+  }
+
+  /// Formato básico del e-mail.
+  /// TODO: mover a lib/generales/validaciones/cap_validar.dart (regla de
+  /// que todas las validaciones viven ahí) si no existe ya un validador.
+  bool funcEsCorreoValido(String sCorreo) =>
+      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(sCorreo);
 
   // ── Construcción de la interfaz ─────────────────────────────────────────
 
@@ -152,7 +200,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
                 width      : ClaseGenEspacios.dEspacio64,
                 height     : ClaseGenEspacios.dEspacio04,
                 decoration : BoxDecoration(
-                  color        : ClaseGenColores.colorAmarillo1,
+                  color        : ClaseGenTemas.colorAcento(oContexto),
                   borderRadius : BorderRadius.circular(ClaseGenRadios.dCompleto),
                 ),
               ),
@@ -162,12 +210,15 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
               const SizedBox(height: ClaseGenEspacios.dEspacio08),
               Align(
                 alignment : Alignment.centerRight,
-                child     : Text(
-                  ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'olvidasteContrasena'),
-                  style : ClaseGenEstilosTexto.normalChico(oContexto),
+                child     : TextButton(
+                  onPressed : recuperarContrasena,
+                  child     : Text(
+                    ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'olvidasteContrasena'),
+                    style : ClaseGenEstilosTexto.normalChico(oContexto),
+                  ),
                 ),
               ),
-              const SizedBox(height: ClaseGenEspacios.dEspacio32),
+              const SizedBox(height: ClaseGenEspacios.dEspacio16),
               construirBotones(oContexto),
             ],
           ),
@@ -180,6 +231,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
     final String sIdioma = widget.oPreferencias.getIdioma();
     return TextField(
       controller      : oControlNombre,
+      autofocus       : true,                       // ← foco inicial (decisión 3)
       style           : ClaseGenEstilosTexto.textoCampo(oContexto),
       textInputAction : TextInputAction.next,
       decoration      : InputDecoration(
@@ -190,7 +242,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
             Text(' *',
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
-                          .copyWith(color: ClaseGenColores.colorError)),
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error)),
           ],
         ),
         border: OutlineInputBorder(
@@ -203,12 +255,14 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
   Widget construirCampoContrasena(BuildContext oContexto) {
     final String sIdioma = widget.oPreferencias.getIdioma();
     return TextField(
-      controller      : oControlContrasena,
-      obscureText     : !bMostrarContrasena,
-      style           : ClaseGenEstilosTexto.textoCampo(oContexto),
-      textInputAction : TextInputAction.done,
-      onSubmitted     : (sValor) => ingresar(),
-      decoration      : InputDecoration(
+      controller        : oControlContrasena,
+      obscureText       : !bMostrarContrasena,
+      autocorrect       : false,
+      enableSuggestions : false,
+      style             : ClaseGenEstilosTexto.textoCampo(oContexto),
+      textInputAction   : TextInputAction.done,
+      onSubmitted       : (sValor) => ingresar(),
+      decoration        : InputDecoration(
         label : Row(
           mainAxisSize : MainAxisSize.min,
           children     : <Widget>[
@@ -216,7 +270,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
             Text(' *',
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
-                          .copyWith(color: ClaseGenColores.colorError)),
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error)),
           ],
         ),
         suffixIcon: IconButton(
