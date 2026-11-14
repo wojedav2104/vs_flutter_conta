@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 
 import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
+import '../modelos/permisos.dart';
+import '../modelos/sesion.dart';
 import '../temas/colores.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
@@ -609,6 +611,10 @@ class ClaseAndamiajeAbm extends StatelessWidget {
 /// Orden visual fijo, tamaño uniforme y colores consistentes:
 /// mismo color para todos los habilitados, mismo color para todos los
 /// deshabilitados.
+///
+/// Punto 3: Borrar siempre pide confirmación antes de actuar.
+/// Punto 4: los botones de edición quedan deshabilitados en los países
+/// sin permiso de edición (Francia: solo visualización).
 class ClaseBotoneraAbm extends StatelessWidget {
 
   const ClaseBotoneraAbm({
@@ -636,6 +642,20 @@ class ClaseBotoneraAbm extends StatelessWidget {
     EnumBotonAbm.encontrar,
     EnumBotonAbm.fin,
   ];
+
+  /// Botones de edición (punto 4): no operan en países solo visualización.
+  static const Set<EnumBotonAbm> _setBotonesEdicion = <EnumBotonAbm>{
+    EnumBotonAbm.agregar,
+    EnumBotonAbm.borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
+  };
+
+  /// Devuelve true si el país conectado permite edición (punto 4).
+  bool _puedeOperar(EnumBotonAbm oBoton) =>
+      !_setBotonesEdicion.contains(oBoton)
+      || ClasePermisos.puedeEditar(ClaseSesion.getPais());
 
   String _getEtiqueta(EnumBotonAbm oBoton) {
     switch (oBoton) {
@@ -668,22 +688,39 @@ class ClaseBotoneraAbm extends StatelessWidget {
     );
   }
 
+  /// Punto 3: Borrar pide confirmación; el resto actúa de inmediato.
+  Future<void> _alPresionar(EnumBotonAbm oBoton, BuildContext oContexto) async {
+    if (oBoton == EnumBotonAbm.borrar) {
+      final bool bConfirmo = await funcMostrarConfirmar(
+        oContexto,
+        sIdioma,
+        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+        ClaseIdiomas.getTexto(sIdioma, 'confirmarBorrar'),
+        ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+        ClaseIdiomas.getTexto(sIdioma, 'cancelar'),
+        ClaseGenLayout.iAnchoColumnasMensaje,
+      );
+      if (!bConfirmo) return;
+    }
+    funcAccion(oBoton);
+  }
+
   Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
-    final bool bHabilitado = esHabilitado(oBoton);
+    final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
     return SizedBox(
       width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
       height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
       child  : ElevatedButton(
-        onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
+        onPressed : bHabilitado ? () => _alPresionar(oBoton, oContexto) : null,
         style     : ElevatedButton.styleFrom(
           backgroundColor         : bHabilitado
-              ? ClaseGenColores.colorBotonHabilitado          // item 6
-              : ClaseGenColores.colorBotonDeshabilitado,
+              ? _colorBotonHabilitado(oContexto)          // item 6
+              : _colorBotonDeshabilitado(oContexto),
           foregroundColor         : bHabilitado
-              ? ClaseGenColores.colorTextoBotonHabilitado
-              : ClaseGenColores.colorTextoBotonDeshabilitado,
-          disabledBackgroundColor : ClaseGenColores.colorBotonDeshabilitado,
-          disabledForegroundColor : ClaseGenColores.colorTextoBotonDeshabilitado,
+              ? _colorTextoBotonHabilitado(oContexto)
+              : _colorTextoBotonDeshabilitado(oContexto),
+          disabledBackgroundColor : _colorBotonDeshabilitado(oContexto),
+          disabledForegroundColor : _colorTextoBotonDeshabilitado(oContexto),
           shape  : RoundedRectangleBorder(
             borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
           ),
@@ -691,14 +728,27 @@ class ClaseBotoneraAbm extends StatelessWidget {
         ),
         child : Text(
           _getEtiqueta(oBoton),
-          style : ClaseGenEstilosTexto.normalMediano(oContexto).copyWith(
+          style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
             color : bHabilitado
-                ? ClaseGenColores.colorTextoBotonHabilitado
-                : ClaseGenColores.colorTextoBotonDeshabilitado,
+                ? _colorTextoBotonHabilitado(oContexto)
+                : _colorTextoBotonDeshabilitado(oContexto),
           ),
         ),
       ),
     );
   }
+
+  // ── Colores (PROVISORIO hasta recibir temas.dart) ───────────────────────
+  // Pendiente punto 2: reemplazar estas cuatro funciones por los accesos de
+  // temas.dart (respetan el modo claro/oscuro). Mientras tanto usan los
+  // tokens de la paleta interna.
+  Color _colorBotonHabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorBotonHabilitado;
+  Color _colorBotonDeshabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorBotonDeshabilitado;
+  Color _colorTextoBotonHabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorTextoBotonHabilitado;
+  Color _colorTextoBotonDeshabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorTextoBotonDeshabilitado;
 
 }

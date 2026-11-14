@@ -111,6 +111,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       iRegistro    = -1;
       bModoEdicion = false;
     });
+    await _mostrarMensaje(ClaseIdiomas.getTexto(getIdioma(), 'mensajeBorrado'));
   }
 
   void cancelar() {
@@ -289,3 +290,4 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   }
 
 }
+

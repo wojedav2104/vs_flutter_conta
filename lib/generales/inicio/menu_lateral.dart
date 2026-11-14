@@ -6,7 +6,6 @@ import '../idiomas/idiomas.dart';
 import '../modelos/opcion_menu.dart';
 import '../modelos/sesion.dart';
 import '../preferencias/preferencias.dart';
-import '../temas/colores.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 
@@ -165,7 +164,6 @@ class ClaseMenuLateral extends StatelessWidget {
   Widget construirOpcion(BuildContext oContexto, ClaseOpcionMenu oOpcion) {
     final ThemeData oTema = Theme.of(oContexto);
     return ListTile(
-      dense   : true,
       leading : Icon(oOpcion.oIcono, color: oTema.colorScheme.onSurfaceVariant),
       title   : Text(ClaseIdiomas.getTexto(oPreferencias.getIdioma(), oOpcion.sClave),
                      style: ClaseGenEstilosTexto.normalMediano(oContexto)),
@@ -175,11 +173,11 @@ class ClaseMenuLateral extends StatelessWidget {
 
   Widget construirFin(BuildContext oContexto, String sIdioma) {
     return ListTile(
-      dense   : true,
-      leading : const Icon(Icons.power_settings_new, color: ClaseGenColores.colorError),
+      leading : Icon(Icons.power_settings_new,
+                     color: Theme.of(oContexto).colorScheme.error),
       title   : Text(ClaseIdiomas.getTexto(sIdioma, 'menuFin'),
                      style: ClaseGenEstilosTexto.normalMediano(oContexto)
-                              .copyWith(color: ClaseGenColores.colorError,
+                              .copyWith(color: Theme.of(oContexto).colorScheme.error,
                                         fontWeight: FontWeight.w600)),
       onTap   : finalizar,
     );

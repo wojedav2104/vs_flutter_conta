@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 
 
 /// Estilos de texto y `TextTheme` central de la aplicación.
+///
+/// Punto 5 (texto grande): todos los estilos pasan por _estilo, que
+/// multiplica el tamaño por dFactorTexto. Un solo punto de cambio.
 abstract final class ClaseGenEstilosTexto {
 
   static const String _sFamiliaBase = 'Roboto';
   static const String _sFamiliaMono = 'Roboto Mono';
+
+  /// Factor del modo texto grande.
+  static const double dFactorTextoGrande = 1.25;
+
+  /// Factor de escala del texto: 1.0 = normal, 1.25 = texto grande.
+  /// Lo fija main.dart al arrancar y ClaseControlesPreferencias al cambiar
+  /// la preferencia.
+  static double dFactorTexto = 1.0;
 
   static const TextTheme oTextTheme = TextTheme(
     bodySmall    : TextStyle(fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.2),
@@ -27,8 +38,10 @@ abstract final class ClaseGenEstilosTexto {
       String?      sFamilia,
     }
   ) {
-    final ThemeData oTema = Theme.of(oContexto);
-    return (oBase ?? oTema.textTheme.bodyMedium ?? const TextStyle()).copyWith(
+    final ThemeData oTema   = Theme.of(oContexto);
+    final TextStyle oEstilo = oBase ?? oTema.textTheme.bodyMedium ?? const TextStyle();
+    return oEstilo.copyWith(
+      fontSize   : (oEstilo.fontSize ?? 14.0) * dFactorTexto,
       color      : color ?? oTema.colorScheme.onSurface,
       fontFamily : sFamilia,
       fontWeight : oPeso,
@@ -47,17 +60,19 @@ abstract final class ClaseGenEstilosTexto {
   static TextStyle tituloMediano   (BuildContext oContexto) => _estilo(oContexto, oTextTheme.titleMedium  , sFamilia: _sFamiliaBase);
   static TextStyle tituloGrande    (BuildContext oContexto) => _estilo(oContexto, oTextTheme.titleLarge   , sFamilia: _sFamiliaBase);
 
-  /// Etiqueta flotante de los campos de texto (11 px, semibold).
+  /// Etiqueta flotante de los campos de texto (16 px, semibold).
   static TextStyle etiquetaCampo   (BuildContext oContexto) => _estilo(oContexto, oTextTheme.bodyLarge    , sFamilia: _sFamiliaBase, oPeso: FontWeight.w600);
 
-  /// Texto de los botones grandes (Ingresar, Cancelar).
+  /// Texto de los botones grandes (ABM, Ingresar, Cancelar).
+  /// 20 px en negrita: cumple WCAG AA como texto grande sobre los colores
+  /// de los botones y es más legible para usuarios noveles.
   static TextStyle botonGrande(BuildContext oContexto) {
-    return normalGrande(oContexto).copyWith(fontWeight: FontWeight.w600);
+    return _estilo(oContexto, oTextTheme.displayLarge, sFamilia: _sFamiliaBase);
   }
 
   /// Texto destacado (nombre de la Base en la cabecera, opción Fin).
   static TextStyle textoDestacado(BuildContext oContexto) {
     return textoCampo(oContexto).copyWith(fontWeight: FontWeight.w600);
   }
-  
+
 }

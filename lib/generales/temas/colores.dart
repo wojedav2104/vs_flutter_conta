@@ -54,11 +54,15 @@ abstract final class ClaseGenColores {
   static const colorErrorContenedorOscuro  = Color(0xFF6B0000);
 
   // ── Colores de botones ABM (sesión 4) ─────────────────────────────────
-  static const Color colorBotonDeshabilitado      = Color(0xFFE0E0E0); // gris claro
-  static const Color colorBotonGrabarDestacado    = Color(0xFF43A047); // verde llamativo
-  static const Color colorBotonHabilitado         = Color(0xFF1E88E5); // azul medio
-  static const Color colorTextoBotonDeshabilitado = Color(0xFF9E9E9E); // gris medio
-  static const Color colorTextoBotonGrabar        = Color(0xFFFFFFFF); // blanco
-  static const Color colorTextoBotonHabilitado    = Color(0xFFFFFFFF); // blanco
+  static const Color colorBotonDeshabilitado            = Color(0xFFE0E0E0); // gris claro
+  static const Color colorBotonDeshabilitadoOscuro      = Color(0xFF424242);
+  static const Color colorBotonGrabarDestacado          = Color(0xFF43A047); // verde llamativo
+  static const Color colorBotonHabilitado               = Color(0xFF1E88E5); // azul medio
+  static const Color colorErrorOscuro                   = Color(0xFFEF9A9A);
+  static const Color colorTextoBotonDeshabilitado       = Color(0xFF424242); // gris oscuro: 7.6:1 sobre #E0E0E0 (antes #9E9E9E: solo 2.0:1)
+  static const Color colorTextoBotonDeshabilitadoOscuro = Color(0xFFBDBDBD);
+  static const Color colorTextoBotonGrabar              = Color(0xFFFFFFFF); // blanco
+  static const Color colorTextoBotonHabilitado          = Color(0xFFFFFFFF); // blanco
+  static const Color colorTextoSecundarioClaro          = Color(0xFF4B5563);
   
 }

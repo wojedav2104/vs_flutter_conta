@@ -47,7 +47,6 @@ abstract final class ClaseIdiomasInterfaz {
     'abmModificar'    : 'Modificar',
     // ── Grilla lateral y menús contextuales ─────────────────────────────
     'borrarCampo'     : 'Borrar el contenido del campo',
-    'confirmarBorrar' : '¿Desea eliminar este registro?',
     'contraerGrilla'  : 'Contraer la grilla',
     'copiadoPortapapeles' : 'Valor copiado al portapapeles',
     'expandirGrilla'  : 'Expandir la grilla',
@@ -66,6 +65,10 @@ abstract final class ClaseIdiomasInterfaz {
     'abmNoEncontrado' : 'No se encontró ningún registro',
     'campoElegirFecha': 'Elegir la fecha',
     'campoElegirHora' : 'Elegir la hora',
+    'confirmarBorrar' : '¿Deseas eliminar este registro? Esta acción no se puede deshacer.',
+    'mensajeBorrado'  : 'El registro fue eliminado.',
+    'textoNormal'     : 'Normal',
+    'textoGrande'     : 'Texto grande',
 
   };
 
@@ -115,7 +118,6 @@ abstract final class ClaseIdiomasInterfaz {
     'abmModificar'    : 'Modifier',
     // ── Grilla lateral y menús contextuales ─────────────────────────────
     'borrarCampo'     : 'Effacer le contenu du champ',
-    'confirmarBorrar' : 'Voulez-vous supprimer cet enregistrement ?',
     'contraerGrilla'  : 'Réduire la grille',
     'copiadoPortapapeles' : 'Valeur copiée dans le presse-papiers',
     'expandirGrilla'  : 'Agrandir la grille',
@@ -133,7 +135,12 @@ abstract final class ClaseIdiomasInterfaz {
     'paginaSiguiente' : 'Page suivante',
     'abmNoEncontrado' : 'Aucun enregistrement trouvé',
     'campoElegirFecha': 'Choisir la date',
-    'campoElegirHora' : 'Choisir l\'heure',    
+    'campoElegirHora' : 'Choisir l\'heure',  
+    'confirmarBorrar' : 'Voulez-vous supprimer cet enregistrement ? Cette action est irréversible.',
+    'mensajeBorrado'  : "L'enregistrement a été supprimé.",
+    'textoNormal'     : 'Normal',
+    'textoGrande'     : 'Texte agrandi',
+
   };
 
 }

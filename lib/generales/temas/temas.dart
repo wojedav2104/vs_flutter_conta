@@ -4,6 +4,9 @@ import 'colores.dart';
 import 'estilos_textos.dart';
 
 /// Especificaciones de los temas claro y oscuro de la aplicación.
+///
+/// Regla de oro: los widgets toman los colores de esta clase (directamente o
+/// vía Theme.of), nunca de colores.dart, para respetar el modo claro/oscuro.
 abstract final class ClaseGenTemas {
 
   // ── Esquema claro ────────────────────────────────────────────────────────
@@ -32,7 +35,9 @@ abstract final class ClaseGenTemas {
     surfaceContainer        : ClaseGenColores.colorGris1,
     surfaceContainerHigh    : ClaseGenColores.colorGris2,
     surfaceContainerHighest : ClaseGenColores.colorGris2,
-    onSurfaceVariant        : ClaseGenColores.colorGris3,
+    // AA para texto normal: 7.6:1 sobre blanco y 5.6:1 sobre la fila
+    // seleccionada (colorGris3 solo daba 2.5:1).
+    onSurfaceVariant        : ClaseGenColores.colorTextoSecundarioClaro,
     outline                 : ClaseGenColores.colorGris3,
     outlineVariant          : ClaseGenColores.colorGris2,
     inverseSurface          : ClaseGenColores.colorGris4,
@@ -57,7 +62,8 @@ abstract final class ClaseGenTemas {
     onTertiary              : ClaseGenColores.colorNegro,
     tertiaryContainer       : ClaseGenColores.colorTerciarioContenedorOscuro,
     onTertiaryContainer     : ClaseGenColores.colorRosa1,
-    error                   : ClaseGenColores.colorError,
+    // AA para texto normal: 7.7:1 sobre #1E1F22 (colorError solo daba 3.3:1).
+    error                   : ClaseGenColores.colorErrorOscuro,
     onError                 : ClaseGenColores.colorNegro,
     errorContainer          : ClaseGenColores.colorErrorContenedorOscuro,
     onErrorContainer        : ClaseGenColores.colorBlanco,
@@ -78,12 +84,44 @@ abstract final class ClaseGenTemas {
     scrim                   : ClaseGenColores.colorNegro,
   );
 
-  // ── Temas cacheados (`_construir` es idempotente) ───────────────────────
-  static final ThemeData _temaClaro  = _construir(_oEsquemaClaro);
-  static final ThemeData _temaOscuro = _construir(_oEsquemaOscuro);
+  // ── Colores de los botones ABM (respetan el modo claro/oscuro) ────────────
+  // Regla de diseño: habilitado = #1E88E5 con texto blanco, igual en ambos
+  // modos (3.7:1 con el texto grande del botón). Deshabilitado cambia según
+  // el modo: en oscuro el gris claro deslumbra.
+  static Color colorBotonHabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorBotonHabilitado;
 
-  static ThemeData get getTemaClaro  => _temaClaro;
-  static ThemeData get getTemaOscuro => _temaOscuro;
+  static Color colorTextoBotonHabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorTextoBotonHabilitado;
+
+  static Color colorBotonDeshabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorBotonDeshabilitadoOscuro
+          : ClaseGenColores.colorBotonDeshabilitado;
+
+  static Color colorTextoBotonDeshabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoBotonDeshabilitadoOscuro
+          : ClaseGenColores.colorTextoBotonDeshabilitado;
+
+  static bool _esModoOscuro(BuildContext oContexto) =>
+      Theme.of(oContexto).brightness == Brightness.dark;
+
+  // ── Temas cacheados (se reconstruyen si cambia el factor de texto) ────────
+  static double    _dFactorCache = -1.0;
+  static ThemeData? _temaClaroCache;
+  static ThemeData? _temaOscuroCache;
+
+  static ThemeData get getTemaClaro  { _actualizarTemas(); return _temaClaroCache!; }
+  static ThemeData get getTemaOscuro { _actualizarTemas(); return _temaOscuroCache!; }
+
+  static void _actualizarTemas() {
+    if (_dFactorCache != ClaseGenEstilosTexto.dFactorTexto) {
+      _dFactorCache    = ClaseGenEstilosTexto.dFactorTexto;
+      _temaClaroCache  = _construir(_oEsquemaClaro);
+      _temaOscuroCache = _construir(_oEsquemaOscuro);
+    }
+  }
 
   static ThemeData _construir(ColorScheme oEsquema) {
     // Base M3 completa: provee `headlineSmall`, `titleSmall`, `labelLarge`,
@@ -97,8 +135,14 @@ abstract final class ClaseGenTemas {
     );
     return oTemaBase.copyWith(
       scaffoldBackgroundColor: oEsquema.surface,
-      textTheme              : oTemaBase.textTheme.merge(ClaseGenEstilosTexto.oTextTheme),
+      // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
+      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y 
+      // multiplican por su cuenta.
+      textTheme : oTemaBase.textTheme
+          .merge(ClaseGenEstilosTexto.oTextTheme)
+          .apply(fontSizeFactor: ClaseGenEstilosTexto.dFactorTexto),
     );
   }
 
 }
+

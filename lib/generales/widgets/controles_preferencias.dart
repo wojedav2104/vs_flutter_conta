@@ -7,11 +7,11 @@ import '../temas/estilos_textos.dart';
 import '../temas/radios.dart';
 
 
-/// Controles para elegir el tema y el idioma. Se usan en el login y en la
-/// pantalla principal. Cada opción muestra su propio icono: el sol junto a
-/// "Claro" y la luna junto a "Oscuro".
+/// Controles para elegir el tema, el idioma y el tamaño del texto. Se usan
+/// en el login y en la pantalla principal. Cada opción muestra su propio
+/// icono: el sol junto a "Claro" y la luna junto a "Oscuro".
 class ClaseControlesPreferencias extends StatelessWidget {
-  
+
   const ClaseControlesPreferencias({
     super.key,
     required this.oPreferencias,
@@ -31,6 +31,15 @@ class ClaseControlesPreferencias extends StatelessWidget {
   Future<void> actualizarTema(String? sValor) async {
     if (sValor == null) return;
     await oPreferencias.setTema(sValor);
+    funcAlCambiar();
+  }
+
+  Future<void> actualizarTextoGrande(String? sValor) async {
+    if (sValor == null) return;
+    final bool bGrande = (sValor == 'grande');
+    await oPreferencias.setTextoGrande(bGrande);
+    ClaseGenEstilosTexto.dFactorTexto =
+        bGrande ? ClaseGenEstilosTexto.dFactorTextoGrande : 1.0;
     funcAlCambiar();
   }
 
@@ -59,6 +68,15 @@ class ClaseControlesPreferencias extends StatelessWidget {
           listIconos   : <IconData>[Icons.translate, Icons.translate],
           listValores  : <String>['es', 'fr'],
           funcAlElegir : actualizarIdioma,
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio08),
+        construirSelector(
+          oContexto,
+          sValor       : oPreferencias.getTextoGrande() ? 'grande' : 'normal',
+          listClaves   : <String>['textoNormal', 'textoGrande'],
+          listIconos   : <IconData>[Icons.text_fields, Icons.format_size],
+          listValores  : <String>['normal', 'grande'],
+          funcAlElegir : actualizarTextoGrande,
         ),
       ],
     );
