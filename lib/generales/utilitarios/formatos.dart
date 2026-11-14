@@ -279,10 +279,13 @@ double? funcParsearNumero(String sValor) {
   return double.tryParse(sNormalizado);
 }
 
-/// Formatea un importe para mostrarlo:
+
+// ── Funciones auxiliares para formularios ─────────────────────────────────
+
+/// Formatea un importe para mostrarlo en la fila de totales:
 /// '1.234.567,00' en formato latino o '1 234 567,00' en formato francés.
 /// Los decimales solo se muestran si son distintos de cero.
-String funcFormatearNumero(double dValor, String sFormato) {
+String funcFormatearImporte(double dValor, String sFormato) {
   final bool   bLatino           = (sFormato != 'frances');
   final String sSeparadorMiles   = bLatino ? '.' : ' ';
   final String sSeparadorDecimal = bLatino ? ',' : '.';
@@ -298,5 +301,12 @@ String funcFormatearNumero(double dValor, String sFormato) {
     oSalida..write(sSeparadorDecimal)..write(listPartes[1]);
   }
   return '${dValor < 0 ? '-' : ''}$oSalida';
+}
+
+/// Formatea un importe sin separador de miles ('2200000.5'), para escribirlo
+/// en un campo que se parsea con funcParsearNumero.
+String funcFormatearNumeroPlano(double dValor) {
+  final String sBase = dValor.toStringAsFixed(2);
+  return sBase.endsWith('.00') ? sBase.substring(0, sBase.length - 3) : sBase;
 }
 

@@ -5,6 +5,7 @@
 
 import '../idiomas/idiomas.dart';
 import '../utilitarios/formatos.dart';
+import '../varios/listas.dart';
 
 class ClaseCapValidar {
 
@@ -82,7 +83,7 @@ class ClaseCapValidar {
     }
     return null;
   }
-  
+
   static String? validarRangoEntero(String sValor, String sEtiqueta, int iMin, int iMax, String sIdioma) {
     final String sDato = sValor.trim();
     if (sDato.isEmpty) return null;
@@ -154,11 +155,6 @@ class ClaseCapValidar {
       return ClaseIdiomas.getTexto(sIdioma, 'validFormatoCuenta');
     }
     return null;
-  }
-
-  /// Cuenta la cantidad de dígitos (sin puntos) de un número de cuenta.
-  static int contarDigitosCuenta(String sCuenta) {
-    return sCuenta.replaceAll('.', '').replaceAll(RegExp(r'[^0-9]'), '').length;
   }
 
   // ── Validaciones de ejercicio, nivel y subcuenta ─────────────────────────
@@ -234,7 +230,6 @@ class ClaseCapValidar {
   /// La fecha debe estar entre el 01/01 del ejercicio y
   /// a) la fecha de hoy si el ejercicio es el año actual, o
   /// b) el 31/12 del ejercicio si es un año anterior.
-  /// Se usa tanto para la fecha del asiento como para la fecha de la compra.
   static String? validarFechaEnEjercicio(
     String sValor,
     String sEtiqueta,
@@ -256,8 +251,8 @@ class ClaseCapValidar {
   }
 
   /// La suma del Debe debe ser exactamente igual a la suma del Haber.
-  static String? validarSumaDebeHaber(int iSumaDebe, int iSumaHaber, String sIdioma) {
-    if (iSumaDebe != iSumaHaber) {
+  static String? validarSumaDebeHaber(double dSumaDebe, double dSumaHaber, String sIdioma) {
+    if ((dSumaDebe - dSumaHaber).abs() > 0.005) {
       return ClaseIdiomas.getTexto(sIdioma, 'validSumaDebeHaber');
     }
     return null;
@@ -293,8 +288,6 @@ class ClaseCapValidar {
 
   /// Valida la identificación según el tipo (código de ClaseTipoIdentificacion):
   ///   RUC : de 6 a 8 dígitos + guión + dígito verificador (módulo 11).
-  ///         Persona física: base de 6-7 dígitos (total 8-9).
-  ///         Persona jurídica: base de 8 dígitos (total 10).
   ///   CI  : de 5 a 8 dígitos, con puntos opcionales como separadores.
   ///   PAS / CEX : letras mayúsculas, dígitos y guiones.
   ///   SD / DIP : sin validación de formato.
@@ -341,14 +334,6 @@ class ClaseCapValidar {
         sValor, ClaseTipoIdentificacion.ruc, sEtiqueta, sIdioma);
   }
 
-  /// Valida que la suma del Debe sea exactamente igual a la suma del Haber.
-  static String? validarSumaDebeHaber(double dDebe, double dHaber, String sIdioma) {
-    if ((dDebe - dHaber).abs() > 0.005) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validSumaDebeHaber');
-    }
-    return null;
-  }
-
   /// Valida el N° de documento según el Tipo de documento (ClaseTipoDocumento):
   ///   · Tipo 05 (Tributo Único): exactamente 13 dígitos, sin guiones.
   ///   · Tipos 07, 08 y 11 (importaciones y Resolución): exactamente 7 dígitos.
@@ -376,5 +361,5 @@ class ClaseCapValidar {
     }
     return bValido ? null : ClaseIdiomas.getTexto(sIdioma, 'comErrorNumeroFormato');
   }
-    
+
 }

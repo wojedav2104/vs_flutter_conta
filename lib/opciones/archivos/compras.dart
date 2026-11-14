@@ -298,7 +298,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sValorDefecto    : ClaseSiNo.si,
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas10',
@@ -306,7 +306,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva10',
@@ -314,7 +314,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas5',
@@ -322,7 +322,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva5',
@@ -330,7 +330,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'exentas',
@@ -338,7 +338,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'total',
@@ -388,7 +388,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sValorDefecto    : ClaseSiNo.si,
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado10',
@@ -396,7 +396,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado5',
@@ -404,7 +404,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeExento',
@@ -412,7 +412,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeIreSimple',
@@ -420,7 +420,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeIrpSimple',
@@ -428,7 +428,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeNoImputable',
@@ -436,7 +436,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo           : 'comResolucion',
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'totalComprobante',
@@ -484,14 +484,14 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'detHintConcepto'),
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'debe',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detDebe'),
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'haber',

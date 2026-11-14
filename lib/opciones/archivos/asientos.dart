@@ -132,14 +132,14 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'detHintConcepto'),
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'debe',
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detDebe'),
       ),
       ClaseCampoAbm(
-        bDecimales       : true,
+        bTieneDecimales  : true,
         iAnchoCaracteres : 12,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'haber',

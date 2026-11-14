@@ -228,10 +228,10 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   }
 
   @override
-  void didUpdateWidget(covariant ClaseGrillaRegistros oAntiguo) {
-    super.didUpdateWidget(oAntiguo);
+  void didUpdateWidget(covariant ClaseGrillaRegistros oldWidget) {
+    super.didUpdateWidget(oldWidget);
     // Al seleccionar un registro (ej: con Encontrar) se salta a su página.
-    if (oAntiguo.iRegistro != widget.iRegistro
+    if (oldWidget.iRegistro != widget.iRegistro
         && widget.iRegistro >= 0
         && widget.iRegistro < widget.listRegistros.length) {
       final int iPosicion = _listFiltrados().indexOf(widget.listRegistros[widget.iRegistro]);

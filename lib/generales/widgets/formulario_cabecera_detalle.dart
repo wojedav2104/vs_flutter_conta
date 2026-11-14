@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vs_conta/generales/widgets/campo_formulario.dart';
 
 import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
@@ -664,9 +665,10 @@ class ClaseEstadoFormularioCabeceraDetalle
         final List<String> listOpciones = oCampo.listOpciones ?? <String>[];
         final List<String> listValores  = oCampo.listValores  ?? listOpciones;
         return DropdownButtonFormField<String>(
-          value      : listValores.contains(sValor) ? sValor : null,
-          isExpanded : true,
-          decoration : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
+          initialValue : listValores.contains(sValor) ? sValor : null,
+          isExpanded   : true,
+          decoration   : const InputDecoration(isDense: true, border: OutlineInputBorder()),
           items: <DropdownMenuItem<String>>[
             for (int i = 0; i < listOpciones.length; i++)
               DropdownMenuItem<String>(
@@ -745,8 +747,8 @@ class ClaseEstadoFormularioCabeceraDetalle
                     ? ClaseIdiomas.getTexto(getIdioma(), 'detTotales')
                     : ((i == iPrimeraSuma || mapSumas
                             .containsKey(widget.listCamposDetalle[i].sClave))
-                        ? funcFormatearNumero(
-                            mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
+                                        ? funcFormatearImporte(
+                    mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
                         : ''),
                 style     : oEstilo,
                 textAlign : TextAlign.right,

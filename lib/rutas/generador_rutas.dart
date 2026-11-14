@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:vs_conta/opciones/archivos/compras.dart';
 
 import '../generales/preferencias/preferencias.dart';
 import '../generales/varios/pantalla_proximamente.dart';
 
 import '../opciones/archivos/asientos.dart';
+import '../opciones/archivos/compras.dart';
 import '../opciones/archivos/cuentas.dart';
 
 import '../opciones/tablas/clientes.dart';
@@ -18,16 +18,12 @@ import '../opciones/tablas/timbrados_proveedores.dart';
 
 import 'rutas.dart';
 
-
 /// Observador de rutas: permite a las pantallas saber cuándo el usuario
 /// regresa a ellas desde otra pantalla.
-final RouteObserver<PageRoute<dynamic>> oObservadorRutas = RouteObserver<PageRoute<dynamic>>();
-
+final RouteObserver<PageRoute<dynamic>> oObservadorRutas =
+    RouteObserver<PageRoute<dynamic>>();
 
 /// Genera la pantalla correspondiente a cada ruta.
-///
-/// Recibe las preferencias del usuario para pasarlas a cada pantalla.
-/// A medida que se implemente cada módulo se agrega su caso aquí.
 Route<dynamic> funcGenerarRuta(
   RouteSettings     oConfiguracion,
   ClasePreferencias oPreferencias,
@@ -104,23 +100,20 @@ Route<dynamic> funcGenerarRuta(
     );
   }
 
-    if (oConfiguracion.name == ClaseRutas.rutaCompras) {
+  if (oConfiguracion.name == ClaseRutas.rutaCompras) {
     return MaterialPageRoute<dynamic>(
       settings : oConfiguracion,
       builder  : (oContexto) => ClaseCompras(oPreferencias: oPreferencias),
     );
   }
 
-
-
-
-
-
-
   // Resto de las opciones: pantalla provisoria
   return MaterialPageRoute<dynamic>(
     settings : oConfiguracion,
-    builder  : (oContexto) => ClasePantallaProximamente(sTitulo: sTitulo),
+    builder  : (oContexto) => ClasePantallaProximamente(
+      oPreferencias : oPreferencias,
+      sTitulo       : sTitulo,
+    ),
   );
 
 }

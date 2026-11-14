@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../idiomas/idiomas.dart';
-import '../temas/colores.dart';
-import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
+import '../temas/layout.dart';
 
 import '../utilitarios/formatos.dart';
 

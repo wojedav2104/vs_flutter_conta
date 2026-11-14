@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vs_conta/generales/widgets/controles_preferencias.dart';
-import 'package:vs_conta/generales/widgets/ventana_mensaje.dart';
 
 import '../idiomas/idiomas.dart';
 import '../preferencias/preferencias.dart';
@@ -10,9 +8,10 @@ import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
-import 'controles_preferencias.dart';
+import '../widgets/controles_preferencias.dart';
+import '../widgets/ventana_mensaje.dart';
 import 'pantalla_principal.dart';
-import 'ventana_mensaje.dart';
+
 
 /// Pantalla de login de VS_CONTA.
 class ClaseLogin extends StatefulWidget {
