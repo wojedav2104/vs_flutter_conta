@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vs_conta/generales/widgets/campo_formulario.dart';
 
 import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
@@ -11,6 +10,7 @@ import '../temas/layout.dart';
 import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
 import 'abm_comun.dart';
+import 'campo_formulario.dart';
 import 'ventana_mensaje.dart';
 
 /// Formulario ABM con grilla editable de detalles (Asientos, Libro Compras).

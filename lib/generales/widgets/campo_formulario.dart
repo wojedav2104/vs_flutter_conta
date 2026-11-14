@@ -73,9 +73,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   }
 
   @override
-  void didUpdateWidget(covariant ClaseCampoFormulario oAntiguo) {
-    super.didUpdateWidget(oAntiguo);
-    if (oAntiguo.sValor != widget.sValor && oControl.text != widget.sValor) {
+  void didUpdateWidget(covariant ClaseCampoFormulario oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.sValor != widget.sValor && oControl.text != widget.sValor) {
       oControl.text = widget.sValor;
     }
   }
