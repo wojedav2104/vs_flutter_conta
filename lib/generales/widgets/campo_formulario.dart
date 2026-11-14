@@ -136,6 +136,79 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     }
   }
 
+  // ── Decoración común de los controles ───────────────────────────────────
+
+  /// Borde, padding interior generoso (objetivos táctiles cómodos para
+  /// usuarios noveles) e hint. Un solo punto de cambio para todos los
+  /// controles del campo.
+  InputDecoration _getDecoracion({
+    String? sHint,
+    Widget? oIconoDerecha,
+    String? sContador,
+  }) {
+    return InputDecoration(
+      isDense        : true,
+      hintText       : sHint,
+      suffixIcon     : oIconoDerecha,
+      counterText    : sContador,
+      border         : const OutlineInputBorder(),
+      contentPadding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio12,
+        vertical   : ClaseGenEspacios.dEspacio12,
+      ),
+    );
+  }
+
+  // ── Botón de borrar el contenido del campo ─────────────────────────────
+
+  /// Compartido por texto, fecha y hora (antes duplicado en los tres).
+  bool get _bMostrarBorrarCampo =>
+      widget.bHabilitado && widget.sValor.isNotEmpty;
+
+  Widget _construirBotonBorrarCampo() {
+    return IconButton(
+      tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'borrarCampo'),
+      icon      : const Icon(Icons.close, size: 18),
+      onPressed : () {
+        oControl.text = '';
+        widget.funcAlCambiar('');
+      },
+    );
+  }
+
+  // ── Mayúsculas y máscara al cambiar el valor ───────────────────────────
+
+  /// Conversión a mayúsculas y aplicación de la máscara (si existe);
+  /// actualiza el display solo si el valor cambió.
+  /// bConMascara=false para el comentario (sin máscara).
+  void _alCambiarTexto(String sValor, {bool bConMascara = true}) {
+    String sSalida = sValor;
+    if (widget.oCampo.bMayusculas) {
+      sSalida = sValor.toUpperCase();
+      if (sSalida != oControl.text) {
+        oControl.value = TextEditingValue(
+          text      : sSalida,
+          selection : TextSelection.collapsed(offset: sSalida.length),
+        );
+      }
+    }
+    if (bConMascara) {
+      final String? sMascaraNueva = _getMascara();
+      if (sMascaraNueva != null) {
+        final String sDigitos = sSalida.replaceAll(RegExp(r'[^0-9]'), '');
+        final String sConMascara = funcAplicarMascara(sDigitos, sMascaraNueva);
+        if (sConMascara != sSalida) {
+          sSalida = sConMascara;
+          oControl.value = TextEditingValue(
+            text      : sSalida,
+            selection : TextSelection.collapsed(offset: sSalida.length),
+          );
+        }
+      }
+    }
+    widget.funcAlCambiar(sSalida);
+  }
+
   // ── Construcción de la interfaz ──────────────────────────────────────────
 
   @override
@@ -216,47 +289,16 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       focusNode       : oFoco,
       style           : ClaseGenEstilosTexto.textoCampo(oContexto),
       textAlign       : bNumero ? TextAlign.right : TextAlign.left,
+      keyboardType    : bNumero
+          ? (widget.oCampo.bTieneDecimales
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : TextInputType.number)
+          : null,
       inputFormatters : _getFormateadores(bNumero),
-      onChanged       : (String sValor) {
-        String sSalida = sValor;
-        if (widget.oCampo.bMayusculas) {
-          sSalida = sValor.toUpperCase();
-          if (sSalida != oControl.text) {
-            oControl.value = TextEditingValue(
-              text      : sSalida,
-              selection : TextSelection.collapsed(offset: sSalida.length),
-            );
-          }
-        }
-        // Aplicar máscara dinámica si existe.
-        final String? sMascaraActual = _getMascara();
-        if (sMascaraActual != null) {
-          final String sDigitos = sSalida.replaceAll(RegExp(r'[^0-9]'), '');
-          final String sConMascara = funcAplicarMascara(sDigitos, sMascaraActual);
-          if (sConMascara != sSalida) {
-            sSalida = sConMascara;
-            oControl.value = TextEditingValue(
-              text      : sSalida,
-              selection : TextSelection.collapsed(offset: sSalida.length),
-            );
-          }
-        }
-        widget.funcAlCambiar(sSalida);
-      },
-      decoration : InputDecoration(
-        isDense    : true,
-        hintText   : widget.oCampo.sHint,
-        border     : const OutlineInputBorder(),
-        suffixIcon : widget.bHabilitado && widget.sValor.isNotEmpty
-            ? IconButton(
-                tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'borrarCampo'),
-                icon      : const Icon(Icons.close, size: 18),
-                onPressed : () {
-                  oControl.text = '';
-                  widget.funcAlCambiar('');
-                },
-              )
-            : null,
+      onChanged       : (String sValor) => _alCambiarTexto(sValor),
+      decoration      : _getDecoracion(
+        sHint        : widget.oCampo.sHint,
+        oIconoDerecha : _bMostrarBorrarCampo ? _construirBotonBorrarCampo() : null,
       ),
     );
   }
@@ -287,21 +329,18 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       children: <Widget>[
         Expanded(
           child: TextField(
-            controller : oControl,
-            enabled    : widget.bHabilitado,
-            focusNode  : oFoco,
-            style      : ClaseGenEstilosTexto.textoCampo(oContexto),
-            onChanged  : (String sValor) => widget.funcAlCambiar(sValor),
-            decoration : InputDecoration(
-              isDense    : true,
-              hintText   : 'dd/mm/aaaa',
-              border     : const OutlineInputBorder(),
-            ),
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+            keyboardType : TextInputType.datetime,
+            onChanged    : (String sValor) => widget.funcAlCambiar(sValor),
+            decoration   : _getDecoracion(sHint: 'dd/mm/aaaa'),
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
         IconButton(
-          tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'elegirFecha'),
+          tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'campoElegirFecha'),
           icon      : const Icon(Icons.calendar_month),
           onPressed : widget.bHabilitado
               ? () async {
@@ -320,15 +359,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 }
               : null,
         ),
-        if (widget.bHabilitado && widget.sValor.isNotEmpty)
-          IconButton(
-            tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'borrarCampo'),
-            icon      : const Icon(Icons.close, size: 18),
-            onPressed : () {
-              oControl.text = '';
-              widget.funcAlCambiar('');
-            },
-          ),
+        if (_bMostrarBorrarCampo) _construirBotonBorrarCampo(),
       ],
     );
   }
@@ -340,22 +371,19 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       children: <Widget>[
         Expanded(
           child: TextField(
-            controller  : oControl,
-            enabled     : widget.bHabilitado,
-            focusNode   : oFoco,
-            style       : ClaseGenEstilosTexto.textoCampo(oContexto),
-            onChanged   : _alCambiarHora,
-            onSubmitted : (_) => _normalizarHora(),
-            decoration  : InputDecoration(
-              isDense     : true,
-              hintText    : 'hh:mm',
-              border      : const OutlineInputBorder(),
-            ),
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+            keyboardType : TextInputType.datetime,
+            onChanged    : _alCambiarHora,
+            onSubmitted  : (_) => _normalizarHora(),
+            decoration   : _getDecoracion(sHint: 'hh:mm'),
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
         IconButton(
-          tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'elegirHora'),
+          tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'campoElegirHora'),
           icon      : const Icon(Icons.schedule),
           onPressed : widget.bHabilitado
               ? () async {
@@ -372,15 +400,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 }
               : null,
         ),
-        if (widget.bHabilitado && widget.sValor.isNotEmpty)
-          IconButton(
-            tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'borrarCampo'),
-            icon      : const Icon(Icons.close, size: 18),
-            onPressed : () {
-              oControl.text = '';
-              widget.funcAlCambiar('');
-            },
-          ),
+        if (_bMostrarBorrarCampo) _construirBotonBorrarCampo(),
       ],
     );
   }
@@ -424,7 +444,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       key          : ValueKey<String>('${widget.oCampo.sClave}_${widget.sValor}'),
       initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
       isExpanded   : true,
-      decoration   : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+      decoration   : _getDecoracion(),
       items: <DropdownMenuItem<String>>[
         for (int i = 0; i < listOpciones.length; i++)
           DropdownMenuItem<String>(
@@ -473,29 +493,21 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   Widget _construirComentario(BuildContext oContexto) {
     return TextField(
-      controller    : oControl,
-      enabled       : widget.bHabilitado,
-      focusNode     : oFoco,
-      maxLines      : 3,
-      style         : ClaseGenEstilosTexto.textoCampo(oContexto),
-      onChanged     : (String sValor) {
-        String sSalida = sValor;
-        if (widget.oCampo.bMayusculas) {
-          sSalida = sValor.toUpperCase();
-          if (sSalida != oControl.text) {
-            oControl.value = TextEditingValue(
-              text      : sSalida,
-              selection : TextSelection.collapsed(offset: sSalida.length),
-            );
-          }
-        }
-        widget.funcAlCambiar(sSalida);
-      },
-      decoration    : InputDecoration(
-        isDense     : true,
-        hintText    : widget.oCampo.sHint,
-        border      : const OutlineInputBorder(),
-        counterText : '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
+      controller      : oControl,
+      enabled         : widget.bHabilitado,
+      focusNode       : oFoco,
+      maxLines        : 3,
+      style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+      // El comentario ahora respeta iMaxComentario (antes solo lo mostraba).
+      inputFormatters : (widget.oCampo.iMaxComentario > 0)
+          ? <TextInputFormatter>[
+              LengthLimitingTextInputFormatter(widget.oCampo.iMaxComentario),
+            ]
+          : null,
+      onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
+      decoration      : _getDecoracion(
+        sHint     : widget.oCampo.sHint,
+        sContador : '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
       ),
     );
   }
