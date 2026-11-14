@@ -26,13 +26,15 @@ abstract final class ClaseRutas {
   static const String rutaReorganizarAsientos = '/procesos/reorganizar_asientos';
 
   // ── Informes ────────────────────────────────────────────────────────────
-  static const String rutaBalanceGeneral     = '/informes/balance_general';
-  static const String rutaBalanceSumasSaldos = '/informes/balance_sumas_saldos';
-  static const String rutaEstadoResultados   = '/informes/estado_resultados';
-  static const String rutaLibroDiario        = '/informes/libro_diario';
-  static const String rutaLibroMayor         = '/informes/libro_mayor';
-  static const String rutaPlanCuentas        = '/informes/plan_cuentas';
-  static const String rutaVerificacionDatos  = '/informes/verificacion_datos';
+  static const String rutaBalanceGeneral      = '/informes/balance_general';
+  static const String rutaBalanceSumasSaldos  = '/informes/balance_sumas_saldos';
+  static const String rutaEstadoResultados    = '/informes/estado_resultados';
+  static const String rutaLibroDiario         = '/informes/libro_diario';
+  static const String rutaLibroMayor          = '/informes/libro_mayor';
+  static const String rutaPlanCuentas         = '/informes/plan_cuentas';
+  static const String rutaVerificacionDatos   = '/informes/verificacion_datos';
+  static const String rutaInformeLibroCompras = '/informes/libro_compras';
+  static const String rutaInformeLibroVentas  = '/informes/libro_ventas';
 
   // ── Utilitarios ─────────────────────────────────────────────────────────
   static const String rutaUsuarios = '/utilitarios/usuarios';

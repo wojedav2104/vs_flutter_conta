@@ -172,5 +172,35 @@ abstract final class ClaseMedioGeneracion {
     return listValores.map((String s) => getEtiqueta(s, sIdioma)).toList();
   }
 
+
 }
 
+/// Tipo de afectación del comprobante (Libro Compras).
+abstract final class ClaseTipoAfectacion {
+
+  static const String directo     = 'DIR';
+  static const String indistinto  = 'IND';
+  static const String exportacion = 'EXP';
+  static const String importacion = 'IMP';
+
+  /// Valores internos, en el orden en que se muestran.
+  static const List<String> listValores = <String>[
+    directo, indistinto, exportacion, importacion,
+  ];
+
+  static const Map<String, String> _mapClaves = <String, String>{
+    directo     : 'comAfectDirecto',
+    indistinto  : 'comAfectIndistinto',
+    exportacion : 'comAfectExportacion',
+    importacion : 'comAfectImportacion',
+  };
+
+  static String getEtiqueta(String sValor, String sIdioma) {
+    return ClaseIdiomas.getTexto(sIdioma, _mapClaves[sValor] ?? sValor);
+  }
+
+  static List<String> getListOpciones(String sIdioma) {
+    return listValores.map((String s) => getEtiqueta(s, sIdioma)).toList();
+  }
+
+}

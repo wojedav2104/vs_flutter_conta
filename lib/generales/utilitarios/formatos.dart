@@ -251,3 +251,52 @@ String funcCompletarCeros(String sValor, int iLong) {
   if (sDato.isEmpty) return '';
   return sDato.padLeft(iLong, '0');
 }
+
+/// Aplica una máscara de entrada (ej: '999-999-9999999') sobre una cadena de
+/// dígitos: cada '9' se reemplaza por un dígito disponible y los demás
+/// caracteres se insertan tal cual. Los dígitos sobrantes se ignoran.
+String funcAplicarMascara(String sDigitos, String sMascara) {
+  final StringBuffer oSalida = StringBuffer();
+  int i = 0;
+  for (int j = 0; j < sMascara.length; j++) {
+    if (sMascara[j] == '9') {
+      if (i >= sDigitos.length) break;
+      oSalida.write(sDigitos[i++]);
+    } else {
+      oSalida.write(sMascara[j]);
+    }
+  }
+  return oSalida.toString();
+}
+
+/// Convierte un importe tecleado a double ('1234.56' o '1234,56').
+/// Devuelve null si el texto no es un importe válido.
+double? funcParsearNumero(String sValor) {
+  final String sDato = sValor.trim().replaceAll(' ', '');
+  if (sDato.isEmpty) return null;
+  final String sNormalizado = sDato.replaceAll(',', '.');
+  if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(sNormalizado)) return null;
+  return double.tryParse(sNormalizado);
+}
+
+/// Formatea un importe para mostrarlo:
+/// '1.234.567,00' en formato latino o '1 234 567,00' en formato francés.
+/// Los decimales solo se muestran si son distintos de cero.
+String funcFormatearNumero(double dValor, String sFormato) {
+  final bool   bLatino           = (sFormato != 'frances');
+  final String sSeparadorMiles   = bLatino ? '.' : ' ';
+  final String sSeparadorDecimal = bLatino ? ',' : '.';
+  final String sBase    = dValor.abs().toStringAsFixed(2);
+  final List<String> listPartes = sBase.split('.');
+  final String sEnteros = listPartes[0];
+  final StringBuffer oSalida = StringBuffer();
+  for (int i = 0; i < sEnteros.length; i++) {
+    if (i > 0 && (sEnteros.length - i) % 3 == 0) oSalida.write(sSeparadorMiles);
+    oSalida.write(sEnteros[i]);
+  }
+  if (listPartes[1] != '00') {
+    oSalida..write(sSeparadorDecimal)..write(listPartes[1]);
+  }
+  return '${dValor < 0 ? '-' : ''}$oSalida';
+}
+

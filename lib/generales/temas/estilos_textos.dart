@@ -52,7 +52,12 @@ abstract final class ClaseGenEstilosTexto {
 
   /// Texto de los botones grandes (Ingresar, Cancelar).
   static TextStyle botonGrande(BuildContext oContexto) {
-    return normalGrande(oContexto).copyWith(fontWeight: FontWeight.w700);
+    return normalGrande(oContexto).copyWith(fontWeight: FontWeight.w600);
   }
-    
+
+  /// Texto destacado (nombre de la Base en la cabecera, opción Fin).
+  static TextStyle textoDestacado(BuildContext oContexto) {
+    return textoCampo(oContexto).copyWith(fontWeight: FontWeight.w600);
+  }
+  
 }

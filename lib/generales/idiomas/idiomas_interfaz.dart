@@ -63,6 +63,10 @@ abstract final class ClaseIdiomasInterfaz {
     'ordenarPor'      : 'Ordenar por',
     'paginaAnterior'  : 'Página anterior',
     'paginaSiguiente' : 'Página siguiente',
+    'abmNoEncontrado' : 'No se encontró ningún registro',
+    'campoElegirFecha': 'Elegir la fecha',
+    'campoElegirHora' : 'Elegir la hora',
+
   };
 
   static const Map<String, String> mapFr = <String, String>{
@@ -127,6 +131,9 @@ abstract final class ClaseIdiomasInterfaz {
     'ordenarPor'      : 'Trier par',
     'paginaAnterior'  : 'Page précédente',
     'paginaSiguiente' : 'Page suivante',
+    'abmNoEncontrado' : 'Aucun enregistrement trouvé',
+    'campoElegirFecha': 'Choisir la date',
+    'campoElegirHora' : 'Choisir l\'heure',    
   };
 
 }

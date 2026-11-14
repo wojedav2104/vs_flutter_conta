@@ -18,6 +18,7 @@ class ClaseCampoAbm {
     this.bObligatorio           = false,
     this.bSiempreDeshabilitado  = false,
     this.bSoloLecturaPorRol     = false,
+    this.bTieneDecimales        = false,    
     this.iAnchoCaracteres       = 10,
     this.iMaxComentario         = 500,
     this.listOpciones,
@@ -41,6 +42,7 @@ class ClaseCampoAbm {
   bool              bObligatorio;
   bool              bSiempreDeshabilitado;
   bool              bSoloLecturaPorRol;
+  bool              bTieneDecimales;
   int               iAnchoCaracteres;
   int               iMaxComentario;
   List<String>?     listOpciones;

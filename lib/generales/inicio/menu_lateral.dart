@@ -42,8 +42,8 @@ class ClaseMenuLateral extends StatelessWidget {
     ClaseOpcionMenu(oIcono: Icons.balance_outlined,       sClave: 'menuBalanceSumasSaldos',  sRuta: ClaseRutas.rutaBalanceSumasSaldos),
     ClaseOpcionMenu(oIcono: Icons.pie_chart_outline,      sClave: 'menuBalanceGeneral',      sRuta: ClaseRutas.rutaBalanceGeneral),
     ClaseOpcionMenu(oIcono: Icons.trending_up,            sClave: 'menuEstadoResultados',    sRuta: ClaseRutas.rutaEstadoResultados),
-    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined, sClave: 'menuLibroCompras',        sRuta: ClaseRutas.rutaCompras),
-    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined, sClave: 'menuLibroVentas',         sRuta: ClaseRutas.rutaVentas),
+    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined, sClave: 'menuLibroCompras',        sRuta: ClaseRutas.rutaInformeLibroCompras),
+    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined, sClave: 'menuLibroVentas',         sRuta: ClaseRutas.rutaInformeLibroVentas),
   ];
 
   static final List<ClaseOpcionMenu> _listProcesos = <ClaseOpcionMenu>[
@@ -76,8 +76,9 @@ class ClaseMenuLateral extends StatelessWidget {
   // ── Acciones ────────────────────────────────────────────────────────────
   void elegirOpcion(BuildContext oContexto, ClaseOpcionMenu oOpcion) {
     final String sTitulo = ClaseIdiomas.getTexto(oPreferencias.getIdioma(), oOpcion.sClave);
-    Navigator.pop(oContexto);
-    Navigator.pushNamed(oContexto, oOpcion.sRuta, arguments: sTitulo);
+    final NavigatorState oNavegador = Navigator.of(oContexto);
+    oNavegador.pop(); // cierra el drawer
+    oNavegador.pushNamed(oOpcion.sRuta, arguments: sTitulo);
   }
 
   void finalizar() {

@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 
 import '../idiomas/idiomas.dart';
+import '../preferencias/preferencias.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 
-
-/// Pantalla provisional que se muestra al elegir una opción del menú cuyo
-/// módulo aún no está implementado.
+/// Pantalla provisoria para las opciones del menú cuyo módulo aún no está
+/// desarrollado: la ruta existe pero la pantalla definitiva no.
 class ClasePantallaProximamente extends StatelessWidget {
 
   const ClasePantallaProximamente({
     super.key,
+    required this.oPreferencias,
     required this.sTitulo,
   });
 
-  final String sTitulo;
+  final ClasePreferencias oPreferencias;
+  final String            sTitulo;
 
   @override
   Widget build(BuildContext oContexto) {
     return Scaffold(
-      appBar : AppBar(title: Text(sTitulo)),
-      body   : Center(
+      appBar : AppBar(
+        title: Text(sTitulo, style: ClaseGenEstilosTexto.tituloMediano(oContexto)),
+      ),
+      body: Center(
         child: Column(
           mainAxisSize : MainAxisSize.min,
           children     : <Widget>[
-            const Icon(Icons.construction, size: 64),
+            const Icon(Icons.construction_outlined),
             const SizedBox(height: ClaseGenEspacios.dEspacio16),
-            Text(sTitulo, style: ClaseGenEstilosTexto.subtituloGrande(oContexto)),
-            const SizedBox(height: ClaseGenEspacios.dEspacio08),
-            Text(ClaseIdiomas.getTexto('es', 'enPreparacion'),
-                 style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+            Text(
+              ClaseIdiomas.getTexto(oPreferencias.getIdioma(), 'enPreparacion'),
+              style : ClaseGenEstilosTexto.normalGrande(oContexto),
+            ),
           ],
         ),
       ),

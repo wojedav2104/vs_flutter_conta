@@ -140,3 +140,63 @@ Future<int?> funcMostrarSelectorHora(
 }
 
 
+/// Muestra una pregunta de confirmación con dos botones y devuelve true si
+/// se presiona el botón aceptar.
+Future<bool> funcMostrarConfirmar(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+  String        sAceptar,
+  String        sCancelar,
+  int           iAnchoColumnas,
+) async {
+  bool bAceptar = false;
+  await showDialog<void>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (oContextoDialogo) {
+      return AlertDialog(
+        title: Row(
+          children: <Widget>[
+            Expanded(
+              child: Text(sTitulo,
+                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoDialogo)),
+            ),
+            IconButton(
+              tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
+              icon      : const Icon(Icons.close),
+              onPressed : () => Navigator.of(oContextoDialogo).pop(),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width : iAnchoColumnas * ClaseGenLayout.dAnchoCaracter,
+          child : Text(sTexto,
+              style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+        ),
+        actions: <Widget>[
+          OutlinedButton.icon(
+            onPressed : () => Navigator.of(oContextoDialogo).pop(),
+            icon      : const Icon(Icons.cancel_outlined),
+            label     : Text(sCancelar,
+                style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+          ),
+          FilledButton.icon(
+            onPressed : () {
+              bAceptar = true;
+              Navigator.of(oContextoDialogo).pop();
+            },
+            icon      : const Icon(Icons.check),
+            label     : Text(sAceptar,
+                style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+          ),
+        ],
+      );
+    },
+  );
+  return bAceptar;
+}
+
+
+

@@ -341,4 +341,40 @@ class ClaseCapValidar {
         sValor, ClaseTipoIdentificacion.ruc, sEtiqueta, sIdioma);
   }
 
+  /// Valida que la suma del Debe sea exactamente igual a la suma del Haber.
+  static String? validarSumaDebeHaber(double dDebe, double dHaber, String sIdioma) {
+    if ((dDebe - dHaber).abs() > 0.005) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validSumaDebeHaber');
+    }
+    return null;
+  }
+
+  /// Valida el N° de documento según el Tipo de documento (ClaseTipoDocumento):
+  ///   · Tipo 05 (Tributo Único): exactamente 13 dígitos, sin guiones.
+  ///   · Tipos 07, 08 y 11 (importaciones y Resolución): exactamente 7 dígitos.
+  ///   · Demás tipos: 13 dígitos con el formato 999-999-9999999.
+  static String? validarNumeroDocumentoPorTipo(
+    String sValor,
+    String sTipoDocumento,
+    String sEtiqueta,
+    String sIdioma,
+  ) {
+    final String sDato = sValor.trim();
+    if (sDato.isEmpty) return null;
+    bool bValido;
+    switch (sTipoDocumento) {
+      case '05':
+        bValido = RegExp(r'^\d{13}$').hasMatch(sDato);
+        break;
+      case '07':
+      case '08':
+      case '11':
+        bValido = RegExp(r'^\d{7}$').hasMatch(sDato);
+        break;
+      default:
+        bValido = RegExp(r'^\d{3}-\d{3}-\d{7}$').hasMatch(sDato);
+    }
+    return bValido ? null : ClaseIdiomas.getTexto(sIdioma, 'comErrorNumeroFormato');
+  }
+    
 }
