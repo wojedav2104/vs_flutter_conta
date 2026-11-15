@@ -1,5 +1,0 @@
-Argentina=ARS=Peso argentino
-Francia=EUR=Euro
-Paraguay=PYG=Guarani
-Perú=PEN=Nuevo Sol
-Uruguay=UYU=Peso Uruguayo

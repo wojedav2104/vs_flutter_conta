@@ -1,5 +1,0 @@
-ARG=Argentina
-FRA=Francia
-PER=Perú
-PRY=Paraguay
-URY=Uruguay
