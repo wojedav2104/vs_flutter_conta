@@ -1,5 +1,7 @@
 name: vs_conta
-description: "A new Flutter project."
+description: "VS_CONTA. Aplicación de Conabilidad multi-país, multi-moneda, multi-sucursal, multi-usuario y multi-idioma. Permite llevar la contabilidad de una empresa en 
+              varios países, con varias monedas, varias sucursales, varios usuarios y varios idiomas. La aplicación está diseñada para ser utilizada por contadores y empresas 
+              que necesitan llevar la contabilidad de sus operaciones en varios países y monedas."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

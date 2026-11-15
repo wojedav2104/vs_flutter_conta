@@ -24,6 +24,7 @@ class ClaseFormularioAbm extends StatefulWidget {
     this.bPermitirEncontrar   = true,
     this.bTablaUnSoloRegistro = false,
     this.funcActualizarCampos,
+    this.funcEtiquetaGrupo,
     this.funcValidarRegistro,
     required this.listCampos,
     required this.listRegistros,
@@ -40,6 +41,8 @@ class ClaseFormularioAbm extends StatefulWidget {
   /// Auto-cálculos: recibe los valores internos y devuelve los campos a
   /// actualizar (o null si no hay cambios).
   final Map<String, String>? Function(Map<String, String> mapValores)? funcActualizarCampos;
+
+  final String Function(String sClaveGrupo)? funcEtiquetaGrupo;
 
   /// Validación cruzada del registro completo (o null si es válido).
   final String? Function(Map<String, dynamic> oRegistro)? funcValidarRegistro;

@@ -6,7 +6,10 @@ import '../../generales/preferencias/preferencias.dart';
 import '../../generales/utilitarios/formatos.dart';
 import '../../generales/validaciones/cap_validar.dart';
 import '../../generales/varios/listas.dart';
+import '../../generales/varios/paises.dart';
 import '../../generales/widgets/formulario_abm.dart';
+
+import '../../opciones/tablas/empresa.dart';
 
 /// Pantalla del Plan de Cuentas (ABM de múltiples registros con pestañas).
 ///
@@ -45,6 +48,10 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   Widget build(BuildContext oContexto) {
     return ClaseFormularioAbm(
       funcActualizarCampos : actualizarCampos,
+      funcEtiquetaGrupo    : (String sClave) => (sClave == 'planPrincipal')
+          ? '${ClaseIdiomas.getTexto(getIdioma(), 'planPrincipal')} '
+            '(${ClasePaises.getNombre(getIdioma(), ClaseEmpresa.getPaisElegido())})'
+          : ClaseIdiomas.getTexto(getIdioma(), sClave),
       funcValidarRegistro  : validarRegistro,
       listCampos           : listCampos,
       listRegistros        : listRegistros,
@@ -57,9 +64,9 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
   // ── Habilitación dinámica ───────────────────────────────────────────────
 
-  /// La cuenta superior se habilita solo si la cuenta tiene más de 1 dígito.
+  /// La cuenta superior se habilita solo si la cuenta tiene más de un grupo.
   bool habilitarCuentaSuperior(Map<String, String> mapValores, String sPrefijo) {
-    return ClaseCapValidar.contarDigitosCuenta(
+    return ClaseCapValidar.contarGruposCuenta(
         mapValores['${sPrefijo}NumeroCuenta'] ?? '') > 1;
   }
 
@@ -73,18 +80,13 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
     final Map<String, String> mapActualizaciones = <String, String>{};
     for (final String sPrefijo in <String>['pri', 'alt']) {
-      final String sCuenta   = (mapValores['${sPrefijo}NumeroCuenta']    ?? '').trim();
-      final String sSuperior = (mapValores['${sPrefijo}CuentaSuperior']  ?? '').trim();
-
+      final String sCuenta = (mapValores['${sPrefijo}NumeroCuenta'] ?? '').trim();
       if (ClaseCapValidar.esFormatoCuenta(sCuenta)) {
         mapActualizaciones['${sPrefijo}Nivel'] =
             '${ClaseCapValidar.contarGruposCuenta(sCuenta)}';
-      }
-      if (ClaseCapValidar.contarDigitosCuenta(sCuenta) <= 1 && sSuperior.isNotEmpty) {
-        mapActualizaciones['${sPrefijo}CuentaSuperior'] = '';
-      } else if (ClaseCapValidar.contarGruposCuenta(sCuenta) > 1 && sSuperior.isEmpty) {
+        // Determinística: siempre el grupo anterior (vacía si es raíz).
         mapActualizaciones['${sPrefijo}CuentaSuperior'] =
-            sCuenta.substring(0, sCuenta.lastIndexOf('.'));
+            ClaseCapValidar.funcCuentaSuperior(sCuenta);
       }
     }
     return mapActualizaciones.isEmpty ? null : mapActualizaciones;

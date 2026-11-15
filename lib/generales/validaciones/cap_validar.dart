@@ -1,365 +1,422 @@
-// ============================================================================
-//  ARCHIVO: lib/generales/validaciones/cap_validar.dart
-//  TODAS las validaciones que NO requieren acceso a la Base de Datos
-// ============================================================================
-
 import '../idiomas/idiomas.dart';
-import '../utilitarios/formatos.dart';
-import '../varios/listas.dart';
+import 'formatos.dart';
 
-abstract final class ClaseCapValidar {
-  
-  // ── Auxiliares privados ─────────────────────────────────────────────────
+/// Validaciones de los distintos tipos de datos, con mensajes en el idioma
+/// del usuario. Todas devuelven null si el valor es válido, o un mensaje de
+/// error traducido. Las cadenas de error admiten {0}, {1} (cuando el texto
+/// traducido se construye por partes).
+///
+/// Los textos de error (valid*) se definen en idiomas_general y se usan
+/// con ClaseIdiomas.getTexto + replaceAll.
+class ClaseCapValidar {
 
-  /// Devuelve el mensaje traducido con los parámetros {0}, {1}, etc.
-  static String _traducir(String sIdioma, String sClave, List<String> listParametros) {
-    String sMensaje = ClaseIdiomas.getTexto(sIdioma, sClave);
-    for (int i = 0; i < listParametros.length; i++) {
-      sMensaje = sMensaje.replaceAll('{$i}', listParametros[i]);
-    }
-    return sMensaje;
-  }
+  // ── Texto ─────────────────────────────────────────────────────────────
 
-  // ── Validaciones básicas ─────────────────────────────────────────────────
-
+  /// El valor no puede estar vacío.
   static String? validarObligatorio(String sValor, String sEtiqueta, String sIdioma) {
-    if (sValor.trim().isEmpty) return _traducir(sIdioma, 'validObligatorio', <String>[sEtiqueta]);
-    return null;
-  }
-
-  static String? validarLongitudMaxima(String sValor, String sEtiqueta, int iMax, String sIdioma) {
-    if (sValor.length > iMax) return _traducir(sIdioma, 'validLongMaxima', <String>[sEtiqueta, '$iMax']);
-    return null;
-  }
-
-  static String? validarLongitudMinima(String sValor, String sEtiqueta, int iMin, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (sDato.length < iMin) return _traducir(sIdioma, 'validLongMinima', <String>[sEtiqueta, '$iMin']);
-    return null;
-  }
-
-  // ── Validaciones de números enteros ──────────────────────────────────────
-
-  /// Solo dígitos, sin signo. Si algún día se necesitan números negativos,
-  /// se creará un método aparte.
-  static String? validarSoloEntero(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[0-9]+$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validSoloEntero', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  static String? validarEnteroDeLongitud(String sValor, String sEtiqueta, int iLong, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[0-9]+$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validSoloEntero', <String>[sEtiqueta]);
-    }
-    if (sDato.length != iLong) {
-      return _traducir(sIdioma, 'validDigitosExactos', <String>[sEtiqueta, '$iLong']);
-    }
-    return null;
-  }
-
-  static String? validarDigitosExactos(String sValor, String sEtiqueta, int iDigitos, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[0-9]+$').hasMatch(sDato) || sDato.length != iDigitos) {
-      return _traducir(sIdioma, 'validDigitosExactos', <String>[sEtiqueta, '$iDigitos']);
-    }
-    return null;
-  }
-
-  /// Valida un número de documento con la máscara 999-999-9999999
-  /// (13 dígitos agrupados 3-3-7). Es el formato del N° de documento.
-  static String? validarNumeroDocumento(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^\d{3}-\d{3}-\d{7}$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validNumeroDocumento', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  static String? validarRangoEntero(String sValor, String sEtiqueta, int iMin, int iMax, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[0-9]+$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validSoloEntero', <String>[sEtiqueta]);
-    }
-    final int iValor = int.parse(sDato);
-    if (iValor < iMin || iValor > iMax) {
-      return _traducir(sIdioma, 'validRangoEntero', <String>[sEtiqueta, '$iMin', '$iMax']);
-    }
-    return null;
-  }
-
-  // ── Validaciones de fecha y hora ─────────────────────────────────────────
-
-  static String? validarFechaValida(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (funcParsearFecha(sDato) == null) {
-      return _traducir(sIdioma, 'validFechaInvalida', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  static String? validarFechaNoAnterior(String sValor, String sEtiqueta, DateTime fMin, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    final DateTime? fFecha = funcParsearFecha(sDato);
-    if (fFecha == null) return _traducir(sIdioma, 'validFechaInvalida', <String>[sEtiqueta]);
-    if (fFecha.isBefore(fMin)) {
-      return _traducir(sIdioma, 'validFechaAnterior', <String>[sEtiqueta, funcFormatearFecha(fMin)]);
-    }
-    return null;
-  }
-
-  /// La hora debe tener formato hh:mm y estar entre 00:00 y 23:59.
-  static String? validarHoraValida(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (funcParsearHora(sDato) == null) {
-      return _traducir(sIdioma, 'validHoraInvalida', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  // ── Validaciones de cuenta contable ──────────────────────────────────────
-
-  /// Indica si un texto tiene el formato de cuenta válido: hasta 5 grupos
-  /// de 1-2 dígitos separados por puntos (1, 1.01, 1.01.04, 2.03.05.17).
-  static bool esFormatoCuenta(String sValor) {
-    return RegExp(r'^\d{1,2}(\.\d{1,2}){0,4}$').hasMatch(sValor.trim());
-  }
-
-  /// Cuenta la cantidad de dígitos (sin puntos) de un número de cuenta.
-  static int contarDigitosCuenta(String sCuenta) {
-    return sCuenta.replaceAll('.', '').replaceAll(RegExp(r'[^0-9]'), '').length;
-  }
-
-  /// Cuenta la cantidad de grupos de un número de cuenta (1.01.04 → 3).
-  static int contarGruposCuenta(String sCuenta) {
-    final String sDato = sCuenta.trim();
-    return sDato.isEmpty ? 0 : sDato.split('.').length;
-  }
-
-  static String? validarFormatoCuenta(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!esFormatoCuenta(sDato)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFormatoCuenta');
-    }
-    return null;
-  }
-
-  // ── Validaciones de ejercicio, nivel y subcuenta ─────────────────────────
-
-  /// El año debe ser >= ClaseFechas.iAnioMinimo y <= año actual.
-  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[0-9]+$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validSoloEntero', <String>[sEtiqueta]);
-    }
-    final int iAnio       = int.parse(sDato);
-    final int iAnioActual = DateTime.now().year;
-    if (iAnio < ClaseFechas.iAnioMinimo || iAnio > iAnioActual) {
-      return _traducir(sIdioma, 'validEjercicioRango', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  /// Un dígito entre 1 y 9.
-  static String? validarNivelCuenta(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[1-9]$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validNivelCuenta', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  /// 5 dígitos entre 00001 y 99999.
-  static String? validarNumeroSubcuenta(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    if (!RegExp(r'^[0-9]{5}$').hasMatch(sDato)) {
-      return _traducir(sIdioma, 'validSubcuentaRango', <String>[sEtiqueta]);
-    }
-    final int iSub = int.parse(sDato);
-    if (iSub < 1 || iSub > 99999) {
-      return _traducir(sIdioma, 'validSubcuentaRango', <String>[sEtiqueta]);
-    }
-    return null;
-  }
-
-  // ── Validaciones cruzadas (múltiples campos) ─────────────────────────────
-
-  /// La fecha fin debe ser estrictamente posterior a la fecha inicio.
-  static String? validarFechaFinPosterior(String sFechaInicio, String sFechaFin, String sIdioma) {
-    if (sFechaFin.trim().isEmpty || sFechaInicio.trim().isEmpty) return null;
-    final DateTime? fInicio = funcParsearFecha(sFechaInicio);
-    final DateTime? fFin    = funcParsearFecha(sFechaFin);
-    if (fInicio != null && fFin != null && !fFin.isAfter(fInicio)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFechaFinPosterior');
-    }
-    return null;
-  }
-
-  /// Al menos una opción seleccionada en un grupo de casillas.
-  static String? validarAlMenosUnoSeleccionado(String sValor, String sEtiqueta, String sIdioma) {
     if (sValor.trim().isEmpty) {
-      return _traducir(sIdioma, 'validAlMenosUno', <String>[sEtiqueta]);
+      return ClaseIdiomas.getTexto(sIdioma, 'validObligatorio')
+          .replaceAll('{0}', sEtiqueta);
     }
     return null;
   }
 
-  /// La cuenta superior es obligatoria si la cuenta tiene más de 1 dígito.
-  static String? validarCuentaSuperior(String sCuenta, String sCuentaSuperior, String sIdioma) {
-    if (contarDigitosCuenta(sCuenta) > 1 && sCuentaSuperior.trim().isEmpty) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validCuentaSuperior');
+  /// La longitud del valor no puede superar iMaximo caracteres.
+  static String? validarLongitudMaxima(
+      String sValor, String sEtiqueta, int iMaximo, String sIdioma) {
+    if (sValor.length > iMaximo) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validCantidadCaracteresMaxima')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMaximo');
     }
     return null;
   }
 
-  /// La fecha debe estar entre el 01/01 del ejercicio y
-  /// a) la fecha de hoy si el ejercicio es el año actual, o
-  /// b) el 31/12 del ejercicio si es un año anterior.
-  static String? validarFechaEnEjercicio(
-    String sValor,
-    String sEtiqueta,
-    int    iEjercicio,
-    String sIdioma,
-  ) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    final DateTime? fFecha = funcParsearFecha(sDato);
-    if (fFecha == null) return _traducir(sIdioma, 'validFechaInvalida', <String>[sEtiqueta]);
-    final DateTime fInicio = DateTime(iEjercicio, 1, 1);
-    final DateTime fAhora  = DateTime.now();
-    final DateTime fFin    = (iEjercicio >= fAhora.year) ? fAhora : DateTime(iEjercicio, 12, 31);
-    if (fFecha.isBefore(fInicio) || fFecha.isAfter(fFin)) {
-      return _traducir(sIdioma, 'validFechaRango',
-          <String>[sEtiqueta, funcFormatearFecha(fInicio), funcFormatearFecha(fFin)]);
+  /// La longitud del valor debe ser de al menos iMinimo caracteres.
+  static String? validarLongitudMinima(
+      String sValor, String sEtiqueta, int iMinimo, String sIdioma) {
+    if (sValor.trim().length < iMinimo) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validCantidadCaracteresMinima')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMinimo');
     }
     return null;
   }
 
-  /// La suma del Debe debe ser exactamente igual a la suma del Haber.
-  static String? validarSumaDebeHaber(double dSumaDebe, double dSumaHaber, String sIdioma) {
-    if ((dSumaDebe - dSumaHaber).abs() > 0.005) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validSumaDebeHaber');
+  // ── Números ───────────────────────────────────────────────────────────
+
+  /// El valor debe ser un número entero dentro del rango [iMinimo, iMaximo].
+  static String? validarRangoEntero(
+      String sValor, String sEtiqueta, int iMinimo, int iMaximo, String sIdioma) {
+    final int? iNumero = int.tryParse(sValor.trim());
+    if (iNumero == null) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroEntero')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (iNumero < iMinimo || iNumero > iMaximo) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validRangoEntero')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMinimo')
+          .replaceAll('{2}', '$iMaximo');
     }
     return null;
   }
 
-  /// Valida que un valor numérico (con o sin separador de miles) sea mayor o
-  /// igual que cero. Rechaza cualquier texto que no sea un número entero.
-  static String? validarNoNegativo(String sValor, String sEtiqueta, String sIdioma) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    final int? iValor = funcParsearEnteroMilesEstricto(sDato);
-    if (iValor == null) return _traducir(sIdioma, 'validSoloEntero', <String>[sEtiqueta]);
-    if (iValor < 0)     return _traducir(sIdioma, 'validNoNegativo', <String>[sEtiqueta]);
+  /// El valor debe ser un número entero (con signo opcional).
+  static String? validarSoloEntero(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^[+-]?\d+$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroEntero')
+          .replaceAll('{0}', sEtiqueta);
+    }
     return null;
   }
 
-  // ── Validación de identificación (RUC, cédula, pasaporte) ───────────────
-
-  /// Calcula el dígito verificador del RUC según el módulo 11 (DNIT/SET).
-  /// Los multiplicadores van de 2 a 11, ciclando de derecha a izquierda
-  /// sobre los dígitos de la base (sin el guión ni el DV).
-  /// Ejemplo de la SET: base 3535123 → DV 3.
-  static int calcularDigitoVerificadorRuc(String sBase) {
-    int iTotal = 0;
-    int iK     = 2;
-    for (int i = sBase.length - 1; i >= 0; i--) {
-      iTotal += int.parse(sBase[i]) * iK;
-      iK = (iK == 11) ? 2 : iK + 1;
+  /// El valor debe tener exactamente iCantidad dígitos (se ignoran los
+  /// espacios en blanco).
+  static String? validarDigitosExactos(
+      String sValor, String sEtiqueta, int iCantidad, String sIdioma) {
+    final String sDigitos = sValor.replaceAll(' ', '');
+    if (sDigitos.length != iCantidad || !RegExp(r'^\d+$').hasMatch(sDigitos)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validDigitosExactos')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iCantidad');
     }
-    final int iResto = iTotal % 11;
-    return (iResto > 1) ? (11 - iResto) : 0;
+    return null;
   }
 
-  /// Valida la identificación según el tipo (código de ClaseTipoIdentificacion):
-  ///   RUC : de 6 a 8 dígitos + guión + dígito verificador (módulo 11).
-  ///   CI  : de 5 a 8 dígitos, con puntos opcionales como separadores.
-  ///   PAS / CEX : letras mayúsculas, dígitos y guiones.
-  ///   SD / DIP : sin validación de formato.
-  static String? validarIdentificacion(
-    String sValor,
-    String sTipoIdentificacion,
-    String sEtiqueta,
-    String sIdioma,
-  ) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    switch (sTipoIdentificacion) {
-      case ClaseTipoIdentificacion.ruc:
-        final RegExpMatch? oMatch =
-            RegExp(r'^(\d{6,8})-(\d)$').firstMatch(sDato);
-        if (oMatch == null) {
-          return _traducir(sIdioma, 'validIdentRuc', <String>[sEtiqueta]);
-        }
-        final int iDv = int.parse(oMatch.group(2)!);
-        if (calcularDigitoVerificadorRuc(oMatch.group(1)!) != iDv) {
-          return _traducir(sIdioma, 'validIdentRucDv', <String>[sEtiqueta]);
-        }
-        return null;
-      case ClaseTipoIdentificacion.cedula:
-        final String sDigitos = sDato.replaceAll('.', '');
-        if (!RegExp(r'^\d{5,8}$').hasMatch(sDigitos)) {
-          return _traducir(sIdioma, 'validIdentCedula', <String>[sEtiqueta]);
-        }
-        return null;
-      case ClaseTipoIdentificacion.pasaporte:
-      case ClaseTipoIdentificacion.cedulaExtranjera:
-        if (!RegExp(r'^[A-Z0-9\-]+$').hasMatch(sDato)) {
-          return _traducir(sIdioma, 'validIdentPasaporte', <String>[sEtiqueta]);
-        }
-        return null;
-      default:
-        return null;
+  /// El valor debe tener la forma de un número de documento (999-999-9999999).
+  static String? validarNumeroDocumento(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.length != 13) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroDocumento')
+          .replaceAll('{0}', sEtiqueta);
     }
+    return null;
   }
 
-  /// Valida un número de RUC (formato y dígito verificador módulo 11).
-  static String? validarRuc(String sValor, String sEtiqueta, String sIdioma) {
-    return validarIdentificacion(
-        sValor, ClaseTipoIdentificacion.ruc, sEtiqueta, sIdioma);
-  }
-
-  /// Valida el N° de documento según el Tipo de documento (ClaseTipoDocumento):
-  ///   · Tipo 05 (Tributo Único): exactamente 13 dígitos, sin guiones.
-  ///   · Tipos 07, 08 y 11 (importaciones y Resolución): exactamente 7 dígitos.
-  ///   · Demás tipos: 13 dígitos con el formato 999-999-9999999.
+  /// Formato del N° de documento según el Tipo de documento.
+  ///
+  /// - Los tipos con máscara (01, 02, 03, 04, 06, 09, 10) admiten solo
+  ///   dígitos y deben tener 13 (con o sin los guiones).
+  /// - Los tipos 05, 07, 08, 11 admiten de 5 a 13 dígitos.
+  /// - Los tipos 12 a 18 (importación) requieren 7 dígitos.
   static String? validarNumeroDocumentoPorTipo(
-    String sValor,
-    String sTipoDocumento,
-    String sEtiqueta,
-    String sIdioma,
-  ) {
-    final String sDato = sValor.trim();
-    if (sDato.isEmpty) return null;
-    bool bValido;
-    switch (sTipoDocumento) {
-      case '05':
-        bValido = RegExp(r'^\d{13}$').hasMatch(sDato);
-        break;
-      case '07':
-      case '08':
-      case '11':
-        bValido = RegExp(r'^\d{7}$').hasMatch(sDato);
-        break;
-      default:
-        bValido = RegExp(r'^\d{3}-\d{3}-\d{7}$').hasMatch(sDato);
+      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (ClaseTipoDocumento.esConMascara(sTipoDocumento)) {
+      return validarNumeroDocumento(sTexto, sEtiqueta, sIdioma);
     }
-    return bValido ? null : ClaseIdiomas.getTexto(sIdioma, 'comErrorNumeroFormato');
+    // Tipo 05 (remisión) y similares: entre 5 y 13 dígitos.
+    if (sTipoDocumento == '05' || sTipoDocumento == '07' ||
+        sTipoDocumento == '08' || sTipoDocumento == '11') {
+      final String sDigitos = sTexto.replaceAll(RegExp(r'[^0-9]'), '');
+      if (!RegExp(r'^\d+$').hasMatch(sDigitos)
+          || sDigitos.length < 5 || sDigitos.length > 13) {
+        return ClaseIdiomas.getTexto(sIdioma, 'validNumeroDocumentoTipo')
+            .replaceAll('{0}', sEtiqueta)
+            .replaceAll('{1}', sTipoDocumento);
+      }
+      return null;
+    }
+    // Importación (12 a 18): exactamente 7 dígitos.
+    final int? iCodigo = int.tryParse(sTipoDocumento);
+    if (iCodigo != null && iCodigo >= 12 && iCodigo <= 18) {
+      return validarDigitosExactos(sTexto, sEtiqueta, 7, sIdioma);
+    }
+    return null;
+  }
+
+  /// La hora debe tener el formato hh:mm (24 horas) y ser válida.
+  static String? validarHoraValida(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^([01]\d|2[0-3]):[0-5]\d$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validHora')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// El ejercicio debe ser un año entre 2020 y 2100.
+  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final int? iAno = int.tryParse(sTexto);
+    if (iAno == null || iAno < 2020 || iAno > 2100) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validRangoAnios')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '2020')
+          .replaceAll('{2}', '2100');
+    }
+    return null;
+  }
+
+  /// RUC con dígito verificador (módulo 11).
+  static String? validarRuc(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{6,8}-\d$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validRuc')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    final int iDv = funcDigitoVerificador(sTexto.split('-')[0]);
+    if (iDv != int.parse(sTexto.split('-')[1])) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validRuc')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Validación general de la identificación según el tipo.
+  static String? validarIdentificacion(
+      String sValor, String sTipoIdentificacion, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+
+    // Pasaporte: letras y dígitos, hasta 20 caracteres.
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.pasaporte) {
+      if (!RegExp(r'^[A-Za-z0-9]{1,20}$').hasMatch(sTexto)) {
+        return ClaseIdiomas.getTexto(sIdioma, 'validPasaporte')
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // RUC: con dígito verificador.
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.ruc) {
+      return validarRuc(sTexto, sEtiqueta, sIdioma);
+    }
+
+    // Cédula de identidad: de 5 a 8 dígitos (se permiten puntos).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.cedula) {
+      final String sDigitos = sTexto.replaceAll('.', '');
+      if (!RegExp(r'^\d{5,8}$').hasMatch(sDigitos)) {
+        return ClaseIdiomas.getTexto(sIdioma, 'validCedula')
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // Cédula extranjera y otros: de 5 a 15 caracteres.
+    if (!RegExp(r'^[A-Za-z0-9.\-]{5,15}$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validIdentificacion')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  // ── Cuentas contables ─────────────────────────────────────────────────
+
+  /// Formato de cuenta 99.99.99.99.99: hasta 5 grupos de números
+  /// separados por puntos (el primero de 1 o 2 dígitos y los demás de
+  /// exactamente 2 dígitos).
+  static String? validarFormatoCuenta(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!esFormatoCuenta(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validFormatoCuenta')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// true si sValor tiene el formato de cuenta 99.99.99.99.99: el primer
+  /// grupo tiene 1 o 2 dígitos y los demás exactamente 2 dígitos,
+  /// separados por puntos, hasta 5 grupos.                        ← LOTE 1
+  /// Ejemplos válidos: 1, 1.01, 2.03.01, 3.05.02.09, 10.02.05.03.04.
+  static bool esFormatoCuenta(String sValor) =>
+      RegExp(r'^\d{1,2}(\.\d{2}){0,4}$').hasMatch(sValor.trim());
+
+  /// Cantidad de grupos de la cuenta (1.01.04 → 3).
+  static int contarGruposCuenta(String sNumeroCuenta) =>
+      sNumeroCuenta.trim().isEmpty ? 0 : sNumeroCuenta.trim().split('.').length;
+
+  /// Cantidad de dígitos de la cuenta (ignora los puntos) (1.01.04 → 4).
+  static int contarDigitosCuenta(String sNumeroCuenta) =>
+      sNumeroCuenta.trim().replaceAll('.', '').length;
+
+  /// Cuenta superior determinística: el grupo anterior.           ← LOTE 1
+  /// 1.03.02 → '1.03' ; 10.02 → '10' ; raíz (un solo grupo) → ''.
+  static String funcCuentaSuperior(String sNumeroCuenta) {
+    final String sCuenta = sNumeroCuenta.trim();
+    if (contarGruposCuenta(sCuenta) <= 1) return '';
+    return sCuenta.substring(0, sCuenta.lastIndexOf('.'));
+  }
+
+  /// La cuenta superior es obligatoria en las cuentas con más de un grupo
+  /// (las raíces —"1", "10"— no tienen superior).                ← LOTE 1
+  static String? validarCuentaSuperior(
+      String sNumeroCuenta, String sCuentaSuperior, String sIdioma) {
+    if (contarGruposCuenta(sNumeroCuenta) > 1 && sCuentaSuperior.trim().isEmpty) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validCuentaSuperiorObligatoria')
+          .replaceAll('{0}',
+              ClaseIdiomas.getTexto(sIdioma, 'planCuentaSuperior'));
+    }
+    return null;
+  }
+
+  /// El nivel de la cuenta debe estar entre 1 y 5.                ← LOTE 1
+  static String? validarNivelCuenta(String sValor, String sEtiqueta, String sIdioma) {
+    final String? sError = validarSoloEntero(sValor, sEtiqueta, sIdioma);
+    if (sError != null) return sError;
+    final int iNivel = int.tryParse(sValor.trim()) ?? 0;
+    if (iNivel < 1 || iNivel > 5) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validNivelCuenta')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// La suma del Debe debe ser igual a la suma del Haber.
+  static String? validarSumaDebeHaber(double dDebe, double dHaber, String sIdioma) {
+    if ((dDebe - dHaber).abs() > 0.005) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validDebeIgualHaber');
+    }
+    return null;
+  }
+
+  /// El valor debe estar entre las opciones permitidas (lista de códigos).
+  static String? validarOpciones(
+      String sValor, String sEtiqueta, List<String> listValoresPermitidos,
+      String sIdioma) {
+    if (sValor.trim().isEmpty) return null;
+    if (!listValoresPermitidos.contains(sValor)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validValorLista')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Al menos una opción seleccionada.
+  static String? validarAlMenosUnoSeleccionado(
+      String sValor, String sEtiqueta, String sIdioma) {
+    if (sValor.trim().isEmpty) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validObligatorio')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// El día debe ser válido para el mes y año indicados (1..31, 1..30, etc.).
+  /// Ej: validarRangoDiasMes('31', '04', '2025', …) → error (abril tiene 30).
+  static String? validarRangoDiasMes(
+      String sValor, String sMes, String sAnio, String sEtiqueta, String sIdioma) {
+    final int? iDia   = int.tryParse(sValor.trim());
+    final int? iMes   = int.tryParse(sMes.trim());
+    final int? iAnio  = int.tryParse(sAnio.trim());
+    if (iDia == null || iMes == null || iAnio == null) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validFecha')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    final DateTime fInicioMes = DateTime(iAnio, iMes, 1);
+    final DateTime fFinMes    = DateTime(iAnio, iMes + 1, 0);
+    if (iDia < fInicioMes.day || iDia > fFinMes.day) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validDiaRango')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '${fInicioMes.day}')
+          .replaceAll('{2}', '${fFinMes.day}');
+    }
+    return null;
+  }
+
+  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
+  static String? validarFechaNoAnterior(
+      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
+    final DateTime? fValor = funcParsearFecha(sValor);
+    if (fValor == null) return null;
+    if (fValor.isBefore(fMinima)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validFechaMinima')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima));
+    }
+    return null;
+  }
+
+  /// La fecha de fin no puede ser anterior a la fecha de inicio.
+  static String? validarFechaFinPosterior(
+      String sValorInicio, String sValorFin, String sIdioma) {
+    final DateTime? fInicio = funcParsearFecha(sValorInicio);
+    final DateTime? fFin    = funcParsearFecha(sValorFin);
+    if (fInicio == null || fFin == null) return null;
+    if (fFin.isBefore(fInicio)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validFechaFinAnterior');
+    }
+    return null;
+  }
+
+  /// La fecha debe ser válida (dd/mm/aaaa y existir en el calendario).
+  static String? validarFechaValida(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (funcParsearFecha(sTexto) == null) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validFecha')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// La subcuenta debe ser un número de hasta 5 dígitos.
+  static String? validarNumeroSubcuenta(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{1,5}$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validSubcuenta')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Moneda: máximo 15 dígitos enteros y 2 decimales.
+  static String? validarNumeroValor(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{1,15}([.,]\d{1,2})?$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroValor')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Valor según el Tipo de documento:
+  /// - 01 (Factura), 03 (Nota de crédito) y 04 (Nota de débito):
+  ///   hasta 15 dígitos enteros y 2 decimales.
+  /// - 02 (Factura de importación): hasta 20 dígitos enteros y 2 decimales.
+  static String? validarNumeroValorPorTipo(
+      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final int iMaximo = (sTipoDocumento == '02') ? 20 : 15;
+    if (!RegExp(r'^\d{1,$iMaximo}([.,]\d{1,2})?$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroValor')
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// La hora debe estar dentro del rango permitido (ej: 07:00 a 19:00).
+  /// Ej: validarHoraRango('08:30', '07:00', '19:00', …) → null.
+  static String? validarHoraRango(
+      String sValor, String sMinima, String sMaxima, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final String? sError = validarHoraValida(sTexto, sEtiqueta, sIdioma);
+    if (sError != null) return sError;
+    final int iMinima = funcParsearHora(sMinima) ?? 0;
+    final int iMaxima = funcParsearHora(sMaxima) ?? 24 * 60 - 1;
+    final int? iValor = funcParsearHora(sTexto);
+    if (iValor == null || iValor < iMinima || iValor > iMaxima) {
+      return ClaseIdiomas.getTexto(sIdioma, 'validHoraRango')
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', sMinima)
+          .replaceAll('{2}', sMaxima);
+    }
+    return null;
   }
 
 }

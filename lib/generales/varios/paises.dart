@@ -38,14 +38,16 @@ abstract final class ClasePaises {
     return '$sCodigo - ${getNombre(sCodigo, sIdioma)}';
   }
 
-  /// Nombre traducido del país. Si el código no existe, devuelve el código.
-  static String getNombre(String sCodigo, String sIdioma) {
-    for (final Map<String, String> o in _listPaises) {
-      if (o['codigo'] == sCodigo) {
-        return ClaseIdiomas.getTexto(sIdioma, o['clave']!);
-      }
-    }
-    return sCodigo;
+  /// Nombre del país para mostrar (ej: 'Paraguay') a partir de su código.
+  static String getNombre(String sIdioma, String sCodigo) {
+    const Map<String, String> mapClaves = <String, String>{
+      'ARG' : 'paisArgentina',
+      'FRA' : 'paisFrancia',
+      'PRY' : 'paisParaguay',
+      'PER' : 'paisPeru',
+      'URY' : 'paisUruguay',
+    };
+    return ClaseIdiomas.getTexto(sIdioma, mapClaves[sCodigo] ?? 'paisParaguay');
   }
 
 }
