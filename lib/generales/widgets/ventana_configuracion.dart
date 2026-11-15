@@ -27,26 +27,28 @@ Future<void> funcMostrarConfiguracion(
             content: Column(
               mainAxisSize : MainAxisSize.min,
               children     : <Widget>[
-                construirSelectorFormato(
+                funcConstruirSelectorFormato(
                   oContextoVentana,
                   oPreferencias,
                   setStateVentana,
                   funcAlCambiar,
-                  oIcono     : Icons.looks_one,
-                  sClave     : 'formatoNumeros',
-                  sValor     : oPreferencias.getFormatoNumeros(),
-                  funcGuardar: oPreferencias.setFormatoNumeros,
+                  oIcono      : Icons.looks_one,
+                  sClave      : 'formatoNumeros',
+                  sValor      : oPreferencias.getFormatoNumeros(),
+                  sValorLatino: ClasePreferencias.sFormatoNumerosPorDefecto,
+                  funcGuardar : oPreferencias.setFormatoNumeros,
                 ),
                 const SizedBox(height: ClaseGenEspacios.dEspacio16),
-                construirSelectorFormato(
+                funcConstruirSelectorFormato(
                   oContextoVentana,
                   oPreferencias,
                   setStateVentana,
                   funcAlCambiar,
-                  oIcono     : Icons.calendar_month,
-                  sClave     : 'formatoFechas',
-                  sValor     : oPreferencias.getFormatoFechas(),
-                  funcGuardar: oPreferencias.setFormatoFechas,
+                  oIcono      : Icons.calendar_month,
+                  sClave      : 'formatoFechas',
+                  sValor      : oPreferencias.getFormatoFechas(),
+                  sValorLatino: ClasePreferencias.sFormatoFechasPorDefecto,
+                  funcGuardar : oPreferencias.setFormatoFechas,
                 ),
               ],
             ),
@@ -65,7 +67,7 @@ Future<void> funcMostrarConfiguracion(
   );
 }
 
-Widget construirSelectorFormato(
+Widget funcConstruirSelectorFormato(
   BuildContext              oContexto,
   ClasePreferencias         oPreferencias,
   StateSetter               setStateVentana,
@@ -74,6 +76,7 @@ Widget construirSelectorFormato(
   required IconData                     oIcono,
   required String                       sClave,
   required String                       sValor,
+  required String                       sValorLatino,
 }) {
   final ThemeData oTema = Theme.of(oContexto);
   return DropdownButton<String>(
@@ -81,7 +84,7 @@ Widget construirSelectorFormato(
     icon         : Icon(Icons.arrow_drop_down, color: oTema.colorScheme.onSurface),
     items        : <DropdownMenuItem<String>>[
       DropdownMenuItem<String>(
-        value : ClasePreferencias.sFormatoNumerosPorDefecto,
+        value : sValorLatino,
         child : Row(
           mainAxisSize : MainAxisSize.min,
           children     : <Widget>[
@@ -116,3 +119,4 @@ Widget construirSelectorFormato(
   );
 
 }
+

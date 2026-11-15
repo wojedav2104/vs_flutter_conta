@@ -65,8 +65,11 @@ abstract final class ClaseIdiomasTerceros {
     'timPreImpresos'            : 'PreImpresos',
     'timTimbrado'               : 'Timbrado N°',
     'timUltimoDocumento'        : 'Número del último documento',
-    'timPrvNombre'             : 'Nombre del Proveedor',
-    'timPrvHintNombre'         : 'Nombre fiscal del proveedor',
+    'timPrvNombre'              : 'Nombre del Proveedor',
+    'timPrvHintNombre'          : 'Nombre fiscal del proveedor',
+    'timPrvRuc'                 : 'R.U.C. del Proveedor',
+    'timPrvHintRuc'             : 'RUC proveedor',
+
   };
 
   static const Map<String, String> mapFr = <String, String>{
@@ -133,8 +136,11 @@ abstract final class ClaseIdiomasTerceros {
     'timPreImpresos'            : 'Pré-imprimés',
     'timTimbrado'               : 'N° de timbrage',
     'timUltimoDocumento'        : 'Numéro du dernier document',
-    'timPrvNombre'             : 'Nom du fournisseur',
-    'timPrvHintNombre'         : 'Nom fiscal du fournisseur',
+    'timPrvNombre'              : 'Nom du fournisseur',
+    'timPrvHintNombre'          : 'Nom fiscal du fournisseur',
+    'timPrvRuc'                 : 'R.U.C. du fournisseur',
+    'timPrvHintRuc'             : 'RUC du fournisseur',
+    
   };
 
 }

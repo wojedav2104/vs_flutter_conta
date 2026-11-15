@@ -1,13 +1,14 @@
 import '../idiomas/idiomas.dart';
-import 'formatos.dart';
+import '../utilitarios/formatos.dart';
+import '../modelos/documentos.dart';
+
 
 /// Validaciones de los distintos tipos de datos, con mensajes en el idioma
 /// del usuario. Todas devuelven null si el valor es válido, o un mensaje de
 /// error traducido. Las cadenas de error admiten {0}, {1} (cuando el texto
 /// traducido se construye por partes).
 ///
-/// Los textos de error (valid*) se definen en idiomas_general y se usan
-/// con ClaseIdiomas.getTexto + replaceAll.
+/// Los textos de error (valid*) se definen en idiomas_validaciones y se usan con ClaseIdiomas.getTexto + replaceAll.
 class ClaseCapValidar {
 
   // ── Texto ─────────────────────────────────────────────────────────────
@@ -25,7 +26,7 @@ class ClaseCapValidar {
   static String? validarLongitudMaxima(
       String sValor, String sEtiqueta, int iMaximo, String sIdioma) {
     if (sValor.length > iMaximo) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validCantidadCaracteresMaxima')
+      return ClaseIdiomas.getTexto(sIdioma, 'validLongMaxima')
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '$iMaximo');
     }
@@ -36,7 +37,7 @@ class ClaseCapValidar {
   static String? validarLongitudMinima(
       String sValor, String sEtiqueta, int iMinimo, String sIdioma) {
     if (sValor.trim().length < iMinimo) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validCantidadCaracteresMinima')
+      return ClaseIdiomas.getTexto(sIdioma, 'validLongMinima')
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '$iMinimo');
     }
@@ -50,7 +51,7 @@ class ClaseCapValidar {
       String sValor, String sEtiqueta, int iMinimo, int iMaximo, String sIdioma) {
     final int? iNumero = int.tryParse(sValor.trim());
     if (iNumero == null) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroEntero')
+      return ClaseIdiomas.getTexto(sIdioma, 'validSoloEntero')
           .replaceAll('{0}', sEtiqueta);
     }
     if (iNumero < iMinimo || iNumero > iMaximo) {
@@ -116,7 +117,7 @@ class ClaseCapValidar {
       final String sDigitos = sTexto.replaceAll(RegExp(r'[^0-9]'), '');
       if (!RegExp(r'^\d+$').hasMatch(sDigitos)
           || sDigitos.length < 5 || sDigitos.length > 13) {
-        return ClaseIdiomas.getTexto(sIdioma, 'validNumeroDocumentoTipo')
+        return ClaseIdiomas.getTexto(sIdioma, 'validNumeroDocumento')
             .replaceAll('{0}', sEtiqueta)
             .replaceAll('{1}', sTipoDocumento);
       }
@@ -209,6 +210,25 @@ class ClaseCapValidar {
     return null;
   }
 
+  // ── Identificación ──────────────────────────────────────────────────────
+
+  /// Dígito verificador del R.U.C. (algoritmo Módulo 11).
+  ///
+  /// Recibe la base del RUC (por ejemplo '8003214') o el RUC completo
+  /// (por ejemplo '8003214-5') y devuelve el dígito verificador calculado.
+  static int funcDigitoVerificador(String sRuc) {
+    final String sBase = sRuc.split('-').first.replaceAll(RegExp(r'[^0-9]'), '');
+    int iSuma  = 0;
+    int iFactor = 2;
+    for (int i = sBase.length - 1; i >= 0; i--) {
+      iSuma += int.parse(sBase[i]) * iFactor;
+      iFactor = (iFactor == 7) ? 2 : iFactor + 1;
+    }
+    int iDv = 11 - (iSuma % 11);
+    if (iDv >= 10) iDv = 0;
+    return iDv;
+  }
+  
   // ── Cuentas contables ─────────────────────────────────────────────────
 
   /// Formato de cuenta 99.99.99.99.99: hasta 5 grupos de números
@@ -391,7 +411,6 @@ class ClaseCapValidar {
       String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
-    final int iMaximo = (sTipoDocumento == '02') ? 20 : 15;
     if (!RegExp(r'^\d{1,$iMaximo}([.,]\d{1,2})?$').hasMatch(sTexto)) {
       return ClaseIdiomas.getTexto(sIdioma, 'validNumeroValor')
           .replaceAll('{0}', sEtiqueta);
@@ -419,4 +438,51 @@ class ClaseCapValidar {
     return null;
   }
 
+  // ── Fechas e importes ─────────────────────────────────────────────────
+
+  /// La fecha debe estar entre el 1 de enero del ejercicio contable y
+  /// a) la fecha de hoy si el ejercicio es el año actual, o b) el 31 de
+  /// diciembre del ejercicio si es anterior al año actual.
+  static String? validarFechaEnEjercicio(
+      String sValor, String sEjercicio, String sEtiqueta, String sIdioma) {
+    final int?      iEjercicio = int.tryParse(sEjercicio.trim());
+    final DateTime? fFecha     = funcParsearFecha(sValor);
+    if (iEjercicio == null || fFecha == null) return null;
+    final DateTime fDesde = DateTime(iEjercicio, 1, 1);
+    final DateTime fHasta = (iEjercicio == DateTime.now().year)
+        ? DateTime.now()
+        : DateTime(iEjercicio, 12, 31);
+    if (fFecha.isBefore(fDesde) || fFecha.isAfter(fHasta)) {
+      return ClaseIdiomas.getTexto('validFechaRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fDesde))
+          .replaceAll('{2}', funcFormatearFecha(fHasta));
+    }
+    return null;
+  }
+
+  /// El importe debe ser mayor o igual que cero (se acepta vacío).
+  static String? validarImporteNoNegativo(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final double? dValor = funcParsearNumero(sValor);
+    if (dValor == null || dValor >= 0) return null;
+    return ClaseIdiomas.getTexto('validNoNegativo', sIdioma)
+        .replaceAll('{0}', sEtiqueta);
+  }  
+
+  // ── Credenciales y correo ─────────────────────────────────────────────
+
+  /// Credenciales iniciales. Más adelante vendrán del ABM de Usuarios y de la BD.
+  static const String sContrasenaInicial = '1234';
+  static const String sNombreInicial     = 'admin';
+
+  /// Valida las credenciales del login.
+  static bool validarCredenciales(String sNombre, String sContrasena) {
+    return sNombre == sNombreInicial && sContrasena == sContrasenaInicial;
+  }
+
+  /// Formato básico del e-mail.
+  static bool esCorreoValido(String sCorreo) =>
+      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(sCorreo);
+  
 }

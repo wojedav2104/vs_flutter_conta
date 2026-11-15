@@ -8,6 +8,7 @@ import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
 import '../temas/temas.dart';
+import '../validaciones/cap_validar.dart';
 import '../widgets/controles_preferencias.dart';
 import '../widgets/ventana_mensaje.dart';
 import 'pantalla_principal.dart';
@@ -35,15 +36,11 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
   final TextEditingController oControlContrasena = TextEditingController();
   final TextEditingController oControlNombre     = TextEditingController();
 
-  // Credenciales iniciales. Más adelante vendrán del ABM de Usuarios y de la BD.
-  static const String sContrasenaInicial = '1234';
-  static const String sNombreInicial     = 'admin';
-
   @override
   void initState() {
     super.initState();
-    oControlContrasena.text = sContrasenaInicial;
-    oControlNombre.text     = sNombreInicial;
+    oControlContrasena.text = ClaseCapValidar.sContrasenaInicial;
+    oControlNombre.text     = ClaseCapValidar.sNombreInicial;
   }
 
   @override
@@ -88,7 +85,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
       );
       return;
     }
-    if (sNombre != sNombreInicial || sContrasena != sContrasenaInicial) {
+    if (!ClaseCapValidar.validarCredenciales(sNombre, sContrasena)) {
       if (!mounted) return;
       await funcMostrarError(
         context,
@@ -124,7 +121,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
       ClaseIdiomas.getTexto(sIdioma, 'correoElectronico'),
     );
     if (sCorreo == null || !mounted) return;
-    if (!funcEsCorreoValido(sCorreo)) {
+    if (!ClaseCapValidar.esCorreoValido(sCorreo)) {
       await funcMostrarError(
         context,
         sIdioma,
@@ -140,12 +137,6 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
       ClaseIdiomas.getTexto(sIdioma, 'olvidasteConfirmacion'),
     );
   }
-
-  /// Formato básico del e-mail.
-  /// TODO: mover a lib/generales/validaciones/cap_validar.dart (regla de
-  /// que todas las validaciones viven ahí) si no existe ya un validador.
-  bool funcEsCorreoValido(String sCorreo) =>
-      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(sCorreo);
 
   // ── Construcción de la interfaz ─────────────────────────────────────────
 

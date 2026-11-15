@@ -13,7 +13,6 @@ abstract final class ClaseTimbradosComun {
   static List<ClaseCampoAbm> crearCampos(String sIdioma) {
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        bCompletarCeros  : true,
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarDigitosExactos(
             sValor, ClaseIdiomas.getTexto(sIdioma, 'timTimbrado'), 8, sIdioma),
@@ -93,3 +92,4 @@ abstract final class ClaseTimbradosComun {
   }
 
 }
+

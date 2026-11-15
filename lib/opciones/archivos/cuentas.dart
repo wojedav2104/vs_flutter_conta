@@ -50,7 +50,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       funcActualizarCampos : actualizarCampos,
       funcEtiquetaGrupo    : (String sClave) => (sClave == 'planPrincipal')
           ? '${ClaseIdiomas.getTexto(getIdioma(), 'planPrincipal')} '
-            '(${ClasePaises.getNombre(getIdioma(), ClaseEmpresa.getPaisElegido())})'
+            '(${ClasePaises.getNombre(ClaseEmpresa.getPaisElegido(), getIdioma())})'
           : ClaseIdiomas.getTexto(getIdioma(), sClave),
       funcValidarRegistro  : validarRegistro,
       listCampos           : listCampos,

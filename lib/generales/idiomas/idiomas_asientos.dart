@@ -25,9 +25,12 @@ abstract final class ClaseIdiomasAsientos {
     'detHintSubcuenta'   : 'N° subcuenta',
     // ── Pantalla Asientos ───────────────────────────────────────────────
     'asiComentarios'     : 'Comentarios',
+    'asiEjercicio'       : 'Ejercicio contable',
     'asiFecha'           : 'Fecha del asiento',
     'asiHintComentarios' : 'Comentarios sobre este asiento contable',
+    'asiHintSucursal'    : 'Código y Nombre de la sucursal',
     'asiNumero'          : 'Número del asiento',
+    'asiSucursal'        : 'Sucursal',
   };
 
   static const Map<String, String> mapFr = <String, String>{
@@ -51,9 +54,12 @@ abstract final class ClaseIdiomasAsientos {
     'detHintSubcuenta'   : 'N° sous-compte',
     // ── Pantalla Asientos ───────────────────────────────────────────────
     'asiComentarios'     : 'Commentaires',
+    'asiEjercicio'       : 'Exercice comptable',
     'asiFecha'           : 'Date de l\'écriture',
     'asiHintComentarios' : 'Commentaires sur cette écriture comptable',
+    'asiHintSucursal'    : 'Code et nom de la succursale',
     'asiNumero'          : 'Numéro de l\'écriture',
+    'asiSucursal'        : 'Succursale',
   };
 
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vs_conta/generales/temas/estilos_textos.dart';
 
 import 'generales/idiomas/idiomas.dart';
 import 'generales/inicio/login.dart';
 import 'generales/preferencias/preferencias.dart';
+import 'generales/temas/estilos_textos.dart';
 import 'generales/temas/temas.dart';
 import 'generales/varios/paises.dart';
 
@@ -15,7 +15,7 @@ Future<void> main() async {
   await ClasePaises.cargar();
   final ClasePreferencias oPreferencias = ClasePreferencias();
   await oPreferencias.cargar();
-  ClaseGenEstilosTexto.dFactorTexto = oPreferencias.getTextoGrande() ? ClaseGenEstilosTexto.dFactorTextoGrande : 1.0;  
+  ClaseGenEstilosTexto.dFactorTexto = oPreferencias.getTextoGrande() ? ClaseGenEstilosTexto.dFactorTextoGrande : 1.0;
   runApp(ClaseAplicacion(oPreferencias: oPreferencias));
 }
 
@@ -57,3 +57,4 @@ class ClaseEstadoAplicacion extends State<ClaseAplicacion> {
   }
 
 }
+

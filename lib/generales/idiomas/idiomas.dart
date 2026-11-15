@@ -35,9 +35,10 @@ abstract final class ClaseIdiomas {
     ...ClaseIdiomasCompras.mapFr,
   };
 
-  /// Devuelve el texto traducido. Si la clave no existe, devuelve la propia
-  /// clave (facilita detectar textos faltantes durante el desarrollo).
-  static String getTexto(String sIdioma, String sClave) {
+  /// Devuelve el texto traducido de una clave. Si la clave no existe,
+  /// devuelve la propia clave (facilita detectar textos faltantes durante
+  /// el desarrollo).
+  static String getTexto(String sClave, String sIdioma) {
     final Map<String, String> mapTextos = (sIdioma == 'fr') ? mapTextosFr : mapTextosEs;
     return mapTextos[sClave] ?? sClave;
   }

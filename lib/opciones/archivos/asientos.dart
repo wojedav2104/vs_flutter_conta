@@ -9,9 +9,9 @@ import '../../generales/widgets/formulario_cabecera_detalle.dart';
 
 /// Pantalla de la tabla Asientos (cabecera + grilla editable de detalles).
 ///
-/// Cada registro lleva la cabecera (número, fecha y comentarios) y las filas
-/// del movimiento contable en la clave 'detalles': cuenta, nombre de la
-/// cuenta, subcuenta, concepto, debe y haber.
+/// Cada registro lleva la cabecera (ejercicio, sucursal, fecha, número y
+/// comentarios) y las filas del movimiento contable en la clave 'detalles':
+/// cuenta, subcuenta, nombre de la cuenta, debe, haber y concepto.
 ///
 /// Las validaciones de las filas (al menos una fila, uno solo del Debe o del
 /// Haber por fila y suma del Debe = suma del Haber) viven en
@@ -47,15 +47,30 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioCabeceraDetalle(
-      listCamposCabecera : listCamposCabecera,
-      listCamposDetalle  : listCamposDetalle,
-      listRegistros      : listRegistros,
-      oPreferencias      : widget.oPreferencias,
-      sTitulo            : ClaseIdiomas.getTexto(getIdioma(), 'menuAsientos'),
+      funcValidarRegistro  : validarRegistro,
+      listCamposCabecera   : listCamposCabecera,
+      listCamposDetalle    : listCamposDetalle,
+      listRegistros        : listRegistros,
+      oPreferencias        : widget.oPreferencias,
+      sTitulo              : ClaseIdiomas.getTexto('menuAsientos', getIdioma()),
     );
   }
 
   String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Validación del registro completo (campos cruzados) ──────────────────
+
+  /// La Fecha del asiento debe estar entre el 1 de enero del Ejercicio
+  /// contable y a) la fecha de hoy si el ejercicio es el año actual, o
+  /// b) el 31 de diciembre del ejercicio si es anterior al año actual.
+  String? validarRegistro(Map<String, dynamic> oRegistro) {
+    return ClaseCapValidar.validarFechaEnEjercicio(
+      (oRegistro['fecha']     ?? '').toString(),
+      (oRegistro['ejercicio'] ?? '').toString(),
+      ClaseIdiomas.getTexto('asiFecha', getIdioma()),
+      getIdioma(),
+    );
+  }
 
   // ── Campos de la cabecera ──────────────────────────────────────────────
 
@@ -66,30 +81,46 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'asiNumero'), sIdioma),
-        iAnchoCaracteres : 5,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRangoEntero(
+            sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma),
+            ClaseFechas.iAnioMinimo, DateTime.now().year, sIdioma),
+        iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'numero',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'asiNumero'),
+        sClave           : 'ejercicio',
+        sEtiqueta        : ClaseIdiomas.getTexto('asiEjercicio', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 44,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'sucursal',
+        sEtiqueta        : ClaseIdiomas.getTexto('asiSucursal', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('asiHintSucursal', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'asiFecha'),
+            sValor, ClaseIdiomas.getTexto('asiFecha', sIdioma),
             DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fecha',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'asiFecha'),
+        sEtiqueta        : ClaseIdiomas.getTexto('asiFecha', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'numero',
+        sEtiqueta             : ClaseIdiomas.getTexto('asiNumero', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 60,
         iMaxComentario   : 500,
         oTipo            : EnumTipoCampoAbm.comentario,
         sClave           : 'comentarios',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'asiComentarios'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'asiHintComentarios'),
+        sEtiqueta        : ClaseIdiomas.getTexto('asiComentarios', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('asiHintComentarios', sIdioma),
       ),
     ];
   }
@@ -102,48 +133,47 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        bObligatorio     : true,
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detCuenta'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'detHintCuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
+            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'subcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'nombreCuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detNombreCuenta'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'detHintNombreCuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintNombreCuenta', sIdioma),
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'detSubcuenta'), sIdioma),
-        iAnchoCaracteres : 5,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'subcuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detSubcuenta'),
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 30,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'concepto',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detConcepto'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'detHintConcepto'),
-      ),
-      ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'debe',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detDebe'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detDebe', sIdioma),
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'haber',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detHaber'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'concepto',
+        sEtiqueta        : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
       ),
     ];
   }
@@ -172,8 +202,10 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
             'subcuenta'    : '',
           },
         ],
+        'ejercicio'   : '2026',
         'fecha'       : '05/01/2026',
         'numero'      : '1',
+        'sucursal'    : '0001 - Sucursal Central',
       },
       <String, dynamic>{
         'comentarios' : 'Compra de mercadería para reventa',
@@ -203,10 +235,13 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
             'subcuenta'    : '',
           },
         ],
+        'ejercicio'   : '2026',
         'fecha'       : '10/01/2026',
         'numero'      : '2',
+        'sucursal'    : '0001 - Sucursal Central',
       },
     ];
   }
 
 }
+

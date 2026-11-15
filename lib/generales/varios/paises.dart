@@ -39,7 +39,7 @@ abstract final class ClasePaises {
   }
 
   /// Nombre del país para mostrar (ej: 'Paraguay') a partir de su código.
-  static String getNombre(String sIdioma, String sCodigo) {
+  static String getNombre(String sCodigo, String sIdioma) {
     const Map<String, String> mapClaves = <String, String>{
       'ARG' : 'paisArgentina',
       'FRA' : 'paisFrancia',

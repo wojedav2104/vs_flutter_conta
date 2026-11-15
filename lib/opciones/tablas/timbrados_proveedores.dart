@@ -69,6 +69,15 @@ class ClaseEstadoTimbradosProveedores extends State<ClaseTimbradosProveedores> {
         sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timPrvNombre'),
         sHint            : ClaseIdiomas.getTexto(sIdioma, 'timPrvHintNombre'),
       ),
+      ClaseCampoAbm(
+        bObligatorio          : true,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'rucProveedor',
+        sEtiqueta             : ClaseIdiomas.getTexto(sIdioma, 'timPrvRuc'),
+        sHint                 : ClaseIdiomas.getTexto(sIdioma, 'timPrvHintRuc'),
+      ),
 
       // Los 5 campos comunes: timbrado, vigencia, afectaA, medioGeneracion.
       ...ClaseTimbradosComun.crearCampos(sIdioma),
@@ -85,6 +94,7 @@ class ClaseEstadoTimbradosProveedores extends State<ClaseTimbradosProveedores> {
         'fechaInicio'     : '01/01/2025',
         'medioGeneracion' : ClaseMedioGeneracion.preImpresos,
         'nombreProveedor' : 'Distribuidora del Sur S.A.',
+        'rucProveedor'    : '8003214-5',
         'timbradoNumero'  : '11223344',
       },
       <String, dynamic>{
@@ -93,9 +103,11 @@ class ClaseEstadoTimbradosProveedores extends State<ClaseTimbradosProveedores> {
         'fechaInicio'     : '01/06/2026',
         'medioGeneracion' : ClaseMedioGeneracion.documentosElectronicos,
         'nombreProveedor' : 'Importadora Brasil Ltda.',
+        'rucProveedor'    : '5566778-9',
         'timbradoNumero'  : '55667788',
       },
     ];
   }
 
 }
+

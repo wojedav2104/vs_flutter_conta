@@ -4,7 +4,7 @@ Nota 1: El nombre "Cuentas asignadas" es el que se me ocurrió a mí para este f
 
 Nota 2: Más adelante, cuando tengamos conexión con la Base de Datos, el usuario tendrá la posibilidad de elegir el número de la cuenta desde una lista desplegable. Mientras tanto podrá escribir esos números manualmente.
 
-Nota 3: El formato de los números de cuenta es: 9.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
+Nota 3: El formato de los números de cuenta es: 9.99.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
 
 Los campos de esta tabla son:
 - Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual

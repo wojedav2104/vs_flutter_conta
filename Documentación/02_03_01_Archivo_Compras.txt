@@ -30,10 +30,10 @@ Los campos de la cabecera son:
     Entrada a espectáculos públicos
   , 
 - N° (carácter, 16, obligatorio). Validación: Si el "Tipo de Documento" es: Factura Contado, Factura Crédito, Comprobante de Venta I.V.A. incluido, AutoFactura, Ticket máquina registradora, Nota de Débito, Nota de Crédito, entonces la máscara de entrada debe ser 999-999-9999999 donde cada 9 representa un dígito entre 0 y 9. Si el "Tipo de Documento" es otro entonces no hay máscara de entrada y el usuario puede escribir letras mayúsculas y dígitos de 0 a 9
-- Cantidad de cuotas (numérico, 3, obligatorio). Validación: si el "Tipo de Documento" es Factura Crédito el valor tiene que ser 1 y este campo tiene que estar habilitado. En todos los demás casos el valor tiene que ser 0 y este campo tiene que estar deshabilitado
+- Cantidad de cuotas (numérico, 3). Solo cuando el Tipo de Documento es Factura Crédito el campo está habilitado y admite valores entre 1 y 240; si su valor es vacío o 0 se coloca automáticamente 1. Para todos los demás tipos de documento el campo está deshabilitado y su valor es 0.
 - Proveedor (carácter, 48, "Nombre del proveedor", obligatorio). Validación: se buscará el proveedor en una tabla y se colocarán automáticamente su Tipo de Identificación y su RUC/Cédula en los siguientes campos
 - Tipo de identificación (se mostrará uno de los siguientes: R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera, Sin Nombre, Diplomático). NOTA: Será puesto automáticamente cuando se seleccione a un proveedor 
-- RUC/Cédula (carácter, 10, deshabilitado). NOTA: Será puesto automáticamente cuando se seleccione a un proveedor
+- Identificación N° (carácter, 15, deshabilitado). NOTA: Será puesto automáticamente cuando se seleccione a un proveedor
 - Timbrado N° (carácter, 8). NOTA: Es obligatorio si la máscara de entrada es 999-999-9999999 y en tal caso debe contener 8 dígitos, ni más ni menos. Debe estar en blanco y deshabilitado en los demás casos
 - Vigente desde el día (fecha). NOTA: La fecha de inicio de vigencia será obtenida de una tabla SQL
 - Vigente hasta el día (fecha). NOTA: La fecha de fin de vigencia será obtenida de una tabla SQL

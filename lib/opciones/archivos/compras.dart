@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vs_conta/generales/modelos/documentos.dart';
 
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
@@ -10,12 +11,16 @@ import '../../generales/widgets/formulario_cabecera_detalle.dart';
 
 /// Pantalla de la tabla Libro Compras (cabecera + grilla editable de detalles).
 ///
-/// Cabecera con dos pestañas (Generales y Resolución 90/2021) y las filas
-/// del asiento generado en la clave 'detalles'.
+/// Cabecera con dos grupos (Generales y Resolución 90/2021) y las filas del
+/// asiento generado en la clave 'detalles'.
 ///
 /// Validaciones cruzadas (validarRegistro):
-///   · Cantidad de cuotas obligatoria (1 a 240) en Factura Crédito; en los
-///     demás tipos puede estar vacía o ser 0.
+///   · La Fecha de la compra debe estar dentro del Ejercicio contable.
+///   · Cantidad de cuotas: solo se escribe en Factura Crédito (1 a 240); en
+///     los demás tipos está deshabilitada y vale 0.
+///   · Timbrado: obligatorio de 8 dígitos solo cuando el Tipo de documento
+///     lleva la máscara 999-999-9999999; en blanco y deshabilitado en los
+///     demás casos.
 ///   · Formato del N° de documento según el Tipo de documento.
 ///   · Formato de la identificación según el Tipo de identificación.
 ///   · La Fecha de fin de vigencia debe ser posterior al inicio.
@@ -56,7 +61,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       listCamposDetalle    : listCamposDetalle,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
-      sTitulo              : ClaseIdiomas.getTexto(getIdioma(), 'menuLibroCompras'),
+      sTitulo              : ClaseIdiomas.getTexto('menuLibroCompras', getIdioma()),
     );
   }
 
@@ -64,24 +69,48 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
   // ── Auto-cálculos de la cabecera ────────────────────────────────────────
 
-  /// Total = gravadas 10% + IVA 10% + gravadas 5% + IVA 5% + exentas.
-  /// Total del comprobante = Total. Los importes de la Resolución 90/2021
-  /// se sugieren solo si están vacíos; IRE simple, IRP simple y no imputable
-  /// son manuales.
+  /// Auto-cálculos según la spec 02_03:
+  ///   · Total (Grupo 1) = gravadas 10% + IVA 10% + gravadas 5% + IVA 5%
+  ///     + exentas.
+  ///   · Importe gravado 10%/5% y exento (Grupo 2): se sugieren solo si
+  ///     están vacíos. I.R.E. Simple, I.R.P. Simple y no imputable son
+  ///     manuales (inicialmente 0).
+  ///   · Total del comprobante = suma de los 6 importes del Grupo 2.
+  ///   · Cantidad de cuotas según el Tipo de documento: en Factura Crédito,
+  ///     si está vacía o en 0 se coloca 1 (cualquier otro valor se respeta);
+  ///     en los demás tipos vale 0.
+  ///   · Timbrado en blanco cuando el Tipo de documento no lleva máscara.
   Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
 
+    final String sTipoDocumento = mapValores['tipoDocumento'] ?? '';
+
+    final Map<String, String> mapActualizaciones = <String, String>{};
+
+    // Cantidad de cuotas según el Tipo de documento.
+    if (ClaseTipoDocumento.esFacturaCredito(sTipoDocumento)) {
+      final String sCuotas = (mapValores['cantidadCuotas'] ?? '').trim();
+      if (sCuotas.isEmpty || sCuotas == '0') {
+        mapActualizaciones['cantidadCuotas'] = '1';
+      }
+    } else {
+      mapActualizaciones['cantidadCuotas'] = '0';
+    }
+
+    // Timbrado: en blanco cuando el Tipo de documento no lleva máscara.
+    if (!ClaseTipoDocumento.esConMascara(sTipoDocumento)) {
+      mapActualizaciones['timbrado'] = '';
+    }
+
+    // Total del Grupo 1.
     final double dGravadas10 = funcParsearNumero(mapValores['gravadas10'] ?? '') ?? 0;
     final double dIva10      = funcParsearNumero(mapValores['iva10']      ?? '') ?? 0;
     final double dGravadas5  = funcParsearNumero(mapValores['gravadas5']  ?? '') ?? 0;
     final double dIva5       = funcParsearNumero(mapValores['iva5']       ?? '') ?? 0;
     final double dExentas    = funcParsearNumero(mapValores['exentas']    ?? '') ?? 0;
     final double dTotal      = dGravadas10 + dIva10 + dGravadas5 + dIva5 + dExentas;
+    mapActualizaciones['total'] = funcFormatearNumeroPlano(dTotal);
 
-    final Map<String, String> mapActualizaciones = <String, String>{
-      'total'            : funcFormatearNumeroPlano(dTotal),
-      'totalComprobante' : funcFormatearNumeroPlano(dTotal),
-    };
-
+    // Importes de la Resolución 90/2021: se sugieren solo si están vacíos.
     if ((mapValores['importeGravado10'] ?? '').trim().isEmpty) {
       mapActualizaciones['importeGravado10'] =
           funcFormatearNumeroPlano(dGravadas10 + dIva10);
@@ -93,6 +122,21 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
     if ((mapValores['importeExento'] ?? '').trim().isEmpty) {
       mapActualizaciones['importeExento'] = funcFormatearNumeroPlano(dExentas);
     }
+
+    // Total del comprobante = suma de los 6 importes del Grupo 2
+    // (con las sugerencias de arriba ya aplicadas).
+    final String sGravado10 = mapActualizaciones['importeGravado10'] ?? (mapValores['importeGravado10'] ?? '');
+    final String sGravado5  = mapActualizaciones['importeGravado5']  ?? (mapValores['importeGravado5']  ?? '');
+    final String sExento    = mapActualizaciones['importeExento']    ?? (mapValores['importeExento']    ?? '');
+    final double dComprobante =
+        (funcParsearNumero(sGravado10)                      ?? 0) +
+        (funcParsearNumero(sGravado5)                       ?? 0) +
+        (funcParsearNumero(sExento)                         ?? 0) +
+        (funcParsearNumero(mapValores['importeIreSimple']   ?? '') ?? 0) +
+        (funcParsearNumero(mapValores['importeIrpSimple']   ?? '') ?? 0) +
+        (funcParsearNumero(mapValores['importeNoImputable'] ?? '') ?? 0);
+    mapActualizaciones['totalComprobante'] = funcFormatearNumeroPlano(dComprobante);
+
     return mapActualizaciones;
   }
 
@@ -101,37 +145,58 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
   String? validarRegistro(Map<String, dynamic> oRegistro) {
 
     final String sIdioma = getIdioma();
-    final String sTipoDoc = (oRegistro['tipoDocumento'] ?? '').toString();
-    final String sCuotas  = (oRegistro['cantidadCuotas'] ?? '').toString().trim();
 
-    // Cantidad de cuotas: obligatoria (1 a 240) en Factura Crédito;
-    // en los demás tipos puede estar vacía o ser 0.
+    // Fecha de la compra dentro del Ejercicio contable.
+    final String? sErrorFecha = ClaseCapValidar.validarFechaEnEjercicio(
+      (oRegistro['fecha']     ?? '').toString(),
+      (oRegistro['ejercicio'] ?? '').toString(),
+      ClaseIdiomas.getTexto('comFecha', sIdioma),
+      sIdioma,
+    );
+    if (sErrorFecha != null) return sErrorFecha;
+
+    final String sTipoDoc = (oRegistro['tipoDocumento'] ?? '').toString();
+
+    // Cantidad de cuotas: solo se escribe en Factura Crédito (1 a 240).
+    // En los demás tipos el campo está deshabilitado y vale 0.
+    final String sCuotas = (oRegistro['cantidadCuotas'] ?? '').toString().trim();
     if (ClaseTipoDocumento.esFacturaCredito(sTipoDoc)) {
-      if (sCuotas.isEmpty || sCuotas == '0') {
+      if (sCuotas.isEmpty) {
         return ClaseCapValidar.validarObligatorio(sCuotas,
-            ClaseIdiomas.getTexto(sIdioma, 'comCantidadCuotas'), sIdioma);
+            ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma);
       }
+      final String? sErrorCuotas = ClaseCapValidar.validarRangoEntero(sCuotas,
+          ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), 1, 240, sIdioma);
+      if (sErrorCuotas != null) return sErrorCuotas;
     }
-    if (sCuotas.isNotEmpty && sCuotas != '0') {
-      final String? sError = ClaseCapValidar.validarRangoEntero(sCuotas,
-          ClaseIdiomas.getTexto(sIdioma, 'comCantidadCuotas'), 1, 240, sIdioma);
-      if (sError != null) return sError;
+
+    // Timbrado: obligatorio de 8 dígitos solo si el Tipo de documento lleva
+    // la máscara 999-999-9999999; en blanco y deshabilitado en los demás casos.
+    final String sTimbrado = (oRegistro['timbrado'] ?? '').toString();
+    if (ClaseTipoDocumento.esConMascara(sTipoDoc)) {
+      if (sTimbrado.trim().isEmpty) {
+        return ClaseCapValidar.validarObligatorio(sTimbrado,
+            ClaseIdiomas.getTexto('comTimbrado', sIdioma), sIdioma);
+      }
+      final String? sErrorTimbrado = ClaseCapValidar.validarDigitosExactos(sTimbrado,
+          ClaseIdiomas.getTexto('comTimbrado', sIdioma), 8, sIdioma);
+      if (sErrorTimbrado != null) return sErrorTimbrado;
     }
 
     // N° de documento según el Tipo de documento.
     final String? sErrorNumero = ClaseCapValidar.validarNumeroDocumentoPorTipo(
       (oRegistro['numero'] ?? '').toString(),
       sTipoDoc,
-      ClaseIdiomas.getTexto(sIdioma, 'comNumero'),
+      ClaseIdiomas.getTexto('comNumero', sIdioma),
       sIdioma,
     );
     if (sErrorNumero != null) return sErrorNumero;
 
     // Identificación según el Tipo de identificación.
     final String? sErrorIdent = ClaseCapValidar.validarIdentificacion(
-      (oRegistro['rucCedula'] ?? '').toString(),
-      (oRegistro['tipoIdentificacion'] ?? '').toString(),
-      ClaseIdiomas.getTexto(sIdioma, 'comRucCedula'),
+      (oRegistro['identificacion']      ?? '').toString(),
+      (oRegistro['tipoIdentificacion']  ?? '').toString(),
+      ClaseIdiomas.getTexto('comIdentificacion', sIdioma),
       sIdioma,
     );
     if (sErrorIdent != null) return sErrorIdent;
@@ -157,7 +222,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       final double dTotal = funcParsearNumero(
           (oRegistro['totalComprobante'] ?? '').toString()) ?? 0;
       if ((dTotal - dDebe).abs() > 0.005) {
-        return ClaseIdiomas.getTexto(sIdioma, 'comErrorMarangatu');
+        return ClaseIdiomas.getTexto('comErrorMarangatu', sIdioma);
       }
     }
     return null;
@@ -174,33 +239,52 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       // ── Generales ────────────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comFecha'),
-            DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
-        iAnchoCaracteres : 10,
-        oTipo            : EnumTipoCampoAbm.fecha,
-        sClave           : 'fecha',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comFecha'),
-        sGrupo           : 'comGenerales',
-      ),
-      ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comHora'), sIdioma),
-        iAnchoCaracteres : 5,
-        oTipo            : EnumTipoCampoAbm.hora,
-        sClave           : 'hora',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comHora'),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRangoEntero(
+            sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma),
+            ClaseFechas.iAnioMinimo, DateTime.now().year, sIdioma),
+        iAnchoCaracteres : 4,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'ejercicio',
+        sEtiqueta        : ClaseIdiomas.getTexto('comEjercicio', sIdioma),
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comNumeroAsiento'), sIdioma),
-        iAnchoCaracteres : 5,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'numeroAsiento',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comNumeroAsiento'),
+        iAnchoCaracteres : 44,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'sucursal',
+        sEtiqueta        : ClaseIdiomas.getTexto('comSucursal', sIdioma),
         sGrupo           : 'comGenerales',
+        sHint            : ClaseIdiomas.getTexto('comHintSucursal', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
+            sValor, ClaseIdiomas.getTexto('comFecha', sIdioma),
+            DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
+        iAnchoCaracteres : 10,
+        oTipo            : EnumTipoCampoAbm.fecha,
+        sClave           : 'fecha',
+        sEtiqueta        : ClaseIdiomas.getTexto('comFecha', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
+            sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.hora,
+        sClave           : 'hora',
+        sEtiqueta        : ClaseIdiomas.getTexto('comHora', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'numeroAsiento',
+        sEtiqueta             : ClaseIdiomas.getTexto('comNumeroAsiento', sIdioma),
+        sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -209,7 +293,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         listValores      : ClaseTipoDocumento.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoDocumento',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comTipoDocumento'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comTipoDocumento', sIdioma),
         sGrupo           : 'comGenerales',
         sValorDefecto    : '01',
       ),
@@ -217,30 +301,32 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         bObligatorio     : true,
         funcMascara      : (mapValores) => ClaseTipoDocumento.esConMascara(
             mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
-        iAnchoCaracteres : 15,
+        iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'numero',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comNumero'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comNumero', sIdioma),
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comCantidadCuotas'), sIdioma),
-        iAnchoCaracteres : 3,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'cantidadCuotas',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comCantidadCuotas'),
-        sGrupo           : 'comGenerales',
-        sValorDefecto    : '1',
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(
+            mapValores['tipoDocumento'] ?? ''),
+        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
+            sValor, ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma),
+        iAnchoCaracteres     : 3,
+        oTipo                : EnumTipoCampoAbm.numero,
+        sClave               : 'cantidadCuotas',
+        sEtiqueta            : ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma),
+        sGrupo               : 'comGenerales',
+        sValorDefecto        : '0',
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 48,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'proveedor',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comProveedor'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comProveedor', sIdioma),
         sGrupo           : 'comGenerales',
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'comHintProveedor'),
+        sHint            : ClaseIdiomas.getTexto('comHintProveedor', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(ClaseTipoIdentificacion.getListOpciones(sIdioma)),
@@ -248,43 +334,43 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         listValores      : ClaseTipoIdentificacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoIdentificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comTipoIdentificacion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comTipoIdentificacion', sIdioma),
         sGrupo           : 'comGenerales',
         sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'rucCedula',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comRucCedula'),
-        sGrupo           : 'comGenerales',
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'identificacion',
+        sEtiqueta             : ClaseIdiomas.getTexto('comIdentificacion', sIdioma),
+        sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
-        bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarDigitosExactos(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comTimbrado'), 8, sIdioma),
-        iAnchoCaracteres : 8,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'timbrado',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comTimbrado'),
-        sGrupo           : 'comGenerales',
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esConMascara(
+            mapValores['tipoDocumento'] ?? ''),
+        iAnchoCaracteres     : 8,
+        oTipo                : EnumTipoCampoAbm.texto,
+        sClave               : 'timbrado',
+        sEtiqueta            : ClaseIdiomas.getTexto('comTimbrado', sIdioma),
+        sGrupo               : 'comGenerales',
       ),
       ClaseCampoAbm(
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comVigenteDesde'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('comVigenteDesde', sIdioma), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'vigenteDesde',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comVigenteDesde'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comVigenteDesde', sIdioma),
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'comVigenteHasta'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('comVigenteHasta', sIdioma), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'vigenteHasta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comVigenteHasta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comVigenteHasta', sIdioma),
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
@@ -293,57 +379,68 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'esFacturaElectronica',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comEsFacturaElectronica'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comEsFacturaElectronica', sIdioma),
         sGrupo           : 'comGenerales',
         sValorDefecto    : ClaseSiNo.si,
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comGravadas10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas10',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comGravadas10'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comGravadas10', sIdioma),
         sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comIva10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva10',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comIva10'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comIva10', sIdioma),
         sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comGravadas5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas5',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comGravadas5'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comGravadas5', sIdioma),
         sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comIva5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva5',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comIva5'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comIva5', sIdioma),
         sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comExentas', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'exentas',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comExentas'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comExentas', sIdioma),
         sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'total',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comTotal'),
-        sGrupo           : 'comGenerales',
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'total',
+        sEtiqueta             : ClaseIdiomas.getTexto('comTotal', sIdioma),
+        sGrupo                : 'comGenerales',
+        sMascara              : '999.999.999.999',
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -352,7 +449,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         listValores      : ClaseTipoAfectacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoAfectacion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comTipoAfectacion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comTipoAfectacion', sIdioma),
         sGrupo           : 'comGenerales',
         sValorDefecto    : ClaseTipoAfectacion.directo,
       ),
@@ -362,7 +459,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'mostrarEnLibro',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comMostrarEnLibro'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comMostrarEnLibro', sIdioma),
         sGrupo           : 'comGenerales',
         sValorDefecto    : ClaseSiNo.si,
       ),
@@ -371,9 +468,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         iMaxComentario   : 500,
         oTipo            : EnumTipoCampoAbm.comentario,
         sClave           : 'comentarios',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comComentarios'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comComentarios', sIdioma),
         sGrupo           : 'comGenerales',
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'comHintComentarios'),
+        sHint            : ClaseIdiomas.getTexto('comHintComentarios', sIdioma),
       ),
 
       // ── Resolución 90/2021 ───────────────────────────────────────────────
@@ -383,65 +480,69 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'enviarMarangatu',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comEnviarMarangatu'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comEnviarMarangatu', sIdioma),
         sGrupo           : 'comResolucion',
         sValorDefecto    : ClaseSiNo.si,
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado10',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comImporteGravado10'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteGravado10', sIdioma),
         sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado5',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comImporteGravado5'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteGravado5', sIdioma),
         sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeExento',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comImporteExento'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteExento', sIdioma),
         sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeIreSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comImporteIreSimple'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteIreSimple', sIdioma),
         sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeIrpSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comImporteIrpSimple'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteIrpSimple', sIdioma),
         sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeNoImputable',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comImporteNoImputable'),
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteNoImputable', sIdioma),
         sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'totalComprobante',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'comTotalComprobante'),
-        sGrupo           : 'comResolucion',
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'totalComprobante',
+        sEtiqueta             : ClaseIdiomas.getTexto('comTotalComprobante', sIdioma),
+        sGrupo                : 'comResolucion',
+        sMascara              : '999.999.999.999',
       ),
     ];
   }
@@ -454,48 +555,48 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        bObligatorio     : true,
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detCuenta'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'comHintCuenta'),
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 40,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'nombreCuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detNombreCuenta'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'comHintNombreCuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('comHintCuenta', sIdioma),
       ),
       ClaseCampoAbm(
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'detSubcuenta'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'subcuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detSubcuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : 30,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'concepto',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detConcepto'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'detHintConcepto'),
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 40,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'nombreCuenta',
+        sEtiqueta             : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint                 : ClaseIdiomas.getTexto('comHintNombreCuenta', sIdioma),
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'debe',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detDebe'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detDebe', sIdioma),
+        sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        bTieneDecimales  : true,
-        iAnchoCaracteres : 12,
+        iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'haber',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'detHaber'),
+        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'concepto',
+        sEtiqueta        : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
       ),
     ];
   }
@@ -505,9 +606,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[
       <String, dynamic>{
-        'cantidadCuotas'     : '3',
-        'comentarios'        : 'Compra de mercadería para reventa',
-        'detalles'           : <Map<String, String>>[
+        'cantidadCuotas'      : '3',
+        'comentarios'         : 'Compra de mercadería para reventa',
+        'detalles'            : <Map<String, String>>[
           <String, String>{
             'concepto'     : 'Compra de mercadería',
             'cuenta'       : '1.04.02',
@@ -533,39 +634,41 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
             'subcuenta'    : '',
           },
         ],
-        'enviarMarangatu'    : ClaseSiNo.si,
+        'ejercicio'           : '2026',
+        'enviarMarangatu'     : ClaseSiNo.si,
         'esFacturaElectronica': ClaseSiNo.si,
-        'exentas'            : '0',
-        'fecha'              : '10/02/2026',
-        'gravadas10'         : '2000000',
-        'gravadas5'          : '0',
-        'hora'               : '10:30',
-        'importeExento'      : '0',
-        'importeGravado10'   : '2200000',
-        'importeGravado5'    : '0',
-        'importeIreSimple'   : '0',
-        'importeIrpSimple'   : '0',
-        'importeNoImputable' : '0',
-        'iva10'              : '200000',
-        'iva5'               : '0',
-        'mostrarEnLibro'     : ClaseSiNo.si,
-        'numero'             : '001-002-0000123',
-        'numeroAsiento'      : '2',
-        'proveedor'          : 'Distribuidora del Sur S.A.',
-        'rucCedula'          : '80098765-9',
-        'timbrado'           : '11223344',
-        'tipoAfectacion'     : ClaseTipoAfectacion.directo,
-        'tipoDocumento'      : '02',
-        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
-        'total'              : '2200000',
-        'totalComprobante'   : '2200000',
-        'vigenteDesde'       : '01/01/2026',
-        'vigenteHasta'       : '31/12/2026',
+        'exentas'             : '0',
+        'fecha'               : '10/02/2026',
+        'gravadas10'          : '2000000',
+        'gravadas5'           : '0',
+        'hora'                : '10:30',
+        'identificacion'      : '80098765-9',
+        'importeExento'       : '0',
+        'importeGravado10'    : '2200000',
+        'importeGravado5'     : '0',
+        'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',
+        'importeNoImputable'  : '0',
+        'iva10'               : '200000',
+        'iva5'                : '0',
+        'mostrarEnLibro'      : ClaseSiNo.si,
+        'numero'              : '001-002-0000123',
+        'numeroAsiento'       : '2',
+        'proveedor'           : 'Distribuidora del Sur S.A.',
+        'sucursal'            : '0001 - Sucursal Central',
+        'timbrado'            : '11223344',
+        'tipoAfectacion'      : ClaseTipoAfectacion.directo,
+        'tipoDocumento'       : '02',
+        'tipoIdentificacion'  : ClaseTipoIdentificacion.ruc,
+        'total'               : '2200000',
+        'totalComprobante'    : '2200000',
+        'vigenteDesde'        : '01/01/2026',
+        'vigenteHasta'        : '31/12/2026',
       },
       <String, dynamic>{
-        'cantidadCuotas'     : '',
-        'comentarios'        : '',
-        'detalles'           : <Map<String, String>>[
+        'cantidadCuotas'      : '0',
+        'comentarios'         : '',
+        'detalles'            : <Map<String, String>>[
           <String, String>{
             'concepto'     : 'Compra de mercadería',
             'cuenta'       : '1.04.03',
@@ -599,36 +702,39 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
             'subcuenta'    : '',
           },
         ],
-        'enviarMarangatu'    : ClaseSiNo.no,
+        'ejercicio'           : '2026',
+        'enviarMarangatu'     : ClaseSiNo.no,
         'esFacturaElectronica': ClaseSiNo.no,
-        'exentas'            : '100000',
-        'fecha'              : '20/02/2026',
-        'gravadas10'         : '0',
-        'gravadas5'          : '400000',
-        'hora'               : '',
-        'importeExento'      : '100000',
-        'importeGravado10'   : '0',
-        'importeGravado5'    : '420000',
-        'importeIreSimple'   : '0',
-        'importeIrpSimple'   : '0',
-        'importeNoImputable' : '0',
-        'iva10'              : '0',
-        'iva5'               : '20000',
-        'mostrarEnLibro'     : ClaseSiNo.si,
-        'numero'             : '001-001-0000456',
-        'numeroAsiento'      : '5',
-        'proveedor'          : 'Importadora Brasil Ltda.',
-        'rucCedula'          : 'EX789012',
-        'timbrado'           : '55667788',
-        'tipoAfectacion'     : ClaseTipoAfectacion.indistinto,
-        'tipoDocumento'      : '01',
-        'tipoIdentificacion' : ClaseTipoIdentificacion.cedulaExtranjera,
-        'total'              : '520000',
-        'totalComprobante'   : '520000',
-        'vigenteDesde'       : '',
-        'vigenteHasta'       : '',
+        'exentas'             : '100000',
+        'fecha'               : '20/02/2026',
+        'gravadas10'          : '0',
+        'gravadas5'           : '400000',
+        'hora'                : '10:30',
+        'identificacion'      : 'EX789012',
+        'importeExento'       : '100000',
+        'importeGravado10'    : '0',
+        'importeGravado5'     : '420000',
+        'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',
+        'importeNoImputable'  : '0',
+        'iva10'               : '0',
+        'iva5'                : '20000',
+        'mostrarEnLibro'      : ClaseSiNo.si,
+        'numero'              : '001-001-0000456',
+        'numeroAsiento'       : '5',
+        'proveedor'           : 'Importadora Brasil Ltda.',
+        'sucursal'            : '0001 - Sucursal Central',
+        'timbrado'            : '55667788',
+        'tipoAfectacion'      : ClaseTipoAfectacion.indistinto,
+        'tipoDocumento'       : '01',
+        'tipoIdentificacion'  : ClaseTipoIdentificacion.cedulaExtranjera,
+        'total'               : '520000',
+        'totalComprobante'    : '520000',
+        'vigenteDesde'        : '',
+        'vigenteHasta'        : '',
       },
     ];
   }
 
 }
+
