@@ -1,0 +1,13 @@
+La tabla de Configuración debe tener un solo registro. Por lo tanto el botón de Agregar debe estar siempre deshabilitado si la tabla ya tiene un registro. El botón de Encontrar debe estar siempre deshabilitado. 
+
+Los campos de la tabla de Configuración se deben agrupar en dos grupos o pestañas:
+
+Grupo 1: Empresa
+- Sucursal actual (carácter, "Nombre de la Sucursal" 44, obligatorio)
+- Carpeta para Marangatú (carácter, "Carpeta donde se guardarán los archivos del Marangatú" 100, obligatorio)
+
+Grupo 2: Backups
+- Crear un backup todos los días a las (hora)
+- Cantidad de backups que se guardarán (numérico, 3, obligatorio)
+
+Lo que está entre comillas debe mostrarse como "hint" del campo.

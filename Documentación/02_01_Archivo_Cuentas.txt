@@ -1,0 +1,29 @@
+El Plan de Cuentas debe tener tener dos grupos, uno para el Plan de Cuentas local, y otro para el Plan de Cuentas utilizado en Francia. También debe tener datos que son comunes a ambos grupos.
+
+Nota 1: El formato de los números de cuenta es: 9.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Algunos números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
+
+Nota 2: Se debe tener una correspondencia uno a uno entre cada cuenta usada en Latinoamérica según la legislación del país respectivo con el Plan de Cuentas utilizado en Francia según la legislación de Francia
+
+Nota 3: Aunque el primer grupo corresponderá al Plan de Cuentas utilizado en un país latinoamericano y el segundo grupo corresponderá al Plan de Cuentas usado en Francia los nombres de los grupos deben ser "Principal" y "Alternativo"
+
+Datos comunes:
+- Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio).
+
+Grupo local:
+- Número de la cuenta (carácter, 16, "Cuenta N°", obligatorio). Validación: debe cumplir con el formato de los números de cuenta
+- Nombre de la cuenta (carácter, 40, "Nombre de la cuenta contable", obligatorio). Validación: su longitud deber ser >= 3
+- Número de la subcuenta (carácter, 5, opcional). Validación: solamente dígitos entre "00001" y "99999"
+- Nombre de la subcuenta (carácter, 40, "Nombre de la subcuenta contable", opcional)
+- Cuenta de nivel superior (carácter, 58, "La cuenta padre de esta cuenta", obligatorio). Validación: si la cuenta tiene 1 solo dígito, debe estar deshabilitada y totalmente vacía; en todos los demás casos sí es obligatoria
+- Nivel de la cuenta (numérico, 1, obligatorio). Validación: un dígito entre 1 y 9
+- Asentable (debe seleccionar entre: Sí, No)
+
+Grupo para enlazar con Francia:
+- Número de la cuenta (carácter, 16, "Cuenta N°", obligatorio). Validación: debe cumplir con el formato de los números de cuenta
+- Nombre de la cuenta (carácter, 40, "Nombre de la cuenta contable", obligatorio). Validación: su longitud deber ser >= 3
+- Número de la subcuenta (carácter, 5, opcional). Validación: solamente dígitos entre "00001" y "99999"
+- Nombre de la subcuenta (carácter, 40, "Nombre de la subcuenta contable", opcional)
+- Cuenta de nivel superior (carácter, 58, "La cuenta padre de esta cuenta", obligatorio). Validación: si la cuenta tiene 1 solo dígito, debe estar deshabilitada y totalmente vacía; en todos los demás casos sí es obligatoria
+- Nivel de la cuenta (numérico, 1, obligatorio). Validación: un dígito entre 1 y 9
+- Asentable (debe seleccionar entre: Sí, No)

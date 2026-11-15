@@ -1,0 +1,23 @@
+VENTANAS:
+En la carpeta lib\generales\widgets\ se crearán los popup siguientes:
+- Ventana advertencia. Para indicarle al usuario que algo puede ser potencialmente peligroso
+- Ventana confirmación. Para preguntarle al usuario si quiere confirmar algo. Debe tener los botones: Sí, No, Cancelar, y programáticamente se debe poder decidir cuales de esos botones estarán visibles
+- Ventana error. Para mostrarle al usuario que un error ha sido detectado
+- Ventana información. Para informarle de algo al usuario
+Todos estos popus deben tener un icono para identificarlos
+
+UI/UX:
+- En todos los mensajes debes tratar de tú al usuario, nunca de vos ni de usted, siempre de tú
+- Todos los mensajes deben ser asexuados, eso significa que no se debe suponer que el usuario es hombre o es mujer porque hay hombres y hay mujeres.
+
+MENSAJES AL USUARIO:
+- Todos los mensajes deben dirigirse al usuario de "tú", nunca de "usted".
+  Ejemplos: "¿Deseas eliminar este registro?", "Escribe tu e-mail".
+- Ningún mensaje debe suponer el género del usuario: muchos usuarios son mujeres. Evitar cualquier forma que asuma que el usuario es un hombre y
+  usar construcciones neutras o de "tú" (que no marca género).
+- Esta regla aplica a todos los textos visibles: ventanas, botones, etiquetas, hints, tooltips y validaciones, en español y en francés.
+
+MASCARÁS DE ENTRADA:
+- En una máscara de entrada la letra "A" significa "cualquier carácter", el dígito "9" significa "cualquier dígito entre 0 y 9", el signo "!" significa "una letra mayúscula". Todos los demás caracteres deben mostrarse tal cual y en la misma posición que ocupan en la máscara de entrada
+- Si un campo de tipo carácter/string tiene máscara de entrada, esa máscara de entrada determina la cantidad máxima de caracteres que pueden introducirse en ese campo y el ancho del campo debe estar acorde a esa máscara de entrada
+- Si un campo de tipo numérico tiene máscara de entrada, esa máscara de entrada determina la cantidad máxima de dígitos que puede tener ese campo. Los números se justifican hacia la derecha. Ejemplos: máscara de entrada = "999.999.999", el usuario escribe: 12345, se le muestra 12.345; máscara de entrada = "999.999,99", el usuario escribe: 1234,5 y se le muestra: 1.234,50

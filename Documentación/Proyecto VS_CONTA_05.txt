@@ -1,0 +1,787 @@
+===============================================================================
+CONTEXTO DEL PROYECTO VS_CONTA — Para retomar donde quedamos
+===============================================================================
+Sesión 1: 2026-07-11 (hasta 01:33 a.m.)
+Sesión 2: 2026-07-11 (segunda sesión del día)
+Sesión 3: 2026-07-11/12 (hasta 02:45 a.m.)
+Sesión 4: 2026-07-12 (hasta 02:30 a.m.) ← SESIÓN ACTUAL
+Rol: súper experto en programación con Dart/Flutter
+
+===============================================================================
+1. DESCRIPCIÓN GENERAL
+===============================================================================
+Aplicación contable multiplataforma (web + celular) desarrollada en Flutter
+con base de datos Firebird 5. Nombre: VS_CONTA.
+
+Usuarios: personas que NO están acostumbradas a usar computadoras ni celulares
+(incluye personas de edad avanzada), por lo tanto la UI/UX debe ser de
+primerísimo nivel y extremadamente fácil de usar.
+
+Países: Paraguay, Perú y Francia (quizás más adelante Argentina y Uruguay).
+Los usuarios de Francia SOLO pueden mirar/visualizar datos.
+Los de los demás países también pueden agregar, borrar y modificar.
+
+Idiomas: español y francés (elegibles en login y pantalla principal).
+Formatos de números y fechas: latinoamericano y francés (elegibles en
+pantalla principal). Formato inicial: Paraguay (latino).
+Tema: claro u oscuro (elegible en login y pantalla principal).
+Las elecciones se graban en el dispositivo con SharedPreferences.
+
+Credenciales iniciales: admin / 1234 (más adelante vendrán del ABM Usuarios
+y de la Base de Datos Firebird).
+
+===============================================================================
+2. REPOSITORIO GIT
+===============================================================================
+URL: https://github.com/wojedav2104/vs_flutter_conta
+Rama principal: main
+Estado: PÚBLICO (temporalmente, para revisión; volver a privado después)
+Descripción en repo: "Archivos de la carpeta D:\FLUTTER_APLICACIONES\VS_CONTA\"
+En la carpeta "Documentación" del repo hay varios archivos .txt con
+documentación del proyecto.
+
+pubspec.yaml:
+  name: vs_conta
+  SDK: ^3.13.7
+  Dependencias: flutter_localizations, cupertino_icons, intl ^0.20.3,
+                shared_preferences ^2.5.6, web ^1.1.0
+  Dev: flutter_test, flutter_lints ^6.0.0
+  Fuentes: Roboto Regular/Medium/Bold, Roboto Mono Regular/Bold
+  fonts: indentado dentro de flutter:
+
+===============================================================================
+3. UBICACIÓN Y ESTRUCTURA DEL PROYECTO
+===============================================================================
+SO: Windows 10 Profesional
+Ubicación: D:\Flutter_aplicaciones\vs_conta\
+
+lib\
+├── main.dart                           ← Punto de entrada
+│                                         Agregado: funcDesactivarMenuNavegador()
+│
+├── generales\
+│   ├── basesdatos\                     ← Conexión a Firebird (PENDIENTE)
+│   ├── errores\                        ← Manejo de errores (PENDIENTE)
+│   ├── idiomas\
+│   │   └── idiomas.dart                ← ClaseIdiomas (MODIFICADO sesiones 3-4)
+│   │                                      +10 claves sesión 3 (orden, menús, clipboard)
+│   │                                      +asiFila sesión 4
+│   │                                      +claves com* sesión 4 (Libro Compras)
+│   │                                      +validFechaInvalida, validFechaRango
+│   │                                      +validNoNegativo
+│   ├── inicio\
+│   │   ├── login.dart                  ← ClaseLogin
+│   │   ├── pantalla_principal.dart     ← ClasePantallaPrincipal (RouteAware)
+│   │   └── menu_lateral.dart           ← ClaseMenuLateral
+│   ├── modelos\
+│   │   ├── campo_abm.dart              ← ClaseCampoAbm (MODIFICADO)
+│   │   │                                  Propiedades: oTipo, sClave, sEtiqueta,
+│   │   │                                  bEnGrilla(true), bObligatorio(false),
+│   │   │                                  bSiempreDeshabilitado(false),
+│   │   │                                  bSoloLecturaPorRol(false),
+│   │   │                                  iAnchoCaracteres(10), iMaxComentario(500),
+│   │   │                                  listOpciones, sGrupo, sHint, sMascara,
+│   │   │                                  funcValidarCampo, funcActualizarEstado
+│   │   │                                  NOTA: bColumnaEsencial fue AGREGADO y
+│   │   │                                  ELIMINADO en sesión 4 (ya no existe)
+│   │   ├── opcion_menu.dart            ← ClaseOpcionMenu
+│   │   └── sesion.dart                 ← ClaseSesion
+│   ├── preferencias\
+│   │   └── preferencias.dart           ← ClasePreferencias
+│   ├── temas\
+│   │   ├── colores.dart                ← ClaseGenColores
+│   │   │                                  NOTA: Las constantes colorBoton* fueron
+│   │   │                                  agregadas y ELIMINADAS. Los colores de
+│   │   │                                  botones ahora vienen de ColorScheme
+│   │   │                                  (temas.dart): primary/onPrimary para
+│   │   │                                  habilitados, tertiary/onTertiary para
+│   │   │                                  Grabar destacado, surfaceContainerHigh/
+│   │   │                                  onSurfaceVariant para deshabilitados.
+│   │   │                                  Conservar: colorVerde1, colorNaranja1,
+│   │   │                                  colorBlanco, colorError (totales).
+│   │   ├── espacios.dart               ← ClaseGenEspacios
+│   │   ├── estilos_textos.dart         ← ClaseGenEstilosTexto
+│   │   ├── layout.dart                 ← ClaseGenLayout
+│   │   │                                  Constantes: dAltoFilaGrillaAbm=26.0,
+│   │   │                                  dAnchoCampoComentario=400.0,
+│   │   │                                  dAnchoCampoFecha=180.0,
+│   │   │                                  dAnchoCampoHora=120.0,
+│   │   │                                  dAnchoCaracter=8.6,
+│   │   │                                  dAnchoGrillaAbm=280.0,
+│   │   │                                  dAnchoIconoBorrar=48.0,
+│   │   │                                  dAnchoIconoFlecha=32.0,
+│   │   │                                  dAnchoMinimoGrillaDetalles=700.0 (NUEVO),
+│   │   │                                  dAnchoReferencia=1366.0,
+│   │   │                                  dAnchoTarjetaLogin=420.0,
+│   │   │                                  dAltoBotonAbm=48.0, dAnchoBotonAbm=150.0,
+│   │   │                                  dElevacionTarjeta=4.0,
+│   │   │                                  dFactorEscalaMax=1.3, dFactorEscalaMin=0.8,
+│   │   │                                  dGrosorSpinner=2.0,
+│   │   │                                  iFilasPorPagina=25,
+│   │   │                                  iCaracteresGrillaCerrada=25,
+│   │   │                                  iCaracteresGrillaAbierta=75,
+│   │   │                                  iMaxCaracteresCampoGrilla=20
+│   │   │                                  NOTA: dAnchoIconoInfoDetalle fue AGREGADO
+│   │   │                                  y ELIMINADO en sesión 4.
+│   │   ├── radios.dart                 ← ClaseGenRadios
+│   │   └── temas.dart                  ← ClaseGenTemas
+│   │                                      ColorScheme claro: primary=azulOscuro1,
+│   │                                      tertiary=morado1, surface=superficieClara
+│   │                                      ColorScheme oscuro: primary=cyan1,
+│   │                                      tertiary=rosa1, surface=superficieOscura
+│   │                                      _construir() con ThemeData base M3 merge
+│   ├── utilitarios\
+│   │   ├── formatos.dart               ← funcFormatearNumero, funcParsearFecha,
+│   │   │                                  funcParsearEnteroMiles,
+│   │   │                                  funcFormatearEnteroMiles,
+│   │   │                                  ClaseFormatoMascara, ClaseFormatoMiles
+│   │   ├── menu_navegador_web.dart     ← funcDesactivarMenuNavegador (web)
+│   │   └── menu_navegador_movil.dart   ← funcDesactivarMenuNavegador (no-op)
+│   ├── validaciones\
+│   │   ├── cap_validar.dart            ← ClaseCapValidar (~20+ métodos)
+│   │   │                                  Incluye: validarObligatorio,
+│   │   │                                  validarLongitudMaxima, validarLongitudMinima,
+│   │   │                                  validarSoloEntero, validarEnteroDeLongitud,
+│   │   │                                  validarDigitosExactos, validarRangoEntero,
+│   │   │                                  validarFechaValida, validarFechaNoAnterior,
+│   │   │                                  validarFormatoCuenta, contarDigitosCuenta,
+│   │   │                                  validarEjercicio, validarNivelCuenta,
+│   │   │                                  validarNumeroSubcuenta, validarFechaFinPosterior,
+│   │   │                                  validarAlMenosUnoSeleccionado,
+│   │   │                                  validarCuentaSuperior, validarFechaAsiento,
+│   │   │                                  validarSumaDebeHaber
+│   │   │                                  NUEVOS sesión 4: validarFechaCompra,
+│   │   │                                  validarNoNegativo
+│   │   │                                  + auxiliares privados: _traducir, _formatearFecha
+│   │   └── can_validar.dart            ← ClaseCanValidar (stub para BD)
+│   ├── varios\
+│   │   └── pantalla_proximamente.dart  ← ClasePantallaProximamente
+│   └── widgets\
+│       ├── controles_preferencias.dart ← ClaseControlesPreferencias
+│       ├── formulario_abm.dart         ← ClaseFormularioAbm (MODIFICADO sesión 4)
+│       │                                  + funcActualizarCampos (auto-cálculo)
+│       │                                  + alCambiarCampo, getValoresActuales
+│       │                                  + Pestañas (TabBar/TabBarView) con sGrupo
+│       │                                  + Campos lista/casillas/logico en cabecera
+│       │                                  + funcActualizarEstado para habilitación
+│       │                                    dinámica
+│       │                                  + Punto 20: etiquetas numéricas a la derecha
+│       │                                    (CrossAxisAlignment.end, sin SizedBox
+│       │                                    en etiqueta para evitar overflow)
+│       │                                  + Punto 21: bEnGrilla para controlar
+│       │                                    campos visibles en grilla lateral
+│       │                                  + Botones ABM con ColorScheme (bEsDestacado)
+│       │                                  + dAnchoExpandido con max/min (fix overflow)
+│       ├── formulario_cabecera_detalle.dart ← ClaseFormularioCabeceraDetalle
+│       │                                  (MODIFICADO sesión 4)
+│       │                                  + funcActualizarCampos (auto-cálculo)
+│       │                                  + alCambiarCampo, getValoresActuales
+│       │                                  + Pestañas (TabBar/TabBarView) con sGrupo
+│       │                                  + Campos lista/casillas/logico en cabecera
+│       │                                  + funcActualizarEstado para habilitación
+│       │                                    dinámica
+│       │                                  + Punto 20: etiquetas numéricas a la derecha
+│       │                                    (CrossAxisAlignment.end, sin SizedBox
+│       │                                    en etiqueta para evitar overflow)
+│       │                                  + _sumaDebe/_sumaHaber en validar()
+│       │                                  + Grilla detalle responsive: grilla
+│       │                                    horizontal (anchas) + tarjetas
+│       │                                    verticales (angostas < 700px)
+│       │                                  + Botones ABM con ColorScheme (bEsDestacado)
+│       │                                  + dAnchoExpandido con max/min (fix overflow)
+│       │                                  + Modalidades: construirDetalleEnGrilla,
+│       │                                    construirDetalleEnTarjetas,
+│       │                                    construirTarjetaDetalle,
+│       │                                    construirCampoTarjetaDetalle,
+│       │                                    construirFilaTotalesTarjeta
+│       ├── ventana_configuracion.dart  ← funcMostrarConfiguracion
+│       └── ventana_mensaje.dart        ← funcMostrarConfirmacion, funcMostrarMensaje,
+│                                          funcMostrarSelectorFecha,
+│                                          funcMostrarSelectorHora
+│
+├── opciones\
+│   ├── archivos\
+│   │   ├── cuentas.dart                ← ClaseCuentas / Plan de Cuentas
+│   │   ├── asientos.dart               ← ClaseAsientos (cabecera/detalle)
+│   │   ├── compras.dart                ← ClaseCompras (NUEVO sesión 4)
+│   │   ├── ventas.dart                 ← PENDIENTE
+│   │   ├── retenciones_clientes.dart   ← PENDIENTE
+│   │   └── retenciones_proveedores.dart← PENDIENTE
+│   ├── consultas\                      ← ¿sobra por el momento?
+│   ├── gráficos\                       ← ¿sobra por el momento?
+│   ├── impresiones\                    ← ¿sobra por el momento?
+│   ├── informes\                       ← PENDIENTES (4.1–4.9)
+│   ├── procesos\                       ← PENDIENTES (3.1–3.4)
+│   ├── sistema\                        ← PENDIENTE (bases_datos.dart)
+│   ├── tablas\
+│   │   ├── empresa.dart                ← ClaseEmpresa
+│   │   ├── configuracion.dart          ← ClaseConfiguracion
+│   │   ├── sucursales.dart             ← ClaseSucursales
+│   │   ├── clientes.dart               ← ClaseClientes
+│   │   ├── proveedores.dart            ← ClaseProveedores
+│   │   ├── timbrados_propios.dart      ← ClaseTimbradosPropios
+│   │   ├── timbrados_proveedores.dart  ← ClaseTimbradosProveedores
+│   │   └── cuentas_asignadas.dart      ← ClaseCuentasAsignadas
+│   └── utilitarios\                    ← PENDIENTE (usuarios.dart)
+│
+└── rutas\
+    ├── rutas.dart                      ← ClaseRutas
+    └── generador_rutas.dart            ← funcGenerarRuta + oObservadorRutas
+
+test\
+└── widget_test.dart                    ← CORREGIDO
+
+web\
+└── index.html                          ← SIN CAMBIOS
+
+===============================================================================
+4. REGLAS DE FORMULARIOS ABM (21 reglas)
+===============================================================================
+1.  AppBar: nombre del formulario + nombres de pestañas si las hay
+2.  Parte media: datos amigables con hints
+3.  Campos texto/numéricos/fecha/hora: "X" a la derecha para borrar
+4.  Campos obligatorios: asterisco rojo después de la etiqueta
+5.  Campos comentarios: contador "27/500" en la misma fila, extremo derecho
+6.  Campos ocupan ancho mínimo para los caracteres especificados
+7.  Fuente monoespaciada en texto, numéricos, fecha, hora, listas
+8.  Máscara de entrada determina ancho del campo (ej: 999-999-9999999 = 15)
+9.  Numéricos con máscara: al perder foco, justificar a la derecha
+10. Botones: Agregar, Borrar, Modificar, Grabar, Cancelar, Encontrar, Fin
+    TODOS con el mismo ancho y la misma altura
+11. Tabla sin datos: solo Agregar y Fin habilitados
+12. Tabla con datos: Agregar, Borrar, Modificar, Encontrar, Fin habilitados;
+    Grabar y Cancelar deshabilitados
+13. Al clic Agregar o Modificar: invertir estados de botones
+14. Grabar: validar todos los campos; si error, foco en primer campo con error
+15. Cancelar: mostrar campos deshabilitados con valores anteriores
+16. Al ingresar al formulario: todos los campos deshabilitados
+17. Campos siempre deshabilitados: propiedad bSiempreDeshabilitado
+18. Fecha: formato dd/mm/aaaa, ancho 10 caracteres, con DATE PICKER
+19. Hora: formato hh:mm, ancho 5 caracteres, con TIME PICKER
+20. Las etiquetas de los campos numéricos siempre deben justificarse hacia
+    la derecha (IMPLEMENTADO sesión 4 con CrossAxisAlignment.end)
+21. En la grilla lateral izquierda se deben mostrar pocos campos, los
+    suficientes para que el usuario pueda leer el contenido (usar bEnGrilla)
+
+REGLA ADICIONAL:
+10 (revisada): Los 7 botones deben tener EXACTAMENTE el mismo ancho y
+la misma altura (SizedBox + dAnchoBotonAbm/dAltoBotonAbm).
+
+===============================================================================
+5. REGLAS DE NOMENCLATURA (ACTUALIZADAS sesión 4)
+===============================================================================
+Prefijos de variables/propiedades:
+  d = decimales, f = fechas, i = enteros, b = booleanos, n = numérico,
+  o = objetos propios, s = cadenas, w = widget
+Colecciones: list, set, map, Enum
+Funciones propias: prefijo func
+Clases propias: prefijo Clase
+Métodos: sin prefijo, en minúscula
+Getters: get...  Setters: set...
+Idioma: español salvo raras excepciones
+Orden: por tipo de dato y dentro de cada tipo alfabético
+Alineación: símbolos = y : todos en la misma columna
+Fuente: Roboto Mono para datos del usuario y montos
+Botones: todos con icono a la izquierda
+176 caracteres por fila
+Sin valores hardcoded: colores solo en ClaseGenColores,
+espacios solo en ClaseGenEspacios, etc.
+
+NUEVO (sesión 4):
+PALABRAS COMPLETAS en todos los identificadores (variables, propiedades,
+clases, funciones, métodos). Preferir dAnchoMinimoGrillaDetalles sobre
+dAnchoMinGrillaDetalles. Facilita la lectura y la comprensión.
+
+===============================================================================
+6. REGLAS DE VALIDACIÓN (CLAVE)
+===============================================================================
+TODAS las validaciones que NO necesitan BD → cap_validar.dart
+TODAS las validaciones que SÍ necesitan BD → can_validar.dart
+NINGUNA validación debe estar fuera de esos dos archivos.
+
+cap_validar.dart tiene (~22 métodos):
+  validarObligatorio, validarLongitudMaxima, validarLongitudMinima,
+  validarSoloEntero, validarEnteroDeLongitud, validarDigitosExactos,
+  validarRangoEntero, validarFechaValida, validarFechaNoAnterior,
+  validarFormatoCuenta, contarDigitosCuenta, validarEjercicio,
+  validarNivelCuenta, validarNumeroSubcuenta, validarFechaFinPosterior,
+  validarAlMenosUnoSeleccionado, validarCuentaSuperior,
+  validarFechaAsiento, validarSumaDebeHaber,
+  validarFechaCompra (NUEVO), validarNoNegativo (NUEVO)
+  + auxiliares privados: _traducir, _formatearFecha
+
+Formato de cuenta: 99999.99999.99999.99999.99999 (hasta 5 grupos de 1-2 dígitos)
+  Ejemplos válidos: 1, 1.01, 1.01.04, 2.03.05.17, 3.05.01.07.18
+  Regex: ^\d{1,2}(\.\d{1,2}){0,4}$
+
+Mensajes de validación genéricos con placeholders {0}, {1}, etc.
+Claves: valid* en ClaseIdiomas
+
+NOTA: La comparación para ordenamiento de grilla NO es validación;
+quedó como lógica de presentación dentro de los widgets.
+
+===============================================================================
+7. MENÚ DEL DRAWER
+===============================================================================
+1. Archivos: Plan de Cuentas, Asientos, Libro Compras, Libro Ventas,
+   Retenciones a Clientes, Retenciones de Proveedores
+2. Tablas: Empresa, Configuración, Sucursales, Clientes, Proveedores,
+   Timbrados Propios, Timbrados Proveedores, Cuentas asignadas
+3. Procesos: Reorganizar asientos, Cierre Anual, Reapertura de Cuentas,
+   Marangatú (solo Paraguay)
+4. Informes: Verificación de datos, Plan de Cuentas, Libro Diario,
+   Libro Mayor, Balance de Sumas y Saldos, Balance General,
+   Estado de Resultados, Libro Compras, Libro Ventas
+5. Utilitarios: Usuarios
+6. Sistema: Bases de Datos
+7. Fin
+
+Drawer se abre automáticamente al ingresar a pantalla principal y al
+regresar de cualquier formulario (RouteAware + RouteObserver).
+
+===============================================================================
+8. WIDGETS GENÉRICOS — ESTADO ACTUAL
+===============================================================================
+
+--- ClaseFormularioAbm (formulario_abm.dart) ---
+Parámetros: listCampos, listRegistros, oPreferencias, sTitulo,
+  bPermitirEncontrar(true), bTablaUnSoloRegistro(false),
+  funcAlActualizar, funcAlBorrar, funcAlGrabar, funcActualizarCampos,
+  funcValidarRegistro
+
+Características:
+  - Pestañas (TabBar/TabBarView) si campos tienen sGrupo
+  - Campos sin sGrupo se muestran fuera de las pestañas
+  - Grilla lateral con paginación (iFilasPorPagina = 25)
+  - Grilla filtrada por caracteres (25 cerrada, 75 abierta, max 20/campo)
+  - Botones uniformes: dAnchoBotonAbm=150, dAltoBotonAbm=48
+  - Colores de botones desde ColorScheme (temas.dart):
+    Habilitados: primary/onPrimary
+    Grabar destacado: tertiary/onTertiary (bEsDestacado=true)
+    Deshabilitados: surfaceContainerHigh/onSurfaceVariant
+  - Ordenamiento de grilla con flecha indicadora
+  - Menú contextual (copiar valor, copiar fila, buscar por valor,
+    primera/última fila, actualizar)
+  - Campos: texto, número, fecha, hora, comentario, lista, casillas, logico
+  - funcActualizarEstado para habilitación dinámica
+  - funcActualizarCampos para auto-cálculos
+  - Punto 20: etiquetas numéricas a la derecha (CrossAxisAlignment.end)
+  - Formateo numérico con máscara al perder foco (Focus + onFocusChange)
+  - dAnchoExpandido con max/min para evitar overflow
+
+--- ClaseFormularioCabeceraDetalle (formulario_cabecera_detalle.dart) ---
+Parámetros: listCamposCabecera, listCamposDetalle, listCamposPie,
+  listRegistros, oPreferencias, sTitulo,
+  bPermitirEncontrar(true),
+  funcAlActualizar, funcAlBorrar, funcAlGrabar,
+  funcActualizarCampos, funcValidarRegistro
+
+Características:
+  - Pestañas (TabBar/TabBarView) si campos de cabecera tienen sGrupo
+  - Grilla lateral con paginación, ordenamiento, menú contextual
+  - Grilla de detalles responsive:
+    * Pantallas >= dAnchoMinimoGrillaDetalles (700px): grilla horizontal
+    * Pantallas < 700px: tarjetas verticales con todos los campos apilados
+  - Campos: texto, número, fecha, hora, comentario, lista, casillas, logico
+  - funcActualizarEstado para habilitación dinámica
+  - funcActualizarCampos para auto-cálculos
+  - Punto 20: etiquetas numéricas a la derecha (CrossAxisAlignment.end)
+  - _sumaDebe/_sumaHaber pasados a funcValidarRegistro
+  - Exclusión mutua Debe/Haber (onChanged)
+  - Totales con fondo verde (iguales) o naranja (diferentes)
+  - Botones ABM con ColorScheme (bEsDestacado)
+  - dAnchoExpandido con max/min para evitar overflow
+  - Menú contextual grilla de detalles: subir/bajar fila, primera/última
+  - El orden de listDetalles es el orden contable del asiento
+
+===============================================================================
+9. ABMs IMPLEMENTADOS
+===============================================================================
+
+--- EMPRESA (empresa.dart) ---
+Un solo registro. Sin grilla lateral. Sin Encontrar. 3 pestañas:
+  Generales: Nombre(50,oblig), Apellidos(25), Nombres(25), Ramo(60),
+    Dirección(60), Teléfono(15), País(lista oblig), Departamento(29,oblig),
+    Localidad(40,oblig), Email(40), RUC(10,oblig)
+  Varios: Ejercicio(numérico,4,oblig)
+  Impuestos: IVA(lista), IRE Simple(lista Sí/No), IRP(lista Sí/No)
+
+--- CONFIGURACIÓN (configuracion.dart) ---
+Un solo registro. Sin grilla. Sin Encontrar. 2 pestañas:
+  Empresa: Sucursal actual(44,oblig), Carpeta Marangatú(100,oblig)
+  Backups: Crear backup a las(hora,5), Cantidad backups(numérico,3,oblig)
+
+--- SUCURSALES (sucursales.dart) ---
+Múltiples. Con grilla. Con Encontrar. Sin pestañas.
+  Código(4,oblig), Nombre(40,oblig), Dirección(60), Teléfono(15),
+  Localidad(40,oblig)
+
+--- CLIENTES (clientes.dart) ---
+Múltiples. Con grilla. Con Encontrar. Sin pestañas.
+  Código(6,oblig), Nombre(40,oblig), Dirección(60), Teléfono(15),
+  Celular(15), Localidad(40), Email(40),
+  Tipo identificación(lista), Identificación N°(15,oblig),
+  Tipo cliente(lista), Es agente diplomático(lista)
+
+--- PROVEEDORES (proveedores.dart) ---
+Múltiples. Con grilla. Con Encontrar. Sin pestañas.
+  Código(6,oblig), Nombre(40,oblig), Dirección(60), Teléfono(15),
+  Celular(15), Localidad(40), Email(40),
+  Tipo identificación(lista), Identificación N°(15,oblig),
+  Tipo proveedor(lista), Es Servicio Público(lista)
+
+--- TIMBRADOS PROPIOS (timbrados_propios.dart) ---
+Múltiples. Con grilla. Con Encontrar. Sin pestañas.
+  Timbrado N°(8,oblig, 8 dígitos exactos),
+  Fecha inicio(fecha,oblig, ≥01/01/2020),
+  Fecha fin(fecha, > fecha inicio si se escribe),
+  Afecta a(casillas,oblig, al menos 1),
+  Medio generación(lista),
+  Número último documento(15,oblig, máscara 999-999-9999999, 13 dígitos)
+
+--- TIMBRADOS PROVEEDORES (timbrados_proveedores.dart) ---
+Múltiples. Con grilla. Con Encontrar. Sin pestañas.
+  Nombre Proveedor(48,oblig),
+  Timbrado N°(8,oblig), Fecha inicio(fecha,oblig), Fecha fin(fecha),
+  Afecta a(casillas,oblig), Medio generación(lista)
+
+--- CUENTAS ASIGNADAS (cuentas_asignadas.dart) ---
+Múltiples (un registro por ejercicio+sucursal). Con grilla. Con Encontrar.
+  Ejercicio(numérico,4,oblig, ≥2020 y ≤ año actual),
+  Sucursal(44,oblig),
+  + 16 campos de cuentas (todos opcionales, carácter 58, formato 9.99.99.99):
+    Caja, IVA Crédito 10%, IVA Crédito 5%, IVA Débito 10%, IVA Débito 5%,
+    Mercaderías Exentas, Mercaderías Gravadas 10%, Mercaderías Gravadas 5%,
+    Ventas Exentas, Ventas Gravadas 10%, Ventas Gravadas 5%,
+    Debe Ventas contado, Debe Ventas crédito,
+    Haber Compras contado, Haber Compras crédito,
+    Resultados del Ejercicio
+
+--- PLAN DE CUENTAS (cuentas.dart) ---
+Múltiples. Con grilla. Con Encontrar. 2 pestañas + datos comunes.
+  Comunes: Ejercicio(numérico,4,oblig), Sucursal(44,oblig)
+  Grupo Principal (con prefijo pri):
+    Número cuenta(16,oblig, formato cuenta), Nombre cuenta(40,oblig, ≥3),
+    Número subcuenta(5,opc, 00001-99999), Nombre subcuenta(40,opc),
+    Cuenta superior(58,oblig si cuenta >1 dígito),
+    Nivel(numérico,1,oblig, 1-9), Asentable(lista Sí/No)
+  Grupo Alternativo (con prefijo alt): mismos 7 campos
+
+--- ASIENTOS (asientos.dart) ---
+Múltiples. Cabecera/detalle. Con grilla lateral. Con Encontrar.
+  Cabecera: Ejercicio(numérico,4,oblig), Sucursal(44,oblig),
+    Fecha asiento(fecha,oblig, dentro del ejercicio),
+    Número asiento(numérico,6,deshabilitado, SIN ceros a la izquierda)
+  Detalle (grilla editable / tarjetas):
+    Cuenta N°(16, formato cuenta), Subc.(5), Nombre cuenta(40),
+    Debe(numérico,15, máscara 999.999.999.999),
+    Haber(numérico,15, máscara 999.999.999.999),
+    Concepto(60)
+  Pie: Comentarios(500, contador)
+  Validación clave: Suma Debe = Suma Haber
+  Debe y Haber son mutuamente excluyentes
+
+--- LIBRO COMPRAS (compras.dart) — NUEVO sesión 4 ---
+Múltiples. Cabecera/detalle. Con grilla lateral. Con Encontrar.
+  DOS PESTAÑAS: "Generales" (comGenerales) y "Resolución 90/2021" (comResolucion)
+  Punto 21: solo 6 campos visibles en grilla lateral:
+    ejercicio, fechaCompra, tipoDocumento, numeroDocumento, proveedor, total
+  Los otros 25 campos tienen bEnGrilla : false.
+
+  Grupo 1 "Generales" (cabecera):
+    Ejercicio contable(numérico,4,oblig, ≥2020 y ≤ año actual),
+    Sucursal(carácter,44,oblig),
+    Fecha de la compra(fecha,oblig, entre 01/01/ejercicio y hoy/31/12/ejercicio),
+    Hora(hora,oblig),
+    Número del asiento(numérico,6,deshabilitado, auto con BD),
+    Tipo de documento(lista,18 opciones: Factura Contado, Factura Crédito,
+      Comprobante de Venta I.V.A incluido, AutoFactura, Comprobante Tributo
+      Único, Ticket máquina registradora, Factura Importación, Resolución
+      S.S.E.T., Nota de Débito, Nota de Crédito, Despacho de Importación,
+      Boleta de Ventas, Control Interno, Boleta Transporte Público,
+      Boleta ReSimple, Boleto Loterías, Boleto Transporte Aéreo,
+      Entrada espectáculos públicos),
+    N°(carácter,16,oblig), Validación: si tipo doc usa máscara
+      (01,02,03,04,06,09,10) → formato 999-999-9999999;
+      si no → solo mayúsculas y dígitos,
+    Cantidad de cuotas(numérico,3,oblig), Validación: si Factura Crédito=1
+      y habilitado; en otros casos=0 y deshabilitado (funcActualizarEstado),
+    Proveedor(carácter,48,oblig, buscar en tabla + auto-completar),
+    Tipo identificación(lista,deshabilitado,auto con proveedor):
+      R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera,
+      Sin Nombre, Diplomático,
+    RUC/Cédula(carácter,10,deshabilitado,auto con proveedor),
+    Timbrado N°(carácter,8, obligatorio si máscara 999-999-9999999 → 8 dígitos;
+      en blanco y deshabilitado si no),
+    Vigente desde(fecha,deshabilitado,auto con tabla),
+    Vigente hasta(fecha,deshabilitado,auto con tabla),
+    Es Factura Electrónica(lista Sí/No,defecto=Sí),
+    Gravadas 10%(numérico,15,999.999.999.999, ≥0),
+    I.V.A. 10%(numérico,15,999.999.999.999, ≥0),
+    Gravadas 5%(numérico,15,999.999.999.999, ≥0),
+    I.V.A. 5%(numérico,15,999.999.999.999, ≥0),
+    Exentas(numérico,15,999.999.999.999, ≥0),
+    Total(numérico,15,999.999.999.999,deshabilitado, auto-cálculo:
+      gravadas10+iva10+gravadas5+iva5+exentas),
+    Tipo de afectación(lista: Directo, Indistinto, Directo Exportación,
+      Directo Importación),
+    Mostrar en Libro Compras(lista Sí/No,defecto=Sí)
+
+  Detalle (grilla editable / tarjetas):
+    Cuenta N°(carácter,16,opcional, formato cuenta),
+    Subc.(carácter,5,opcional),
+    Nombre de la cuenta(carácter,40,oblig si existe Cuenta N°,
+      deshabilitado, auto desde BD),
+    Debe(numérico,15,oblig si existe Cuenta N°, 999.999.999.999),
+    Haber(numérico,15,oblig si existe Cuenta N°, 999.999.999.999),
+    Concepto(carácter,60,opcional)
+
+  Pie: Comentarios(texto largo, 500, opcional)
+
+  Grupo 2 "Resolución 90/2021" (cabecera):
+    Enviar a Marangatú(lista Sí/No,defecto=Sí),
+    Importe gravado 10%(numérico,15, inicial=gravadas10+iva10, 999.999.999.999),
+    Importe gravado 5%(numérico,15, inicial=gravadas5+iva5, 999.999.999.999),
+    Importe exento(numérico,15, inicial=exentas, 999.999.999.999),
+    Importe I.R.E. Simple(numérico,15, inicial=0, 999.999.999.999),
+    Importe I.R.P. Simple(numérico,15, inicial=0, 999.999.999.999),
+    Importe no imputable(numérico,15, inicial=0, 999.999.999.999),
+    Total del comprobante(numérico,15, deshabilitado, auto-cálculo:
+      suma de todos los importes del Grupo 2, 999.999.999.999)
+
+  Validación cruzada (validarRegistro):
+    a) Suma Debe = Suma Haber (ya en validar() del widget)
+    b) "Enviar a Marangatú"=No O "Total comprobante"=suma Debe
+    c) Fecha de compra dentro del rango del ejercicio
+    d) Formato N° según Tipo de documento (999-999-9999999 o A-Z0-9)
+    e) Timbrado: 8 dígitos si usa máscara, vacío si no
+
+  Auto-cálculo (actualizarCampos):
+    - Total Grupo 1 = gravadas10+iva10+gravadas5+iva5+exentas
+    - Importe gravado 10% = gravadas10+iva10 (si 0 o =esperado)
+    - Importe gravado 5% = gravadas5+iva5 (si 0 o =esperado)
+    - Importe exento = exentas (si 0 o =esperado)
+    - Total comprobante = suma importes Grupo 2
+    - Cantidad cuotas = 0 si no es Factura Crédito
+
+  Funciones auxiliares:
+    esTipoDocumentoConMascara(sTipoDoc): true para tipoDoc 01,02,03,04,06,09,10
+    esFacturaCredito(sTipoDoc): true para tipoDoc 02
+
+===============================================================================
+10. CLAVES DE ClaseIdiomas — ESTADO ACTUAL
+===============================================================================
+
+Sesión 3 (10 claves es/fr):
+  ordenarPor, menuCopiarValor, menuCopiarFila, menuBuscarValor,
+  menuPrimeraFila, menuUltimaFila, menuActualizar,
+  menuSubirFila, menuBajarFila, copiadoPortapapeles
+
+Sesión 4 (claves nuevas es/fr):
+  asiFila
+  Compras: comGenerales, comResolucion, comFecha, comHora, comNumeroAsiento,
+    comTipoDocumento, comNumero, comCantidadCuotas, comProveedor,
+    comTipoIdentificacion, comRucCedula, comTimbrado, comVigenteDesde,
+    comVigenteHasta, comEsFacturaElectronica, comGravadas10, comIva10,
+    comGravadas5, comIva5, comExentas, comTotal, comTipoAfectacion,
+    comMostrarEnLibro, comComentarios, comEnviarMarangatu, comImporteGravado10,
+    comImporteGravado5, comImporteExento, comImporteIreSimple,
+    comImporteIrpSimple, comImporteNoImputable, comTotalComprobante,
+    comHintProveedor, comHintComentarios, comHintCuenta, comHintNombreCuenta,
+    comSi, comNo, comIdentRuc, comIdentCedula, comIdentPasaporte,
+    comIdentCedulaExt, comIdentSinNombre, comIdentDiplomatico,
+    comAfectDirecto, comAfectIndistinto, comAfectExportacion,
+    comAfectImportacion, comTipoDoc01-18 (18 tipos de documento),
+    comErrorNumeroFormato, comErrorTimbrado, comErrorMarangatu,
+    menuLibroCompras
+  Validación: validNoNegativo, validFechaInvalida, validFechaRango
+
+NOTA: Las claves camposAdicionales, indicadorScrollGrilla, cerrar fueron
+AGREGADAS y ELIMINADAS en sesión 4 (eran del intento fallido de grilla
+responsive con scroll horizontal).
+
+===============================================================================
+11. SUPRESIÓN DEL MENÚ CONTEXTUAL DEL NAVEGADOR (web)
+===============================================================================
+Problema: en web, el menú contextual del navegador (contextmenu) se
+superpone a nuestro showMenu y lo cierra al salir.
+
+Solución aplicada (Opción 2 — pura Dart):
+  - generales/utilitarios/menu_navegador_web.dart:
+    package:web + dart:js_interop (NO dart:html)
+    funcDesactivarMenuNavegador() con preventDefault()
+  - generales/utilitarios/menu_navegador_movil.dart: no-op
+  - main.dart: importación condicional + llamada en main()
+  - pubspec.yaml: package:web ^1.1.0
+
+Errores resueltos (para no repetirlos):
+  1. BrowserContextMenu NO está en dart:ui_web
+  2. BrowserContextMenu NO tiene setter 'enabled'
+  3. BrowserContextMenu NO tiene método 'disable()'
+  4. dart:html está DEPRECADO → usar package:web + dart:js_interop
+
+===============================================================================
+12. GRILLA RESPONSIVE — HISTORIAL Y DECISIÓN FINAL
+===============================================================================
+Problema detectado en sesión 3: la grilla de detalles no era responsive.
+En smartphone solo se veía la parte izquierda.
+
+Intento 1 (sesión 4, DESCARTADO): scroll horizontal con columnas
+condicionales + diálogo "Campos adicionales" (bColumnaEsencial).
+Motivo de descarte: los TextField absorben los gestos de arrastre
+horizontal para mover el cursor, por lo que el scroll no funcionaba.
+
+Intento 2 (sesión 4, VIGENTE): TARJETAS VERTICALES en pantallas angostas.
+  - Pantallas >= 700px (dAnchoMinimoGrillaDetalles): grilla horizontal
+  - Pantallas < 700px: tarjetas Card con todos los campos apilados
+  - Sin scroll horizontal, sin diálogos extra
+  - Funciona muy bien, aprobado por el usuario
+
+===============================================================================
+13. COLORES DE BOTONES ABM — ESTADO ACTUAL
+===============================================================================
+Los colores se toman de ColorScheme (temas.dart), no de constantes fijas.
+Se adaptan automáticamente al tema claro y oscuro.
+
+  Habilitados:       oEsquema.primary / oEsquema.onPrimary
+  Grabar destacado:  oEsquema.tertiary / oEsquema.onTertiary
+  Deshabilitados:    oEsquema.surfaceContainerHigh / oEsquema.onSurfaceVariant
+
+  bEsDestacado = true SOLO para Grabar en modo edición.
+  Todos los demás usan primary/onPrimary.
+
+Pendiente: el usuario mencionó que "aún habría que mejorarlos" pero
+de momento están aceptables.
+
+===============================================================================
+14. PUNTOS 20 y 21 — ESTADO
+===============================================================================
+Punto 20 (etiquetas numéricas a la derecha): IMPLEMENTADO.
+  - Sin SizedBox en la etiqueta (para evitar "Right overflow by 1")
+  - CrossAxisAlignment.end en el Column para campos numéricos
+  - CrossAxisAlignment.start para los demás tipos
+  - Comentarios mantienen SizedBox con contador 27/500 al extremo derecho
+
+Punto 21 (grilla lateral con pocos campos): IMPLEMENTADO en compras.dart.
+  - Solo 6 campos con bEnGrilla=true (por defecto):
+    ejercicio, fechaCompra, tipoDocumento, numeroDocumento, proveedor, total
+  - 25 campos con bEnGrilla=false
+  - Falta aplicar a los demás ABMs
+
+===============================================================================
+15. PROBLEMA DE "Right overflow by 1" — RESUELTO
+===============================================================================
+Causa: SizedBox(width: dAncho) en la etiqueta cuando el texto de la
+etiqueta era más ancho que el campo.
+Campos afectados: Ejercicio contable, Número del asiento,
+  Cantidad de cuotas, Es Factura Electrónica, Mostrar en Libro Compras.
+Solución: quitar SizedBox de la etiqueta, usar CrossAxisAlignment.end
+  para numéricos, TextOverflow.ellipsis como red de seguridad.
+
+===============================================================================
+16. DECISIONES DE DISEÑO CONFIRMADAS
+===============================================================================
+- Ordenamiento y flecha SOLO en grilla lateral (NO en grilla de detalles).
+- Menú contextual grilla lateral: SIN Modificar, SIN Borrar (van en
+  barra de botones), SIN doble clic como atajo.
+- Subir/Bajar fila SOLO en grilla de detalles del cabecera/detalle
+  (el orden es el orden contable del asiento).
+- "Actualizar" = limpiar filtro + recargar (hoy desde memoria,
+  mañana re-SELECT vía funcAlActualizar).
+- Si algo es muy "tricky"/complicado → avisar y pedir confirmación
+  antes de implementar.
+- Grilla responsive = TARJETAS en pantallas angostas.
+- Colores de botones = ColorScheme (temas.dart), no constantes fijas.
+- PALABRAS COMPLETAS en identificadores.
+- Etiquetas numéricas a la derecha (CrossAxisAlignment.end).
+- Grilla lateral: solo campos importantes (bEnGrilla).
+
+===============================================================================
+17. NOTAS TÉCNICAS IMPORTANTES
+===============================================================================
+- pubspec.yaml: fonts: DEBE estar indentado dentro de flutter:
+- Hot reload NO recarga fuentes; siempre compilación completa
+- Roboto Mono Regular/Bold en assets/fonts/
+- Flutter SDK: ^3.13.7
+- dAnchoCaracter = 8.6 (ancho de 1 carácter en Roboto Mono)
+- Número de asiento: NUMÉRICO (no carácter), sin ceros a la izquierda
+- Debe y Haber: mutuamente excluyentes en asientos y compras
+- Fecha/hora: siempre con date picker / time picker
+- Formato cuenta: hasta 5 grupos de 1-2 dígitos (regex \d{1,2}(\.\d{1,2}){0,4})
+- ClaseSesion.sBaseDatos = 'ASUNCION' (por defecto)
+- ClasePreferencias: idioma 'es', tema 'claro', formatos 'latino'
+- package:web ^1.1.0 necesario para menu_navegador_web.dart
+- En web: el menú contextual del navegador está suprimido DENTRO de la app
+- El usuario no puede enviar archivos .dart; renombra a .txt o pega el
+  código directamente en el chat. A veces el sistema rechaza archivos
+  .txt grandes ("Can't upload the document. Try again").
+- El usuario tiene Git y GitHub. El repo es temporalmente público.
+
+===============================================================================
+18. PENDIENTES (actualizados sesión 4)
+===============================================================================
+POR HACER (ABMs):
+  [ ] Libro Ventas (archivos) — cabecera/detalle
+  [ ] Retenciones a Clientes (archivos)
+  [ ] Retenciones de Proveedores (archivos)
+  [ ] Usuarios (utilitarios)
+  [ ] Bases de Datos (sistema)
+  [ ] Informes (4.1–4.9)
+  [ ] Procesos (3.1–3.4, incluye marangatu.dart)
+
+POR HACER (funcionalidad):
+  [ ] Conexión a Firebird (fbdb) — carpeta generales/basesdatos
+  [ ] can_validar.dart — validaciones que acceden a BD
+  [ ] generales/errores — manejo de errores
+  [ ] Roles/permisos (Francia solo lectura → bSoloLecturaPorRol)
+  [ ] Proceso Perú equivalente a Marangatú (requisitos SUNAT)
+  [ ] Datos de prueba → reemplazar por Firebird
+  [ ] Integrar ClaseCapValidar en más validaciones si es necesario
+  [ ] Buscar proveedor en tabla → auto-completar tipoIdentificacion,
+       rucCedula, timbrado, vigenteDesde, vigenteHasta (compras.dart)
+  [ ] Número de asiento automático desde BD (compras.dart)
+
+POR HACER (UI/UX):
+  [ ] Punto 21 en los demás ABMs (aplicar bEnGrilla a campos no importantes)
+  [ ] Mejorar colores de botones ABM (el usuario dijo "aún habría que
+       mejorarlos pero mientras tanto los podemos dejar así")
+  [ ] Pequeños ajustes que el usuario especificará más tarde
+
+POR HACER (revisión):
+  [ ] REVISIÓN COMPLETA DEL PROYECTO vía GitHub (repo ya público):
+       - Inconsistencias de nomenclatura
+       - Errores y omisiones
+       - Código duplicado entre widgets genéricos
+       - Mejoras UI/UX para personas de edad avanzada
+       - Claves de idioma faltantes
+       - Constantes hardcodeadas que deberían estar en ClaseGenLayout/
+         ClaseGenEspacios
+  [ ] Volver el repo a PRIVADO después de la revisión
+
+DECISIONES PENDIENTES:
+  [ ] Paquete de grilla de la comunidad o grilla propia (¿sigue pendiente?)
+  [ ] Paquete de conexión a Firebird (fbdb u otro)
+  [ ] Si se necesita getFechaOrden en formatos.dart (ahora está duplicado
+       en ambos widgets)
+
+INFRAESTRUCTURA (VPS):
+  Decisión: Contabo con Ubuntu Server 24.04 LTS para pruebas
+  (VPS del cliente podría ser Vultr/DigitalOcean São Paulo si Contabo es lento)
+  Componentes: Nginx + Firebird 5 + API intermedia en Dart + Certbot
+  Pendiente: script SQL de tablas, API en Dart, configuración Nginx
+
+===============================================================================
+19. PRÓXIMOS PASOS INMEDIATOS (al retomar)
+===============================================================================
+1. Confirmar que se puede leer el repo GitHub (ya es público)
+2. Hacer la REVISIÓN COMPLETA del proyecto leyendo los archivos .dart
+   desde las URLs raw del repo
+3. Entregar informe de: inconsistencias, errores, omisiones, mejoras
+4. Volver el repo a PRIVADO
+5. Continuar con los pendientes de la lista 18
+6. Aplicar Punto 21 a los demás ABMs
+7. Continuar con Libro Ventas (siguiente ABM cabecera/detalle)
+
+===============================================================================
+FIN DEL CONTEXTO — Continuar desde punto 19
+===============================================================================

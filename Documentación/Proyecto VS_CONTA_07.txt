@@ -1,0 +1,395 @@
+============================================================================
+  VS_CONTA — ESTADO DEL PROYECTO — Sesión del 15/11/2026
+  Archivo de memoria para retomar la próxima sesión desde donde dejamos.
+============================================================================
+
+1. IDENTIFICACIÓN DEL PROYECTO
+============================================================================
+  Nombre       : VS_CONTA
+  Tipo         : Aplicación contable multiplataforma (Flutter)
+  Plataformas  : Windows, Linux, Android, iOS, Web
+  Ide          : VS Code + Flutter
+  Firebase     : ID: vsconta-cf3fd
+  Repositorio  : github.com/wojedav2104/vs_flutter_conta
+  Usuario      : (según máquina — VS Code local)
+
+  PERFIL DEL USUARIO FINAL (CRÍTICO para decisiones de UI/UX):
+    Usuarios NO habituados a usar computadoras ni smartphones.
+    Todo diseño debe priorizar: objetivos táctiles grandes, textos
+    legibles, alto contraste, navegación simple y lenguaje humano.
+
+2. CONVENCIONES DE NOMBRES (CRÍTICO — cumplir siempre)
+============================================================================
+  Banderas:
+    b...       bool         bHabilitado, bObligatorio, bAutoFocus
+  Números:
+    d...       double       dAncho, dAlto, dEspacio, dFactor, dGrosor
+    i...       int          iRegistro, iFila, iAnchoCaracteres, iPagina
+  Listas y colecciones:
+    list...    List         listCampos, listRegistros, listDetalles
+    map...     Map          mapValores, mapSumas
+    set...     Set          setHabilitados
+  Objetos (clases):
+    o...       object       oCampo, oControl, oTema, oPreferencias
+  Funciones:
+    func...    Function     funcAlCambiar, funcValidarCampo, funcMostrarMensaje
+  Strings:
+    s...       String       sValor, sIdioma, sClave, sTitulo, sMascara
+  Enum:
+    Enum...    enum         EnumBotonAbm, EnumTipoCampoAbm
+  Clases:
+    Clase...   class        ClaseFormularioAbm, ClaseCampoAbm, ClaseIdiomas
+  Constantes gen:
+    ClaseGen... class       ClaseGenEspacios, ClaseGenLayout, ClaseGenColores
+
+  NOTA: Los nombres en inglés están prohibidos. Todo en castellano.
+
+3. CÓDIGOS DE PAÍS (CRÍTICO — verificado en esta sesión)
+============================================================================
+  Fuente única: paises.json (cargado por ClasePaises en paises.dart).
+  Códigos válidos: ARG, PER, PRY, URY, FRA.
+  SIEMPRE que se necesite el código de un país, se usa el de paises.json.
+  PROHIBIDO usar códigos de dos letras (AR, PE, PY, UY, FR).
+
+  Base de datos por país:
+    ARG : Sí tiene BD          (ej: LA_PLATA)
+    PRY : Sí tiene BD          (ej: ASUNCION, POZO_COLORADO)
+    PER : Sí tiene BD          (ej: LIMA)
+    URY : Quizás a futuro
+    FRA : NUNCA tendrá BD — solo visualización de las BD latinoamericanas.
+          NO puede agregar, borrar, modificar. SOLO consultar.
+
+  Verificado y correcto:
+    lib/generales/modelos/sesion.dart      — constantes ARG/FRA/PRY/PER/URY
+    lib/generales/inicio/menu_lateral.dart — usa ClaseSesion.paisXXX
+    lib/generales/modelos/opcion_menu.dart — sin códigos hardcodeados
+    lib/generales/idiomas/                 — claves paisArgentina etc. existen
+
+  Modo Francia implementado en lib/generales/modelos/permisos.dart:
+    ClasePermisos.puedeEditar(sPais) → false solo para FRA.
+    ClaseBotoneraAbm deshabilita los 5 botones de edición en FRA
+    (visibles y grises; Encontrar y Fin siguen operativos).
+    Los formularios quedan en solo lectura automáticamente porque
+    nunca se entra en bModoEdicion.
+
+4. REGLA DE COLORES (CRÍTICO — nueva regla de esta sesión)
+============================================================================
+  NINGÚN color proviene directamente de colores.dart.
+  TODOS los colores deben provenir de temas.dart (ClaseGenTemas),
+  porque deben respetar el modo claro/oscuro elegido por el usuario.
+
+  Capas:
+    lib/generales/temas/colores.dart = paleta interna (solo la consume
+                                       temas.dart; los widgets NO la usan)
+    lib/generales/temas/temas.dart   = fuente de colores de la app
+  Los widgets usan: Theme.of(oContexto).colorScheme.* o los accesos de
+  ClaseGenTemas. PROHIBIDO Color(0x...) directo.
+
+  Colores de botones ABM (respetan el modo):
+    Habilitado     : #1E88E5 con texto blanco (ambos modos; texto grande)
+    Deshab. claro  : fondo #E0E0E0, texto #424242 (7.6:1 — antes #9E9E9E
+                      daba solo 2.0:1, corregido en esta sesión)
+    Deshab. oscuro : fondo #424242, texto #BDBDBD (5.3:1)
+
+  Correcciones de contraste aplicadas (verificadas WCAG 2.1):
+    - onSurfaceVariant en claro: #9CA3AF → #4B5563 (7.6:1 sobre blanco)
+      [colorTextoSecundarioClaro]
+    - error en oscuro: #D32F2F → #EF9A9A (7.7:1 sobre #1E1F22)
+      [colorErrorOscuro]
+
+5. ESTRUCTURA DE DIRECTORIOS Y ARCHIVOS
+============================================================================
+lib/
+  main.dart                                    Punto de entrada
+    (línea nueva: ClaseGenEstilosTexto.dFactorTexto según preferencia)
+
+  generales/
+    idiomas/
+      idiomas.dart                             Reúne todos los módulos de idiomas
+      idiomas_general.dart                     Textos generales
+      idiomas_interfaz.dart                    Textos de interfaz (login, menú,
+                                               botones ABM, grilla)
+      idiomas_validaciones.dart                Mensajes de validación
+      idiomas_asientos.dart                    Textos de asientos
+      idiomas_tablas.dart                      Textos de tablas
+      idiomas_terceros.dart                    Textos de terceros
+      idiomas_cuentas.dart                     Textos de cuentas
+      idiomas_compras.dart                     Textos de compras
+
+    inicio/
+      login.dart                               Pantalla de login (admin/1234)
+      pantalla_principal.dart                  Pantalla principal (drawer auto)
+      menu_lateral.dart                        Menú lateral (drawer)
+
+    modelos/
+      campo_abm.dart                           ClaseCampoAbm + EnumTipoCampoAbm
+      opcion_menu.dart                         ClaseOpcionMenu
+      sesion.dart                              ClaseSesion (fachada) +
+                                               ClaseInterfazSesion +
+                                               ClaseSesionPredefinida
+      permisos.dart                            ClasePermisos (nuevo — modo FRA)
+
+    preferencias/
+      preferencias.dart                        ClasePreferencias (SharedPreferences)
+                                               incluye getTextoGrande/setTextoGrande
+
+    temas/
+      colores.dart                             ClaseGenColores (paleta interna)
+      espacios.dart                            ClaseGenEspacios
+      estilos_textos.dart                      ClaseGenEstilosTexto (incluye
+                                               dFactorTexto para texto grande)
+      layout.dart                              ClaseGenLayout
+      radios.dart                              ClaseGenRadios
+      temas.dart                               ClaseGenTemas (claro/oscuro;
+                                               accesos de colores de botones)
+
+    utilitarios/
+      formatos.dart                            funcParsearFecha, funcFormatearFecha,
+                                               funcParsearHora, funcFormatearHora,
+                                               funcParsearNumero, funcFormatearImporte,
+                                               funcFormatearFechaConFormato,
+                                               funcAplicarMascara,
+                                               funcCompletarCeros, ClaseFechas
+
+    validaciones/
+      cap_validar.dart                         Validaciones SIN BD (static)
+      can_validar.dart                         Validaciones CON BD (async, stubs)
+
+    varios/
+      listas.dart                              ClaseSiNo, ClaseTipoIdentificacion,
+                                               ClaseTipoDocumento, funcAnchoOpcion
+      paises.dart                              ClasePaises (carga paises.json)
+      pantalla_proximamente.dart               ClasePantallaProximamente
+      timbrados_comun.dart                     Compartido timbrados propios/proveedores
+
+    widgets/
+      abm_comun.dart                           ClaseBotoneraAbm, ClaseFormularioCampos,
+                                               ClaseGrillaRegistros, ClaseAndamiajeAbm,
+                                               funcValidarCampoAbm, funcMostrarEncontrar
+      campo_formulario.dart                    ClaseCampoFormulario, ClaseFormateadorImporte
+      formulario_abm.dart                      ClaseFormularioAbm
+      formulario_cabecera_detalle.dart         ClaseFormularioCabeceraDetalle
+      ventana_mensaje.dart                     funcMostrarMensaje, funcMostrarConfirmar,
+                                               funcMostrarConfirmacion,
+                                               funcMostrarSelectorFecha,
+                                               funcMostrarSelectorHora
+      ventana_configuracion.dart               funcMostrarConfiguracion
+      controles_preferencias.dart              ClaseControlesPreferencias (tema,
+                                               idioma, texto grande)
+
+  opciones/
+    archivos/
+      asientos.dart                            ClaseAsientos (cabecera+detalle)
+      compras.dart                             ClaseCompras (cabecera+detalle)
+      cuentas.dart                             ClaseCuentas (ABM simple)
+
+    tablas/
+      empresa.dart                             ClaseEmpresa (un solo registro, pestañas)
+      configuracion.dart                       ClaseConfiguracion (un solo registro)
+      sucursales.dart                          ClaseSucursales (ABM simple)
+      clientes.dart                            ClaseClientes (ABM simple)
+      proveedores.dart                         ClaseProveedores (ABM simple)
+      timbrados_propios.dart                   ClaseTimbradosPropios (ABM simple)
+      timbrados_proveedores.dart               ClaseTimbradosProveedores (ABM simple)
+      cuentas_asignadas.dart                   ClaseCuentasAsignadas (ABM simple)
+
+  rutas/
+    generador_rutas.dart                       funcGenerarRuta + oObservadorRutas
+    rutas.dart                                 ClaseRutas (todas las rutas nombradas)
+
+6. DECISIONES DE DISEÑO CLAVE (no contradecir)
+============================================================================
+
+6.1. Arquitectura de formularios ABM:
+   - ClaseAndamiajeAbm = estructura compartida (appbar + grilla + formulario + botonera)
+   - ClaseFormularioAbm = para tablas de un solo tipo de campos (ABM simple)
+   - ClaseFormularioCabeceraDetalle = para tablas con grilla editable de filas
+     (asientos, compras)
+   - ClaseFormularioCampos = renderiza los campos (con pestañas si tienen grupo)
+   - ClaseCampoFormulario = un campo individual
+   - ClaseBotoneraAbm = los 7 botones (orden, tamaño, colores) — despachador
+     puro: NO confirma borrar (la confirmación vive en borrar() de cada
+     formulario)
+   - ClaseGrillaRegistros = grilla lateral con filtro, orden, paginación
+
+6.2. Valores internos:
+   - Los valores de los campos son SIEMPRE códigos internos (strings)
+   - La traducción se hace al mostrar (ClaseIdiomas.getTexto)
+   - listValores contiene los códigos, listOpciones contiene los textos traducidos
+   - sValorDefecto inicializa campos al Agregar
+   - bCompletarCeros rellena a la izquierda al Grabar
+
+6.3. Idiomas:
+   - Dos idiomas: 'es' (español) y 'fr' (francés)
+   - getIdioma() se obtiene de ClasePreferencias
+   - getTexto(sIdioma, sClave) devuelve la traducción o la clave si no existe
+   - Los archivos de idiomas están divididos por módulo
+   - 'es'/'fr' son códigos de IDIOMA, no de país (no confundir con paises.json)
+
+6.4. Países: (ver sección 3)
+
+6.5. Validaciones:
+   - cap_validar.dart = SIN BD (síncronas, static)
+   - can_validar.dart = CON BD (async, stubs con TODO)
+   - Hay 11 TODO en can_validar.dart (se dejaron a propósito)
+
+6.6. Horas:
+   - El valor interno SIEMPRE se guarda como "hh:mm" (con ceros)
+   - funcParsearHora acepta "h:mm" y "hh:m" (tolerante)
+   - Al teclear se normaliza solo cuando los minutos tienen 2 dígitos
+   - Al presionar Enter se normaliza siempre
+
+6.7. Colores: (ver sección 4)
+
+6.8. Texto grande (nuevo — implementado en esta sesión):
+   - ClaseGenEstilosTexto.dFactorTexto: 1.0 = normal, 1.25 = texto grande
+   - Preferencia 'texto_grande' en ClasePreferencias (SharedPreferences)
+   - main.dart lo fija al arrancar; ClaseControlesPreferencias lo cambia
+   - Escala TODOS los estilos (los de ClaseGenEstilosTexto por _estilo,
+     los del tema por apply(fontSizeFactor) en temas.dart)
+
+6.9. SOLID / DRY / KISS / YAGNI (compromiso del proyecto):
+   - Bajo acoplamiento, alta cohesión en funciones, métodos y clases
+   - Un solo punto de cambio por concepto (DRY)
+   - Sesión inyectable: ClaseSesion es fachada sobre ClaseInterfazSesion;
+     la implementación se puede reemplazar (Firebird, pruebas)
+   - ClasePreferencias ya es inyectable (instancia por constructor)
+
+7. REGLAS DE ORO DEL PROYECTO
+============================================================================
+   1. NUNCA inventar nombres — usar los de la lista de convenciones
+   2. TODO en castellano (variables, funciones, clases, comentarios)
+   3. TODO color viene de temas.dart (ClaseGenTemas / Theme.of) —
+      colores.dart es paleta interna que solo consume temas.dart
+   4. Todo texto visible se traduce con ClaseIdiomas.getTexto()
+   5. Todo estilo de texto viene de ClaseGenEstilosTexto
+   6. Todo espaciado viene de ClaseGenEspacios
+   7. Todo radio viene de ClaseGenRadios
+   8. Todo ancho/alto referencial viene de ClaseGenLayout
+   9. Un solo punto de cambio por concepto (DRY)
+  10. Los 11 TODO de can_validar.dart se dejan así (son útiles)
+  11. Los códigos de país SIEMPRE son los de paises.json (ARG/PER/PRY/URY/FRA)
+  12. UI/UX para usuarios NO habituados a la tecnología: objetivos táctiles
+      grandes, contraste AA (WCAG), textos claros, prevención de errores
+
+8. ÚLTIMA SESIÓN — 15/11/2026 — LO QUE SE HIZO
+============================================================================
+  a) Verificación de códigos de país: CORRECTA en sesion.dart,
+     menu_lateral.dart, opcion_menu.dart, idiomas.
+  b) Confirmada la regla FRA = solo visualización (ClasePermisos).
+  c) Item 7 aplicado (por el usuario): dAnchoGrillaRegistros 340.0 → 500.0
+     en lib/generales/temas/layout.dart. Los 10 items UI/UX quedan APLICADOS.
+  d) Auditoría SOLID/DRY/KISS/YAGNI + acoplamiento/cohesión: realizada.
+  e) Auditoría UI/UX (8 reglas de oro de Shneiderman + WCAG): realizada.
+  f) Puntos de calidad 1-6 APLICADOS:
+     1. Menú lateral sin dense:true (objetivos táctiles 56px)
+     2. Contraste WCAG verificado; 3 fallos corregidos (ver sección 4)
+     3. Confirmación obligatoria en Borrar (en borrar() de cada formulario)
+        + aviso 'mensajeBorrado' tras borrar + 'grabacionExitosa' tras grabar
+     4. Modo Francia (permisos.dart + ClaseBotoneraAbm)
+     5. Texto grande (dFactorTexto, preferencia, selector en
+        ClaseControlesPreferencias, línea en main.dart)
+     6. Sesión inyectable (ClaseInterfazSesion + fachada ClaseSesion)
+  g) campo_formulario.dart entregado COMPLETO con 5 mejoras:
+     - tooltips corregidos (campoElegirFecha / campoElegirHora)
+     - variable local renombrada (sMascaraNueva, ya no oculta el atributo)
+     - refactor DRY: _alCambiarTexto(), _construirBotonBorrarCampo(),
+       _getDecoracion()
+     - comentario limita caracteres a iMaxComentario
+     - keyboardType numérico/datetime + contentPadding generoso
+  h) ClaseBotoneraAbm entregada NUEVA (colores vía ClaseGenTemas,
+     permisos FRA, sin doble confirmación).
+  i) temas.dart y colores.dart actualizados (correcciones de contraste,
+     accesos de botones por modo, escala de texto en TextTheme).
+  j) preferencias.dart y controles_preferencias.dart actualizados
+     (preferencia de texto grande).
+
+9. PENDIENTES INMEDIATOS (para la próxima sesión)
+============================================================================
+   a) PENDIENTE DE USUARIO: copiar todos los archivos entregados en la
+      última sesión:
+      - lib/generales/temas/colores.dart          (tokens corregidos)
+      - lib/generales/temas/temas.dart            (versión nueva completa)
+      - lib/generales/widgets/abm_comun.dart      (solo la clase ClaseBotoneraAbm
+                                                    nueva + 2 imports de permisos
+                                                    y sesion)
+      - lib/generales/widgets/campo_formulario.dart (versión nueva completa)
+      - lib/generales/widgets/formulario_abm.dart  (1 línea: mensajeBorrado
+                                                     al final de borrar())
+      - lib/generales/widgets/formulario_cabecera_detalle.dart (1 línea: ídem)
+      - lib/generales/idiomas/idiomas_interfaz.dart (claves nuevas: ya las
+        tiene el usuario; eliminar la clave duplicada 'mensajeGuardado' de
+        mapEs y mapFr — se usa 'grabacionExitosa')
+      - lib/generales/preferencias/preferencias.dart (versión nueva completa)
+      - lib/generales/widgets/controles_preferencias.dart (versión nueva)
+      - lib/main.dart (1 línea: dFactorTexto al arrancar)
+
+   b) VERIFICAR compilación: flutter analyze / flutter run
+      (los archivos fueron copiados a mano; puede haber errores de
+      transcripción)
+
+   c) VERIFICAR claves de idioma det* de formulario_cabecera_detalle.dart:
+      detDetalleVacio, detErrorDebeHaber, detErrorFila, detFila,
+      detTotales, detAgregarFila, detBorrarFila — confirmar en qué módulo
+      están definidas (o moverlas a idiomas_interfaz.dart porque el widget
+      es genérico). Ídem para las claves 'aplicacion', 'aceptar',
+      'cancelar', 'cerrar', 'si', 'no' (presumiblemente en
+      idiomas_general.dart — confirmar).
+
+   d) PROBAR visualmente (4.3e):
+      - Los 7 botones en el orden correcto, mismo tamaño, al pie
+      - Etiquetas a la derecha, pegadas al campo
+      - Colores de botones en modo claro Y modo oscuro
+      - Texto grande (1.25x) en todo: formularios, menú, diálogos, botones
+      - Confirmación en Borrar + aviso tras Borrar y Grabar
+      - Modo Francia: botones de edición deshabilitados (probar cambiando
+        el país de la BD conectada en ClaseSesion)
+      - Grilla lateral de 500 de ancho
+      - Números alineados a la derecha (grilla y formulario)
+      - Foco automático al Agregar/Modificar
+      - Teclado numérico en móviles (campos número/fecha/hora)
+      - Comentario frena la escritura al llegar a iMaxComentario
+      - Alineación etiqueta/campo (si se desalinea, ajustar dEspacio14
+        del padding superior de la etiqueta en campo_formulario.dart)
+
+   e) Pendiente futuro: modo Francia — informes de solo lectura también
+      (verificar que la navegación a pantallas de consulta sea posible).
+
+10. CONTEXTO TÉCNICO PARA CONTINUAR
+============================================================================
+
+10.1. Compilación:
+   - flutter analyze (para buscar errores)
+   - flutter run -d chrome (para probar en web)
+   - flutter run -d windows (para probar en desktop)
+
+10.2. Login:
+   - Credenciales hardcodeadas: admin / 1234
+   - En el futuro vendrán del ABM de Usuarios y la BD
+
+10.3. Rutas:
+   - Todas definidas en ClaseRutas (rutas.dart)
+   - funcGenerarRuta genera la pantalla para cada ruta
+   - Las pantallas no implementadas muestran ClasePantallaProximamente
+   - Pantallas implementadas: Empresa, Configuración, Sucursales, Clientes,
+     Proveedores, Timbrados Propios, Timbrados Proveedores, Cuentas Asignadas,
+     Cuentas (plan), Asientos, Compras
+
+10.4. Datos de prueba:
+   - Todas las pantallas usan datos hardcodeados (crearRegistrosPrueba)
+   - Se reemplazarán por Firebird cuando se conecte la BD
+
+10.5. BASE DE DATOS:
+   - Firebird (SQL Firebird embebido / red)
+   - Aún NO conectada
+   - can_validar.dart tiene los stubs preparados
+
+10.6. Claves de idioma agregadas recientemente (idiomas_interfaz.dart):
+   confirmarBorrar, mensajeBorrado, textoNormal, textoGrande
+   (y grabacionExitosa que ya existía — se mantiene como única clave
+   de aviso de grabación; se eliminó mensajeGuardado por duplicada)
+
+============================================================================
+  FIN DEL ARCHIVO DE ESTADO
+  Próxima sesión: continuar desde sección 9 (PENDIENTES INMEDIATOS)
+============================================================================

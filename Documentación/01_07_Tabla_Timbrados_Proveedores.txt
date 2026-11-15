@@ -1,0 +1,10 @@
+Los campos de la tabla de Timbrados de Proveedores son:
+- Nombre del Proveedor (carácter, 48, "Nombre fiscal del proveedor", obligatorio)
+- R.U.C. del Proveedor (carácter, 15, "RUC proveedor", obligatorio, deshabilitado). NOTA: Será puesto automáticamente más adelante
+- Timbrado N° (carácter; 8; obligatorio). Validación: debe tener exactamente 8 dígitos, ni más ni menos
+- Fecha de inicio de vigencia (fecha; obligatorio). Validación: no puede ser anterior a 01/01/2020
+- Fecha de fin de vigencia (fecha; opcional). Validación: si se escribe, no puede ser igual ni menor que la fecha de inicio de vigencia
+- Afecta a (checkbox con las opciones: Factura, Nota de Crédito, Nota de Débito, Nota de Remisión; obligatorio). Validación: se debe seleccionar al menos una de las opciones
+- Medio de generación (listbox con las opciones: AutoImpresores, PreImpresos, Comprobantes Virtuales, Documentos Electrónicos)
+
+Lo que está entre comillas debe mostrarse como "hint" del campo.

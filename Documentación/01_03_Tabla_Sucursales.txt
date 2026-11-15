@@ -1,0 +1,8 @@
+Los campos de la tabla de Sucursales son los siguientes:
+- Código (carácter, 4, obligatorio)
+- Nombre (carácter, 40, "Nombre de esta sucursal", obligatorio)
+- Dirección (carácter, 60, "Calle y N° de la ubicación de esta sucursal", opcional)
+- Teléfono N° (carácter, 15, "Nro teléfono", opcional)
+- Localidad (carácter, 40, "Nombre de la localidad", obligatorio)
+
+Lo que está entre comillas debe mostrarse como "hint" del campo.

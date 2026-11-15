@@ -1,0 +1,26 @@
+La tabla de Empresa debe tener un solo registro. Por lo tanto el botón de Agregar debe estar siempre deshabilitado si la tabla ya tiene un registro. El botón de Encontrar debe estar siempre deshabilitado. 
+
+Los campos de la tabla de Empresa se deben agrupar en tres grupos o pestañas:
+
+Grupo 1: Generales
+- Nombre de la Empresa (carácter, 50, "Nombre de la Empresa o nombre de fantasía", obligatorio)
+- Apellidos (carácter, 25, "Apellidos si es unipersonal", opcional)
+- Nombres (carácter, 25, "Nombres si es unipersonal", opcional)
+- Ramo o actividad (carácter, 60, "Ramo o actividad a la cual se dedica", opcional)
+- Dirección (carácter, 60, "Ubicación del domicilio", opcional)
+- Teléfono N° (carácter, 15, "Nro de teléfono", opcional)
+- País (obligatorio, debe seleccionar de una lista donde se muestre el código internacional del país y el nombre del país. En esa lista deben estar: Argentina, Paraguay, Perú)
+- Departamento (carácter, 29, "Nombre del departamento", obligatorio)
+- Localidad (carácter, 40, "Nombre de la localidad", obligatorio)
+- E-mail (carácter, 40, "Correo electrónico", opcional)
+- R.U.C. (carácter, 10, "Número RUC", obligatorio)
+
+Grupo 2: Varios
+- Ejercicio (numérico, 4, obligatorio)
+
+Grupo 3: Impuestos
+- ¿Cuál I.V.A. paga? (debe seleccionar de una lista: I.V.A. General, I.V.A. simplificado, No paga I.V.A.)
+- ¿Paga I.R.E. simple? (debe seleccionar de una lista: Sí, No)
+- ¿Paga I.R.P.? (debe seleccionar de una lista: Sí, No)
+
+Lo que está entre comillas debe mostrarse como "hint" del campo.

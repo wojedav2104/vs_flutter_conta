@@ -1,0 +1,29 @@
+Contexto: Estas cuentas se utilizarán cuando la aplicación necesite realizar algunos procesos sin intervención del usuario. Por ejemplo, para sugerirle las cuentas involucradas en una compra o en una venta. Los números de esas cuentas se obtendrán de esta tabla. O cuando se realicen los asientos de cierre del ejercicio, el número de la cuenta "Resultado del Ejercicio" se obtendrá de esta tabla. De esa manera se le facilita la vida al usuario y además no se corre el riesgo de que escriba un número de cuenta erróneo.
+
+Nota 1: El nombre "Cuentas asignadas" es el que se me ocurrió a mí para este formulario, si te parece que otros nombres reflejarían mejor la utilidad de este formulario estoy abierto a leer tus sugerencias.
+
+Nota 2: Más adelante, cuando tengamos conexión con la Base de Datos, el usuario tendrá la posibilidad de elegir el número de la cuenta desde una lista desplegable. Mientras tanto podrá escribir esos números manualmente.
+
+Nota 3: El formato de los números de cuenta es: 9.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
+
+Los campos de esta tabla son:
+- Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio). 
+- Caja (carácter, 58, "Número de la cuenta Caja", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- I.V.A Crédito Fiscal 10% (carácter, 58, "Número de la cuenta I.V.A Crédito Fiscal 10%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- I.V.A Crédito Fiscal 5% (carácter, 58, "Número de la cuenta I.V.A Crédito Fiscal 5%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- I.V.A Débito Fiscal 10% (carácter, 58, "Número de la cuenta I.V.A Débito Fiscal 10%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- I.V.A Débito Fiscal 5% (carácter, 58, "Número de la cuenta I.V.A Débito Fiscal 5%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Mercaderías Exentas (carácter, 58, "Número de la cuenta Mercaderías Exentas", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Mercaderías Gravadas 10% (carácter, 58, "Número de la cuenta Mercaderías Gravadas 10%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Mercaderías Gravadas 5% (carácter, 58, "Número de la cuenta Mercaderías Gravadas 5%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Ventas Exentas (carácter, 58, "Número de la cuenta Ventas Exentas", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Ventas Gravadas 10% (carácter, 58, "Número de la cuenta Ventas Gravadas 10%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Ventas Gravadas 5% (carácter, 58, "Número de la cuenta Ventas Gravadas 5%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Debe en Ventas al contado (carácter, 58, "Número de la cuenta a poner en el Debe cuando es contado", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Debe en Ventas a crédito (carácter, 58, "Número de la cuenta a poner en el Debe cuando es crédito", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Haber en Compras al contado (carácter, 58, "Número de la cuenta a poner en el Haber cuando es contado", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Haber en Compras a crédito (carácter, 58, "Número de la cuenta a poner en el Haber cuando es crédito", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+- Resultados del Ejercicio (carácter, 58, "Número de la cuenta Resultados del Ejercicio", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
+
+Lo que está entre comillas debe mostrarse como "hint" del campo.

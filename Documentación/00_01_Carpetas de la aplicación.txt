@@ -1,0 +1,91 @@
+El sistema operativo de mi computadora es: Windows 10 Profesional
+
+La aplicación se encuentra en:
+D:\Flutter_aplicaciones\vs_conta\
+
+Dentro de la carpeta lib\, es decir, dentro de: D:\Flutter_aplicaciones\vs_conta\lib\, están las carpetas:
+1. generales\
+1.01 basesdatos\
+1.02 errores\
+1.03 idiomas\
+1.04 inicio\
+1.05 preferencias\
+1.06 temas\
+1.07 utilitarios\
+1.08 validaciones\
+1.09 varios\
+1.10 widgets\
+
+2. opciones\
+2.1 archivos\
+2.2 consultas\
+2.3 gráficos\
+2.4 impresiones\
+2.5 informes\
+2.6 procesos\
+2.7 sistema\
+2.8 tablas\
+2.9 utilitarios\
+
+3. rutas\
+
+NOTA: los números delante de los nombres de las carpetas son solamente para tu referencia, en la computadora no existen esos números
+
+La carpeta 1.01 basesdatos\ es para guardar en ella todos los archivos .dart relacionados con las bases de datos
+La carpeta 1.02 errores\ es para guardar en ella todos los archivos .dart relacionados con los errores
+La carpeta 1.03 idiomas\ sirve para guardar en ella los textos en español y en otro idioma (francés, inglés, etc.)
+La carpeta 1.04 inicio\ es para guardar en ella la pantalla de login y la pantalla principal de la aplicación
+La carpeta 1.05 preferencias\ sirve para guardar en ella todas las preferencias del usuario
+La carpeta 1.06 temas\ es para guardar en ella todos los archivos .dart relacionados con los colores, espacios, estilos de texto, layout, radios, temas claro y oscuro
+La carpeta 1.07 utilitarios\ es para guardar en ella todos los archivos .dart relacionados con funciones y clases de utilidad general, o sea que podrían utilizarse por cualquier otro archivo .dart
+La carpeta 1.08 validaciones\ es para guardar en ella todos los archivos .dart relacionados con las validaciones. Habrá dos archivos .dart para las validaciones: can_validar.dart y cap_validar.dart, se usará can_validar.dart cuando para validar se requiera acceso a la Base de Datos, por ejemplo para saber si el cliente existe o para obtener los datos del cliente; se usará cap_validar.dart cuando no se deba acceder a la Base de Datos, por ejemplo para comprobar que la fecha corresponde al año actual
+La carpeta 1.09 varios\ es para guardar en ella todos los archivos .dart que no entran en otras carpetas, por ejemplo para un formulario de prueba de controles o widgets
+La carpeta 1.10 widgets\ es para guardar en ella todos los archivos .dart que corresponden a widgets creados por nosotros
+
+La carpeta 2.1 hasta 2.9 son para guardar en ellas todos los archivos .dart que corresponden a esas opciones del drawer
+
+La carpeta 3. rutas\ es para guardar en ella todas las rutas utilizadas en la aplicación
+
+
+D:\Flutter_aplicaciones\vs_conta\lib\
+│
+├── main.dart
+│
+├── generales\
+│   ├── basesdatos\        # Conexión a Firebird, consultas genéricas
+│   ├── errores\           # Manejo y mensajes de errores
+│   ├── idiomas\           # Textos español/francés      ← nueva
+│   ├── inicio\            # Login y pantalla principal  ← nueva
+│   ├── modelos\           # Clases transversales (ClaseUsuario, ClaseEmpresa...) ← nueva
+│   ├── preferencias\      # Tema, idioma, formato números/fechas ← nueva
+│   ├── temas\             # colores, espacios, estilos_textos, layout, radios, temas
+│   ├── utilitarios\       # Funciones/clases de utilidad general
+│   ├── validaciones\      # can_validar.dart (capa de negocios, accede a BD)
+│   │                      # cap_validar.dart (capa de presentación, sin BD)
+│   ├── varios\            # Lo que no encaje en otras carpetas (ej. formulario de prueba)
+│   └── widgets\           # Widgets creados por nosotros
+│
+├── opciones\
+│   ├── archivos\          # 1.1–1.6 del drawer
+│   │   ├── cuentas.dart
+│   │   ├── asientos.dart
+│   │   ├── compras.dart
+│   │   ├── ventas.dart
+│   │   ├── retenciones_clientes.dart
+│   │   └── retenciones_proveedores.dart
+│   ├── consultas\         # ← ¿sobra por el momento?
+│   ├── gráficos\          # ← ¿sobra por el momento?
+│   ├── impresiones\       # ← ¿sobra por el momento?
+│   ├── informes\          # 4.1–4.9 del drawer (uno .dart por informe)
+│   ├── procesos\          # 3.1–3.4 (incluye marangatu.dart)
+│   ├── sistema\           # 6.1 bases_datos.dart (grilla de bases + conexión)
+│   ├── tablas\            # 2.1–2.8 (empresa, configuracion, sucursales,
+│   │                      #   clientes, proveedores, timbrados_propios,
+│   │                      #   timbrados_proveedores, cuentas_asignadas)
+│   └── utilitarios\       # 5.1 usuarios.dart
+│
+└── rutas\                 # Constantes nombradas de todas las rutas
+
+
+
+
