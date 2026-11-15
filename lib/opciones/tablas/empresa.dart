@@ -23,8 +23,7 @@ class ClaseEmpresa extends StatefulWidget {
 
   final ClasePreferencias oPreferencias;
 
-  /// Valor del campo 'pais' en los datos de prueba (es también el valor por
-  /// defecto del campo).
+  /// Valor del campo 'pais' en los datos de prueba (es también el valor por defecto del campo).
   static const String sPaisDefecto = 'PRY';
 
   /// País del registro único de la Empresa.
@@ -32,7 +31,7 @@ class ClaseEmpresa extends StatefulWidget {
   /// conexión con la Base de Datos devolverá el país grabado en la tabla
   /// Empresa.
   static String getPaisElegido() {
-    return sPaisDefecto;
+    return 'PRY';
   }
   
   @override
