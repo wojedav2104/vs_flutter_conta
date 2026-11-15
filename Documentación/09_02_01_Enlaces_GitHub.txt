@@ -60,9 +60,3 @@ https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/su
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/timbrados_propios.dart
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/timbrados_proveedores.dart
 
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/archivos/asientos.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/archivos/compras.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/archivos/cuentas.dart
-
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/rutas/generador_rutas.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/rutas/rutas.dart

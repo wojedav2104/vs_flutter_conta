@@ -113,33 +113,3 @@ sudo systemctl daemon-reload
 sudo systemctl enable dart_api
 sudo systemctl start dart_api
 sudo systemctl status dart_api
-
-
-8. INSTALAR CADDY (PROXY INVERSO CON HTTPS AUTOMATICO PARA FLUTTER)
---------------------------------------------------------------------------------
-sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-sudo apt update
-sudo apt install -y caddy
-
-# Configurar Caddyfile (apuntar tu subdominio al puerto de tu API Dart, ej: 8080)
-sudo nano /etc/caddy/Caddyfile
-
-# Reemplazar el contenido por:
-# tudominio.com.py {
-#     reverse_proxy localhost:8080
-# }
-
-# Reiniciar Caddy para generar el certificado SSL gratuito:
-sudo systemctl restart caddy
-
-
-9. NOTAS PARA LA FUTURA MIGRACION A FIREBIRD 5.X
---------------------------------------------------------------------------------
-# Antes de desinstalar Firebird 2.5.9, respaldar tu base de datos en formato transportable:
-/opt/firebird/bin/gbak -b -v -user SYSDBA -password TU_CLAVE /var/lib/firebird/data/tu_base.fdb /tmp/respaldo_25.fbk
-
-# Luego de instalar Firebird 5.x, restaurar el respaldo:
-/opt/firebird/bin/gbak -c -v -user SYSDBA -password TU_CLAVE /tmp/respaldo_25.fbk /var/lib/firebird/data/tu_base_v5.fdb
-================================================================================
