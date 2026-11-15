@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vs_conta/generales/modelos/documentos.dart';
 
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
+import '../../generales/modelos/documentos.dart';
 import '../../generales/preferencias/preferencias.dart';
 import '../../generales/utilitarios/formatos.dart';
 import '../../generales/validaciones/cap_validar.dart';

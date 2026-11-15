@@ -42,7 +42,7 @@ class ClaseEstadoAplicacion extends State<ClaseAplicacion> {
   @override
   Widget build(BuildContext oContexto) {
     return MaterialApp(
-      title                      : ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'aplicacion'),
+      title                      : ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
       debugShowCheckedModeBanner : false,
       theme                      : ClaseGenTemas.getTemaClaro,
       darkTheme                  : ClaseGenTemas.getTemaOscuro,

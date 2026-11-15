@@ -74,7 +74,7 @@ class ClaseMenuLateral extends StatelessWidget {
 
   // ── Acciones ────────────────────────────────────────────────────────────
   void elegirOpcion(BuildContext oContexto, ClaseOpcionMenu oOpcion) {
-    final String sTitulo = ClaseIdiomas.getTexto(oPreferencias.getIdioma(), oOpcion.sClave);
+    final String sTitulo = ClaseIdiomas.getTexto(oOpcion.sClave, oPreferencias.getIdioma());
     final NavigatorState oNavegador = Navigator.of(oContexto);
     oNavegador.pop(); // cierra el drawer
     oNavegador.pushNamed(oOpcion.sRuta, arguments: sTitulo);
@@ -116,17 +116,17 @@ class ClaseMenuLateral extends StatelessWidget {
         crossAxisAlignment : CrossAxisAlignment.start,
         mainAxisAlignment  : MainAxisAlignment.end,
         children: <Widget>[
-          Text(ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
+          Text(ClaseIdiomas.getTexto('aplicacion', sIdioma),
                style: ClaseGenEstilosTexto.tituloMediano(oContexto)
                         .copyWith(color: oTema.colorScheme.onPrimaryContainer)),
           const SizedBox(height: ClaseGenEspacios.dEspacio04),
-          Text(ClaseIdiomas.getTexto(sIdioma, 'baseConectada'),
+          Text(ClaseIdiomas.getTexto('baseConectada', sIdioma),
                style: ClaseGenEstilosTexto.normalChico(oContexto)),
           Text(ClaseSesion.sBaseDatos,
                style: ClaseGenEstilosTexto.textoCampo(oContexto)
                         .copyWith(color: oTema.colorScheme.onPrimaryContainer,
                                   fontWeight: FontWeight.w600)),
-          Text(ClaseIdiomas.getTexto(sIdioma, ClaseSesion.getClavePais()),
+          Text(ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma),
                style: ClaseGenEstilosTexto.normalChico(oContexto)),
         ],
       ),
@@ -150,7 +150,7 @@ class ClaseMenuLateral extends StatelessWidget {
             ClaseGenEspacios.dEspacio04,
           ),
           child: Text(
-            ClaseIdiomas.getTexto(oPreferencias.getIdioma(), sClaveTitulo).toUpperCase(),
+            ClaseIdiomas.getTexto(sClaveTitulo, oPreferencias.getIdioma()).toUpperCase(),
             style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
                      .copyWith(color: Theme.of(oContexto).colorScheme.primary),
           ),
@@ -165,7 +165,7 @@ class ClaseMenuLateral extends StatelessWidget {
     final ThemeData oTema = Theme.of(oContexto);
     return ListTile(
       leading : Icon(oOpcion.oIcono, color: oTema.colorScheme.onSurfaceVariant),
-      title   : Text(ClaseIdiomas.getTexto(oPreferencias.getIdioma(), oOpcion.sClave),
+      title   : Text(ClaseIdiomas.getTexto(oOpcion.sClave, oPreferencias.getIdioma()),
                      style: ClaseGenEstilosTexto.normalMediano(oContexto)),
       onTap   : () => elegirOpcion(oContexto, oOpcion),
     );
@@ -175,7 +175,7 @@ class ClaseMenuLateral extends StatelessWidget {
     return ListTile(
       leading : Icon(Icons.power_settings_new,
                      color: Theme.of(oContexto).colorScheme.error),
-      title   : Text(ClaseIdiomas.getTexto(sIdioma, 'menuFin'),
+      title   : Text(ClaseIdiomas.getTexto('menuFin', sIdioma),
                      style: ClaseGenEstilosTexto.normalMediano(oContexto)
                               .copyWith(color: Theme.of(oContexto).colorScheme.error,
                                         fontWeight: FontWeight.w600)),

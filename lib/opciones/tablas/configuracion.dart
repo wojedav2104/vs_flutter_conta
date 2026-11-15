@@ -63,18 +63,18 @@ class ClaseEstadoConfiguracion extends State<ClaseConfiguracion> {
         iAnchoCaracteres : 44,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'sucursal',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cfgSucursal'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cfgSucursal', sIdioma),
         sGrupo           : 'cfgGrupoEmpresa',
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cfgHintSucursal'),
+        sHint            : ClaseIdiomas.getTexto('cfgHintSucursal', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 100,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'carpetaMarangatu',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cfgCarpetaMarangatu'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cfgCarpetaMarangatu', sIdioma),
         sGrupo           : 'cfgGrupoEmpresa',
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cfgHintCarpetaMarangatu'),
+        sHint            : ClaseIdiomas.getTexto('cfgHintCarpetaMarangatu', sIdioma),
       ),
 
       // ── Grupo 2: Backups ─────────────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ class ClaseEstadoConfiguracion extends State<ClaseConfiguracion> {
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.hora,
         sClave           : 'horaBackup',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cfgCrearBackup'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cfgCrearBackup', sIdioma),
         sGrupo           : 'cfgGrupoBackups',
       ),
       ClaseCampoAbm(
@@ -90,7 +90,7 @@ class ClaseEstadoConfiguracion extends State<ClaseConfiguracion> {
         iAnchoCaracteres : 3,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'cantidadBackups',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cfgCantidadBackups'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cfgCantidadBackups', sIdioma),
         sGrupo           : 'cfgGrupoBackups',
       ),
     ];

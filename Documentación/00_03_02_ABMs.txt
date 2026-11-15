@@ -1,0 +1,1 @@
+23. Al ingresar a un formulario se debe poner el foco en la primera fila de la grilla lateral izquierda, si la grilla tiene al menos una fila

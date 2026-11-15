@@ -42,7 +42,7 @@ class ClaseEstadoTimbradosProveedores extends State<ClaseTimbradosProveedores> {
       listCampos          : listCampos,
       listRegistros       : listRegistros,
       oPreferencias       : widget.oPreferencias,
-      sTitulo             : ClaseIdiomas.getTexto(getIdioma(), 'menuTimbradosProveedores'),
+      sTitulo             : ClaseIdiomas.getTexto('menuTimbradosProveedores', getIdioma()),
     );
   }
 
@@ -66,8 +66,8 @@ class ClaseEstadoTimbradosProveedores extends State<ClaseTimbradosProveedores> {
         iAnchoCaracteres : 48,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'nombreProveedor',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timPrvNombre'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'timPrvHintNombre'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timPrvNombre', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('timPrvHintNombre', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio          : true,
@@ -75,8 +75,8 @@ class ClaseEstadoTimbradosProveedores extends State<ClaseTimbradosProveedores> {
         iAnchoCaracteres      : 15,
         oTipo                 : EnumTipoCampoAbm.texto,
         sClave                : 'rucProveedor',
-        sEtiqueta             : ClaseIdiomas.getTexto(sIdioma, 'timPrvRuc'),
-        sHint                 : ClaseIdiomas.getTexto(sIdioma, 'timPrvHintRuc'),
+        sEtiqueta             : ClaseIdiomas.getTexto('timPrvRuc', sIdioma),
+        sHint                 : ClaseIdiomas.getTexto('timPrvHintRuc', sIdioma),
       ),
 
       // Los 5 campos comunes: timbrado, vigencia, afectaA, medioGeneracion.

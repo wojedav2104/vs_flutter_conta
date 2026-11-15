@@ -82,7 +82,7 @@ Future<EnumRespuestaConfirmacion> funcMostrarConfirmacion(
           if (bMostrarCancelar)
             funcConstruirBoton(
               oContexto : oContextoVentana,
-              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'cancelar'),
+              sTexto    : ClaseIdiomas.getTexto('cancelar', sIdioma),
               oIcono    : Icons.cancel_outlined,
               bRelleno  : false,
               oAlClicar : () => Navigator.of(oContextoVentana)
@@ -91,7 +91,7 @@ Future<EnumRespuestaConfirmacion> funcMostrarConfirmacion(
           if (bMostrarNo)
             funcConstruirBoton(
               oContexto : oContextoVentana,
-              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'no'),
+              sTexto    : ClaseIdiomas.getTexto('no', sIdioma),
               oIcono    : Icons.close,
               bRelleno  : false,
               oAlClicar : () => Navigator.of(oContextoVentana)
@@ -100,7 +100,7 @@ Future<EnumRespuestaConfirmacion> funcMostrarConfirmacion(
           if (bMostrarSi)
             funcConstruirBoton(
               oContexto : oContextoVentana,
-              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'si'),
+              sTexto    : ClaseIdiomas.getTexto('si', sIdioma),
               oIcono    : Icons.check,
               oAlClicar : () => Navigator.of(oContextoVentana)
                   .pop(EnumRespuestaConfirmacion.si),
@@ -184,7 +184,7 @@ Widget funcConstruirVentana({
           child: Text(sTitulo, style: ClaseGenEstilosTexto.subtituloMediano(oContexto)),
         ),
         IconButton(
-          tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
+          tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
           icon      : const Icon(Icons.close),
           onPressed : () => Navigator.of(oContexto).pop(),
         ),
@@ -225,7 +225,7 @@ Widget funcConstruirBoton({
 Widget funcConstruirBotonAceptar(BuildContext oContexto, String sIdioma) {
   return funcConstruirBoton(
     oContexto : oContexto,
-    sTexto    : ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+    sTexto    : ClaseIdiomas.getTexto('aceptar', sIdioma),
     oIcono    : Icons.check,
     oAlClicar : () => Navigator.of(oContexto).pop(),
   );
@@ -308,7 +308,7 @@ Future<String?> funcMostrarPedirTexto(
                   style: ClaseGenEstilosTexto.subtituloMediano(oContextoVentana)),
             ),
             IconButton(
-              tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
+              tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
               icon      : const Icon(Icons.close),
               onPressed : () => Navigator.of(oContextoVentana).pop(),
             ),
@@ -342,14 +342,14 @@ Future<String?> funcMostrarPedirTexto(
           if (bMostrarCancelar)
             funcConstruirBoton(
               oContexto : oContextoVentana,
-              sTexto    : ClaseIdiomas.getTexto(sIdioma, 'cancelar'),
+              sTexto    : ClaseIdiomas.getTexto('cancelar', sIdioma),
               oIcono    : Icons.cancel_outlined,
               bRelleno  : false,
               oAlClicar : () => Navigator.of(oContextoVentana).pop(),
             ),
           funcConstruirBoton(
             oContexto : oContextoVentana,
-            sTexto    : ClaseIdiomas.getTexto(sIdioma, 'aceptar'),
+            sTexto    : ClaseIdiomas.getTexto('aceptar', sIdioma),
             oIcono    : Icons.check,
             oAlClicar : () => Navigator.of(oContextoVentana).pop('aceptar'),
           ),

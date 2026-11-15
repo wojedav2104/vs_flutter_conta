@@ -16,7 +16,7 @@ class ClaseCapValidar {
   /// El valor no puede estar vacío.
   static String? validarObligatorio(String sValor, String sEtiqueta, String sIdioma) {
     if (sValor.trim().isEmpty) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validObligatorio')
+      return ClaseIdiomas.getTexto('validObligatorio', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -26,7 +26,7 @@ class ClaseCapValidar {
   static String? validarLongitudMaxima(
       String sValor, String sEtiqueta, int iMaximo, String sIdioma) {
     if (sValor.length > iMaximo) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validLongMaxima')
+      return ClaseIdiomas.getTexto('validLongMaxima', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '$iMaximo');
     }
@@ -37,7 +37,7 @@ class ClaseCapValidar {
   static String? validarLongitudMinima(
       String sValor, String sEtiqueta, int iMinimo, String sIdioma) {
     if (sValor.trim().length < iMinimo) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validLongMinima')
+      return ClaseIdiomas.getTexto('validLongMinima', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '$iMinimo');
     }
@@ -51,11 +51,11 @@ class ClaseCapValidar {
       String sValor, String sEtiqueta, int iMinimo, int iMaximo, String sIdioma) {
     final int? iNumero = int.tryParse(sValor.trim());
     if (iNumero == null) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validSoloEntero')
+      return ClaseIdiomas.getTexto('validSoloEntero', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     if (iNumero < iMinimo || iNumero > iMaximo) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validRangoEntero')
+      return ClaseIdiomas.getTexto('validRangoEntero', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '$iMinimo')
           .replaceAll('{2}', '$iMaximo');
@@ -68,7 +68,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!RegExp(r'^[+-]?\d+$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroEntero')
+      return ClaseIdiomas.getTexto('validNumeroEntero', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -80,7 +80,7 @@ class ClaseCapValidar {
       String sValor, String sEtiqueta, int iCantidad, String sIdioma) {
     final String sDigitos = sValor.replaceAll(' ', '');
     if (sDigitos.length != iCantidad || !RegExp(r'^\d+$').hasMatch(sDigitos)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validDigitosExactos')
+      return ClaseIdiomas.getTexto('validDigitosExactos', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '$iCantidad');
     }
@@ -92,7 +92,7 @@ class ClaseCapValidar {
       String sValor, String sEtiqueta, String sIdioma) {
     final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
     if (sDigitos.length != 13) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroDocumento')
+      return ClaseIdiomas.getTexto('validNumeroDocumento', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -117,7 +117,7 @@ class ClaseCapValidar {
       final String sDigitos = sTexto.replaceAll(RegExp(r'[^0-9]'), '');
       if (!RegExp(r'^\d+$').hasMatch(sDigitos)
           || sDigitos.length < 5 || sDigitos.length > 13) {
-        return ClaseIdiomas.getTexto(sIdioma, 'validNumeroDocumento')
+        return ClaseIdiomas.getTexto('validNumeroDocumento', sIdioma)
             .replaceAll('{0}', sEtiqueta)
             .replaceAll('{1}', sTipoDocumento);
       }
@@ -136,7 +136,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!RegExp(r'^([01]\d|2[0-3]):[0-5]\d$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validHora')
+      return ClaseIdiomas.getTexto('validHora', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -148,7 +148,7 @@ class ClaseCapValidar {
     if (sTexto.isEmpty) return null;
     final int? iAno = int.tryParse(sTexto);
     if (iAno == null || iAno < 2020 || iAno > 2100) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validRangoAnios')
+      return ClaseIdiomas.getTexto('validRangoAnios', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '2020')
           .replaceAll('{2}', '2100');
@@ -161,12 +161,12 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!RegExp(r'^\d{6,8}-\d$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validRuc')
+      return ClaseIdiomas.getTexto('validRuc', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     final int iDv = funcDigitoVerificador(sTexto.split('-')[0]);
     if (iDv != int.parse(sTexto.split('-')[1])) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validRuc')
+      return ClaseIdiomas.getTexto('validRuc', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -181,7 +181,7 @@ class ClaseCapValidar {
     // Pasaporte: letras y dígitos, hasta 20 caracteres.
     if (sTipoIdentificacion == ClaseTipoIdentificacion.pasaporte) {
       if (!RegExp(r'^[A-Za-z0-9]{1,20}$').hasMatch(sTexto)) {
-        return ClaseIdiomas.getTexto(sIdioma, 'validPasaporte')
+        return ClaseIdiomas.getTexto('validPasaporte', sIdioma)
             .replaceAll('{0}', sEtiqueta);
       }
       return null;
@@ -196,7 +196,7 @@ class ClaseCapValidar {
     if (sTipoIdentificacion == ClaseTipoIdentificacion.cedula) {
       final String sDigitos = sTexto.replaceAll('.', '');
       if (!RegExp(r'^\d{5,8}$').hasMatch(sDigitos)) {
-        return ClaseIdiomas.getTexto(sIdioma, 'validCedula')
+        return ClaseIdiomas.getTexto('validCedula', sIdioma)
             .replaceAll('{0}', sEtiqueta);
       }
       return null;
@@ -204,7 +204,7 @@ class ClaseCapValidar {
 
     // Cédula extranjera y otros: de 5 a 15 caracteres.
     if (!RegExp(r'^[A-Za-z0-9.\-]{5,15}$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validIdentificacion')
+      return ClaseIdiomas.getTexto('validIdentificacion', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -228,7 +228,7 @@ class ClaseCapValidar {
     if (iDv >= 10) iDv = 0;
     return iDv;
   }
-  
+
   // ── Cuentas contables ─────────────────────────────────────────────────
 
   /// Formato de cuenta 99.99.99.99.99: hasta 5 grupos de números
@@ -238,7 +238,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!esFormatoCuenta(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFormatoCuenta')
+      return ClaseIdiomas.getTexto('validFormatoCuenta', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -272,9 +272,9 @@ class ClaseCapValidar {
   static String? validarCuentaSuperior(
       String sNumeroCuenta, String sCuentaSuperior, String sIdioma) {
     if (contarGruposCuenta(sNumeroCuenta) > 1 && sCuentaSuperior.trim().isEmpty) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validCuentaSuperiorObligatoria')
+      return ClaseIdiomas.getTexto('validCuentaSuperiorObligatoria', sIdioma)
           .replaceAll('{0}',
-              ClaseIdiomas.getTexto(sIdioma, 'planCuentaSuperior'));
+              ClaseIdiomas.getTexto('planCuentaSuperior', sIdioma));
     }
     return null;
   }
@@ -285,7 +285,7 @@ class ClaseCapValidar {
     if (sError != null) return sError;
     final int iNivel = int.tryParse(sValor.trim()) ?? 0;
     if (iNivel < 1 || iNivel > 5) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validNivelCuenta')
+      return ClaseIdiomas.getTexto('validNivelCuenta', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -294,7 +294,7 @@ class ClaseCapValidar {
   /// La suma del Debe debe ser igual a la suma del Haber.
   static String? validarSumaDebeHaber(double dDebe, double dHaber, String sIdioma) {
     if ((dDebe - dHaber).abs() > 0.005) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validDebeIgualHaber');
+      return ClaseIdiomas.getTexto('validDebeIgualHaber', sIdioma);
     }
     return null;
   }
@@ -305,7 +305,7 @@ class ClaseCapValidar {
       String sIdioma) {
     if (sValor.trim().isEmpty) return null;
     if (!listValoresPermitidos.contains(sValor)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validValorLista')
+      return ClaseIdiomas.getTexto('validValorLista', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -315,7 +315,7 @@ class ClaseCapValidar {
   static String? validarAlMenosUnoSeleccionado(
       String sValor, String sEtiqueta, String sIdioma) {
     if (sValor.trim().isEmpty) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validObligatorio')
+      return ClaseIdiomas.getTexto('validObligatorio', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -329,13 +329,13 @@ class ClaseCapValidar {
     final int? iMes   = int.tryParse(sMes.trim());
     final int? iAnio  = int.tryParse(sAnio.trim());
     if (iDia == null || iMes == null || iAnio == null) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFecha')
+      return ClaseIdiomas.getTexto('validFecha', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     final DateTime fInicioMes = DateTime(iAnio, iMes, 1);
     final DateTime fFinMes    = DateTime(iAnio, iMes + 1, 0);
     if (iDia < fInicioMes.day || iDia > fFinMes.day) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validDiaRango')
+      return ClaseIdiomas.getTexto('validDiaRango', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', '${fInicioMes.day}')
           .replaceAll('{2}', '${fFinMes.day}');
@@ -349,7 +349,7 @@ class ClaseCapValidar {
     final DateTime? fValor = funcParsearFecha(sValor);
     if (fValor == null) return null;
     if (fValor.isBefore(fMinima)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFechaMinima')
+      return ClaseIdiomas.getTexto('validFechaMinima', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', funcFormatearFecha(fMinima));
     }
@@ -363,7 +363,7 @@ class ClaseCapValidar {
     final DateTime? fFin    = funcParsearFecha(sValorFin);
     if (fInicio == null || fFin == null) return null;
     if (fFin.isBefore(fInicio)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFechaFinAnterior');
+      return ClaseIdiomas.getTexto('validFechaFinAnterior', sIdioma);
     }
     return null;
   }
@@ -373,7 +373,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (funcParsearFecha(sTexto) == null) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validFecha')
+      return ClaseIdiomas.getTexto('validFecha', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -385,7 +385,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!RegExp(r'^\d{1,5}$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validSubcuenta')
+      return ClaseIdiomas.getTexto('validSubcuenta', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -397,7 +397,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!RegExp(r'^\d{1,15}([.,]\d{1,2})?$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroValor')
+      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -412,7 +412,7 @@ class ClaseCapValidar {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (!RegExp(r'^\d{1,$iMaximo}([.,]\d{1,2})?$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validNumeroValor')
+      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
           .replaceAll('{0}', sEtiqueta);
     }
     return null;
@@ -430,7 +430,7 @@ class ClaseCapValidar {
     final int iMaxima = funcParsearHora(sMaxima) ?? 24 * 60 - 1;
     final int? iValor = funcParsearHora(sTexto);
     if (iValor == null || iValor < iMinima || iValor > iMaxima) {
-      return ClaseIdiomas.getTexto(sIdioma, 'validHoraRango')
+      return ClaseIdiomas.getTexto('validHoraRango', sIdioma)
           .replaceAll('{0}', sEtiqueta)
           .replaceAll('{1}', sMinima)
           .replaceAll('{2}', sMaxima);

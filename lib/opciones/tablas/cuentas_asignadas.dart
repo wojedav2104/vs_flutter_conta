@@ -47,7 +47,7 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
       listCampos    : listCampos,
       listRegistros : listRegistros,
       oPreferencias : widget.oPreferencias,
-      sTitulo       : ClaseIdiomas.getTexto(getIdioma(), 'menuCuentasAsignadas'),
+      sTitulo       : ClaseIdiomas.getTexto('menuCuentasAsignadas', getIdioma()),
     );
   }
 
@@ -61,10 +61,10 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
       iAnchoCaracteres : 58,
       oTipo            : EnumTipoCampoAbm.texto,
       sClave           : sClave,
-      sEtiqueta        : ClaseIdiomas.getTexto(getIdioma(), sClaveEtiqueta),
-      sHint            : ClaseIdiomas.getTexto(getIdioma(), sClaveHint),
+      sEtiqueta        : ClaseIdiomas.getTexto(sClaveEtiqueta, getIdioma()),
+      sHint            : ClaseIdiomas.getTexto(sClaveHint, getIdioma()),
       funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-          sValor, ClaseIdiomas.getTexto(sIdioma, sClaveEtiqueta), sIdioma),
+          sValor, ClaseIdiomas.getTexto(sClaveEtiqueta, sIdioma), sIdioma),
     );
   }
 
@@ -80,11 +80,11 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'ctaEjercicio'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('ctaEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'ctaEjercicio'),
+        sEtiqueta        : ClaseIdiomas.getTexto('ctaEjercicio', sIdioma),
         sValorDefecto    : DateTime.now().year.toString(),
       ),
 
@@ -93,8 +93,8 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
         iAnchoCaracteres : 44,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'sucursal',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'ctaSucursal'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'ctaHintSucursal'),
+        sEtiqueta        : ClaseIdiomas.getTexto('ctaSucursal', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('ctaHintSucursal', sIdioma),
       ),
 
       // ── Cuentas ──────────────────────────────────────────────────────────

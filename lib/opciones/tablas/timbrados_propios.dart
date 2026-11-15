@@ -43,7 +43,7 @@ class ClaseEstadoTimbradosPropios extends State<ClaseTimbradosPropios> {
       listCampos          : listCampos,
       listRegistros       : listRegistros,
       oPreferencias       : widget.oPreferencias,
-      sTitulo             : ClaseIdiomas.getTexto(getIdioma(), 'menuTimbradosPropios'),
+      sTitulo             : ClaseIdiomas.getTexto('menuTimbradosPropios', getIdioma()),
     );
   }
 
@@ -68,11 +68,11 @@ class ClaseEstadoTimbradosPropios extends State<ClaseTimbradosPropios> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroDocumento(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'timUltimoDocumento'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('timUltimoDocumento', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'numeroUltimoDocumento',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timUltimoDocumento'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timUltimoDocumento', sIdioma),
         sMascara         : '999-999-9999999',
       ),
     ];

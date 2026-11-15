@@ -31,7 +31,7 @@ class ClasePantallaProximamente extends StatelessWidget {
             const Icon(Icons.construction_outlined),
             const SizedBox(height: ClaseGenEspacios.dEspacio16),
             Text(
-              ClaseIdiomas.getTexto(oPreferencias.getIdioma(), 'enPreparacion'),
+              ClaseIdiomas.getTexto('enPreparacion', oPreferencias.getIdioma()),
               style : ClaseGenEstilosTexto.normalGrande(oContexto),
             ),
           ],

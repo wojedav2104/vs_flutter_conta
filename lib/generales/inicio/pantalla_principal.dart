@@ -72,7 +72,7 @@ class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
     return Scaffold(
       key   : oClaveAndamio,
       appBar: AppBar(
-        title : Text(ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'aplicacion'),
+        title : Text(ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
                   style: ClaseGenEstilosTexto.subtituloGrande(oContexto)),
         actions: <Widget>[
           ClaseControlesPreferencias(
@@ -80,7 +80,7 @@ class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
             funcAlCambiar : widget.funcAlCambiar,
           ),
           IconButton(
-            tooltip   : ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'configuracion'),
+            tooltip   : ClaseIdiomas.getTexto('configuracion', widget.oPreferencias.getIdioma()),
             icon      : const Icon(Icons.settings),
             onPressed : () => funcMostrarConfiguracion(oContexto, widget.oPreferencias, widget.funcAlCambiar),
           ),

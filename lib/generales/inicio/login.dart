@@ -60,8 +60,8 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
     final EnumRespuestaConfirmacion oRespuesta = await funcMostrarConfirmacion(
       context,
       sIdioma,
-      ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
-      ClaseIdiomas.getTexto(sIdioma, 'confirmarSalir'),
+      ClaseIdiomas.getTexto('aplicacion', sIdioma),
+      ClaseIdiomas.getTexto('confirmarSalir', sIdioma),
       bMostrarCancelar : false,
     );
     if (oRespuesta == EnumRespuestaConfirmacion.si && mounted) {
@@ -80,8 +80,8 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
       await funcMostrarError(
         context,
         sIdioma,
-        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
-        ClaseIdiomas.getTexto(sIdioma, 'campoObligatorio'),
+        ClaseIdiomas.getTexto('aplicacion', sIdioma),
+        ClaseIdiomas.getTexto('campoObligatorio', sIdioma),
       );
       return;
     }
@@ -90,8 +90,8 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
       await funcMostrarError(
         context,
         sIdioma,
-        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
-        ClaseIdiomas.getTexto(sIdioma, 'credencialesIncorrectas'),
+        ClaseIdiomas.getTexto('aplicacion', sIdioma),
+        ClaseIdiomas.getTexto('credencialesIncorrectas', sIdioma),
       );
       return;
     }
@@ -116,25 +116,25 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
     final String? sCorreo = await funcMostrarPedirTexto(
       context,
       sIdioma,
-      ClaseIdiomas.getTexto(sIdioma, 'olvidasteContrasena'),
-      ClaseIdiomas.getTexto(sIdioma, 'olvidasteMensaje'),
-      ClaseIdiomas.getTexto(sIdioma, 'correoElectronico'),
+      ClaseIdiomas.getTexto('olvidasteContrasena', sIdioma),
+      ClaseIdiomas.getTexto('olvidasteMensaje', sIdioma),
+      ClaseIdiomas.getTexto('correoElectronico', sIdioma),
     );
     if (sCorreo == null || !mounted) return;
     if (!ClaseCapValidar.esCorreoValido(sCorreo)) {
       await funcMostrarError(
         context,
         sIdioma,
-        ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
-        ClaseIdiomas.getTexto(sIdioma, 'correoInvalido'),
+        ClaseIdiomas.getTexto('aplicacion', sIdioma),
+        ClaseIdiomas.getTexto('correoInvalido', sIdioma),
       );
       return;
     }
     await funcMostrarInformacion(
       context,
       sIdioma,
-      ClaseIdiomas.getTexto(sIdioma, 'aplicacion'),
-      ClaseIdiomas.getTexto(sIdioma, 'olvidasteConfirmacion'),
+      ClaseIdiomas.getTexto('aplicacion', sIdioma),
+      ClaseIdiomas.getTexto('olvidasteConfirmacion', sIdioma),
     );
   }
 
@@ -180,7 +180,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Text(
-                ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'aplicacion'),
+                ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
                 style : ClaseGenEstilosTexto.tituloGrande(oContexto),
               ),
               Container(
@@ -204,7 +204,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
                 child     : TextButton(
                   onPressed : recuperarContrasena,
                   child     : Text(
-                    ClaseIdiomas.getTexto(widget.oPreferencias.getIdioma(), 'olvidasteContrasena'),
+                    ClaseIdiomas.getTexto('olvidasteContrasena', widget.oPreferencias.getIdioma()),
                     style : ClaseGenEstilosTexto.normalChico(oContexto),
                   ),
                 ),
@@ -229,7 +229,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
         label : Row(
           mainAxisSize : MainAxisSize.min,
           children     : <Widget>[
-            Text(ClaseIdiomas.getTexto(sIdioma, 'nombre'),
+            Text(ClaseIdiomas.getTexto('nombre', sIdioma),
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
             Text(' *',
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
@@ -257,7 +257,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
         label : Row(
           mainAxisSize : MainAxisSize.min,
           children     : <Widget>[
-            Text(ClaseIdiomas.getTexto(sIdioma, 'contrasena'),
+            Text(ClaseIdiomas.getTexto('contrasena', sIdioma),
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
             Text(' *',
                  style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
@@ -265,7 +265,7 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
           ],
         ),
         suffixIcon: IconButton(
-          tooltip   : ClaseIdiomas.getTexto(sIdioma, 'verContrasena'),
+          tooltip   : ClaseIdiomas.getTexto('verContrasena', sIdioma),
           icon      : Icon(bMostrarContrasena ? Icons.visibility_off : Icons.visibility),
           onPressed : () => setState(() => bMostrarContrasena = !bMostrarContrasena),
         ),
@@ -278,8 +278,8 @@ class ClaseEstadoLogin extends State<ClaseLogin> {
 
   Widget construirBotones(BuildContext oContexto) {
     final String sIdioma   = widget.oPreferencias.getIdioma();
-    final String sCancelar = ClaseIdiomas.getTexto(sIdioma, 'cancelar');
-    final String sIngresar = ClaseIdiomas.getTexto(sIdioma, 'ingresar');
+    final String sCancelar = ClaseIdiomas.getTexto('cancelar', sIdioma);
+    final String sIngresar = ClaseIdiomas.getTexto('ingresar', sIdioma);
     return Row(
       children: <Widget>[
         Expanded(

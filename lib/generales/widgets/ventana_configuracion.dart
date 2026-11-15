@@ -13,9 +13,9 @@ Future<void> funcMostrarConfiguracion(
   ClasePreferencias  oPreferencias,
   VoidCallback       funcAlCambiar,
 ) async {
-  final String sAceptar   = ClaseIdiomas.getTexto(oPreferencias.getIdioma(), 'aceptar');
+  final String sAceptar   = ClaseIdiomas.getTexto('aceptar', oPreferencias.getIdioma());
   final String sIdioma    = oPreferencias.getIdioma();
-  final String sTitulo    = ClaseIdiomas.getTexto(sIdioma, 'configuracion');
+  final String sTitulo    = ClaseIdiomas.getTexto('configuracion', sIdioma);
   await showDialog<void>(
     context            : oContexto,
     barrierDismissible : false,
@@ -90,7 +90,7 @@ Widget funcConstruirSelectorFormato(
           children     : <Widget>[
             Icon(oIcono, color: oTema.colorScheme.onSurface),
             const SizedBox(width: ClaseGenEspacios.dEspacio08),
-            Text(ClaseIdiomas.getTexto(oPreferencias.getIdioma(), 'formatoLatino'),
+            Text(ClaseIdiomas.getTexto('formatoLatino', oPreferencias.getIdioma()),
                  style: ClaseGenEstilosTexto.normalMediano(oContexto)),
           ],
         ),
@@ -102,7 +102,7 @@ Widget funcConstruirSelectorFormato(
           children     : <Widget>[
             Icon(oIcono, color: oTema.colorScheme.onSurface),
             const SizedBox(width: ClaseGenEspacios.dEspacio08),
-            Text(ClaseIdiomas.getTexto(oPreferencias.getIdioma(), 'formatoFrances'),
+            Text(ClaseIdiomas.getTexto('formatoFrances', oPreferencias.getIdioma()),
                  style: ClaseGenEstilosTexto.normalMediano(oContexto)),
           ],
         ),

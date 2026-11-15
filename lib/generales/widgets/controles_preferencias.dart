@@ -103,7 +103,7 @@ class ClaseControlesPreferencias extends StatelessWidget {
               children     : <Widget>[
                 Icon(listIconos[i], color: oTema.colorScheme.onSurface),
                 const SizedBox(width: ClaseGenEspacios.dEspacio08),
-                Text(ClaseIdiomas.getTexto(oPreferencias.getIdioma(), listClaves[i]),
+                Text(ClaseIdiomas.getTexto(listClaves[i], oPreferencias.getIdioma()),
                      style: ClaseGenEstilosTexto.normalMediano(oContexto)),
               ],
             ),

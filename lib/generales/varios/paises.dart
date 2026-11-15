@@ -47,7 +47,7 @@ abstract final class ClasePaises {
       'PER' : 'paisPeru',
       'URY' : 'paisUruguay',
     };
-    return ClaseIdiomas.getTexto(sIdioma, mapClaves[sCodigo] ?? 'paisParaguay');
+    return ClaseIdiomas.getTexto(mapClaves[sCodigo] ?? 'paisParaguay', sIdioma);
   }
 
 }

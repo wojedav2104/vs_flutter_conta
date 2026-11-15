@@ -15,41 +15,41 @@ abstract final class ClaseTimbradosComun {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarDigitosExactos(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'timTimbrado'), 8, sIdioma),
+            sValor, ClaseIdiomas.getTexto('timTimbrado', sIdioma), 8, sIdioma),
         iAnchoCaracteres : 8,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'timbradoNumero',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timTimbrado'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timTimbrado', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'timFechaInicio'),
+            sValor, ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
             DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaInicio',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timFechaInicio'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
       ),
       ClaseCampoAbm(
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'timFechaFin'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaFin',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timFechaFin'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timFechaFin', sIdioma),
       ),
       ClaseCampoAbm(
         bEnGrilla        : false,
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarAlMenosUnoSeleccionado(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'timAfectaA'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('timAfectaA', sIdioma), sIdioma),
         iAnchoCaracteres : funcAnchoOpcion(ClaseAfectaA.getListOpciones(sIdioma)),
         listOpciones     : ClaseAfectaA.getListOpciones(sIdioma),
         listValores      : ClaseAfectaA.listValores,
         oTipo            : EnumTipoCampoAbm.casillas,
         sClave           : 'afectaA',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timAfectaA'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timAfectaA', sIdioma),
         sValorDefecto    : ClaseAfectaA.factura,
       ),
       ClaseCampoAbm(
@@ -58,7 +58,7 @@ abstract final class ClaseTimbradosComun {
         listValores      : ClaseMedioGeneracion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'medioGeneracion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'timMedioGeneracion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('timMedioGeneracion', sIdioma),
         sValorDefecto    : ClaseMedioGeneracion.preImpresos,
       ),
     ];

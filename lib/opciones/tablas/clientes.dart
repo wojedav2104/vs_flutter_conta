@@ -44,7 +44,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
       listCampos          : listCampos,
       listRegistros       : listRegistros,
       oPreferencias       : widget.oPreferencias,
-      sTitulo             : ClaseIdiomas.getTexto(getIdioma(), 'menuClientes'),
+      sTitulo             : ClaseIdiomas.getTexto('menuClientes', getIdioma()),
     );
   }
 
@@ -58,7 +58,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
     return ClaseCapValidar.validarIdentificacion(
       (oRegistro['identificacion']      ?? '').toString(),
       (oRegistro['tipoIdentificacion']  ?? '').toString(),
-      ClaseIdiomas.getTexto(sIdioma, 'cliIdentificacion'),
+      ClaseIdiomas.getTexto('cliIdentificacion', sIdioma),
       sIdioma,
     );
   }
@@ -74,54 +74,54 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         bCompletarCeros  : true,
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'cliCodigo'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('cliCodigo', sIdioma), sIdioma),
         iAnchoCaracteres : 6,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'codigo',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliCodigo'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliCodigo', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'nombre',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliNombre'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintNombre'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliNombre', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintNombre', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 60,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'direccion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliDireccion'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintDireccion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliDireccion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintDireccion', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'telefono',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliTelefono'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintTelefono'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliTelefono', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintTelefono', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'celular',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliCelular'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintCelular'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliCelular', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintCelular', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'localidad',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliLocalidad'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintLocalidad'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliLocalidad', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintLocalidad', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'email',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliEmail'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintEmail'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliEmail', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintEmail', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(
@@ -130,7 +130,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         listValores      : ClaseTipoIdentificacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoIdentificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliTipoIdentificacion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliTipoIdentificacion', sIdioma),
         sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
@@ -138,8 +138,8 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'identificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliIdentificacion'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'cliHintIdentificacion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliIdentificacion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintIdentificacion', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
@@ -147,7 +147,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         listValores      : ClaseLocalExterior.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoCliente',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliTipoCliente'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliTipoCliente', sIdioma),
         sValorDefecto    : ClaseLocalExterior.local,
       ),
       ClaseCampoAbm(
@@ -156,7 +156,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'esDiplomatico',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'cliEsDiplomatico'),
+        sEtiqueta        : ClaseIdiomas.getTexto('cliEsDiplomatico', sIdioma),
         sValorDefecto    : ClaseSiNo.no,
       ),
     ];

@@ -101,7 +101,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       context,
       getIdioma(),
       widget.sTitulo,
-      ClaseIdiomas.getTexto(getIdioma(), 'confirmarBorrar'),
+      ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
       bMostrarCancelar : false,
     );
     if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
@@ -111,7 +111,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       iRegistro    = -1;
       bModoEdicion = false;
     });
-    await _mostrarInformacion(ClaseIdiomas.getTexto(getIdioma(), 'mensajeBorrado'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
   }
 
   void cancelar() {
@@ -160,7 +160,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       }
       bModoEdicion = false;
     });
-    await _mostrarInformacion(ClaseIdiomas.getTexto(sIdioma, 'grabacionExitosa'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
   }
 
   Future<void> encontrar() async {
@@ -176,7 +176,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
         return;
       }
     }
-    await _mostrarInformacion(ClaseIdiomas.getTexto(sIdioma, 'abmNoEncontrado'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
   }
 
   // ── Selección y auto-cálculos ────────────────────────────────────────────
@@ -252,7 +252,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
     await funcMostrarError(
       context,
       getIdioma(),
-      ClaseIdiomas.getTexto(getIdioma(), 'aplicacion'),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
       sTexto,
     );
   }
@@ -262,7 +262,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
     await funcMostrarInformacion(
       context,
       getIdioma(),
-      ClaseIdiomas.getTexto(getIdioma(), 'aplicacion'),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
       sTexto,
     );
   }

@@ -44,7 +44,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
       listCampos          : listCampos,
       listRegistros       : listRegistros,
       oPreferencias       : widget.oPreferencias,
-      sTitulo             : ClaseIdiomas.getTexto(getIdioma(), 'menuProveedores'),
+      sTitulo             : ClaseIdiomas.getTexto('menuProveedores', getIdioma()),
     );
   }
 
@@ -58,7 +58,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
     return ClaseCapValidar.validarIdentificacion(
       (oRegistro['identificacion']      ?? '').toString(),
       (oRegistro['tipoIdentificacion']  ?? '').toString(),
-      ClaseIdiomas.getTexto(sIdioma, 'prvIdentificacion'),
+      ClaseIdiomas.getTexto('prvIdentificacion', sIdioma),
       sIdioma,
     );
   }
@@ -74,54 +74,54 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         bCompletarCeros  : true,
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'prvCodigo'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('prvCodigo', sIdioma), sIdioma),
         iAnchoCaracteres : 6,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'codigo',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvCodigo'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvCodigo', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'nombre',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvNombre'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintNombre'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvNombre', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintNombre', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 60,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'direccion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvDireccion'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintDireccion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvDireccion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintDireccion', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'telefono',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvTelefono'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintTelefono'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvTelefono', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintTelefono', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'celular',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvCelular'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintCelular'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvCelular', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintCelular', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'localidad',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvLocalidad'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintLocalidad'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvLocalidad', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintLocalidad', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'email',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvEmail'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintEmail'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvEmail', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintEmail', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(
@@ -130,7 +130,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         listValores      : ClaseTipoIdentificacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoIdentificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvTipoIdentificacion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvTipoIdentificacion', sIdioma),
         sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
@@ -138,8 +138,8 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'identificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvIdentificacion'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'prvHintIdentificacion'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvIdentificacion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintIdentificacion', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
@@ -147,7 +147,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         listValores      : ClaseLocalExterior.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoProveedor',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvTipoProveedor'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvTipoProveedor', sIdioma),
         sValorDefecto    : ClaseLocalExterior.local,
       ),
       ClaseCampoAbm(
@@ -156,7 +156,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'esServicioPublico',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'prvEsServicioPublico'),
+        sEtiqueta        : ClaseIdiomas.getTexto('prvEsServicioPublico', sIdioma),
         sValorDefecto    : ClaseSiNo.no,
       ),
     ];

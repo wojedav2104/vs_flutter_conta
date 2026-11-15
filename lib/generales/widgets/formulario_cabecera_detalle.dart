@@ -176,7 +176,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       context,
       getIdioma(),
       widget.sTitulo,
-      ClaseIdiomas.getTexto(getIdioma(), 'confirmarBorrar'),
+      ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
       bMostrarCancelar : false,
     );
     if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
@@ -187,7 +187,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       iRegistro    = -1;
       bModoEdicion = false;
     });
-    await _mostrarInformacion(ClaseIdiomas.getTexto(getIdioma(), 'mensajeBorrado'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
   }
 
   void cancelar() {
@@ -253,7 +253,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       }
       bModoEdicion = false;
     });
-    await _mostrarInformacion(ClaseIdiomas.getTexto(sIdioma, 'grabacionExitosa'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
   }
 
   Future<void> encontrar() async {
@@ -269,7 +269,7 @@ class ClaseEstadoFormularioCabeceraDetalle
         return;
       }
     }
-    await _mostrarInformacion(ClaseIdiomas.getTexto(sIdioma, 'abmNoEncontrado'));
+    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
   }
 
   // ── Filas de detalle ─────────────────────────────────────────────────────
@@ -348,7 +348,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     final bool bAlgunaConContenido = listDetalles.any((Map<String, String> mapFila) =>
         mapFila.values.any((String s) => s.trim().isNotEmpty));
     if (!bAlgunaConContenido) {
-      return ClaseIdiomas.getTexto(sIdioma, 'detDetalleVacio');
+      return ClaseIdiomas.getTexto('detDetalleVacio', sIdioma);
     }
 
     int iFila = 0;
@@ -372,7 +372,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       final String sHaber = (mapFila[widget.sClaveHaber] ?? '').trim();
       if (sDebe.isNotEmpty == sHaber.isNotEmpty) {
         return _traducirFila(
-            sIdioma, iFila, ClaseIdiomas.getTexto(sIdioma, 'detErrorDebeHaber'));
+            sIdioma, iFila, ClaseIdiomas.getTexto('detErrorDebeHaber', sIdioma));
       }
     }
 
@@ -387,7 +387,7 @@ class ClaseEstadoFormularioCabeceraDetalle
   }
 
   String _traducirFila(String sIdioma, int iFila, String sError) {
-    return ClaseIdiomas.getTexto(sIdioma, 'detErrorFila')
+    return ClaseIdiomas.getTexto('detErrorFila', sIdioma)
         .replaceAll('{0}', '$iFila')
         .replaceAll('{1}', sError);
   }
@@ -494,7 +494,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     await funcMostrarError(
       context,
       getIdioma(),
-      ClaseIdiomas.getTexto(getIdioma(), 'aplicacion'),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
       sTexto,
     );
   }
@@ -504,7 +504,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     await funcMostrarInformacion(
       context,
       getIdioma(),
-      ClaseIdiomas.getTexto(getIdioma(), 'aplicacion'),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
       sTexto,
     );
   }
@@ -591,7 +591,7 @@ class ClaseEstadoFormularioCabeceraDetalle
             child     : OutlinedButton.icon(
               onPressed : bModoEdicion ? agregarFila : null,
               icon      : const Icon(Icons.add),
-              label     : Text(ClaseIdiomas.getTexto(getIdioma(), 'detAgregarFila'),
+              label     : Text(ClaseIdiomas.getTexto('detAgregarFila', getIdioma()),
                   style: ClaseGenEstilosTexto.normalMediano(oContexto)),
             ),
           ),
@@ -610,7 +610,7 @@ class ClaseEstadoFormularioCabeceraDetalle
         children: <Widget>[
           SizedBox(
             width : ClaseGenLayout.dAnchoNumeroFila,
-            child : Text(ClaseIdiomas.getTexto(getIdioma(), 'detFila'),
+            child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
                 style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
           ),
           for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
@@ -654,19 +654,19 @@ class ClaseEstadoFormularioCabeceraDetalle
               mainAxisSize : MainAxisSize.min,
               children     : <Widget>[
                 IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(getIdioma(), 'menuSubirFila'),
+                  tooltip   : ClaseIdiomas.getTexto('menuSubirFila', getIdioma()),
                   icon      : const Icon(Icons.keyboard_arrow_up),
                   onPressed : (bModoEdicion && iFila > 0) ? () => subirFila(iFila) : null,
                 ),
                 IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(getIdioma(), 'menuBajarFila'),
+                  tooltip   : ClaseIdiomas.getTexto('menuBajarFila', getIdioma()),
                   icon      : const Icon(Icons.keyboard_arrow_down),
                   onPressed : (bModoEdicion && iFila < listDetalles.length - 1)
                       ? () => bajarFila(iFila)
                       : null,
                 ),
                 IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(getIdioma(), 'detBorrarFila'),
+                  tooltip   : ClaseIdiomas.getTexto('detBorrarFila', getIdioma()),
                   icon      : const Icon(Icons.delete_outline),
                   onPressed : bModoEdicion ? () => borrarFila(iFila) : null,
                 ),
@@ -775,7 +775,7 @@ class ClaseEstadoFormularioCabeceraDetalle
               width : widget.listCamposDetalle[i].getAnchoColumna(),
               child : Text(
                 (i == iRotulo)
-                    ? ClaseIdiomas.getTexto(getIdioma(), 'detTotales')
+                    ? ClaseIdiomas.getTexto('detTotales', getIdioma())
                     : ((i == iPrimeraSuma || mapSumas
                             .containsKey(widget.listCamposDetalle[i].sClave))
                         ? funcFormatearImporte(

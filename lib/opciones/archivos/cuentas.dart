@@ -49,14 +49,14 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
     return ClaseFormularioAbm(
       funcActualizarCampos : actualizarCampos,
       funcEtiquetaGrupo    : (String sClave) => (sClave == 'planPrincipal')
-          ? '${ClaseIdiomas.getTexto(getIdioma(), 'planPrincipal')} '
+          ? '${ClaseIdiomas.getTexto('planPrincipal', getIdioma())} '
             '(${ClasePaises.getNombre(ClaseEmpresa.getPaisElegido(), getIdioma())})'
-          : ClaseIdiomas.getTexto(getIdioma(), sClave),
+          : ClaseIdiomas.getTexto(sClave, getIdioma()),
       funcValidarRegistro  : validarRegistro,
       listCampos           : listCampos,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
-      sTitulo              : ClaseIdiomas.getTexto(getIdioma(), 'menuPlanCuentas'),
+      sTitulo              : ClaseIdiomas.getTexto('menuPlanCuentas', getIdioma()),
     );
   }
 
@@ -118,34 +118,34 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'planNumeroCuenta'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NumeroCuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planNumeroCuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma),
         sGrupo           : sGrupo,
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'planHintCuenta'),
+        sHint            : ClaseIdiomas.getTexto('planHintCuenta', sIdioma),
       ),
 
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'planNombreCuenta'), 3, sIdioma),
+            sValor, ClaseIdiomas.getTexto('planNombreCuenta', sIdioma), 3, sIdioma),
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NombreCuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planNombreCuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planNombreCuenta', sIdioma),
         sGrupo           : sGrupo,
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'planHintNombreCuenta'),
+        sHint            : ClaseIdiomas.getTexto('planHintNombreCuenta', sIdioma),
       ),
 
       ClaseCampoAbm(
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'planNumeroSubcuenta'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NumeroSubcuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planNumeroSubcuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma),
         sGrupo           : sGrupo,
       ),
 
@@ -153,9 +153,9 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NombreSubcuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planNombreSubcuenta'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planNombreSubcuenta', sIdioma),
         sGrupo           : sGrupo,
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'planHintNombreSubcuenta'),
+        sHint            : ClaseIdiomas.getTexto('planHintNombreSubcuenta', sIdioma),
       ),
 
       ClaseCampoAbm(
@@ -164,19 +164,19 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         iAnchoCaracteres     : 58,
         oTipo                : EnumTipoCampoAbm.texto,
         sClave               : '${sPrefijo}CuentaSuperior',
-        sEtiqueta            : ClaseIdiomas.getTexto(sIdioma, 'planCuentaSuperior'),
+        sEtiqueta            : ClaseIdiomas.getTexto('planCuentaSuperior', sIdioma),
         sGrupo               : sGrupo,
-        sHint                : ClaseIdiomas.getTexto(sIdioma, 'planHintCuentaSuperior'),
+        sHint                : ClaseIdiomas.getTexto('planHintCuentaSuperior', sIdioma),
       ),
 
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'planNivel'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
         iAnchoCaracteres : 1,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : '${sPrefijo}Nivel',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planNivel'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planNivel', sIdioma),
         sGrupo           : sGrupo,
       ),
 
@@ -186,7 +186,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : '${sPrefijo}Asentable',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planAsentable'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planAsentable', sIdioma),
         sGrupo           : sGrupo,
       ),
     ];
@@ -202,11 +202,11 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto(sIdioma, 'planEjercicio'), sIdioma),
+            sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planEjercicio'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planEjercicio', sIdioma),
         sValorDefecto    : DateTime.now().year.toString(),
       ),
 
@@ -215,8 +215,8 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         iAnchoCaracteres : 44,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'sucursal',
-        sEtiqueta        : ClaseIdiomas.getTexto(sIdioma, 'planSucursal'),
-        sHint            : ClaseIdiomas.getTexto(sIdioma, 'planHintSucursal'),
+        sEtiqueta        : ClaseIdiomas.getTexto('planSucursal', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('planHintSucursal', sIdioma),
       ),
 
       // ── Grupo Principal (Plan de Cuentas local) ──────────────────────────

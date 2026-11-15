@@ -1,0 +1,336 @@
+═══════════════════════════════════════════════════════════════════════
+VS_CONTA — CONTEXTO DE SESIÓN (continuación sin pérdida de contexto)
+Generado al finalizar la sesión de auditoría y correcciones. Último
+estado confirmado por el usuario: "compila sin errores ni warnings".
+═══════════════════════════════════════════════════════════════════════
+
+1. QUIÉN Y QUÉ
+───────────────────────────────────────────────────────────────────────
+· Proyecto: VS_CONTA, aplicación de Contabilidad multi-país, multi-moneda,
+  multi-sucursal, multi-usuario y multi-idioma (Español/Francés).
+  Pensada para contadores y empresas. Está en modo "pantallas + datos de
+  prueba"; la Base de Datos (Firebird) todavía no está conectada.
+· Repositorio: github.com/wojedav2104/vs_flutter_conta (rama main).
+  Lectura de archivos: raw.githubusercontent.com/wojedav2104/vs_flutter_conta/main/<ruta>
+· Usuario: Walter, escribe en español. Pide archivos COMPLETOS en el chat
+  para copiarlos a mano a VS Code ("para evitar que yo transcriba mal").
+· Asistente: MiMo (Xiaomi LLM Core Team). Trabaja siguiendo la carpeta
+  Documentación como especificación; cuando el código y la spec difieren,
+  se corrige el código salvo que el usuario indique lo contrario.
+
+2. ESTRUCTURA DEL PROYECTO
+───────────────────────────────────────────────────────────────────────
+pubspec.yaml                    Flutter SDK ^3.13.7; intl, shared_preferences,
+                                web, flutter_localizations. Fuentes Roboto y
+                                Roboto Mono. Assets: assets/datos/.
+assets/datos/paises.json        Países (NO se ha podido leer nunca desde la
+                                nube; el usuario aún debe pegarlo).
+lib/main.dart                   Entrada: ClasePaises.cargar() → preferencias →
+                                ClaseAplicacion → ClaseLogin →
+                                ClasePantallaPrincipal (drawer auto-abierto).
+lib/generales/
+  idiomas/                      idiomas.dart (reúne y ofrece getTexto) +
+                                8 módulos: idiomas_asientos, _compras,
+                                _cuentas, _general, _interfaz, _tablas,
+                                _terceros, _validaciones (cada uno con mapEs
+                                y mapFr).
+  inicio/                       login.dart, menu_lateral.dart,
+                                pantalla_principal.dart.
+  modelos/                      campo_abm.dart (ClaseCampoAbm y
+                                EnumTipoCampoAbm), documentos.dart
+                                (ClaseTipoDocumento + ClaseTipoIdentificacion
+                                UNIFICADAS), opcion_menu.dart, permisos.dart,
+                                sesion.dart (ClaseSesion: país conectado,
+                                constantes paisParaguay...).
+  preferencias/                 preferencias.dart (ClasePreferencias).
+  temas/                        colores, espacios, estilos_textos, layout,
+                                radios, temas.
+  utilitarios/                  formatos.dart (fechas ClaseFechas,
+                                funcParsearFecha/funcFormatearFecha,
+                                funcParsearNumero/funcFormatearNumeroPlano...),
+                                menu_navegador_movil.dart, menu_navegador_web.dart.
+  validaciones/                 can_validar.dart (stub; esperan reglas R y C
+                                de VS_CONTA_07), cap_validar.dart
+                                (ClaseCapValidar: TODAS las validaciones).
+  varios/                       listas.dart (ClaseSiNo, ClaseLocalExterior,
+                                ClaseAfectaA, ClaseMedioGeneracion,
+                                ClaseTipoAfectacion), paises.dart
+                                (ClasePaises con getCodigo/getNombre/getList...),
+                                pantalla_proximamente.dart, timbrados_comun.dart.
+  widgets/                      abm_comun.dart, campo_formulario.dart,
+                                controles_preferencias.dart, formulario_abm.dart,
+                                formulario_cabecera_detalle.dart,
+                                ventana_configuracion.dart, ventana_mensaje.dart.
+lib/opciones/
+  archivos/                     asientos.dart, compras.dart, cuentas.dart
+                                (Plan de Cuentas).
+  tablas/                       clientes, configuracion, cuentas_asignadas,
+                                empresa, proveedores, sucursales,
+                                timbrados_propios, timbrados_proveedores.
+lib/rutas/                      generador_rutas.dart (oObservadorRutas),
+                                rutas.dart (ClaseRutas: constantes de rutas).
+Documentación/                  Carpetas: Documentación_vs_conta (specs 00_*
+                                a 14_*), Documentación_VS_CONTA_08 (APIs),
+                                Documentación_VS_CONTA_09 (VPS/Firebird).
+                                Regla: solo subcarpetas *_vs contienen código.
+                                NO modificar los .txt de specs salvo pedido
+                                explícito (el usuario los edita).
+Enlaces/                        Índices de archivos GitHub (09_02_01/09_02_02
+                                listan el árbol completo del proyecto).
+
+3. CONVENCIONES Y REGLAS OBLIGATORIAS (resumen operativo)
+───────────────────────────────────────────────────────────────────────
+· Regla G "La programación" (VS_CONTA_07, usuario): el PRIMER parámetro
+  siempre es el código. Ej.: ClaseIdiomas.getTexto(sClave, sIdioma);
+  ClasePaises.getNombre(sCodigo, sIdioma); getEtiqueta(sCodigo, sIdioma).
+  Nombres de métodos GET/SET en 3 letras (getIdioma, getPais...).
+· getIdioma() es el nombre del método (se renombró desde getIdiomaActual()
+  en todo el proyecto; la spec 01_05 usa "getIdioma").
+· Prefijos de variables: s (String), i (int), d (double), b (bool),
+  o (objeto), list (List), map (Map), func (función), f (DateTime).
+  Nombres de controles/pantallas también con prefijo de 3 letras.
+· ClaseCampoAbm (constructor con parámetros alineados, orden alfabético):
+  bCompletarCeros, bEnGrilla, bMayusculas, bObligatorio, bSiempreDeshabilitado,
+  bSoloLecturaPorRol, bTieneDecimales, iAnchoCaracteres, iMaxComentario,
+  listOpciones, listValores, oTipo, sClave, sEtiqueta, sGrupo, sHint,
+  sMascara, sValorDefecto, funcActualizarEstado (habilitación dinámica),
+  funcMascara, funcValidarCampo.
+· Convención de campos (04_02 y similares): clave, código, nombre, tipo,
+  longitud, valor por defecto, habilitación ("solo si..." mejor que "siempre
+  deshabilitado"), obligatoriedad (por BD cuando exista), validación,
+  mensaje de error, hint. Los valores por defecto van en una función
+  especial. Las etiquetas van SIEMPRE en inglés (traducidas por código).
+· Orden alfabético case-sensitive: claves de mapas Es/Fr, columnas de
+  registros y campos de fila; registros ordenados por columna "clave".
+· Regla 01 (VS_CONTA_07 L): programar en inglés, variables en español con
+  prefijos. Aún NO aplicada al código existente (pendiente decisión).
+· Líneas largas de strings: formato especial del proyecto (ver ejemplos en
+  idiomas y cap_validar).
+· Comentario de documentación en todas las declaraciones públicas.
+· Comentarios TODO escritos en inglés (estilo del proyecto).
+
+4. ESTADO ACTUAL
+───────────────────────────────────────────────────────────────────────
+· flutter analyze: SIN errores y SIN warnings (confirmado por el usuario).
+· La app corre con datos de prueba en todas las pantallas; los métodos
+  crearRegistrosPrueba() se reemplazarán por Firebird.
+· Login: credenciales de prueba admin / 1234 (ClaseCapValidar.sNombreInicial
+  y sContrasenaInicial; más adelante vendrán del ABM de Usuarios y la BD).
+
+5. TRABAJO YA REALIZADO EN ESTAS SESIONES (por si hay que revisarlo)
+───────────────────────────────────────────────────────────────────────
+A) Renombre getIdiomaActual() → getIdioma() en ~35 archivos (acordado con
+   el usuario para alinearse con la spec 01_05; comentarios también).
+B) Specs corregidos por el usuario a pedido: 01_05 (campos "Nombre de la
+   lista"), 02_02 (Comentarios opcional), 02_03_01 (Identificación N° de
+   carácter y longitud 15). VERIFICAR: la copia de 02_03_01 que se pudo
+   leer desde GitHub aún mostraba "RUC/Cédula (carácter, 10)" y la regla
+   antigua de cuotas (posible caché); la regla final de cuotas es la
+   regla G (ver sección 6, punto 1).
+C) VS_CONTA_07 (rewiring): las 60 referencias a archivos sueltas del
+   documento se cambiaron por referencias a la carpeta Documentación.
+   Tipos de tarea N1..N7 y B1..B8 y G1..G12 marcados como resueltos.
+D) Estilo de código: imports reordenados (Flutter → paquetes → rutas con
+   ../ → resto, separados por líneas en blanco), todo alineado.
+E) paises.dart: ClasePaises rehecha (getCodigo/getNombre/getListOpciones/
+   getListValores/cargar desde assets/datos/paises.json con posibles
+   nombres de claves alternativos: codigo/código, nombre, iso, iso2...).
+F) timbrados_comun.dart: sIvaBase 0.1 → 0.05 (es 5%); bCompletarCeros
+   quitado del campo timbrado (la lógica muerta de bCompletarCeros se
+   elimina del código; la función existe en ClaseCampoAbm para otros usos).
+G) timbrados_proveedores.dart: claves renombradas para compartir nombres
+   con Clientes/Proveedores (timPrvNombre→prvNombre, timPrvRuc→prvRuc,
+   timPrv*Hint*→prvHint*), import de ClaseCapValidar agregado (estaba
+   roto), bCompletarCeros quitado, datos de prueba agregados. NOTA: las
+   etiquetas timPrv* de idiomas_terceros.dart SIGUEN siendo timPrv* (las
+   claves de idioma NO se renombraron; solo las claves de campo).
+H) ventana_configuracion.dart: 'cfgFormatoFecha' → 'cfgFormatoFechas' y
+   validación de fecha agregada.
+I) login.dart: usa ClaseCapValidar.validarCredenciales / esCorreoValido /
+   sContrasenaInicial / sNombreInicial; pantalla con preferencias.
+J) cap_validar.dart: import de formatos corregido a '../utilitarios/formatos.dart';
+   comentario corregido; claves de error renombradas (validIdentificacion→
+   validIdentCedula, validNumeroDocumentoTipo→validNumeroDocumento);
+   AGREGADOS: bloque "Credenciales y correo" (sContrasenaInicial,
+   sNombreInicial, validarCredenciales, esCorreoValido),
+   validarFechaEnEjercicio (rango según ejercicio), validarImporteNoNegativo,
+   funcDigitoVerificador (módulo 11 del RUC paraguayo; verifica base
+   8003214 → 5; acepta base o RUC completo "8003214-5").
+K) UNIFICACIÓN ClaseTipoDocumento + ClaseTipoIdentificacion en
+   documentos.dart (versión de listas.dart: listValores + constantes
+   nombradas ruc/cedula/pasaporte/cedulaExtranjera/sinNombre/diplomatico).
+   listas.dart ya NO las define; quedan ahí solo ClaseSiNo,
+   ClaseLocalExterior, ClaseAfectaA, ClaseMedioGeneracion,
+   ClaseTipoAfectacion. OJO: la propiedad de ClaseTipoDocumento se llama
+   listValores (antes listCodigos en documentos.dart).
+L) asientos.dart y compras.dart REESCRITOS siguiendo 02_02 y 02_03_01/02:
+   · Cabecera Asientos: ejercicio (numérico 4, obligatorio, rango
+     ClaseFechas.iAnioMinimo..año actual), sucursal (44, obligatorio),
+     fecha (validación de rango vía validarFechaEnEjercicio en
+     validarRegistro), número (6, siempre deshabilitado), comentarios (500,
+     al final). Detalle orden: cuenta, subcuenta, nombreCuenta, debe, haber,
+     concepto (60). Debe/Haber con sMascara '999.999.999.999'.
+   · Cabecera Compras: ejercicio y sucursal agregados; hora obligatoria;
+     número del asiento (6, deshabilitado); N° con funcMascara condicional
+     999-999-9999999 (ClaseTipoDocumento.sMascaraNumero); cantidadCuotas con
+     funcActualizarEstado (habilitada solo en Factura Crédito) y sValorDefecto
+     '0'; identificacion (clave renombrada desde rucCedula, etiqueta
+     comIdentificacion, 15, siempre deshabilitado); timbrado con
+     funcActualizarEstado (habilitado solo si hay máscara); total y
+     totalComprobante siempre deshabilitados; importes con sMascara
+     '999.999.999.999' y validación no-negativa en Gravadas/IVA/Exentas;
+     sValorDefecto '0' en importeIreSimple/importeIrpSimple/importeNoImputable.
+   · actualizarCampos (Compras): total = suma gravadas+iva+exentas;
+     importeGravado10/5 y importeExento se sugieren solo si están vacíos;
+     totalComprobante = suma de los SEIS importes del Grupo 2 (Res. 90/2021);
+     cuotas según regla G; timbrado en blanco si no hay máscara.
+   · validarRegistro (Compras): fecha en ejercicio, cuotas (regla G),
+     timbrado condicional (obligatorio 8 dígitos solo con máscara),
+     número por tipo, identificación por tipo, fin de vigencia posterior al
+     inicio, y totalComprobante = suma del Debe si enviarMarangatu = Sí.
+M) getTexto(sClave, sIdioma) — orden "código primero" aplicado a TODO el
+   proyecto (ver sección 9 para la historia del regex; ya está hecho y
+   verificado, NO re-hacer).
+N) empresa.dart: getPaisElegido() devuelve 'PRY' (pruebas; luego leerá la
+   BD). La etiqueta de pestañas del Plan de Cuentas muestra
+   "Principal (Paraguay)"/"Alternativo (Paraguay)" (detalle abierto: la
+   spec 02_01 dice solo "Principal"/"Alternativo"; el usuario no cerró
+   cuál prefiere).
+
+6. PENDIENTES CONOCIDOS (prioridad de arriba hacia abajo)
+───────────────────────────────────────────────────────────────────────
+1) REGLA G de Cantidad de cuotas — regla final del usuario (REEMPLAZA a la
+   spec 02_03_01): campo habilitado SOLO cuando el Tipo de Documento es
+   Factura Crédito (código '02'), y entonces admite 1 a 240 (vacío o 0 se
+   autocoloca 1). En los demás tipos el campo está deshabilitado y vale 0.
+   El código de compras.dart YA la implementa. Falta actualizar el texto
+   de 02_03_01 (lo edita el usuario).
+2) Auditoría pendiente de widgets (nunca se pudo completar porque los
+   archivos llegan cortados): formulario_cabecera_detalle.dart,
+   formulario_abm.dart, abm_comun.dart, campo_formulario.dart,
+   ventana_mensaje.dart, temas.dart, formatos.dart, cap_validar.dart
+   (cola del archivo). Para eso hacen falta los archivos completos (ver 7).
+3) Auditoría pendiente de las pantallas con archivos cortados (ver 7).
+4) Ítems de auditoría antiguos SIN cerrar:
+   · Unificar ClaseTipoTimbrado (timbrados_propios.dart) y ClaseTipoRuc
+     (timbrados_proveedores.dart) en una sola definición.
+   · Unificar sMensaje/sMensajeError de ventana_mensaje.dart en una
+     propiedad común.
+   · Separar funcNombreCampo/funcTextoAyuda (abm_comun.dart) en dos
+     funciones con nombres propios.
+   · Documentar el botón de permisos (accion/enPermiso).
+   · Verificar en VS_CONTA_07: ClaseTipoDocumento.listCodigos → listValores
+     y orden de parámetros de las validaciones.
+   · Correcciones sugeridas a VS_CONTA_08 (sDireccionIP en .env,
+     API_CANCELAR_DOCUMENTOS→API_ANULAR_DOCUMENTOS, ES_UN_ERROR→HAY_ERROR,
+     prefijo OPEN_ eliminado, campos separados de GET, etc.).
+5) Regla 01 de VS_CONTA_07 (programar en inglés / variables en español):
+   decisión pendiente de si se aplica al código existente o solo al nuevo.
+6) Pendientes de módulos futuros (specs ya leídas):
+   · 04_02 "Listas" (en curso): Espacios, Tipos de movimiento de Caja/Banco,
+     Motivos de baja; clases mapEstado (códigos estáticos) y mapMotivoBaja;
+     validaciones en ClaseListasValidaciones (estilo can_validar); obligatorios
+     en cap_validar; etiquetas mapEs/mapFr; campos programáticos de dos
+     valores "Sí/No" y chips de "Aplicaciones" con la aplicación por defecto
+     'Documentos' (ClaseListasDocumentos).
+   · Pantallas pendientes: Marangatú, Verificación de datos, Libro Diario,
+     Libro Mayor, Balances, Estado de Resultados, Retenciones, Bases de
+     Datos, Usuarios, Cierre anual, Reapertura, Informes, Archivos. La
+     lista completa de pantallas está en 01_01_Archivo_Menu_lateral.txt.
+   · Conexión con Firebird (VS_CONTA_09) y APIs del servidor
+     (VS_CONTA_08): las pruebas de APIs llegaron hasta A-40; SUCURSAL,
+     PLAN DE CUENTAS y DOCUMENTOS están validados solo con ejemplos
+     estáticos (9999999-9 no es dato real).
+7) Detalles menores:
+   · empresa.dart: la constante sPaisDefecto quedó sin uso (getPaisElegido
+     devuelve el literal 'PRY'); limpiar dejando uno de los dos.
+   · compras.dart usa import estilo paquete (package:vs_conta/...); el
+     proyecto usa rutas relativas. Cambiar por
+     '../../generales/modelos/documentos.dart'.
+   · Datos de prueba de Compras/Proveedores: los RUC '80098765-9' y
+     '5566778-9' NO pasan la validación de dígito verificador
+     ('8003214-5' sí). Al probar el formulario puede marcar error de DV.
+   · Existen dos definiciones de la clase de listas de identificación en
+     código antiguo: verificar con flutter analyze que no queden referencias
+     a listCodigos (antiguo nombre).
+
+7. ARCHIVOS QUE FALTA LEER COMPLETOS (pedir al usuario que los pegue)
+───────────────────────────────────────────────────────────────────────
+El scraper corta cada archivo alrededor de los 6.000 caracteres. Llegaron
+cortados (y por tanto la auditoría de esos archivos está incompleta):
+  idiomas_compras.dart, idiomas_cuentas.dart, idiomas_interfaz.dart,
+  idiomas_tablas.dart, idiomas_terceros.dart (cortan a mitad del mapFr),
+  login.dart, menu_lateral.dart, temas.dart, formatos.dart,
+  cap_validar.dart, abm_comun.dart, campo_formulario.dart,
+  formulario_abm.dart, formulario_cabecera_detalle.dart,
+  ventana_mensaje.dart, clientes.dart, proveedores.dart,
+  cuentas_asignadas.dart, empresa.dart, cuentas.dart (archivos),
+  asientos.dart, compras.dart.
+Además assets/datos/paises.json falló 2 veces al leerse desde la nube.
+Prioridad de pegado: primero lógica compartida (cap_validar, formatos,
+formulario_abm, formulario_cabecera_detalle, abm_comun, campo_formulario,
+ventana_mensaje, temas), luego pantallas, al final los idiomas_*.dart.
+asientos.dart y compras.dart solo si se modificaron después de esta sesión.
+
+8. DOCUMENTACIÓN — ESTADO DE LECTURA
+───────────────────────────────────────────────────────────────────────
+LEÍDAS COMPLETAS: 00_00, 00_01, 00_02, 01_01, 01_02, 01_05, 01_06, 01_07,
+  01_08, 02_01, 02_01_Archivo_Cuentas, 02_01_01, 02_01_02, 02_01_Titulos,
+  02_02, 02_03, 02_03_01, 02_03_02, 03_01, 04_02_A, 04_03, 05_01, 05_02,
+  06_02, 06_03, 07_01, 09_01_01, 09_01_02, 09_02, 09_02_01, 09_02_02,
+  09_03, 10_01, 11_01_A, 11_01_B.
+PARCIALES: 01_03 (hasta A-41), 01_04 (casi completa), 03_02 (~40%),
+  04_01, 04_02_B (hasta mapMotivoBaja), 06_01 (corta en mapTipoClave),
+  08_01 (corta en CREATE TABLE), 11_01_C (corta en el parser JS),
+  VS_CONTA_07.md (versión actualizada 5-jul-2026: leídas las secciones A-F;
+  el total son 38.235 caracteres), VS_CONTA_08.md (49.995 caracteres;
+  leídas las secciones iniciales WS/WL y CAMPOS TIPO TEXTO).
+NUNCA LEÍDAS (fallaron o el usuario no las pegó): 00_02_01_Intro.
+  ATENCIÓN: 01_01 y 01_02 tienen versiones más nuevas en GitHub que las
+  leídas; conviene releer si se trabaja en el menú o en ABM/genéricos.
+  El usuario prefiere que los .txt de Documentación los edite ÉL; el
+  asistente sugiere los cambios por chat.
+
+9. CÓMO TRABAJAMOS (workflow y trampas conocidas)
+───────────────────────────────────────────────────────────────────────
+· Flujo: el usuario sube cambios a GitHub → el asistente lee los raw →
+  entrega archivos completos corregidos en bloques de código → el usuario
+  copia en VS Code → flutter analyze → sube de nuevo.
+· Cuando un archivo se corta en la lectura (~6.000 chars), el usuario lo
+  pega en el chat en tandas de 4-5 archivos por mensaje (los specs se
+  dividieron en partes A/B/C con control de integridad: primeros/últimos
+  256 caracteres + total de caracteres).
+· TRAMPA 1 (muy importante): el chat de por sí CORROMPE las secuencias
+  "$$" y "$$" (las convierte en "$"); por eso los regex que usan
+  paréntesis escapados NO funcionan al copiarlos. Solución aplicada:
+  usar clases de caracteres [(] [)] [.] que no llevan barra invertida.
+· TRAMPA 2: los regex que intercambian argumentos fallan si el segundo
+  argumento tiene paréntesis internos ([^)]+ corta antes). Ejemplo real
+  roto y reparado: ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma)
+  en menu_lateral.dart. Verificación útil después de regex: buscar [(],
+  (paréntesis seguido de coma) que debe dar 0 resultados.
+· El volteo de argumentos de getTexto YA SE APLICÓ y verificó. NO volver
+  a correr ese regex (afectaría llamadas correctas).
+· Identidad: MiMo (Xiaomi LLM Core Team); responder en español; sin
+  emojis salvo pedido; los archivos van como bloques de código en el chat
+  (nunca como artefactos); verificar siempre la consistencia contra la
+  Documentación; si el usuario afirma un dato que contradice la spec,
+  verificar la suposición antes de seguir.
+
+10. PRÓXIMOS PASOS SUGERIDOS (al retomar)
+───────────────────────────────────────────────────────────────────────
+1) El usuario pega los archivos cortados (sección 7, por tandas) para
+   cerrar la auditoría de widgets y pantallas.
+2) Releer las versiones nuevas de 01_01 y 01_02 en GitHub y aplicar lo
+   que cambien.
+3) Atacar los pendientes de la sección 6.4 (unificaciones y detalles).
+4) Empezar la pantalla "Listas" (04_02) siguiendo el patrón ya probado de
+   formulario_abm + ClaseCampoAbm (ver sección 6.6).
+5) Luego: conexión Firebird (VS_CONTA_09) y llamadas a API (VS_CONTA_08).
+6) Decidir: etiquetas "Principal (Paraguay)" vs spec "Principal"; regla 01
+   de VS_CONTA_07.
+
+═══════════════════════════════════════════════════════════════════════
+FIN DEL CONTEXTO. Al abrir sesión nueva: pegar este archivo completo y
+decir "continuemos desde aquí".
+═══════════════════════════════════════════════════════════════════════

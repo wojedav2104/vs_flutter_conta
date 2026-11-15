@@ -15,8 +15,8 @@ abstract final class ClaseSiNo {
 
   static List<String> getListOpciones(String sIdioma) {
     return <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'si'),
-      ClaseIdiomas.getTexto(sIdioma, 'no'),
+      ClaseIdiomas.getTexto('si', sIdioma),
+      ClaseIdiomas.getTexto('no', sIdioma),
     ];
   }
 
@@ -34,8 +34,8 @@ abstract final class ClaseLocalExterior {
 
   static List<String> getListOpciones(String sIdioma) {
     return <String>[
-      ClaseIdiomas.getTexto(sIdioma, 'valorLocal'),
-      ClaseIdiomas.getTexto(sIdioma, 'valorExterior'),
+      ClaseIdiomas.getTexto('valorLocal', sIdioma),
+      ClaseIdiomas.getTexto('valorExterior', sIdioma),
     ];
   }
 
@@ -63,7 +63,7 @@ abstract final class ClaseAfectaA {
   };
 
   static String getEtiqueta(String sValor, String sIdioma) {
-    return ClaseIdiomas.getTexto(sIdioma, _mapClaves[sValor] ?? sValor);
+    return ClaseIdiomas.getTexto(_mapClaves[sValor] ?? sValor, sIdioma);
   }
 
   static List<String> getListOpciones(String sIdioma) {
@@ -94,7 +94,7 @@ abstract final class ClaseMedioGeneracion {
   };
 
   static String getEtiqueta(String sValor, String sIdioma) {
-    return ClaseIdiomas.getTexto(sIdioma, _mapClaves[sValor] ?? sValor);
+    return ClaseIdiomas.getTexto(_mapClaves[sValor] ?? sValor, sIdioma);
   }
 
   static List<String> getListOpciones(String sIdioma) {
@@ -125,7 +125,7 @@ abstract final class ClaseTipoAfectacion {
   };
 
   static String getEtiqueta(String sValor, String sIdioma) {
-    return ClaseIdiomas.getTexto(sIdioma, _mapClaves[sValor] ?? sValor);
+    return ClaseIdiomas.getTexto(_mapClaves[sValor] ?? sValor, sIdioma);
   }
 
   static List<String> getListOpciones(String sIdioma) {

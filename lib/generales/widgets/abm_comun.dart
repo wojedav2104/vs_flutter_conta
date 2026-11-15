@@ -50,11 +50,11 @@ Future<String?> funcMostrarEncontrar(
       title: Row(
         children: <Widget>[
           Expanded(
-            child: Text(ClaseIdiomas.getTexto(sIdioma, 'abmEncontrar'),
+            child: Text(ClaseIdiomas.getTexto('abmEncontrar', sIdioma),
                 style: ClaseGenEstilosTexto.subtituloMediano(oContextoDialogo)),
           ),
           IconButton(
-            tooltip   : ClaseIdiomas.getTexto(sIdioma, 'cerrar'),
+            tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
             icon      : const Icon(Icons.close),
             onPressed : () => Navigator.of(oContextoDialogo).pop(),
           ),
@@ -75,7 +75,7 @@ Future<String?> funcMostrarEncontrar(
         FilledButton.icon(
           onPressed : () => Navigator.of(oContextoDialogo).pop(),
           icon      : const Icon(Icons.search),
-          label     : Text(ClaseIdiomas.getTexto(sIdioma, 'abmBuscar'),
+          label     : Text(ClaseIdiomas.getTexto('abmBuscar', sIdioma),
               style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
         ),
       ],
@@ -164,7 +164,7 @@ class ClaseFormularioCampos extends StatelessWidget {
           TabBar(
             tabs: <Widget>[
               for (final String sGrupo in listGrupos)
-                Tab(text: ClaseIdiomas.getTexto(sIdioma, sGrupo)),
+                Tab(text: ClaseIdiomas.getTexto(sGrupo, sIdioma)),
             ],
           ),
           Expanded(
@@ -657,13 +657,13 @@ class ClaseBotoneraAbm extends StatelessWidget {
 
   String _getEtiqueta(EnumBotonAbm oBoton) {
     switch (oBoton) {
-      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto(sIdioma, 'abmAgregar');
-      case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto(sIdioma, 'abmBorrar');
-      case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto(sIdioma, 'abmCancelar');
-      case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto(sIdioma, 'abmEncontrar');
-      case EnumBotonAbm.fin:       return ClaseIdiomas.getTexto(sIdioma, 'abmFin');
-      case EnumBotonAbm.grabar:    return ClaseIdiomas.getTexto(sIdioma, 'abmGrabar');
-      case EnumBotonAbm.modificar: return ClaseIdiomas.getTexto(sIdioma, 'abmModificar');
+      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
+      case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto('abmBorrar', sIdioma);
+      case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto('abmCancelar', sIdioma);
+      case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto('abmEncontrar', sIdioma);
+      case EnumBotonAbm.fin:       return ClaseIdiomas.getTexto('abmFin', sIdioma);
+      case EnumBotonAbm.grabar:    return ClaseIdiomas.getTexto('abmGrabar', sIdioma);
+      case EnumBotonAbm.modificar: return ClaseIdiomas.getTexto('abmModificar', sIdioma);
     }
   }
 
