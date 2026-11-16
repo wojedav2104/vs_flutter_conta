@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/opciones/tablas/sucursales.dart
 PARTE 2 DE 2
 ---
-,
-        'localidad' : 'Encarnación',
+Encarnación',
       },
     ];
   }

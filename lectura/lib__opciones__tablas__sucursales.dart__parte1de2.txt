@@ -44,8 +44,7 @@ class ClaseEstadoSucursales extends State<ClaseSucursales> {
       listCampos    : listCampos,
       listRegistros : listRegistros,
       oPreferencias : widget.oPreferencias,
-      sTitulo       : ClaseIdiomas.getTexto(
-                        widget.oPreferencias.getIdioma(), 'menuSucursales'),
+      sTitulo       : ClaseIdiomas.getTexto('menuSucursales', widget.oPreferencias.getIdioma()),
     );
   }
 
@@ -118,4 +117,5 @@ class ClaseEstadoSucursales extends State<ClaseSucursales> {
         'codigo'    : '0003',
         'nombre'    : 'Sucursal Encarnación',
         'direccion' : 'Ruta 1 Km 8',
-        'telefono'  : '071 200 300'
+        'telefono'  : '071 200 300',
+        'localidad' : '

@@ -56,8 +56,8 @@ PARTE 2 DE 3
         sGrupo           : sGrupo,
         sHint            : ClaseIdiomas.getTexto('planHintNombreCuenta', sIdioma),
       ),
-
       ClaseCampoAbm(
+        bCompletarCeros  : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
             sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
@@ -66,7 +66,6 @@ PARTE 2 DE 3
         sEtiqueta        : ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma),
         sGrupo           : sGrupo,
       ),
-
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
@@ -91,4 +90,4 @@ PARTE 2 DE 3
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(
-            sValor, ClaseIdiomas.getTexto('planNivel
+            sValor, Cl

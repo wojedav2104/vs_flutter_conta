@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/cuentas.dart
 PARTE 3 DE 3
 ---
-', sIdioma), sIdioma),
+aseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
         iAnchoCaracteres : 1,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : '${sPrefijo}Nivel',

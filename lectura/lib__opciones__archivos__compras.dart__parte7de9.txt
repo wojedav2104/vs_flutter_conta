@@ -1,13 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 7 DE 9
 ---
-         : 'comResolucion',
-        sMascara         : '999.999.999.999',
-        sValorDefecto    : '0',
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
+poCampoAbm.numero,
         sClave           : 'importeNoImputable',
         sEtiqueta        : ClaseIdiomas.getTexto('comImporteNoImputable', sIdioma),
         sGrupo           : 'comResolucion',
@@ -100,4 +94,9 @@ PARTE 7 DE 9
             'subcuenta'    : '',
           },
           <String, String>{
-            'concepto'     
+            'concepto'     : 'Compra de mercadería',
+            'cuenta'       : '1.03.01',
+            'debe'         : '200000',
+            'haber'        : '',
+            'nombreCuenta' : 'I.V.A Crédito Fiscal 10%',
+      

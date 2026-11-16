@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/opciones/archivos/asientos.dart
 PARTE 3 DE 3
 ---
-
+er'        : '5000000',
+            'nombreCuenta' : 'Capital Social',
+            'subcuenta'    : '',
+          },
+        ],
+        'ejercicio'   : '2026',
+        'fecha'       : '05/01/2026',
         'numero'      : '1',
         'sucursal'    : '0001 - Sucursal Central',
       },

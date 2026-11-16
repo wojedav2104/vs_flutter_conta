@@ -47,8 +47,7 @@ class ClaseEstadoConfiguracion extends State<ClaseConfiguracion> {
       listCampos           : listCampos,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
-      sTitulo              : ClaseIdiomas.getTexto(
-                               widget.oPreferencias.getIdioma(), 'menuConfiguracion'),
+      sTitulo              : ClaseIdiomas.getTexto('menuConfiguracion', widget.oPreferencias.getIdioma()),
     );
   }
 

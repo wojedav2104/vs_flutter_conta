@@ -1,12 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 8 DE 9
 ---
-: 'Compra de mercadería',
-            'cuenta'       : '1.03.01',
-            'debe'         : '200000',
-            'haber'        : '',
-            'nombreCuenta' : 'I.V.A Crédito Fiscal 10%',
-            'subcuenta'    : '',
+      'subcuenta'    : '',
           },
           <String, String>{
             'concepto'     : 'Compra de mercadería',
@@ -102,4 +97,8 @@ PARTE 8 DE 9
         'importeNoImputable'  : '0',
         'iva10'               : '0',
         'iva5'                : '20000',
-        'mostr
+        'mostrarEnLibro'      : ClaseSiNo.si,
+        'numero'              : '001-001-0000456',
+        'numeroAsiento'       : '5',
+        'proveedor'           : 'Importadora Brasil Ltda.',
+        'sucursal'    

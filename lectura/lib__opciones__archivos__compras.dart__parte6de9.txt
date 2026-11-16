@@ -1,10 +1,6 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 6 DE 9
 ---
-iAnchoCaracteres      : 15,
-        oTipo                 : EnumTipoCampoAbm.numero,
-        sClave                : 'total',
-        sEtiqueta             : ClaseIdiomas.getTexto('comTotal', sIdioma),
         sGrupo                : 'comGenerales',
         sMascara              : '999.999.999.999',
       ),
@@ -88,4 +84,10 @@ iAnchoCaracteres      : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeIrpSimple',
         sEtiqueta        : ClaseIdiomas.getTexto('comImporteIrpSimple', sIdioma),
-        sGrupo  
+        sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTi
