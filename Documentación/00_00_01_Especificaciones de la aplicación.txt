@@ -6,7 +6,7 @@ Esta aplicación será usada como aplicación web y como aplicación de teléfon
 
 En lugar de crear controles propios es preferible descargar algún paquete de controles muy recomendado por la comunidad. Un control es un widget con el cual el usuario interactúa, por ejemplo para escribir un texto, un número, una fecha, una hora, o para seleccionar una opción.
 
-Un control que es imprescindible en una aplicación contable es una grilla. El usuario debe poder ver datos en una grilla cuando la interfaz así lo requiera.
+Un control que es imprescindible en una aplicación contable es una grilla. El usuario debe poder ver datos en una grilla cuando la interfaz así lo requiera. Para los formularios ABM se usa una grilla propia: una lista de selección de pocos campos (grilla lateral) y una grilla editable de detalles, diseñadas para ser cómodas en computadoras y en smartphones. Para los informes (Libro Mayor, Balance, Estado de Resultados, etc.) se usará un paquete de grillas de pub.dev (candidato: data_table_2) por sus encabezados fijos, orden y exportación
 
 Esta aplicación será usada en Paraguay, en Perú, y en Francia. Quizás más adelante haya usuarios de Argentina y de Uruguay. Los usuarios de Francia solamente deben poder mirar, visualizar, los datos. Los usuarios de los demás países también deben tener la posibilidad de agregar, borrar, y modificar.
 
