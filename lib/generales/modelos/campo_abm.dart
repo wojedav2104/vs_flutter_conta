@@ -19,6 +19,7 @@ class ClaseCampoAbm {
     this.bSiempreDeshabilitado  = false,
     this.bSoloLecturaPorRol     = false,
     this.bTieneDecimales        = false,    
+    this.bVigencia              = false,
     this.iAnchoCaracteres       = 10,
     this.iMaxComentario         = 500,
     this.listOpciones,
@@ -43,6 +44,7 @@ class ClaseCampoAbm {
   bool              bSiempreDeshabilitado;
   bool              bSoloLecturaPorRol;
   bool              bTieneDecimales;
+  bool              bVigencia;
   int               iAnchoCaracteres;
   int               iMaxComentario;
   List<String>?     listOpciones;
@@ -79,35 +81,41 @@ class ClaseCampoAbm {
 
   // ── Anchos ────────────────────────────────────────────────────────────────
 
+  // ── Anchos ────────────────────────────────────────────────────────────────
+
   /// Ancho del campo dentro de un formulario (incluye los iconos laterales).
-  double getAnchoCampo() {
+  /// sMascaraEfectiva es la máscara que realmente se muestra (la dinámica de
+  /// funcMascara manda sobre sMascara); si es null se usa la del campo.
+  /// Es la única fuente del ancho de los campos: lo usan los formularios y la
+  /// grilla editable de detalles.
+  double getAnchoCampo({String? sMascaraEfectiva}) {
+    final int iCaracteres =
+        (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
     switch (oTipo) {
       case EnumTipoCampoAbm.comentario:
         return ClaseGenLayout.dAnchoCampoComentario;
       case EnumTipoCampoAbm.casillas:
       case EnumTipoCampoAbm.lista:
-        return iAnchoCaracteres * ClaseGenLayout.dAnchoCaracter
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
                + ClaseGenLayout.dAnchoIconoFlecha;
       case EnumTipoCampoAbm.fecha:
       case EnumTipoCampoAbm.hora:
-        return iAnchoCaracteres * ClaseGenLayout.dAnchoCaracter
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar
                + ClaseGenLayout.dAnchoIconoFlecha;
       case EnumTipoCampoAbm.logico:
       case EnumTipoCampoAbm.numero:
       case EnumTipoCampoAbm.texto:
-        final int iCaracteres =
-            (sMascara != null) ? sMascara!.length : iAnchoCaracteres;
         return iCaracteres * ClaseGenLayout.dAnchoCaracter
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar;
     }
   }
 
   /// Ancho de la columna de este campo dentro de la grilla editable de
-  /// detalles (sin iconos: el borrado es por fila completa).
+  /// detalles (sin iconos: el borrado es por fila completa). La columna es de
+  /// ancho fijo, por eso usa la máscara estática del campo.
   double getAnchoColumna() {
-    final int iCaracteres =
-        (sMascara != null) ? sMascara!.length : iAnchoCaracteres;
+    final int iCaracteres = sMascara?.length ?? iAnchoCaracteres;
     return iCaracteres * ClaseGenLayout.dAnchoCaracter
            + ClaseGenEspacios.dEspacio48;
   }

@@ -1,14 +1,19 @@
 import 'package:flutter/services.dart';
 
+
+
 /// Límites de años admitidos en toda la aplicación.
-/// Única fuente de estas constantes (validaciones y selectores de fecha).
+/// Única fuente de estos límites (validaciones y selectores de fecha).
+///
+/// Regla: ningún año puede ser mayor que el año actual — por eso el tope
+/// superior es un getter y no una constante.
 abstract final class ClaseFechas {
 
-  static const int iAnioMaximo = 2100;
-  static const int iAnioMinimo = 2020;
+  static        int get getAnoMaximo => DateTime.now().year;
+  static        int getAnoMaximoVigencia() => DateTime.now().year + 1;
+  static const  int iAnoMinimo = 2020; 
 
 }
-
 
 // ── Fechas y horas ──────────────────────────────────────────────────────────
 
@@ -28,20 +33,22 @@ String funcFormatearHora(int iHora, int iMinuto) {
 /// Convierte una cadena dd/mm/aaaa a DateTime.
 /// Devuelve null si el formato no es válido, si la fecha no existe
 /// (31/02/2026, 30/02/2026, 29/02 fuera de año bisiesto) o si el año está
-/// fuera del rango admitido por ClaseFechas.
+/// fuera del rango admitido por ClaseFechas (hasta el año que viene, para
+/// poder validar las vigencias de los timbrados; los movimientos acotan el
+/// año con validarFechaEnRango, validarEjercicio y validarFechaEnEjercicio).
 DateTime? funcParsearFecha(String sValor) {
   final RegExpMatch? oMatch =
       RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})$').firstMatch(sValor.trim());
   if (oMatch == null) return null;
   final int? iDia  = int.tryParse(oMatch.group(1)!);
   final int? iMes  = int.tryParse(oMatch.group(2)!);
-  final int? iAnio = int.tryParse(oMatch.group(3)!);
-  if (iDia == null || iMes == null || iAnio == null) return null;
-  if (iAnio < ClaseFechas.iAnioMinimo || iAnio > ClaseFechas.iAnioMaximo) return null;
-  final DateTime fFecha = DateTime(iAnio, iMes, iDia);
+  final int? iAno = int.tryParse(oMatch.group(3)!);
+  if (iDia == null || iMes == null || iAno == null) return null;
+  if (iAno < ClaseFechas.iAnoMinimo || iAno > ClaseFechas.getAnoMaximoVigencia()) return null;
+  final DateTime fFecha = DateTime(iAno, iMes, iDia);
   // DateTime normaliza las fechas imposibles (31/02/2026 → 03/03/2026):
   // si los componentes cambiaron, la fecha original no existía.
-  if (fFecha.day != iDia || fFecha.month != iMes || fFecha.year != iAnio) return null;
+  if (fFecha.day != iDia || fFecha.month != iMes || fFecha.year != iAno) return null;
   return fFecha;
 }
 

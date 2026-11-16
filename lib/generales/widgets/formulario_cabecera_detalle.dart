@@ -32,6 +32,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
     this.bTablaUnSoloRegistro = false,
     this.funcActualizarCampos,
     this.funcActualizarFila,
+    this.funcAlPerderFoco,    
     this.funcValidarRegistro,
     required this.listCamposCabecera,
     required this.listCamposDetalle,
@@ -78,6 +79,8 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
   final String sClaveHaber;
   final String sTitulo;
 
+  final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
+
   @override
   State<ClaseFormularioCabeceraDetalle> createState() =>
       ClaseEstadoFormularioCabeceraDetalle();
@@ -92,6 +95,11 @@ class ClaseEstadoFormularioCabeceraDetalle
   /// true después de Agregar/Modificar → mover foco al primer campo.
   bool   bPedirFoco   = false;                          // ← CAMBIO item 10
 
+  /// Llave del formulario de cabecera: para colocar el foco en el primer
+  /// campo con error al fallar el grabado (item 14).
+  final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
+      GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
+
   /// Filas de detalle que se están editando (valores internos).
   List<Map<String, String>> listDetalles = <Map<String, String>>[];
 
@@ -101,6 +109,18 @@ class ClaseEstadoFormularioCabeceraDetalle
       <Map<String, TextEditingController>>[];
 
   Map<String, String> mapValores = <String, String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar, seleccionar la primera fila de la
+    //   grilla si hay registros, para que el formulario muestre sus datos.
+    if (widget.listRegistros.isNotEmpty) {
+      iRegistro  = 0;
+      mapValores = _desdeRegistro(widget.listRegistros[0]);
+      _reemplazarDetalles(_desdeDetalles(widget.listRegistros[0]));
+    }
+  }
 
   @override
   void dispose() {
@@ -207,12 +227,32 @@ class ClaseEstadoFormularioCabeceraDetalle
   Future<void> grabar() async {
     final String sIdioma = getIdioma();
 
+    // 0) Ceros a la izquierda en cabecera y detalles ANTES de validar
+    //    (regla de la subcuenta: '1' → '00001').
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.bCompletarCeros) {
+        mapValores[oCampo.sClave] =
+            funcCompletarCeros(mapValores[oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
+      }
+    }
+    for (int i = 0; i < listDetalles.length; i++) {
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+        if (oCampo.bCompletarCeros) {
+          listDetalles[i][oCampo.sClave] = funcCompletarCeros(
+              listDetalles[i][oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
+        }
+      }
+      _sincronizarControles(i, listDetalles[i]);
+    }
+
     // 1) Campos de cabecera.
     for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
       final String? sError =
           funcValidarCampoAbm(oCampo, mapValores[oCampo.sClave] ?? '', sIdioma);
       if (sError != null) {
         await _mostrarError(sError);
+        // ← CAMBIO item 14: el foco se coloca en el primer campo con error.
+        _oLlaveFormulario.currentState?.enfocarCampo(oCampo.sClave);
         return;
       }
     }
@@ -234,14 +274,8 @@ class ClaseEstadoFormularioCabeceraDetalle
       return;
     }
 
-    // 4) Ceros a la izquierda y grabación.
+    // 4) Grabación (los ceros ya se aplicaron en el paso 0).
     setState(() {
-      for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
-        if (oCampo.bCompletarCeros) {
-          mapValores[oCampo.sClave] =
-              funcCompletarCeros(mapValores[oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
-        }
-      }
       _reemplazarDetalles(_clonarDetalles(listLimpias));
       final Map<String, dynamic> oNuevo = Map<String, dynamic>.from(mapValores)
         ..[ClaseFormularioCabeceraDetalle.sClaveDetalles] = _clonarDetalles(listLimpias);
@@ -533,12 +567,14 @@ class ClaseEstadoFormularioCabeceraDetalle
           Expanded(
             flex  : 2,
             child : ClaseFormularioCampos(
-              bAutoFocus        : bPedirFoco,             // ← CAMBIO item 10
-              funcAlCambiarCampo : _alCambiarCampo,
-              funcEsHabilitado   : _getHabilitado,
-              listCampos         : widget.listCamposCabecera,
-              mapValores         : mapValores,
-              sIdioma            : getIdioma(),
+              key                 : _oLlaveFormulario,       // ← CAMBIO item 14
+              bAutoFocus          : bPedirFoco,              // ← CAMBIO item 10
+              funcAlCambiarCampo  : _alCambiarCampo,
+              funcAlPerderFoco    : widget.funcAlPerderFoco,              
+              funcEsHabilitado    : _getHabilitado,
+              listCampos          : widget.listCamposCabecera,
+              mapValores          : mapValores,
+              sIdioma             : getIdioma(),
             ),
           ),
           const Divider(height: ClaseGenEspacios.dEspacio01),
@@ -723,11 +759,14 @@ class ClaseEstadoFormularioCabeceraDetalle
         );
       default:
         return TextField(
-          controller : listControles[iFila][oCampo.sClave],
-          enabled    : bHabilitado,
-          style      : ClaseGenEstilosTexto.normalChico(oContexto),
-          onChanged  : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
-          decoration : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+          controller      : listControles[iFila][oCampo.sClave],
+          enabled         : bHabilitado,
+          style           : ClaseGenEstilosTexto.normalChico(oContexto),
+          inputFormatters : (oCampo.iAnchoCaracteres > 0)
+              ? <TextInputFormatter>[LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres)]
+              : null,
+          onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
         );
     }
   }

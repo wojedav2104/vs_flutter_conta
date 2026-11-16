@@ -239,9 +239,8 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       // ── Generales ────────────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRangoEntero(
-            sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma),
-            ClaseFechas.iAnioMinimo, DateTime.now().year, sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
+            sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
@@ -261,7 +260,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
             sValor, ClaseIdiomas.getTexto('comFecha', sIdioma),
-            DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fecha',
@@ -555,6 +554,8 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
+            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -562,6 +563,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sHint            : ClaseIdiomas.getTexto('comHintCuenta', sIdioma),
       ),
       ClaseCampoAbm(
+        bCompletarCeros  : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
             sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,

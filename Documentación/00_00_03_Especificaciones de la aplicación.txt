@@ -17,7 +17,11 @@ MENSAJES AL USUARIO:
   usar construcciones neutras o de "tú" (que no marca género).
 - Esta regla aplica a todos los textos visibles: ventanas, botones, etiquetas, hints, tooltips y validaciones, en español y en francés.
 
-MASCARÁS DE ENTRADA:
+MÁSCARAS DE ENTRADA:
 - En una máscara de entrada la letra "A" significa "cualquier carácter", el dígito "9" significa "cualquier dígito entre 0 y 9", el signo "!" significa "una letra mayúscula". Todos los demás caracteres deben mostrarse tal cual y en la misma posición que ocupan en la máscara de entrada
 - Si un campo de tipo carácter/string tiene máscara de entrada, esa máscara de entrada determina la cantidad máxima de caracteres que pueden introducirse en ese campo y el ancho del campo debe estar acorde a esa máscara de entrada
 - Si un campo de tipo numérico tiene máscara de entrada, esa máscara de entrada determina la cantidad máxima de dígitos que puede tener ese campo. Los números se justifican hacia la derecha. Ejemplos: máscara de entrada = "999.999.999", el usuario escribe: 12345, se le muestra 12.345; máscara de entrada = "999.999,99", el usuario escribe: 1234,5 y se le muestra: 1.234,50
+
+LETRAS Ñ EN NOMBRES DE VARIABLES, FUNCIONES, MÉTODOS, Y CLASES:
+- Las letras ñ deben ser reemplazadas por las letras n. Ejemplos: iAnoMinimo, iAnoMaximo
+

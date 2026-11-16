@@ -40,6 +40,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioAbm(
+      funcAlPerderFoco   : completarIdentificacion,
       funcValidarRegistro : validarRegistro,
       listCampos          : listCampos,
       listRegistros       : listRegistros,
@@ -61,6 +62,19 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
       ClaseIdiomas.getTexto('cliIdentificacion', sIdioma),
       sIdioma,
     );
+  }
+
+  // ── Auto-completado al salir del campo ──────────────────────────────────
+
+  /// Completa el guion y el dígito verificador del RUC cuando el usuario
+  /// escribe solo la base ('8003214' → '8003214-5'), al salir del campo de
+  /// la identificación. Con otros campos o tipos de identificación no toca
+  /// nada. Es una ayuda para el usuario: la validación al grabar sigue
+  /// exigiendo el formato completo.
+  String? completarIdentificacion(String sClave, String sValor, Map<String, String> mapValores) {
+    if (sClave != 'identificacion') return null;
+    if (mapValores['tipoIdentificacion'] != ClaseTipoIdentificacion.ruc) return null;
+    return ClaseCapValidar.funcCompletarRuc(sValor);
   }
 
   // ── Campos ──────────────────────────────────────────────────────────────
@@ -134,6 +148,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
         sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
+        bMayusculas     : true,
         bObligatorio     : true,
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
@@ -163,6 +178,7 @@ class ClaseEstadoClientes extends State<ClaseClientes> {
   }
 
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // Los RUC tienen dígito verificador válido según funcDigitoVerificador.
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[

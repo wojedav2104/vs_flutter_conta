@@ -76,7 +76,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   ///   · Nivel: se deriva de la cantidad de grupos de la cuenta (1.01.04 → 3).
   ///   · Cuenta superior: sugerida quitando el último grupo (1.01.04 → 1.01),
   ///     solo si está vacía (la jerarquía puede no seguir la numeración).
-  ///     Se vacía sola si la cuenta tiene 1 dígito (es raíz).
+  ///     Se vacía sola si la cuenta es raíz (un solo grupo: "1", "10").
   Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
     final Map<String, String> mapActualizaciones = <String, String>{};
     for (final String sPrefijo in <String>['pri', 'alt']) {
@@ -84,9 +84,15 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       if (ClaseCapValidar.esFormatoCuenta(sCuenta)) {
         mapActualizaciones['${sPrefijo}Nivel'] =
             '${ClaseCapValidar.contarGruposCuenta(sCuenta)}';
-        // Determinística: siempre el grupo anterior (vacía si es raíz).
+        // Solo se sugiere si está vacía (la jerarquía puede no seguir la
+        // numeración); las raíces quedan sin superior.
+        final String sSuperior = (mapValores['${sPrefijo}CuentaSuperior'] ?? '').trim();
         mapActualizaciones['${sPrefijo}CuentaSuperior'] =
-            ClaseCapValidar.funcCuentaSuperior(sCuenta);
+            (ClaseCapValidar.contarGruposCuenta(sCuenta) <= 1)
+                ? ''
+                : (sSuperior.isEmpty
+                    ? ClaseCapValidar.funcCuentaSuperior(sCuenta)
+                    : sSuperior);
       }
     }
     return mapActualizaciones.isEmpty ? null : mapActualizaciones;
@@ -94,6 +100,9 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
   // ── Validación del registro completo ────────────────────────────────────
 
+  /// La cuenta superior es obligatoria solo en las cuentas con más de un
+  /// grupo (regla de ClaseCapValidar.validarCuentaSuperior): por eso el
+  /// campo no lleva bObligatorio, que exigiría el dato también en las raíces.
   String? validarRegistro(Map<String, dynamic> oRegistro) {
     for (final String sPrefijo in <String>['pri', 'alt']) {
       final String? sError = ClaseCapValidar.validarCuentaSuperior(
@@ -158,8 +167,9 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         sHint            : ClaseIdiomas.getTexto('planHintNombreSubcuenta', sIdioma),
       ),
 
+      // Sin bObligatorio: la obligatoriedad condicional (>1 grupo) la
+      // valida ClaseCapValidar.validarCuentaSuperior en validarRegistro.
       ClaseCampoAbm(
-        bObligatorio         : true,
         funcActualizarEstado : (mapValores) => habilitarCuentaSuperior(mapValores, sPrefijo),
         iAnchoCaracteres     : 58,
         oTipo                : EnumTipoCampoAbm.texto,
@@ -228,6 +238,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
   }
 
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // La jerarquía no sigue la numeración: 2.01 depende de 1 (no de 2).
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[

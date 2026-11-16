@@ -23,17 +23,17 @@ class ClaseEmpresa extends StatefulWidget {
 
   final ClasePreferencias oPreferencias;
 
-  /// Valor del campo 'pais' en los datos de prueba (es también el valor por defecto del campo).
+  /// Valor del campo 'pais' en los datos de prueba (es también el valor por
+  /// defecto del campo).
   static const String sPaisDefecto = 'PRY';
 
   /// País del registro único de la Empresa.
-  /// Por ahora devuelve el valor de los datos de prueba; cuando haya
-  /// conexión con la Base de Datos devolverá el país grabado en la tabla
-  /// Empresa.
+  /// Por ahora devuelve sPaisDefecto; cuando haya conexión con la Base de
+  /// Datos devolverá el país grabado en la tabla Empresa.
   static String getPaisElegido() {
-    return 'PRY';
+    return sPaisDefecto;                                  // ← CAMBIO limpieza sPaisDefecto
   }
-  
+
   @override
   State<ClaseEmpresa> createState() => ClaseEstadoEmpresa();
 }
@@ -55,6 +55,7 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
     return ClaseFormularioAbm(
       bPermitirEncontrar   : false,
       bTablaUnSoloRegistro : true,
+      funcAlPerderFoco     : completarRuc,
       listCampos           : listCampos,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
@@ -64,6 +65,16 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
 
   String getIdioma() => widget.oPreferencias.getIdioma();
 
+  // ── Auto-completado al salir del campo ──────────────────────────────────
+
+  /// Completa el guion y el dígito verificador del RUC cuando el usuario
+  /// escribe solo la base ('80012345' → '80012345-0'), al salir del campo.
+  /// Es una ayuda para el usuario: la validación al grabar sigue exigiendo
+  /// el formato completo.
+  String? completarRuc(String sClave, String sValor, Map<String, String> mapValores) {
+    if (sClave != 'ruc') return null;
+    return ClaseCapValidar.funcCompletarRuc(sValor);
+  }
   // ── Campos de los tres grupos ───────────────────────────────────────────
 
   List<ClaseCampoAbm> crearCampos() {
@@ -139,7 +150,7 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         sClave           : 'pais',
         sEtiqueta        : ClaseIdiomas.getTexto('empPais', sIdioma),
         sGrupo           : 'empGrupoGenerales',
-        sValorDefecto    : 'PRY',
+        sValorDefecto    : ClaseEmpresa.sPaisDefecto,     // ← CAMBIO limpieza sPaisDefecto
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -226,6 +237,7 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
   }
 
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // El RUC tiene dígito verificador válido según funcDigitoVerificador.
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[
@@ -241,7 +253,7 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         'localidad'    : 'Luque',
         'nombre'       : 'Empresa de Prueba S.A.',
         'nombres'      : '',
-        'pais'         : 'PRY',
+        'pais'         : ClaseEmpresa.sPaisDefecto,       // ← CAMBIO limpieza sPaisDefecto
         'ramo'         : 'Servicios contables',
         'ruc'          : '80012345-0',
         'telefono'     : '021 500 400',
@@ -250,3 +262,4 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
   }
 
 }
+

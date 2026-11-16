@@ -13,10 +13,10 @@ Datos comunes:
 Grupo local:
 - Número de la cuenta (carácter, 16, "Cuenta N°", obligatorio). Validación: debe cumplir con el formato de los números de cuenta
 - Nombre de la cuenta (carácter, 40, "Nombre de la cuenta contable", obligatorio). Validación: su longitud deber ser >= 3
-- Número de la subcuenta (carácter, 5, opcional). Validación: solamente dígitos entre "00001" y "99999"
+- Número de la subcuenta (carácter, 5, opcional). Validación: solamente dígitos entre "00001" y "99999". Se debe completar con ceros a la izquierda si fuera necesario para que la longitud sea 5
 - Nombre de la subcuenta (carácter, 40, "Nombre de la subcuenta contable", opcional)
-- Cuenta de nivel superior (carácter, 58, "La cuenta padre de esta cuenta", obligatorio). Validación: si la cuenta tiene 1 solo dígito, debe estar deshabilitada y totalmente vacía; en todos los demás casos sí es obligatoria
-- Nivel de la cuenta (numérico, 1, obligatorio). Validación: un dígito entre 1 y 9
+- Cuenta de nivel superior (carácter, 58, "La cuenta padre de esta cuenta", obligatorio). Validación: si la cuenta tiene 1 solo grupo, debe estar deshabilitada y totalmente vacía; en todos los demás casos sí es obligatoria
+- Nivel de la cuenta (numérico, 1, obligatorio). Validación: un dígito entre 1 y 5
 - Asentable (debe seleccionar entre: Sí, No)
 
 Grupo para enlazar con Francia:

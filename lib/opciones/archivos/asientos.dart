@@ -83,7 +83,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRangoEntero(
             sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma),
-            ClaseFechas.iAnioMinimo, DateTime.now().year, sIdioma),
+            ClaseFechas.iAnoMinimo, DateTime.now().year, sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
@@ -101,7 +101,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
             sValor, ClaseIdiomas.getTexto('asiFecha', sIdioma),
-            DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fecha',

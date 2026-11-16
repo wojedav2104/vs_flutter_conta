@@ -40,6 +40,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioAbm(
+      funcAlPerderFoco    : completarIdentificacion,
       funcValidarRegistro : validarRegistro,
       listCampos          : listCampos,
       listRegistros       : listRegistros,
@@ -61,6 +62,19 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
       ClaseIdiomas.getTexto('prvIdentificacion', sIdioma),
       sIdioma,
     );
+  }
+
+  // ── Auto-completado al salir del campo ──────────────────────────────────
+
+  /// Completa el guion y el dígito verificador del RUC cuando el usuario
+  /// escribe solo la base ('8003214' → '8003214-5'), al salir del campo de
+  /// la identificación. Con otros campos o tipos de identificación no toca
+  /// nada. Es una ayuda para el usuario: la validación al grabar sigue
+  /// exigiendo el formato completo.
+  String? completarIdentificacion(String sClave, String sValor, Map<String, String> mapValores) {
+    if (sClave != 'identificacion') return null;
+    if (mapValores['tipoIdentificacion'] != ClaseTipoIdentificacion.ruc) return null;
+    return ClaseCapValidar.funcCompletarRuc(sValor);
   }
 
   // ── Campos ──────────────────────────────────────────────────────────────
@@ -134,12 +148,13 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
-        bObligatorio     : true,
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'identificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto('prvIdentificacion', sIdioma),
-        sHint            : ClaseIdiomas.getTexto('prvHintIdentificacion', sIdioma),
+        bMayusculas       : true,
+        bObligatorio      : true,
+        iAnchoCaracteres  : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'identificacion',
+        sEtiqueta         : ClaseIdiomas.getTexto('prvIdentificacion', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('prvHintIdentificacion', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
@@ -163,6 +178,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
   }
 
   // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // Los RUC tienen dígito verificador válido según funcDigitoVerificador.
 
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[
@@ -185,7 +201,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
         'direccion'          : 'Ruta Transchaco Km 5',
         'email'              : 'contacto@essap.com.py',
         'esServicioPublico'  : ClaseSiNo.si,
-        'identificacion'     : '80011223-7',
+        'identificacion'     : '80076543-3',
         'localidad'          : 'Loma Plata',
         'nombre'             : 'Energía S.A.',
         'telefono'           : '021 400 300',

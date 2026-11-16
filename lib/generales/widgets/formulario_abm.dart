@@ -24,6 +24,7 @@ class ClaseFormularioAbm extends StatefulWidget {
     this.bPermitirEncontrar   = true,
     this.bTablaUnSoloRegistro = false,
     this.funcActualizarCampos,
+    this.funcAlPerderFoco,
     this.funcEtiquetaGrupo,
     this.funcValidarRegistro,
     required this.listCampos,
@@ -42,6 +43,14 @@ class ClaseFormularioAbm extends StatefulWidget {
   /// actualizar (o null si no hay cambios).
   final Map<String, String>? Function(Map<String, String> mapValores)? funcActualizarCampos;
 
+  /// Transformación del valor al salir del campo (devuelve el valor nuevo
+  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
+  /// valores internos del formulario. Ej: completar el RUC al salir del
+  /// campo de la identificación.
+  final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
+
+  /// Etiqueta personalizada de cada pestaña de grupo (opcional). Recibe la
+  /// clave del grupo; si no se provee, se usa el texto traducido de la clave.
   final String Function(String sClaveGrupo)? funcEtiquetaGrupo;
 
   /// Validación cruzada del registro completo (o null si es válido).
@@ -68,7 +77,23 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   /// true después de Agregar/Modificar → mover foco al primer campo.
   bool   bPedirFoco   = false;                          // ← CAMBIO item 10
 
+  /// Llave del formulario de campos: para colocar el foco en el primer
+  /// campo con error al fallar el grabado (item 14).
+  final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
+      GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
+
   Map<String, String> mapValores = <String, String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar, seleccionar la primera fila de la
+    //   grilla si hay registros, para que el formulario muestre sus datos.
+    if (widget.listRegistros.isNotEmpty) {
+      iRegistro  = 0;
+      mapValores = _desdeRegistro(widget.listRegistros[0]);
+    }
+  }
 
   String getIdioma() => widget.oPreferencias.getIdioma();
 
@@ -126,12 +151,23 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   Future<void> grabar() async {
     final String sIdioma = getIdioma();
 
+    // 0) Ceros a la izquierda ANTES de validar (regla de la subcuenta:
+    //    '1' → '00001' y recién entonces se valida como de 5 dígitos).
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      if (oCampo.bCompletarCeros) {
+        mapValores[oCampo.sClave] =
+            funcCompletarCeros(mapValores[oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
+      }
+    }
+
     // 1) Obligatorios, longitud máxima (regla 14) y validación por campo.
     for (final ClaseCampoAbm oCampo in widget.listCampos) {
       final String? sError =
           funcValidarCampoAbm(oCampo, mapValores[oCampo.sClave] ?? '', sIdioma);
       if (sError != null) {
         await _mostrarError(sError);
+        // ← CAMBIO item 14: el foco se coloca en el primer campo con error.
+        _oLlaveFormulario.currentState?.enfocarCampo(oCampo.sClave);
         return;
       }
     }
@@ -144,14 +180,8 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       return;
     }
 
-    // 3) Ceros a la izquierda y grabación.
+    // 3) Grabación.
     setState(() {
-      for (final ClaseCampoAbm oCampo in widget.listCampos) {
-        if (oCampo.bCompletarCeros) {
-          mapValores[oCampo.sClave] =
-              funcCompletarCeros(mapValores[oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
-        }
-      }
       if (iRegistro < 0) {
         widget.listRegistros.add(Map<String, dynamic>.from(mapValores));
         iRegistro = widget.listRegistros.length - 1;
@@ -286,9 +316,12 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       listCampos      : widget.listCampos,
       listRegistros   : widget.listRegistros,
       oFormulario     : ClaseFormularioCampos(
-        bAutoFocus       : bPedirFoco,                   // ← CAMBIO item 10
+        key                : _oLlaveFormulario,            // ← CAMBIO item 14
+        bAutoFocus         : bPedirFoco,                   // ← CAMBIO item 10
         funcAlCambiarCampo : _alCambiarCampo,
+        funcAlPerderFoco   : widget.funcAlPerderFoco,
         funcEsHabilitado   : _getHabilitado,
+        funcEtiquetaGrupo  : widget.funcEtiquetaGrupo,     // ← CAMBIO etiqueta de grupo
         listCampos         : widget.listCampos,
         mapValores         : mapValores,
         sIdioma            : getIdioma(),
@@ -300,3 +333,4 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   }
 
 }
+

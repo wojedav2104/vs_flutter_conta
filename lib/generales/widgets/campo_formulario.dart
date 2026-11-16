@@ -46,8 +46,10 @@ class ClaseCampoFormulario extends StatefulWidget {
     this.bAutoFocus = false,
     required this.bHabilitado,
     required this.funcAlCambiar,
+    this.funcAlPerderFoco,
     required this.mapValores,
     required this.oCampo,
+    this.oFocoExterno,
     required this.sIdioma,
     required this.sValor,
   });
@@ -56,8 +58,19 @@ class ClaseCampoFormulario extends StatefulWidget {
   final bool                                bAutoFocus;
   final bool                                bHabilitado;
   final void Function(String sValor)         funcAlCambiar;
+
+  /// Transformación del valor al salir del campo (devuelve el valor nuevo
+  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
+  /// valores internos del formulario. Ej: completar el guion y el dígito
+  /// verificador del RUC ('8003214' → '8003214-5') al salir de la identificación.
+  final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
+
   final Map<String, String>                  mapValores;
   final ClaseCampoAbm                        oCampo;
+
+  /// Nodo de foco externo (item 14): permite al formulario colocar el foco
+  /// en este campo cuando el grabado encuentra un error en él.
+  final FocusNode?                           oFocoExterno;
   final String                               sIdioma;
   final String                               sValor;
 
@@ -68,13 +81,19 @@ class ClaseCampoFormulario extends StatefulWidget {
 class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   late TextEditingController oControl;
-  final FocusNode oFoco = FocusNode();
+  final FocusNode oFocoInterno = FocusNode();
   String sMascaraActual = '';
+
+  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo
+  /// provee, o el propio. Se elige una sola vez en initState.
+  late final FocusNode oFoco;
 
   @override
   void initState() {
     super.initState();
+    oFoco = widget.oFocoExterno ?? oFocoInterno;
     oControl = TextEditingController(text: widget.sValor);
+    oFoco.addListener(_alCambiarFoco);                       // ← CAMBIO item 9
     if (widget.bAutoFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) oFoco.requestFocus();
@@ -87,6 +106,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.sValor != widget.sValor && oControl.text != widget.sValor) {
       oControl.text = widget.sValor;
+      if (!oFoco.hasFocus) _mostrarNumeroFormateado();       // ← CAMBIO item 9
     }
     if (widget.bAutoFocus && !oldWidget.bAutoFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -97,8 +117,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   @override
   void dispose() {
+    oFoco.removeListener(_alCambiarFoco);                    // ← CAMBIO item 9
     oControl.dispose();
-    oFoco.dispose();
+    oFocoInterno.dispose();
     super.dispose();
   }
 
@@ -109,32 +130,64 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     return sMascara ?? widget.oCampo.sMascara;
   }
 
-  // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
+  // ── Entrada y salida del foco ────────────────────────────────────────────
 
-  double _getAnchoCampo() {
-    final String? sMascara = _getMascara();
-    final int iCaracteres = (sMascara != null)
-        ? sMascara.length
-        : widget.oCampo.iAnchoCaracteres;
-    switch (widget.oCampo.oTipo) {
-      case EnumTipoCampoAbm.comentario:
-        return ClaseGenLayout.dAnchoCampoComentario;
-      case EnumTipoCampoAbm.casillas:
-      case EnumTipoCampoAbm.lista:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-             + ClaseGenLayout.dAnchoIconoFlecha;
-      case EnumTipoCampoAbm.fecha:
-      case EnumTipoCampoAbm.hora:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-             + ClaseGenEspacios.dEspacio24
-             + ClaseGenLayout.dAnchoIconoBorrar
-             + ClaseGenLayout.dAnchoIconoFlecha;
-      default:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-             + ClaseGenEspacios.dEspacio24
-             + ClaseGenLayout.dAnchoIconoBorrar;
+  /// Al recibir el foco, los números con máscara muestran el valor plano
+  /// (item 9). Al perderlo: los números se formatean según la máscara
+  /// (item 9) y se ejecuta la transformación del campo (funcAlPerderFoco,
+  /// ej: completar el guion y el dígito verificador del RUC).
+  void _alCambiarFoco() {
+    if (oFoco.hasFocus) {
+      if (widget.oCampo.oTipo == EnumTipoCampoAbm.numero
+          && _getMascara() != null
+          && oControl.text != widget.sValor) {
+        oControl.text = widget.sValor;
+      }
+      return;
+    }
+    _mostrarNumeroFormateado();
+    // Transformación del campo al salir del foco (ej: completar el RUC).
+    final String? sNuevo = widget.funcAlPerderFoco
+        ?.call(widget.oCampo.sClave, widget.sValor, widget.mapValores);
+    if (sNuevo != null && sNuevo != widget.sValor) {
+      oControl.text = sNuevo;
+      widget.funcAlCambiar(sNuevo);
     }
   }
+
+  /// Muestra el número formateado según la máscara. Solo cambia el texto
+  /// visible: el valor interno queda plano.
+  void _mostrarNumeroFormateado() {
+    if (widget.oCampo.oTipo != EnumTipoCampoAbm.numero) return;
+    final String? sMascara = _getMascara();
+    if (sMascara == null) return;
+    final String sFormato = _formatearNumeroParaMostrar(widget.sValor, sMascara);
+    if (sFormato != oControl.text) oControl.text = sFormato;
+  }
+
+  /// Formatea un valor plano según la máscara del campo. funcFormatearNumero
+  /// espera la coma como separador decimal y el separador de miles sale de la
+  /// propia máscara ('999.999.999' → '.').
+  String _formatearNumeroParaMostrar(String sValor, String sMascara) {
+    if (sValor.trim().isEmpty) return '';
+    String sSeparadorMiles = '.';
+    for (int i = 0; i < sMascara.length; i++) {
+      if (sMascara[i] != '9') {
+        sSeparadorMiles = sMascara[i];
+        break;
+      }
+    }
+    return funcFormatearNumero(sValor.replaceAll('.', ','), sMascara, sSeparadorMiles);
+  }
+
+  // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
+
+  // ── Ancho del campo ──────────────────────────────────────────────────────
+
+  /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
+  /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
+  double _getAnchoCampo() =>
+      widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
 
   // ── Decoración común de los controles ───────────────────────────────────
 
@@ -144,13 +197,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   InputDecoration _getDecoracion({
     String? sHint,
     Widget? oIconoDerecha,
-    String? sContador,
   }) {
     return InputDecoration(
       isDense        : true,
       hintText       : sHint,
       suffixIcon     : oIconoDerecha,
-      counterText    : sContador,
       border         : const OutlineInputBorder(),
       contentPadding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio12,
@@ -159,15 +210,38 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     );
   }
 
+  // ── Etiqueta del campo ──────────────────────────────────────────────────
+
+  /// Etiqueta a la derecha, con asterisco rojo si el campo es obligatorio
+  /// (item 4).
+  Widget _construirEtiqueta(BuildContext oContexto) {
+    return Text.rich(
+      TextSpan(
+        style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+        children: <InlineSpan>[
+          TextSpan(text: widget.oCampo.sEtiqueta),
+          if (widget.oCampo.bObligatorio)
+            TextSpan(
+              text  : ' *',
+              style : ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error),
+            ),
+        ],
+      ),
+      textAlign : TextAlign.right,
+    );
+  }
+
   // ── Botón de borrar el contenido del campo ─────────────────────────────
 
-  /// Compartido por texto, fecha y hora (antes duplicado en los tres).
-  bool get _bMostrarBorrarCampo =>
+  /// Muestra el botón de borrar solo si el campo está habilitado y tiene
+  /// contenido (compartido por texto, fecha y hora).
+  bool _getMostrarBorrarCampo() =>
       widget.bHabilitado && widget.sValor.isNotEmpty;
 
   Widget _construirBotonBorrarCampo() {
     return IconButton(
-      tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'borrarCampo'),
+      tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
       icon      : const Icon(Icons.close, size: 18),
       onPressed : () {
         oControl.text = '';
@@ -180,7 +254,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   /// Conversión a mayúsculas y aplicación de la máscara (si existe);
   /// actualiza el display solo si el valor cambió.
-  /// bConMascara=false para el comentario (sin máscara).
+  /// bConMascara=false para el comentario (sin máscara) y para los números
+  /// (la máscara de números se aplica al salir del campo, item 9).
   void _alCambiarTexto(String sValor, {bool bConMascara = true}) {
     String sSalida = sValor;
     if (widget.oCampo.bMayusculas) {
@@ -225,11 +300,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 top   : ClaseGenEspacios.dEspacio14,
                 right : ClaseGenEspacios.dEspacio04,
               ),
-              child : Text(
-                widget.oCampo.sEtiqueta,
-                textAlign : TextAlign.right,
-                style     : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
-              ),
+              child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
             ),
           ),
           SizedBox(
@@ -268,8 +339,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
     final String? sMascara = _getMascara();
 
-    // Si hay máscara y cambió, re-aplicarla al valor actual.
-    if (sMascara != null && sMascara != sMascaraActual) {
+    // Si hay máscara y cambió, re-aplicarla al valor actual. Solo texto:
+    // el número se formatea al salir del campo (item 9).
+    if (!bNumero && sMascara != null && sMascara != sMascaraActual) {
       sMascaraActual = sMascara;
       final String sDigitos = widget.sValor.replaceAll(RegExp(r'[^0-9]'), '');
       final String sConMascara = funcAplicarMascara(sDigitos, sMascara);
@@ -295,10 +367,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
               : TextInputType.number)
           : null,
       inputFormatters : _getFormateadores(bNumero),
-      onChanged       : (String sValor) => _alCambiarTexto(sValor),
+      onChanged       : (String sValor) =>
+          _alCambiarTexto(sValor, bConMascara: !bNumero),    // ← CAMBIO item 9
       decoration      : _getDecoracion(
         sHint        : widget.oCampo.sHint,
-        oIconoDerecha : _bMostrarBorrarCampo ? _construirBotonBorrarCampo() : null,
+        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
       ),
     );
   }
@@ -340,7 +413,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
         IconButton(
-          tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'campoElegirFecha'),
+          tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
           icon      : const Icon(Icons.calendar_month),
           onPressed : widget.bHabilitado
               ? () async {
@@ -348,8 +421,12 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                     oContexto,
                     widget.sIdioma,
                     funcParsearFecha(widget.sValor) ?? DateTime.now(),
-                    DateTime(ClaseFechas.iAnioMinimo, 1, 1),
-                    DateTime(ClaseFechas.iAnioMaximo, 12, 31),
+                    DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+                    DateTime(
+                      widget.oCampo.bVigencia
+                          ? ClaseFechas.getAnoMaximoVigencia()
+                          : ClaseFechas.getAnoMaximo(),
+                      12, 31),
                   );
                   if (fElegida != null) {
                     final String sFecha = funcFormatearFecha(fElegida);
@@ -359,7 +436,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 }
               : null,
         ),
-        if (_bMostrarBorrarCampo) _construirBotonBorrarCampo(),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
       ],
     );
   }
@@ -383,7 +460,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
         IconButton(
-          tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'campoElegirHora'),
+          tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
           icon      : const Icon(Icons.schedule),
           onPressed : widget.bHabilitado
               ? () async {
@@ -400,7 +477,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 }
               : null,
         ),
-        if (_bMostrarBorrarCampo) _construirBotonBorrarCampo(),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
       ],
     );
   }
@@ -444,12 +521,15 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       key          : ValueKey<String>('${widget.oCampo.sClave}_${widget.sValor}'),
       initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
       isExpanded   : true,
+      // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
+      style        : ClaseGenEstilosTexto.textoCampo(oContexto),
       decoration   : _getDecoracion(),
       items: <DropdownMenuItem<String>>[
         for (int i = 0; i < listOpciones.length; i++)
           DropdownMenuItem<String>(
             value : listValores[i],
-            child : Text(listOpciones[i], style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+            child : Text(listOpciones[i],
+                style: ClaseGenEstilosTexto.textoCampo(oContexto)),
           ),
       ],
       onChanged: widget.bHabilitado
@@ -492,23 +572,39 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   // ── Comentario (textarea) ────────────────────────────────────────────────
 
   Widget _construirComentario(BuildContext oContexto) {
-    return TextField(
-      controller      : oControl,
-      enabled         : widget.bHabilitado,
-      focusNode       : oFoco,
-      maxLines        : 3,
-      style           : ClaseGenEstilosTexto.textoCampo(oContexto),
-      // El comentario ahora respeta iMaxComentario (antes solo lo mostraba).
-      inputFormatters : (widget.oCampo.iMaxComentario > 0)
-          ? <TextInputFormatter>[
-              LengthLimitingTextInputFormatter(widget.oCampo.iMaxComentario),
-            ]
-          : null,
-      onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
-      decoration      : _getDecoracion(
-        sHint     : widget.oCampo.sHint,
-        sContador : '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
-      ),
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        // ← CAMBIO item 5: contador de caracteres a la derecha, en la misma
+        //   fila que la etiqueta.
+        if (widget.oCampo.iMaxComentario > 0)
+          Padding(
+            padding : const EdgeInsets.only(
+              top   : ClaseGenEspacios.dEspacio14,
+              right : ClaseGenEspacios.dEspacio04,
+            ),
+            child : Text(
+              '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
+              textAlign : TextAlign.right,
+              style     : ClaseGenEstilosTexto.normalChico(oContexto),
+            ),
+          ),
+        TextField(
+          controller      : oControl,
+          enabled         : widget.bHabilitado,
+          focusNode       : oFoco,
+          maxLines        : 3,
+          style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+          // El comentario respeta iMaxComentario (antes solo lo mostraba).
+          inputFormatters : (widget.oCampo.iMaxComentario > 0)
+              ? <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(widget.oCampo.iMaxComentario),
+                ]
+              : null,
+          onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
+          decoration      : _getDecoracion(sHint: widget.oCampo.sHint),
+        ),
+      ],
     );
   }
 
@@ -527,8 +623,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         const SizedBox(width: ClaseGenEspacios.dEspacio08),
         Text(
           bActivo
-              ? ClaseIdiomas.getTexto(widget.sIdioma, 'si')
-              : ClaseIdiomas.getTexto(widget.sIdioma, 'no'),
+              ? ClaseIdiomas.getTexto('si', widget.sIdioma)
+              : ClaseIdiomas.getTexto('no', widget.sIdioma),
           style : ClaseGenEstilosTexto.normalMediano(oContexto),
         ),
       ],

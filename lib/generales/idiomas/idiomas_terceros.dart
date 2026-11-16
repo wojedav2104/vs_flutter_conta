@@ -1,8 +1,40 @@
-/// Textos del idioma: Clientes, Proveedores, documentos de identidad y
-/// Timbrados (propios y de proveedores).
+/// Textos del idioma: Empresa, Clientes, Proveedores, documentos de identidad
+/// y Timbrados (propios y de proveedores).
 abstract final class ClaseIdiomasTerceros {
 
   static const Map<String, String> mapEs = <String, String>{
+    // ── Pantalla Empresa (ABM) ──────────────────────────────────────────
+    'empApellidos'          : 'Apellidos',
+    'empDepartamento'       : 'Departamento',
+    'empDireccion'          : 'Dirección',
+    'empEmail'              : 'E-mail',
+    'empEjercicio'          : 'Ejercicio contable',
+    'empGrupoGenerales'     : 'Generales',
+    'empGrupoImpuestos'     : 'Impuestos',
+    'empGrupoVarios'        : 'Varios',
+    'empHintApellidos'      : 'Apellidos del propietario',
+    'empHintDepartamento'   : 'Departamento o provincia',
+    'empHintDireccion'      : 'Calle y N° de la empresa',
+    'empHintEmail'          : 'Correo electrónico',
+    'empHintLocalidad'      : 'Localidad de la empresa',
+    'empHintNombre'         : 'Nombre de la empresa',
+    'empHintNombres'        : 'Nombres del propietario',
+    'empHintRamo'           : 'Actividad principal de la empresa',
+    'empHintRuc'            : 'RUC de la empresa',
+    'empHintTelefono'       : 'Nro teléfono',
+    'empIreSimple'          : 'I.R.E. Simple',
+    'empIrp'                : 'I.R.P.',
+    'empIva'                : 'Régimen de I.V.A.',
+    'empIvaGeneral'         : 'General',
+    'empIvaSimplificado'    : 'Simplificado',
+    'empLocalidad'          : 'Localidad',
+    'empNoPagaIva'          : 'No Paga I.V.A.',
+    'empNombre'             : 'Nombre',
+    'empNombres'            : 'Nombres',
+    'empPais'               : 'País',
+    'empRamo'               : 'Ramo',
+    'empRuc'                : 'R.U.C.',
+    'empTelefono'           : 'Teléfono N°',
     // ── Pantalla Clientes (ABM) ──────────────────────────────────────────
     'cliCelular'            : 'Celular N°',
     'cliCodigo'             : 'Código',
@@ -29,7 +61,7 @@ abstract final class ClaseIdiomasTerceros {
     'docPasaporte'          : 'Pasaporte',
     'docRuc'                : 'R.U.C.',
     'docSinNombre'          : 'Sin Nombre',
-    'valorExterior'         : 'Exterior',    
+    'valorExterior'         : 'Exterior',
     'valorLocal'            : 'Local',
     // ── Pantalla Proveedores (ABM) ───────────────────────────────────────
     'prvCelular'            : 'Celular N°',
@@ -69,10 +101,41 @@ abstract final class ClaseIdiomasTerceros {
     'timPrvHintNombre'          : 'Nombre fiscal del proveedor',
     'timPrvRuc'                 : 'R.U.C. del Proveedor',
     'timPrvHintRuc'             : 'RUC proveedor',
-
   };
 
   static const Map<String, String> mapFr = <String, String>{
+    // ── Pantalla Empresa (ABM) ──────────────────────────────────────────
+    'empApellidos'          : 'Nom',
+    'empDepartamento'       : 'Département',
+    'empDireccion'          : 'Adresse',
+    'empEmail'              : 'E-mail',
+    'empEjercicio'          : 'Exercice comptable',
+    'empGrupoGenerales'     : 'Généraux',
+    'empGrupoImpuestos'     : 'Impôts',
+    'empGrupoVarios'        : 'Divers',
+    'empHintApellidos'      : 'Nom du propriétaire',
+    'empHintDepartamento'   : 'Département ou province',
+    'empHintDireccion'      : 'Rue et N° de l\'entreprise',
+    'empHintEmail'          : 'Adresse électronique',
+    'empHintLocalidad'      : 'Localité de l\'entreprise',
+    'empHintNombre'         : 'Nom de l\'entreprise',
+    'empHintNombres'        : 'Prénoms du propriétaire',
+    'empHintRamo'           : 'Activité principale de l\'entreprise',
+    'empHintRuc'            : 'RUC de l\'entreprise',
+    'empHintTelefono'       : 'N° de téléphone',
+    'empIreSimple'          : 'I.R.E. Simplifié',
+    'empIrp'                : 'I.R.P.',
+    'empIva'                : 'Régime de T.V.A.',
+    'empIvaGeneral'         : 'Général',
+    'empIvaSimplificado'    : 'Simplifié',
+    'empLocalidad'          : 'Localité',
+    'empNoPagaIva'          : 'Ne paie pas la T.V.A.',
+    'empNombre'             : 'Nom',
+    'empNombres'            : 'Prénoms',
+    'empPais'               : 'Pays',
+    'empRamo'               : 'Secteur d\'activité',
+    'empRuc'                : 'R.U.C.',
+    'empTelefono'           : 'Téléphone N°',
     // ── Pantalla Clientes (ABM) ──────────────────────────────────────────
     'cliCelular'            : 'Portable N°',
     'cliCodigo'             : 'Code',
@@ -107,7 +170,6 @@ abstract final class ClaseIdiomasTerceros {
     'prvDireccion'          : 'Adresse',
     'prvEmail'              : 'E-mail',
     'prvEsServicioPublico'  : 'Est un service public',
-    'prvExterior'           : 'Étranger',
     'prvHintCelular'        : 'N° de portable',
     'prvHintDireccion'      : 'Rue et N° de résidence',
     'prvHintEmail'          : 'Adresse électronique',
@@ -140,7 +202,7 @@ abstract final class ClaseIdiomasTerceros {
     'timPrvHintNombre'          : 'Nom fiscal du fournisseur',
     'timPrvRuc'                 : 'R.U.C. du fournisseur',
     'timPrvHintRuc'             : 'RUC du fournisseur',
-    
   };
 
 }
+

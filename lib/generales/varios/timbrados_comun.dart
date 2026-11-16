@@ -25,7 +25,7 @@ abstract final class ClaseTimbradosComun {
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
             sValor, ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
-            DateTime(ClaseFechas.iAnioMinimo, 1, 1), sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaInicio',

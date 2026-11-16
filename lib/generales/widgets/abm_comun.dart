@@ -89,13 +89,15 @@ Future<String?> funcMostrarEncontrar(
 
 /// Formulario de campos de cabecera: sin grupo, una sola columna; con grupos,
 /// los campos comunes arriba y una pestaña por grupo.
-class ClaseFormularioCampos extends StatelessWidget {
+class ClaseFormularioCampos extends StatefulWidget {
 
   const ClaseFormularioCampos({
     super.key,
     this.bAutoFocus = false,
     required this.funcAlCambiarCampo,
+    this.funcAlPerderFoco,
     required this.funcEsHabilitado,
+    this.funcEtiquetaGrupo,
     required this.listCampos,
     required this.mapValores,
     required this.sIdioma,
@@ -104,28 +106,103 @@ class ClaseFormularioCampos extends StatelessWidget {
   /// true para mover el foco al primer campo habilitado (item 10).
   final bool                                       bAutoFocus;
   final void Function(String sClave, String sValor) funcAlCambiarCampo;
+
+  /// Transformación del valor al salir del campo (devuelve el valor nuevo
+  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
+  /// valores internos del formulario. Se pasa a cada ClaseCampoFormulario.
+  final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
+
   final bool Function(ClaseCampoAbm oCampo)        funcEsHabilitado;
+
+  /// Etiqueta personalizada de cada pestaña de grupo (opcional). Recibe la
+  /// clave del grupo; si no se provee, se usa el texto traducido de la clave.
+  final String Function(String sClaveGrupo)?       funcEtiquetaGrupo;
+
   final List<ClaseCampoAbm>                        listCampos;
   final Map<String, String>                        mapValores;
   final String                                     sIdioma;
+
+  @override
+  State<ClaseFormularioCampos> createState() => ClaseEstadoFormularioCampos();
+}
+
+class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
+    with SingleTickerProviderStateMixin {
+
+  /// Controlador de las pestañas de los grupos (si los hay).
+  late final TabController oControladorPestanas;
+
+  /// Un nodo de foco por campo: lo usa el campo y también el formulario
+  /// para colocar el foco en el primer campo con error (item 14).
+  late final Map<String, FocusNode> mapFocos;
+
+  @override
+  void initState() {
+    super.initState();
+    final List<String> listGrupos = _getListGrupos();
+    oControladorPestanas = TabController(
+      length : listGrupos.isEmpty ? 1 : listGrupos.length,
+      vsync  : this,
+    );
+    mapFocos = <String, FocusNode>{
+      for (final ClaseCampoAbm oCampo in widget.listCampos)
+        oCampo.sClave: FocusNode(),
+    };
+  }
+
+  @override
+  void dispose() {
+    oControladorPestanas.dispose();
+    for (final FocusNode oFoco in mapFocos.values) {
+      oFoco.dispose();
+    }
+    super.dispose();
+  }
+
+  /// Coloca el foco del teclado en el campo indicado (item 14). Si el campo
+  /// está en una pestaña, primero la muestra y luego pide el foco.
+  void enfocarCampo(String sClave) {
+    final List<String> listGrupos = _getListGrupos();
+    int iGrupo = -1;
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      if (oCampo.sClave != sClave) continue;
+      if (oCampo.sGrupo != null) iGrupo = listGrupos.indexOf(oCampo.sGrupo!);
+      break;
+    }
+    if (iGrupo >= 0 && iGrupo != oControladorPestanas.index) {
+      oControladorPestanas.animateTo(iGrupo);
+      WidgetsBinding.instance.addPostFrameCallback((_) => _pedirFoco(sClave));
+    } else {
+      _pedirFoco(sClave);
+    }
+  }
+
+  void _pedirFoco(String sClave) {
+    if (mounted) mapFocos[sClave]?.requestFocus();
+  }
+
+  List<String> _getListGrupos() {
+    final List<String> listSalida = <String>[];
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      final String? sGrupo = oCampo.sGrupo;
+      if (sGrupo != null && !listSalida.contains(sGrupo)) listSalida.add(sGrupo);
+    }
+    return listSalida;
+  }
 
   @override
   Widget build(BuildContext oContexto) {
 
     // Primer campo habilitado → recibir foco al entrar en edición.
     ClaseCampoAbm? oPrimeroHabilitado;
-    for (final ClaseCampoAbm oCampo in listCampos) {
-      if (funcEsHabilitado(oCampo)) {
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      if (widget.funcEsHabilitado(oCampo)) {
         oPrimeroHabilitado = oCampo;
         break;
       }
     }
 
-    final List<String> listGrupos = <String>[];
-    for (final ClaseCampoAbm oCampo in listCampos) {
-      final String? sGrupo = oCampo.sGrupo;
-      if (sGrupo != null && !listGrupos.contains(sGrupo)) listGrupos.add(sGrupo);
-    }
+    final List<String> listGrupos = _getListGrupos();
 
     if (listGrupos.isEmpty) {
       return SingleChildScrollView(
@@ -133,74 +210,77 @@ class ClaseFormularioCampos extends StatelessWidget {
         child   : Column(
           crossAxisAlignment : CrossAxisAlignment.start,
           children: <Widget>[
-            for (final ClaseCampoAbm oCampo in listCampos)
+            for (final ClaseCampoAbm oCampo in widget.listCampos)
               _construirCampo(oCampo,
-                  bAutoFocus: bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
+                  bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
           ],
         ),
       );
     }
 
     final List<ClaseCampoAbm> listComunes =
-        listCampos.where((ClaseCampoAbm o) => o.sGrupo == null).toList();
+        widget.listCampos.where((ClaseCampoAbm o) => o.sGrupo == null).toList();
 
-    return DefaultTabController(
-      length : listGrupos.length,
-      child  : Column(
-        crossAxisAlignment : CrossAxisAlignment.stretch,
-        children: <Widget>[
-          if (listComunes.isNotEmpty)
-            Padding(
-              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio16),
-              child   : Column(
-                crossAxisAlignment : CrossAxisAlignment.start,
-                children: <Widget>[
-                  for (final ClaseCampoAbm oCampo in listComunes)
-                    _construirCampo(oCampo,
-                        bAutoFocus: bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
-                ],
-              ),
-            ),
-          TabBar(
-            tabs: <Widget>[
-              for (final String sGrupo in listGrupos)
-                Tab(text: ClaseIdiomas.getTexto(sGrupo, sIdioma)),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (listComunes.isNotEmpty)
+          Padding(
+            padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio16),
+            child   : Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
               children: <Widget>[
-                for (final String sGrupo in listGrupos)
-                  SingleChildScrollView(
-                    padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
-                    child   : Column(
-                      crossAxisAlignment : CrossAxisAlignment.start,
-                      children: <Widget>[
-                        for (final ClaseCampoAbm oCampo in listCampos
-                            .where((ClaseCampoAbm o) => o.sGrupo == sGrupo))
-                          _construirCampo(oCampo,
-                              bAutoFocus: bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
-                      ],
-                    ),
-                  ),
+                for (final ClaseCampoAbm oCampo in listComunes)
+                  _construirCampo(oCampo,
+                      bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
               ],
             ),
           ),
-        ],
-      ),
+        TabBar(
+          controller : oControladorPestanas,                // ← CAMBIO item 14
+          tabs: <Widget>[
+            for (final String sGrupo in listGrupos)
+              Tab(text: widget.funcEtiquetaGrupo?.call(sGrupo)   // ← CAMBIO etiqueta de grupo
+                  ?? ClaseIdiomas.getTexto(sGrupo, widget.sIdioma)),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller : oControladorPestanas,              // ← CAMBIO item 14
+            children: <Widget>[
+              for (final String sGrupo in listGrupos)
+                SingleChildScrollView(
+                  padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+                  child   : Column(
+                    crossAxisAlignment : CrossAxisAlignment.start,
+                    children: <Widget>[
+                      for (final ClaseCampoAbm oCampo in widget.listCampos
+                          .where((ClaseCampoAbm o) => o.sGrupo == sGrupo))
+                        _construirCampo(oCampo,
+                            bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   // ← CAMBIO item 10: aceptar y propagar bAutoFocus
+  // ← CAMBIO item 14: inyectar el nodo de foco del campo.
   Widget _construirCampo(ClaseCampoAbm oCampo, {bool bAutoFocus = false}) {
     return ClaseCampoFormulario(
-      bAutoFocus    : bAutoFocus,
-      bHabilitado   : funcEsHabilitado(oCampo),
-      funcAlCambiar : (String sValor) => funcAlCambiarCampo(oCampo.sClave, sValor),
-      mapValores    : mapValores,
-      oCampo        : oCampo,
-      sIdioma       : sIdioma,
-      sValor        : mapValores[oCampo.sClave] ?? '',
+      bAutoFocus       : bAutoFocus,
+      bHabilitado      : widget.funcEsHabilitado(oCampo),
+      funcAlCambiar    : (String sValor) => widget.funcAlCambiarCampo(oCampo.sClave, sValor),
+      funcAlPerderFoco : widget.funcAlPerderFoco,
+      mapValores       : widget.mapValores,
+      oCampo           : oCampo,
+      oFocoExterno     : mapFocos[oCampo.sClave],
+      sIdioma          : widget.sIdioma,
+      sValor           : widget.mapValores[oCampo.sClave] ?? '',
     );
   }
 
@@ -210,6 +290,9 @@ class ClaseFormularioCampos extends StatelessWidget {
 /// Grilla lateral de registros: filtro, orden por columna, paginación, menú
 /// contextual por celda y contraer/expandir. Lleva su propio estado; solo la
 /// selección (iRegistro) vive en el padre.
+///
+/// El foco del teclado vive en la grilla (item 23): al ingresar recibe el
+/// foco y las flechas arriba/abajo mueven la selección entre las filas.
 class ClaseGrillaRegistros extends StatefulWidget {
 
   const ClaseGrillaRegistros({
@@ -243,10 +326,24 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   String sFiltro     = '';
 
   final TextEditingController oControlFiltro = TextEditingController();
+  final FocusNode             oFocoGrilla    = FocusNode();   // ← CAMBIO item 23
+
+  @override
+  void initState() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar al formulario, el foco del teclado queda
+    //   en la grilla (sobre la primera fila seleccionada) si hay registros.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && bVisible && widget.listRegistros.isNotEmpty) {
+        oFocoGrilla.requestFocus();
+      }
+    });
+  }
 
   @override
   void dispose() {
     oControlFiltro.dispose();
+    oFocoGrilla.dispose();                                  // ← CAMBIO item 23
     super.dispose();
   }
 
@@ -260,6 +357,34 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
       final int iPosicion = _listFiltrados().indexOf(widget.listRegistros[widget.iRegistro]);
       if (iPosicion >= 0) iPagina = iPosicion ~/ ClaseGenLayout.iFilasPagina;
     }
+  }
+
+  // ── Navegación con el teclado ────────────────────────────────────────────
+
+  /// Flechas arriba/abajo: mueven la selección a la fila anterior o
+  /// siguiente (item 23). La navegación respeta el filtro y el orden
+  /// actuales de la grilla.
+  KeyEventResult _alPulsarTecla(FocusNode oNodo, KeyEvent oEvento) {
+    if (oEvento is! KeyDownEvent) return KeyEventResult.ignored;
+    if (oEvento.logicalKey != LogicalKeyboardKey.arrowDown
+        && oEvento.logicalKey != LogicalKeyboardKey.arrowUp) {
+      return KeyEventResult.ignored;
+    }
+    final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
+    if (listFiltrados.isEmpty) return KeyEventResult.ignored;
+
+    int iPosicion = (widget.iRegistro >= 0 && widget.iRegistro < widget.listRegistros.length)
+        ? listFiltrados.indexOf(widget.listRegistros[widget.iRegistro])
+        : -1;
+
+    final int iNueva = (oEvento.logicalKey == LogicalKeyboardKey.arrowDown)
+        ? math.min(iPosicion + 1, listFiltrados.length - 1)
+        : math.max(iPosicion - 1, 0);
+    if (iNueva < 0 || iNueva == iPosicion) return KeyEventResult.handled;
+
+    final int iIndice = widget.listRegistros.indexOf(listFiltrados[iNueva]);
+    if (iIndice >= 0) widget.funcSeleccionar(iIndice);
+    return KeyEventResult.handled;
   }
 
   // ── Registros filtrados, ordenados y paginados ───────────────────────────
@@ -296,15 +421,15 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
       items    : <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
           value : 'copiarValor',
-          child : Text(ClaseIdiomas.getTexto(widget.sIdioma, 'menuCopiarValor')),
+          child : Text(ClaseIdiomas.getTexto('menuCopiarValor', widget.sIdioma)),
         ),
         PopupMenuItem<String>(
           value : 'buscarValor',
-          child : Text(ClaseIdiomas.getTexto(widget.sIdioma, 'menuBuscarValor')),
+          child : Text(ClaseIdiomas.getTexto('menuBuscarValor', widget.sIdioma)),
         ),
         PopupMenuItem<String>(
           value : 'copiarFila',
-          child : Text(ClaseIdiomas.getTexto(widget.sIdioma, 'menuCopiarFila')),
+          child : Text(ClaseIdiomas.getTexto('menuCopiarFila', widget.sIdioma)),
         ),
       ],
     );
@@ -320,8 +445,8 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
       await funcMostrarInformacion(
         context,
         widget.sIdioma,
-        ClaseIdiomas.getTexto(widget.sIdioma, 'aplicacion'),
-        ClaseIdiomas.getTexto(widget.sIdioma, 'copiadoPortapapeles'),
+        ClaseIdiomas.getTexto('aplicacion', widget.sIdioma),
+        ClaseIdiomas.getTexto('copiadoPortapapeles', widget.sIdioma),
       );
     } else {
       setState(() {
@@ -343,7 +468,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
           children: <Widget>[
             const SizedBox(height: ClaseGenEspacios.dEspacio08),
             IconButton(
-              tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'expandirGrilla'),
+              tooltip   : ClaseIdiomas.getTexto('expandirGrilla', widget.sIdioma),
               icon      : const Icon(Icons.last_page),
               onPressed : () => setState(() => bVisible = true),
             ),
@@ -364,168 +489,190 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
         ? listFiltrados.sublist(iInicio, iFin)
         : <Map<String, dynamic>>[];
 
-    return SizedBox(
-      width : ClaseGenLayout.dAnchoGrillaRegistros,
-      child : Column(
-        children: <Widget>[
-          Padding(
-            padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
-            child   : Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller : oControlFiltro,
-                    style      : ClaseGenEstilosTexto.normalChico(oContexto),
-                    decoration : InputDecoration(
-                      isDense    : true,
-                      hintText   : ClaseIdiomas.getTexto(widget.sIdioma, 'abmBuscar'),
-                      prefixIcon : const Icon(Icons.search),
-                      border     : OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+    // ← CAMBIO item 23: el foco del teclado queda en la grilla y las
+    //   flechas arriba/abajo mueven la selección.
+    return Focus(
+      focusNode     : oFocoGrilla,
+      onKeyEvent    : _alPulsarTecla,
+      onFocusChange : (bool bTieneFoco) {
+        if (mounted) setState(() {});
+      },
+      child: SizedBox(
+        width : ClaseGenLayout.dAnchoGrillaRegistros,
+        child : Column(
+          children: <Widget>[
+            Padding(
+              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+              child   : Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller : oControlFiltro,
+                      style      : ClaseGenEstilosTexto.normalChico(oContexto),
+                      decoration : InputDecoration(
+                        isDense    : true,
+                        hintText   : ClaseIdiomas.getTexto('abmBuscar', widget.sIdioma),
+                        prefixIcon : const Icon(Icons.search),
+                        border     : OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+                        ),
                       ),
+                      onChanged: (String sValor) => setState(() {
+                        sFiltro = sValor;
+                        iPagina = 0;
+                      }),
                     ),
-                    onChanged: (String sValor) => setState(() {
-                      sFiltro = sValor;
-                      iPagina = 0;
+                  ),
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('menuActualizar', widget.sIdioma),
+                    icon      : const Icon(Icons.refresh),
+                    onPressed : () => setState(() {
+                      sFiltro            = '';
+                      oControlFiltro.text = '';
+                      iPagina            = 0;
                     }),
                   ),
-                ),
-                IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'menuActualizar'),
-                  icon      : const Icon(Icons.refresh),
-                  onPressed : () => setState(() {
-                    sFiltro            = '';
-                    oControlFiltro.text = '';
-                    iPagina            = 0;
-                  }),
-                ),
-                IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'contraerGrilla'),
-                  icon      : const Icon(Icons.first_page),
-                  onPressed : () => setState(() => bVisible = false),
-                ),
-              ],
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('contraerGrilla', widget.sIdioma),
+                    icon      : const Icon(Icons.first_page),
+                    onPressed : () => setState(() => bVisible = false),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio08),
-            child   : Row(
-              children: <Widget>[
-                for (final ClaseCampoAbm oCampo in listColumnas)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() {
-                        if (sClaveOrden == oCampo.sClave) {
-                          bOrdenDesc = !bOrdenDesc;
-                        } else {
-                          sClaveOrden = oCampo.sClave;
-                          bOrdenDesc  = false;
-                        }
-                      }),
-                      child: Tooltip(
-                        message : ClaseIdiomas.getTexto(widget.sIdioma, 'ordenarPor'),
-                        child   : Text(
-                          oCampo.sEtiqueta,
-                          // ← CAMBIO item 8: alinear números a la derecha en encabezados
-                          textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                              ? TextAlign.right
-                              : TextAlign.left,
-                          style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                          maxLines : 1,
-                          overflow : TextOverflow.ellipsis,
+            Padding(
+              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio08),
+              child   : Row(
+                children: <Widget>[
+                  for (final ClaseCampoAbm oCampo in listColumnas)
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => setState(() {
+                          if (sClaveOrden == oCampo.sClave) {
+                            bOrdenDesc = !bOrdenDesc;
+                          } else {
+                            sClaveOrden = oCampo.sClave;
+                            bOrdenDesc  = false;
+                          }
+                        }),
+                        child: Tooltip(
+                          message : ClaseIdiomas.getTexto('ordenarPor', widget.sIdioma),
+                          child   : Text(
+                            oCampo.sEtiqueta,
+                            // ← CAMBIO item 8: alinear números a la derecha en encabezados
+                            textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                ? TextAlign.right
+                                : TextAlign.left,
+                            style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                            maxLines : 1,
+                            overflow : TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const Divider(height: ClaseGenEspacios.dEspacio01),
-          Expanded(
-            child: ListView.builder(
-              itemCount : listPagina.length,
-              itemBuilder: (oContextoFila, i) {
-                final Map<String, dynamic> oRegistro = listPagina[i];
-                final int  iIndice      = widget.listRegistros.indexOf(oRegistro);
-                final bool bSeleccionado = (iIndice == widget.iRegistro);
-                return InkWell(
-                  onTap : () => widget.funcSeleccionar(iIndice),
-                  child : Container(
-                    color  : bSeleccionado
-                        ? Theme.of(oContexto).colorScheme.primaryContainer
-                        : null,
-                    padding : const EdgeInsets.symmetric(
-                      horizontal : ClaseGenEspacios.dEspacio08,
-                      vertical   : ClaseGenEspacios.dEspacio04,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        for (final ClaseCampoAbm oCampo in listColumnas)
-                          Expanded(
-                            child: GestureDetector(
-                              onLongPressStart: (oDetalle) => _mostrarMenuCelda(
-                                  oContexto, oRegistro, oCampo, oDetalle.globalPosition),
-                              child: Text(
-                                (oRegistro[oCampo.sClave] ?? '').toString(),
-                                // ← CAMBIO item 8: alinear números a la derecha en celdas
-                                textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                    ? TextAlign.right
-                                    : TextAlign.left,
-                                style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                                maxLines : 1,
-                                overflow : TextOverflow.ellipsis,
+            const Divider(height: ClaseGenEspacios.dEspacio01),
+            Expanded(
+              child: ListView.builder(
+                itemCount : listPagina.length,
+                itemBuilder: (oContextoFila, i) {
+                  final Map<String, dynamic> oRegistro = listPagina[i];
+                  final int  iIndice      = widget.listRegistros.indexOf(oRegistro);
+                  final bool bSeleccionado = (iIndice == widget.iRegistro);
+                  return InkWell(
+                    canRequestFocus : false,                 // ← CAMBIO item 23
+                    onTap: () {                              // ← CAMBIO item 23
+                      oFocoGrilla.requestFocus();
+                      widget.funcSeleccionar(iIndice);
+                    },
+                    child : Container(
+                      decoration : BoxDecoration(
+                        color  : bSeleccionado
+                            ? Theme.of(oContexto).colorScheme.primaryContainer
+                            : null,
+                        // ← CAMBIO item 23: aro visible del foco del teclado
+                        //   en la fila seleccionada.
+                        border : (bSeleccionado && oFocoGrilla.hasFocus)
+                            ? Border.all(
+                                color : Theme.of(oContexto).colorScheme.primary,
+                              )
+                            : null,
+                      ),
+                      padding : const EdgeInsets.symmetric(
+                        horizontal : ClaseGenEspacios.dEspacio08,
+                        vertical   : ClaseGenEspacios.dEspacio04,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          for (final ClaseCampoAbm oCampo in listColumnas)
+                            Expanded(
+                              child: GestureDetector(
+                                onLongPressStart: (oDetalle) => _mostrarMenuCelda(
+                                    oContexto, oRegistro, oCampo, oDetalle.globalPosition),
+                                child: Text(
+                                  (oRegistro[oCampo.sClave] ?? '').toString(),
+                                  // ← CAMBIO item 8: alinear números a la derecha en celdas
+                                  textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                      ? TextAlign.right
+                                      : TextAlign.left,
+                                  style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                  maxLines : 1,
+                                  overflow : TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const Divider(height: ClaseGenEspacios.dEspacio01),
+            Padding(
+              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
+              child   : Row(
+                children: <Widget>[
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('menuPrimeraFila', widget.sIdioma),
+                    icon      : const Icon(Icons.first_page),
+                    onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
+                  ),
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
+                    icon      : const Icon(Icons.chevron_left),
+                    onPressed : (iPaginaActual > 0)
+                        ? () => setState(() => iPagina = iPaginaActual - 1)
+                        : null,
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${iPaginaActual + 1} / $iTotalPaginas',
+                      textAlign : TextAlign.center,
+                      style     : ClaseGenEstilosTexto.normalChico(oContexto),
                     ),
                   ),
-                );
-              },
-            ),
-          ),
-          const Divider(height: ClaseGenEspacios.dEspacio01),
-          Padding(
-            padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
-            child   : Row(
-              children: <Widget>[
-                IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'menuPrimeraFila'),
-                  icon      : const Icon(Icons.first_page),
-                  onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
-                ),
-                IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'paginaAnterior'),
-                  icon      : const Icon(Icons.chevron_left),
-                  onPressed : (iPaginaActual > 0)
-                      ? () => setState(() => iPagina = iPaginaActual - 1)
-                      : null,
-                ),
-                Expanded(
-                  child: Text(
-                    '${iPaginaActual + 1} / $iTotalPaginas',
-                    textAlign : TextAlign.center,
-                    style     : ClaseGenEstilosTexto.normalChico(oContexto),
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('paginaSiguiente', widget.sIdioma),
+                    icon      : const Icon(Icons.chevron_right),
+                    onPressed : (iPaginaActual < iTotalPaginas - 1)
+                        ? () => setState(() => iPagina = iPaginaActual + 1)
+                        : null,
                   ),
-                ),
-                IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'paginaSiguiente'),
-                  icon      : const Icon(Icons.chevron_right),
-                  onPressed : (iPaginaActual < iTotalPaginas - 1)
-                      ? () => setState(() => iPagina = iPaginaActual + 1)
-                      : null,
-                ),
-                IconButton(
-                  tooltip   : ClaseIdiomas.getTexto(widget.sIdioma, 'menuUltimaFila'),
-                  icon      : const Icon(Icons.last_page),
-                  onPressed : (iPaginaActual < iTotalPaginas - 1)
-                      ? () => setState(() => iPagina = iTotalPaginas - 1)
-                      : null,
-                ),
-              ],
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('menuUltimaFila', widget.sIdioma),
+                    icon      : const Icon(Icons.last_page),
+                    onPressed : (iPaginaActual < iTotalPaginas - 1)
+                        ? () => setState(() => iPagina = iTotalPaginas - 1)
+                        : null,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -536,8 +683,6 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
 /// Estructura común de un formulario ABM: título, grilla lateral de registros
 /// y el área de formulario (pasada como widget) a la derecha.
 /// La botonera se ubica al pie del formulario.
-// ← CAMBIO items 1,2,3,6: botonera delegada a ClaseBotoneraAbm, al pie,
-//   con orden, tamaño y colores correctos.
 class ClaseAndamiajeAbm extends StatelessWidget {
 
   const ClaseAndamiajeAbm({

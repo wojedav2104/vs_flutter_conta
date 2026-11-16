@@ -1,1 +1,1 @@
-23. Al ingresar a un formulario se debe poner el foco en la primera fila de la grilla lateral izquierda, si la grilla tiene al menos una fila
+23. Al ingresar a un formulario se debe poner el foco en la primera fila de la grilla lateral izquierda, si la grilla tiene al menos una fila. Es para permitirle al usuario ver todos los campos en el body del formulario y además para poder desplazarse en la grilla.
