@@ -1,13 +1,37 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 3 DE 9
 ---
-gistro);
+  setState(() {
+      widget.listRegistros.removeAt(iRegistro);
+      mapValores   = <String, String>{};
+      _reemplazarDetalles(<Map<String, String>>[]);
+      iRegistro         = -1;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
+  }
+
+  void cancelar() {
+    setState(() {
+      // Si se estaba agregando, volver al registro que se estaba viendo.
+      if (iRegistro < 0 && iRegistroAnterior >= 0) {
+        iRegistro = iRegistroAnterior;
+      }
+      if (iRegistro >= 0) {
+        final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
+        mapValores = _desdeRegistro(oRegistro);
         _reemplazarDetalles(_desdeDetalles(oRegistro));
       } else {
         mapValores = <String, String>{};
         _reemplazarDetalles(<Map<String, String>>[]);
       }
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    // El foco vuelve a la grilla lateral: el usuario sigue viendo el registro.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _oFocoGrilla.requestFocus();
     });
   }
 
@@ -72,7 +96,8 @@ gistro);
       } else {
         widget.listRegistros[iRegistro] = oNuevo;
       }
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
     });
     await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
   }
@@ -81,34 +106,4 @@ gistro);
     final String sIdioma = getIdioma();
     final String? sTexto = await funcMostrarEncontrar(
         context, sIdioma, widget.listCamposCabecera.first);
-    if (sTexto == null) return;
-    final String sBusqueda = sTexto.toLowerCase();
-    for (int i = 0; i < widget.listRegistros.length; i++) {
-      if ((widget.listRegistros[i][widget.listCamposCabecera.first.sClave] ?? '')
-          .toString().toLowerCase().contains(sBusqueda)) {
-        seleccionar(i);
-        return;
-      }
-    }
-    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
-  }
-
-  // ── Filas de detalle ─────────────────────────────────────────────────────
-
-  Map<String, String> _crearFilaVacia() {
-    return <String, String>{
-      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
-        oCampo.sClave: oCampo.sValorDefecto ?? '',
-    };
-  }
-
-  void agregarFila() {
-    setState(() {
-      listDetalles.add(_crearFilaVacia());
-      listControles.add(_crearControles(listDetalles.last));
-    });
-  }
-
-  void borrarFila(int iFila) {
-    setState(() {
-      for (final TextEditingController oCtrl in listContro
+    if (

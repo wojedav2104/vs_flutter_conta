@@ -1,10 +1,29 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
-PARTE 2 DE 3
+PARTE 2 DE 4
 ---
-= <String, String>{
+t.listRegistros.isNotEmpty) {
+      iRegistro  = 0;
+      mapValores = _desdeRegistro(widget.listRegistros[0]);
+    }
+  }
+
+  @override
+  void dispose() {
+    _oFocoGrilla.dispose();
+    super.dispose();
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Acciones del formulario ──────────────────────────────────────────────
+
+  void agregar() {
+    setState(() {
+      mapValores = <String, String>{
         for (final ClaseCampoAbm oCampo in widget.listCampos)
           oCampo.sClave: oCampo.sValorDefecto ?? '',
       };
+      iRegistroAnterior = iRegistro;                    // para Cancelar
       iRegistro    = -1;
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -14,6 +33,7 @@ PARTE 2 DE 3
   void modificar() {
     if (iRegistro < 0) return;
     setState(() {
+      iRegistroAnterior = iRegistro;                    // para Cancelar
       mapValores   = _desdeRegistro(widget.listRegistros[iRegistro]);
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -29,11 +49,13 @@ PARTE 2 DE 3
       ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
       bMostrarCancelar : false,
     );
+
     if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
     setState(() {
       widget.listRegistros.removeAt(iRegistro);
       mapValores   = <String, String>{};
       iRegistro    = -1;
+      iRegistroAnterior = -1;
       bModoEdicion = false;
     });
     await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
@@ -41,10 +63,19 @@ PARTE 2 DE 3
 
   void cancelar() {
     setState(() {
+      // Si se estaba agregando, volver al registro que se estaba viendo.
+      if (iRegistro < 0 && iRegistroAnterior >= 0) {
+        iRegistro = iRegistroAnterior;
+      }
       mapValores = (iRegistro >= 0)
           ? _desdeRegistro(widget.listRegistros[iRegistro])
           : <String, String>{};
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    // El foco vuelve a la grilla lateral: el usuario sigue viendo el registro.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _oFocoGrilla.requestFocus();
     });
   }
 
@@ -88,35 +119,5 @@ PARTE 2 DE 3
       } else {
         widget.listRegistros[iRegistro] = Map<String, dynamic>.from(mapValores);
       }
-      bModoEdicion = false;
-    });
-    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
-  }
-
-  Future<void> encontrar() async {
-    final String sIdioma = getIdioma();
-    final String? sTexto =
-        await funcMostrarEncontrar(context, sIdioma, widget.listCampos.first);
-    if (sTexto == null) return;
-    final String sBusqueda = sTexto.toLowerCase();
-    for (int i = 0; i < widget.listRegistros.length; i++) {
-      if ((widget.listRegistros[i][widget.listCampos.first.sClave] ?? '')
-          .toString().toLowerCase().contains(sBusqueda)) {
-        seleccionar(i);
-        return;
-      }
-    }
-    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
-  }
-
-  // ── Selección y auto-cálculos ────────────────────────────────────────────
-
-  void seleccionar(int iIndice) {
-    setState(() {
-      iRegistro    = iIndice;
-      mapValores   = _desdeRegistro(widget.listRegistros[iIndice]);
-      bModoEdicion = false;
-    });
-  }
-
-  Map<String, String> _desdeRegistro(Map<
+      iRegistroAnterior = -1;
+      bModoEdicion      =

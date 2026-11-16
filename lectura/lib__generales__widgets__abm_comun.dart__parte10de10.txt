@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 10 DE 10
 ---
- ),
+          // item 6
+              : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
+          foregroundColor         : bHabilitado
+              ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+              : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+          disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
+          disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+          shape  : RoundedRectangleBorder(
+            borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+          ),
+          padding : EdgeInsets.zero,
+        ),
         child : Text(
           _getEtiqueta(oBoton),
           style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(

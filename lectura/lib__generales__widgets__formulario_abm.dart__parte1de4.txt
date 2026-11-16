@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
-PARTE 1 DE 3
+PARTE 1 DE 4
 ---
 import 'package:flutter/material.dart';
 
@@ -77,6 +77,10 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   bool   bModoEdicion = false;
   int    iRegistro    = -1;
 
+  /// Registro que se estaba viendo antes de hacer clic en Agregar (-1 si
+  /// ninguno): al cancelar se vuelve a él y se muestra de nuevo.
+  int    iRegistroAnterior = -1;
+
   /// true después de Agregar/Modificar → mover foco al primer campo.
   bool   bPedirFoco   = false;                          // ← CAMBIO item 10
 
@@ -85,6 +89,10 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
       GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
 
+  /// Nodo de foco de la grilla lateral: al cancelar la edición, el foco
+  /// vuelve a la grilla.
+  final FocusNode _oFocoGrilla = FocusNode();
+
   Map<String, String> mapValores = <String, String>{};
 
   @override
@@ -92,16 +100,4 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
     super.initState();
     // ← CAMBIO item 23: al ingresar, seleccionar la primera fila de la
     //   grilla si hay registros, para que el formulario muestre sus datos.
-    if (widget.listRegistros.isNotEmpty) {
-      iRegistro  = 0;
-      mapValores = _desdeRegistro(widget.listRegistros[0]);
-    }
-  }
-
-  String getIdioma() => widget.oPreferencias.getIdioma();
-
-  // ── Acciones del formulario ──────────────────────────────────────────────
-
-  void agregar() {
-    setState(() {
-      mapValores 
+    if (widge

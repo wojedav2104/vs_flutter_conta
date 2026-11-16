@@ -1,7 +1,37 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 7 DE 9
 ---
-aEncabezado(BuildContext oContexto) {
+ilosTexto.normalMediano(oContexto)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Campo de la cabecera que se muestra al pie, debajo de la fila de totales (spec 02_02 y 02_03: el campo Comentarios).
+  Widget _construirCampoAlPie(BuildContext oContexto) {
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.sClave != widget.sClaveCampoAlPie) continue;
+      return Padding(
+        padding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio04,
+        ),
+        child : ClaseCampoFormulario(
+          bHabilitado   : _getHabilitado(oCampo),
+          funcAlCambiar : (String sValor) => _alCambiarCampo(oCampo.sClave, sValor),
+          mapValores    : mapValores,
+          oCampo        : oCampo,
+          sIdioma       : getIdioma(),
+          sValor        : mapValores[oCampo.sClave] ?? '',
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _construirFilaEncabezado(BuildContext oContexto) {
     return Padding(
       padding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio08,
@@ -70,29 +100,4 @@ aEncabezado(BuildContext oContexto) {
                   tooltip   : ClaseIdiomas.getTexto('detBorrarFila', getIdioma()),
                   icon      : const Icon(Icons.delete_outline),
                   onPressed : bModoEdicion ? () => borrarFila(iFila) : null,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _construirCelda(BuildContext oContexto, int iFila, ClaseCampoAbm oCampo) {
-    final String sValor = listDetalles[iFila][oCampo.sClave] ?? '';
-    final bool bHabilitado = bModoEdicion
-        && !oCampo.bSiempreDeshabilitado
-        && !oCampo.bSoloLecturaPorRol;
-    switch (oCampo.oTipo) {
-      case EnumTipoCampoAbm.lista:
-        final List<String> listOpciones = oCampo.listOpciones ?? <String>[];
-        final List<String> listValores  = oCampo.listValores  ?? listOpciones;
-        return DropdownButtonFormField<String>(
-          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
-          initialValue : listValores.contains(sValor) ? sValor : null,
-          isExpanded   : true,
-          decoration   : const InputDecoration(isDense: true, border: OutlineInputBorder()),
-          items: <DropdownMenuItem<String>>[
-            for (int i = 0; i < listOpciones.length; i++)
-              Dropdo
+         

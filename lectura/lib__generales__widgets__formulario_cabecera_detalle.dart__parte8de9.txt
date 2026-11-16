@@ -1,7 +1,32 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 8 DE 9
 ---
-wnMenuItem<String>(
+       ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirCelda(BuildContext oContexto, int iFila, ClaseCampoAbm oCampo) {
+    final String sValor = listDetalles[iFila][oCampo.sClave] ?? '';
+    final bool bHabilitado = bModoEdicion
+        && !oCampo.bSiempreDeshabilitado
+        && !oCampo.bSoloLecturaPorRol;
+    switch (oCampo.oTipo) {
+      case EnumTipoCampoAbm.lista:
+        final List<String> listOpciones = oCampo.listOpciones ?? <String>[];
+        final List<String> listValores  = oCampo.listValores  ?? listOpciones;
+        return DropdownButtonFormField<String>(
+          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
+          initialValue : listValores.contains(sValor) ? sValor : null,
+          isExpanded   : true,
+          decoration   : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+          items: <DropdownMenuItem<String>>[
+            for (int i = 0; i < listOpciones.length; i++)
+              DropdownMenuItem<String>(
                 value : listValores[i],
                 child : Text(listOpciones[i],
                     style: ClaseGenEstilosTexto.normalChico(oContexto)),
@@ -73,33 +98,4 @@ wnMenuItem<String>(
           const SizedBox(width: ClaseGenLayout.dAnchoNumeroFila),
           for (int i = 0; i < widget.listCamposDetalle.length; i++)
             SizedBox(
-              width : widget.listCamposDetalle[i].getAnchoColumna(),
-              child : Text(
-                (i == iRotulo)
-                    ? ClaseIdiomas.getTexto('detTotales', getIdioma())
-                    : ((i == iPrimeraSuma || mapSumas
-                            .containsKey(widget.listCamposDetalle[i].sClave))
-                        ? funcFormatearImporte(
-                            mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
-                        : ''),
-                style     : oEstilo,
-                textAlign : TextAlign.right,
-              ),
-            ),
-          const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
-        ],
-      ),
-    );
-  }
-
-}
-
-/// Celda numérica de la grilla de detalles: guarda el valor plano y lo
-/// muestra formateado con la máscara cuando pierde el foco (regla 9).
-class _ClaseCeldaNumero extends StatefulWidget {
-  const _ClaseCeldaNumero({
-    required this.bHabilitado,
-    required this.funcAlCambiar,
-    required this.oCampo,
-    required this.oControl,
-    required this.sVal
+              width : widget.listCamposDetalle[i].getA

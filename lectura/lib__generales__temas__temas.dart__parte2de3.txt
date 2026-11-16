@@ -79,7 +79,6 @@ rficieOscura,
     return oTemaBase.copyWith(
       scaffoldBackgroundColor: oEsquema.surface,
       // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
-      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y 
+      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
       // multiplican por su cuenta.
-      textTheme : oTemaBase.textTheme
-      
+      textTheme : _escalarTexto(oTemaBase.text

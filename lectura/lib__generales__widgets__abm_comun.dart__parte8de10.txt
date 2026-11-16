@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 8 DE 10
 ---
-         ? () => setState(() => iPagina = iPaginaActual - 1)
+
+                    onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
+                  ),
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
+                    icon      : const Icon(Icons.chevron_left),
+                    onPressed : (iPaginaActual > 0)
+                        ? () => setState(() => iPagina = iPaginaActual - 1)
                         : null,
                   ),
                   Expanded(
@@ -49,6 +56,7 @@ class ClaseAndamiajeAbm extends StatelessWidget {
     required this.iRegistro,
     required this.listCampos,
     required this.listRegistros,
+    this.oFocoGrilla,
     required this.oFormulario,
     required this.setHabilitados,
     required this.sIdioma,
@@ -60,9 +68,12 @@ class ClaseAndamiajeAbm extends StatelessWidget {
   final int                                iRegistro;
   final List<ClaseCampoAbm>                listCampos;
   final List<Map<String, dynamic>>         listRegistros;
-
+  /// Nodo de foco de la grilla lateral (opcional): para devolverle el foco desde el formulario, ej: al cancelar la edición.
+  final FocusNode?                         oFocoGrilla;
+  
   /// Área derecha: el formulario (campos, o cabecera + detalles).
   final Widget                             oFormulario;
+
   final Set<EnumBotonAbm>                  setHabilitados;
   final String                             sIdioma;
   final String                             sTitulo;
@@ -85,29 +96,9 @@ class ClaseAndamiajeAbm extends StatelessWidget {
                   iRegistro       : iRegistro,
                   listCampos      : listCampos,
                   listRegistros   : listRegistros,
+                  oFocoExterno    : oFocoGrilla,
                   sIdioma         : sIdioma,
                 ),
                 const VerticalDivider(width: ClaseGenEspacios.dEspacio01),
                 Expanded(child: oFormulario),
-              ],
-            ),
-          ),
-          // ← CAMBIO items 1,2,3,6: botonera al pie, delegada a ClaseBotoneraAbm
-          ClaseBotoneraAbm(
-            esHabilitado : (EnumBotonAbm oBoton) => setHabilitados.contains(oBoton),
-            funcAccion   : funcAlClicar,
-            sIdioma      : sIdioma,
-          ),
-        ],
-      ),
-    );
-  }
-
-}
-
-
-/// Barra de botones ABM al pie del formulario.
-///
-/// Orden visual fijo, tamaño uniforme y colores consistentes: mismo color
-/// para todos los habilitados, mismo color para todos los deshabilitados.
-/// Los colores provienen de ClaseGenTemas (respetan el mod
+             

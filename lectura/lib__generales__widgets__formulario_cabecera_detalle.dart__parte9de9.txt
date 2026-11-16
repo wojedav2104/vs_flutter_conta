@@ -1,7 +1,36 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 9 DE 9
 ---
-or,
+nchoColumna(),
+              child : Text(
+                (i == iRotulo)
+                    ? ClaseIdiomas.getTexto('detTotales', getIdioma())
+                    : ((i == iPrimeraSuma || mapSumas
+                            .containsKey(widget.listCamposDetalle[i].sClave))
+                        ? funcFormatearImporte(
+                            mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
+                        : ''),
+                style     : oEstilo,
+                textAlign : TextAlign.right,
+              ),
+            ),
+          const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
+        ],
+      ),
+    );
+  }
+
+}
+
+/// Celda numérica de la grilla de detalles: guarda el valor plano y lo
+/// muestra formateado con la máscara cuando pierde el foco (regla 9).
+class _ClaseCeldaNumero extends StatefulWidget {
+  const _ClaseCeldaNumero({
+    required this.bHabilitado,
+    required this.funcAlCambiar,
+    required this.oCampo,
+    required this.oControl,
+    required this.sValor,
   });
 
   final bool                         bHabilitado;

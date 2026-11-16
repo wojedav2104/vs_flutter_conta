@@ -1,7 +1,37 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 4 DE 9
 ---
-les[iFila].values) {
+sTexto == null) return;
+    final String sBusqueda = sTexto.toLowerCase();
+    for (int i = 0; i < widget.listRegistros.length; i++) {
+      if ((widget.listRegistros[i][widget.listCamposCabecera.first.sClave] ?? '')
+          .toString().toLowerCase().contains(sBusqueda)) {
+        seleccionar(i);
+        return;
+      }
+    }
+    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
+  }
+
+  // ── Filas de detalle ─────────────────────────────────────────────────────
+
+  Map<String, String> _crearFilaVacia() {
+    return <String, String>{
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+        oCampo.sClave: oCampo.sValorDefecto ?? '',
+    };
+  }
+
+  void agregarFila() {
+    setState(() {
+      listDetalles.add(_crearFilaVacia());
+      listControles.add(_crearControles(listDetalles.last));
+    });
+  }
+
+  void borrarFila(int iFila) {
+    setState(() {
+      for (final TextEditingController oCtrl in listControles[iFila].values) {
         oCtrl.dispose();
       }
       listControles.removeAt(iFila);
@@ -87,29 +117,4 @@ les[iFila].values) {
       }
     }
 
-    // La suma del Debe debe ser igual a la suma del Haber.
-    double dDebe  = 0;
-    double dHaber = 0;
-    for (final Map<String, String> mapFila in listDetalles) {
-      dDebe  += funcParsearNumero(mapFila[widget.sClaveDebe]  ?? '') ?? 0;
-      dHaber += funcParsearNumero(mapFila[widget.sClaveHaber] ?? '') ?? 0;
-    }
-    return ClaseCapValidar.validarSumaDebeHaber(dDebe, dHaber, sIdioma);
-  }
-
-  String _traducirFila(String sIdioma, int iFila, String sError) {
-    return ClaseIdiomas.getTexto('detErrorFila', sIdioma)
-        .replaceAll('{0}', '$iFila')
-        .replaceAll('{1}', sError);
-  }
-
-  List<Map<String, String>> _listDetallesLimpias() {
-    return _clonarDetalles(listDetalles
-        .where((Map<String, String> mapFila) =>
-            mapFila.values.any((String s) => s.trim().isNotEmpty))
-        .toList());
-  }
-
-  List<Map<String, String>> _clonarDetalles(List<Map<String, String>> listOrigen) {
-    return <Map<String, String>>[
-      for (final Map<Strin
+    // La suma

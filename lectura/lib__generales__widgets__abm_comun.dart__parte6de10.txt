@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 6 DE 10
 ---
-alPaginas) ? iPagina : iTotalPaginas - 1;
+
+            o.bEnGrilla && o.oTipo != EnumTipoCampoAbm.comentario)
+        .take(3)
+        .toList();
+
+    final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
+    final int iTotalPaginas = math.max(1,
+        (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
+    final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
     final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
     final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
     final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
@@ -78,10 +86,4 @@ alPaginas) ? iPagina : iTotalPaginas - 1;
                           message : ClaseIdiomas.getTexto('ordenarPor', widget.sIdioma),
                           child   : Text(
                             oCampo.sEtiqueta,
-                            // ← CAMBIO item 8: alinear números a la derecha en encabezados
-                            textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                ? TextAlign.right
-                                : TextAlign.left,
-                            style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                            maxLines : 1,
-                            overflow : TextOv
+                            // ← CAMBIO item 8: alinear números a la derecha

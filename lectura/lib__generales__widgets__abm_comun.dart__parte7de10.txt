@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 7 DE 10
 ---
-erflow.ellipsis,
+ en encabezados
+                            textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                ? TextAlign.right
+                                : TextAlign.left,
+                            style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                            maxLines : 1,
+                            overflow : TextOverflow.ellipsis,
                           ),
                         ),
                       ),
@@ -74,10 +80,3 @@ erflow.ellipsis,
                   IconButton(
                     tooltip   : ClaseIdiomas.getTexto('menuPrimeraFila', widget.sIdioma),
                     icon      : const Icon(Icons.first_page),
-                    onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
-                  ),
-                  IconButton(
-                    tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
-                    icon      : const Icon(Icons.chevron_left),
-                    onPressed : (iPaginaActual > 0)
-               

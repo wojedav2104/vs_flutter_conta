@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 10
 ---
-o claro/oscuro).
+ ],
+            ),
+          ),
+          // ← CAMBIO items 1,2,3,6: botonera al pie, delegada a ClaseBotoneraAbm
+          ClaseBotoneraAbm(
+            esHabilitado : (EnumBotonAbm oBoton) => setHabilitados.contains(oBoton),
+            funcAccion   : funcAlClicar,
+            sIdioma      : sIdioma,
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+
+/// Barra de botones ABM al pie del formulario.
+///
+/// Orden visual fijo, tamaño uniforme y colores consistentes: mismo color
+/// para todos los habilitados, mismo color para todos los deshabilitados.
+/// Los colores provienen de ClaseGenTemas (respetan el modo claro/oscuro).
 ///
 /// Los botones de edición quedan deshabilitados en los países sin permiso
 /// de edición (Francia: solo visualización). La confirmación de Borrar
@@ -88,15 +109,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
         onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
         style     : ElevatedButton.styleFrom(
           backgroundColor         : bHabilitado
-              ? ClaseGenTemas.colorBotonHabilitado(oContexto)          // item 6
-              : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
-          foregroundColor         : bHabilitado
-              ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-              : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-          disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
-          disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-          shape  : RoundedRectangleBorder(
-            borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
-          ),
-          padding : EdgeInsets.zero,
-       
+              ? ClaseGenTemas.colorBotonHabilitado(oContexto)

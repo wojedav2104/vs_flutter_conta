@@ -1,7 +1,39 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
-PARTE 3 DE 3
+PARTE 3 DE 4
 ---
-String, dynamic> oRegistro) {
+ false;
+    });
+    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
+
+  }
+
+  Future<void> encontrar() async {
+    final String sIdioma = getIdioma();
+    final String? sTexto =
+        await funcMostrarEncontrar(context, sIdioma, widget.listCampos.first);
+    if (sTexto == null) return;
+    final String sBusqueda = sTexto.toLowerCase();
+    for (int i = 0; i < widget.listRegistros.length; i++) {
+      if ((widget.listRegistros[i][widget.listCampos.first.sClave] ?? '')
+          .toString().toLowerCase().contains(sBusqueda)) {
+        seleccionar(i);
+        return;
+      }
+    }
+    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
+  }
+
+  // ── Selección y auto-cálculos ────────────────────────────────────────────
+
+  void seleccionar(int iIndice) {
+    setState(() {
+      iRegistro    = iIndice;
+      mapValores   = _desdeRegistro(widget.listRegistros[iIndice]);
+      bModoEdicion = false;
+    });
+  }
+
+  Map<String, String> _desdeRegistro(Map<String, dynamic> oRegistro) {
     return <String, String>{
       for (final ClaseCampoAbm oCampo in widget.listCampos)
         oCampo.sClave: (oRegistro[oCampo.sClave] ?? '').toString(),
@@ -41,7 +73,7 @@ String, dynamic> oRegistro) {
         EnumBotonAbm.grabar,
         EnumBotonAbm.cancelar,
       ],
-      EnumBotonAbm.fin,
+      if (!bModoEdicion) EnumBotonAbm.fin,
     };
   }
 
@@ -94,25 +126,4 @@ String, dynamic> oRegistro) {
     return ClaseAndamiajeAbm(
       funcAlClicar    : _alClicarBoton,
       funcSeleccionar : seleccionar,
-      iRegistro       : iRegistro,
-      listCampos      : widget.listCampos,
-      listRegistros   : widget.listRegistros,
-      oFormulario     : ClaseFormularioCampos(
-        key                : _oLlaveFormulario,            // ← CAMBIO item 14
-        bAutoFocus         : bPedirFoco,                   // ← CAMBIO item 10
-        funcAlCambiarCampo : _alCambiarCampo,
-        funcAlPerderFoco   : widget.funcAlPerderFoco,
-        funcEsHabilitado   : _getHabilitado,
-        funcEtiquetaGrupo  : widget.funcEtiquetaGrupo,     // ← CAMBIO etiqueta de grupo
-        listCampos         : widget.listCampos,
-        mapValores         : mapValores,
-        sIdioma            : getIdioma(),
-      ),
-      setHabilitados : _getBotonesHabilitados(),
-      sIdioma        : getIdioma(),
-      sTitulo        : widget.sTitulo,
-    );
-  }
-
-}
-
+      iRegi

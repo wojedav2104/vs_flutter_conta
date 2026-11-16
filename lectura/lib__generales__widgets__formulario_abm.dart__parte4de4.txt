@@ -1,0 +1,26 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
+PARTE 4 DE 4
+---
+stro       : iRegistro,
+      listCampos      : widget.listCampos,
+      listRegistros   : widget.listRegistros,
+      oFocoGrilla     : _oFocoGrilla,
+      oFormulario     : ClaseFormularioCampos(
+        key                : _oLlaveFormulario,            // ← CAMBIO item 14
+        bAutoFocus         : bPedirFoco,                   // ← CAMBIO item 10
+        funcAlCambiarCampo : _alCambiarCampo,
+        funcAlPerderFoco   : widget.funcAlPerderFoco,
+        funcEsHabilitado   : _getHabilitado,
+        funcEtiquetaGrupo  : widget.funcEtiquetaGrupo,     // ← CAMBIO etiqueta de grupo
+        listCampos         : widget.listCampos,
+        mapValores         : mapValores,
+        sIdioma            : getIdioma(),
+      ),
+      setHabilitados : _getBotonesHabilitados(),
+      sIdioma        : getIdioma(),
+      sTitulo        : widget.sTitulo,
+    );
+  }
+
+}
+

@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 2 DE 9
 ---
-ing>> listDetalles = <Map<String, String>>[];
+mulario =
+      GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
+
+  /// Nodo de foco de la grilla lateral: al cancelar la edición, el foco vuelve a la grilla.
+  final FocusNode _oFocoGrilla = FocusNode();
+
+  /// Filas de detalle que se están editando (valores internos).
+  List<Map<String, String>> listDetalles = <Map<String, String>>[];
 
   /// Un control por celda, para conservar el cursor y actualizar valores
   /// derivados (ej: el nombre de la cuenta).
@@ -25,6 +32,7 @@ ing>> listDetalles = <Map<String, String>>[];
   @override
   void dispose() {
     _liberarControles();
+    _oFocoGrilla.dispose();
     super.dispose();
   }
 
@@ -73,6 +81,7 @@ ing>> listDetalles = <Map<String, String>>[];
           oCampo.sClave: oCampo.sValorDefecto ?? '',
       };
       _reemplazarDetalles(<Map<String, String>>[_crearFilaVacia()]);
+      iRegistroAnterior = iRegistro;                    // para Cancelar
       iRegistro    = -1;
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -83,7 +92,8 @@ ing>> listDetalles = <Map<String, String>>[];
     if (iRegistro < 0) return;
     final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
     setState(() {
-      mapValores = _desdeRegistro(oRegistro);
+      iRegistroAnterior = iRegistro;                    // para Cancelar
+      mapValores        = _desdeRegistro(oRegistro);
       _reemplazarDetalles(_desdeDetalles(oRegistro));
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -100,18 +110,4 @@ ing>> listDetalles = <Map<String, String>>[];
       bMostrarCancelar : false,
     );
     if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
-    setState(() {
-      widget.listRegistros.removeAt(iRegistro);
-      mapValores   = <String, String>{};
-      _reemplazarDetalles(<Map<String, String>>[]);
-      iRegistro    = -1;
-      bModoEdicion = false;
-    });
-    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
-  }
-
-  void cancelar() {
-    setState(() {
-      if (iRegistro >= 0) {
-        final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
-        mapValores = _desdeRegistro(oRe
+  

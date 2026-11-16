@@ -2,6 +2,7 @@ RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 4 DE 10
 ---
 gistros,
+    this.oFocoExterno,
     required this.sIdioma,
   });
 
@@ -12,6 +13,9 @@ gistros,
   final int                        iRegistro;
   final List<ClaseCampoAbm>        listCampos;
   final List<Map<String, dynamic>> listRegistros;
+
+  /// Nodo de foco externo (opcional): el formulario lo usa para devolverle el foco a la grilla, ej: al cancelar la edición.
+  final FocusNode?                 oFocoExterno;
   final String                     sIdioma;
 
   @override
@@ -27,7 +31,12 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   String sFiltro     = '';
 
   final TextEditingController oControlFiltro = TextEditingController();
-  final FocusNode             oFocoGrilla    = FocusNode();   // ← CAMBIO item 23
+
+  /// Nodo de foco interno de la grilla (item 23).
+  final FocusNode _oFocoInterno = FocusNode();
+
+  /// Nodo de foco que usa la grilla: el externo si el formulario lo provee, o el propio. Se elige una sola vez en initState.
+  late final FocusNode oFocoGrilla = widget.oFocoExterno ?? _oFocoInterno;
 
   @override
   void initState() {
@@ -44,7 +53,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   @override
   void dispose() {
     oControlFiltro.dispose();
-    oFocoGrilla.dispose();                                  // ← CAMBIO item 23
+    _oFocoInterno.dispose();
     super.dispose();
   }
 
@@ -94,11 +103,4 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
     Iterable<Map<String, dynamic>> list = widget.listRegistros;
     final String sTexto = sFiltro.trim().toLowerCase();
     if (sTexto.isNotEmpty) {
-      list = list.where((Map<String, dynamic> o) => o.entries.any(
-          (MapEntry<String, dynamic> e) =>
-              e.value is! List && e.value.toString().toLowerCase().contains(sTexto)));
-    }
-    final List<Map<String, dynamic>> listSalida = list.toList();
-    if (sClaveOrden.isNotEmpty) {
-      // ← CAMBIO: orden real según el tipo de campo (los importes se ordenan
-    
+      list = lis

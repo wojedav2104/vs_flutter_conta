@@ -1,7 +1,32 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 5 DE 9
 ---
-g, String> mapFila in listOrigen)
+ del Debe debe ser igual a la suma del Haber.
+    double dDebe  = 0;
+    double dHaber = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      dDebe  += funcParsearNumero(mapFila[widget.sClaveDebe]  ?? '') ?? 0;
+      dHaber += funcParsearNumero(mapFila[widget.sClaveHaber] ?? '') ?? 0;
+    }
+    return ClaseCapValidar.validarSumaDebeHaber(dDebe, dHaber, sIdioma);
+  }
+
+  String _traducirFila(String sIdioma, int iFila, String sError) {
+    return ClaseIdiomas.getTexto('detErrorFila', sIdioma)
+        .replaceAll('{0}', '$iFila')
+        .replaceAll('{1}', sError);
+  }
+
+  List<Map<String, String>> _listDetallesLimpias() {
+    return _clonarDetalles(listDetalles
+        .where((Map<String, String> mapFila) =>
+            mapFila.values.any((String s) => s.trim().isNotEmpty))
+        .toList());
+  }
+
+  List<Map<String, String>> _clonarDetalles(List<Map<String, String>> listOrigen) {
+    return <Map<String, String>>[
+      for (final Map<String, String> mapFila in listOrigen)
         Map<String, String>.from(mapFila),
     ];
   }
@@ -71,7 +96,7 @@ g, String> mapFila in listOrigen)
         EnumBotonAbm.grabar,
         EnumBotonAbm.cancelar,
       ],
-      EnumBotonAbm.fin,
+      if (!bModoEdicion) EnumBotonAbm.fin,
     };
   }
 
@@ -87,37 +112,4 @@ g, String> mapFila in listOrigen)
     }
   }
 
-  // ── Ventanas de mensajes ─────────────────────────────────────────────────
-
-  Future<void> _mostrarError(String sTexto) async {
-    if (!mounted) return;
-    await funcMostrarError(
-      context,
-      getIdioma(),
-      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
-      sTexto,
-    );
-  }
-
-  Future<void> _mostrarInformacion(String sTexto) async {
-    if (!mounted) return;
-    await funcMostrarInformacion(
-      context,
-      getIdioma(),
-      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
-      sTexto,
-    );
-  }
-
-  // ── Construcción de la interfaz ──────────────────────────────────────────
-
-  @override
-  Widget build(BuildContext oContexto) {
-    final List<ClaseCampoAbm> listCabecera = (widget.sClaveCampoAlPie == null)
-        ? widget.listCamposCabecera
-        : widget.listCamposCabecera
-            .where((ClaseCampoAbm oCampo) => oCampo.sClave != widget.sClaveCampoAlPie)
-            .toList();
-    // Resetear el pedido de foco después de este frame.
-    if (bPedirFoco) {
-      WidgetsBindi
+  // ── Ventanas de mensajes ───────────────────
