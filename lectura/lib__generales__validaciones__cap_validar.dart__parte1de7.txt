@@ -11,7 +11,8 @@ import '../modelos/documentos.dart';
 /// error traducido. Las cadenas de error admiten {0}, {1} (cuando el texto
 /// traducido se construye por partes).
 ///
-/// Los textos de error (valid*) se definen en idiomas_validaciones y se usan con ClaseIdiomas.getTexto + replaceAll.
+/// Los textos de error (valid*) se definen en idiomas_validaciones y se usan
+/// con ClaseIdiomas.getTexto + replaceAll.
 class ClaseCapValidar {
 
   // ── Texto ─────────────────────────────────────────────────────────────
@@ -90,17 +91,18 @@ class ClaseCapValidar {
     return null;
   }
 
-  /// El valor debe tener la forma de un número de documento (999-999-9999999).
-  static String? validarNumeroDocumento(
+  /// Moneda: máximo 15 dígitos enteros y 2 decimales.
+  static String? validarNumeroValor(
       String sValor, String sEtiqueta, String sIdioma) {
-    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
-    if (sDigitos.length != 13) {
-      return ClaseIdiomas.getTexto('validNumeroDocumento', sIdioma)
-          .replaceAll('{0}', sEtiqueta);
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{1,15}([.,]\d{1,2})?$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '15');
     }
     return null;
   }
 
-  /// Formato del N° de documento según el Tipo de documento.
-  ///
-  /// - Los comprobantes con timbrado (01, 02, 03, 04, 06, 09, 10) admite
+  /// Valor según el Tipo de documento:
+  /// - 07 (Factura de Importación): hasta 20 dígitos

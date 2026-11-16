@@ -1,50 +1,55 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 3 DE 7
 ---
-;
-    if (fValor == null) {
-      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
-          .replaceAll('{0}', sEtiqueta);
-    }
-    if (fValor.isBefore(fMinima)) {
-      return ClaseIdiomas.getTexto('validFechaAnterior', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', funcFormatearFecha(fMinima));
-    }
     return null;
-  }
-  
-  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
-  /// Una fecha no vacía con formato inválido también es error.
-  static String? validarFechaNoAnterior(
-      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    final DateTime? fValor = funcParsearFecha(sTexto);
-    if (fValor == null) {
-      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+    }
+
+    // RUC: con dígito verificador.
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.ruc) {
+      return validarRuc(sTexto, sEtiqueta, sIdioma);
+    }
+
+    // Pasaporte: letras mayúsculas, dígitos y guiones, hasta 20 caracteres
+    // (el campo se pone en mayúsculas al escribir).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.pasaporte) {
+      if (!RegExp(r'^[A-Z0-9-]{1,20}$').hasMatch(sTexto)) {
+        return ClaseIdiomas.getTexto('validIdentPasaporte', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // Cédula extranjera: de 5 a 15 caracteres (letras, dígitos, puntos o guiones).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.cedulaExtranjera) {
+      if (!RegExp(r'^[A-Za-z0-9.\-]{5,15}$').hasMatch(sTexto)) {
+        return ClaseIdiomas.getTexto('validIdentOtros', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // Diplomático: de 3 a 20 caracteres (letras, dígitos o guiones).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.diplomatico) {
+      if (!RegExp(r'^[A-Za-z0-9\-]{3,20}$').hasMatch(sTexto)) {
+        return ClaseIdiomas.getTexto('validIdentDiplomatico', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // Sin Nombre: siempre '0'.
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.sinNombre) {
+      if (sTexto != '0') {
+        return ClaseIdiomas.getTexto('validIdentSinNombre', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // Otros tipos: de 5 a 15 caracteres.
+    if (!RegExp(r'^[A-Za-z0-9.\-]{5,15}$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validIdentOtros', sIdioma)
           .replaceAll('{0}', sEtiqueta);
-    }
-    if (fValor.isBefore(fMinima)) {
-      return ClaseIdiomas.getTexto('validFechaAnterior', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', funcFormatearFecha(fMinima));
-    }
-    return null;
-  }
-  /// El ejercicio debe ser un año dentro del rango admitido por la
-  /// aplicación (ClaseFechas es la única fuente de esos límites).
-  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    final int? iAno = int.tryParse(sTexto);
-    if (iAno == null
-        || iAno < ClaseFechas.iAnoMinimo
-        || iAno > ClaseFechas.getAnoMaximo()) {
-      return ClaseIdiomas.getTexto('validEjercicioRango', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', '${ClaseFechas.iAnoMinimo}')
-          .replaceAll('{2}', '${ClaseFechas.getAnoMaximo()}');
     }
     return null;
   }
@@ -65,38 +70,35 @@ PARTE 3 DE 7
     return null;
   }
 
-  /// Validación general de la identificación según el tipo.
-  static String? validarIdentificacion(
-      String sValor, String sTipoIdentificacion, String sEtiqueta, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-
-    // Pasaporte: letras mayúsculas, dígitos y guiones, hasta 20 caracteres
-    // (el campo se pone en mayúsculas al escribir).
-    if (sTipoIdentificacion == ClaseTipoIdentificacion.pasaporte) {
-      if (!RegExp(r'^[A-Z0-9-]{1,20}$').hasMatch(sTexto)) {
-        return ClaseIdiomas.getTexto('validIdentPasaporte', sIdioma)
-            .replaceAll('{0}', sEtiqueta);
-      }
-      return null;
+  /// Dígito verificador del R.U.C. (algoritmo Módulo 11 de la DNIT/SET).
+  ///
+  /// Los dígitos de la base se multiplican de derecha a izquierda por los
+  /// factores 2, 3, 4, 5, 6, 7, 8, 9, 10 y 11 (el factor crece con la
+  /// posición y NO se recicla). Se calcula el resto de la suma dividida por
+  /// 11: si el resto es 0 o 1 el dígito verificador es 0; si no, es
+  /// 11 menos el resto (equivalente a: si el resultado es 10 o 11, DV = 0).
+  ///
+  /// Recibe la base del RUC (por ejemplo '80101319') o el RUC completo
+  /// (por ejemplo '80101319-4') y devuelve el dígito verificador calculado.
+  /// Ejemplos verificados: 80101319 → 4, 1069218 → 5, 80031238 → 4,
+  /// 80014477 → 5.
+  static int funcDigitoVerificador(String sRuc) {
+    final String sBase = sRuc.split('-').first.replaceAll(RegExp(r'[^0-9]'), '');
+    int iSuma   = 0;
+    int iFactor = 2;
+    for (int i = sBase.length - 1; i >= 0; i--) {
+      iSuma += int.parse(sBase[i]) * iFactor;
+      iFactor++;
     }
+    int iDv = 11 - (iSuma % 11);
+    if (iDv >= 10) iDv = 0;
+    return iDv;
+  }
 
-    // RUC: con dígito verificador.
-    if (sTipoIdentificacion == ClaseTipoIdentificacion.ruc) {
-      return validarRuc(sTexto, sEtiqueta, sIdioma);
-    }
-
-    // Cédula de identidad: de 5 a 8 dígitos (se permiten puntos).
-    if (sTipoIdentificacion == ClaseTipoIdentificacion.cedula) {
-      final String sDigitos = sTexto.replaceAll('.', '');
-      if (!RegExp(r'^\d{5,8}$').hasMatch(sDigitos)) {
-        return ClaseIdiomas.getTexto('validIdentCedula', sIdioma)
-            .replaceAll('{0}', sEtiqueta);
-      }
-      return null;
-    }
-
-    // Cédula extranjera, diplomáticos y otros: de 5 a 15 caracteres.
-    if (!RegExp(r'^[A-Za-z0-9.\-]{5,15}$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto('validIdentOtros', sIdioma)
-          .replaceAll('{0}', sEtiqueta);
+  /// Completa un RUC escrito solo con la base, agregando el guion y el
+  /// dígito verificador ('1069218' → '1069218-5'). También completa
+  /// '1069218-'. Devuelve null si no hay nada que completar (valor vacío,
+  /// ya con dígito verificador o con formato no reconocido).
+  /// Es la ayuda al usuario al salir del campo; la validación al grabar
+  /// (validarRuc) sigue exigiendo el formato completo.
+ 

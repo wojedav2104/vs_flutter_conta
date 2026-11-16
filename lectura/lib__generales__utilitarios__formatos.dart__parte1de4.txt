@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 /// superior es un getter y no una constante.
 abstract final class ClaseFechas {
 
-  static        int get getAnoMaximo => DateTime.now().year;
+  static        int getAnoMaximo() => DateTime.now().year;
   static        int getAnoMaximoVigencia() => DateTime.now().year + 1;
   static const  int iAnoMinimo = 2020; 
 
@@ -93,4 +93,4 @@ String funcFormatearEnteroMiles(int iValor, String sSeparadorMiles) {
   final StringBuffer oBuffer = StringBuffer();
   if (iValor < 0) oBuffer.write('-');
   for (int i = 0; i < sDato.length; i++) {
-    if (i > 0 && (sDato.length - i) % 3 == 0) oBuffe
+    if (i > 0 && (sDato.length - i) % 3 == 0) oBuffer.

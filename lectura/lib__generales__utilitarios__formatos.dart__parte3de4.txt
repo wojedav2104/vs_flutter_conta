@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
 PARTE 3 DE 4
 ---
-ditUpdate(TextEditingValue oValorAnterior, TextEditingValue oValorNuevo) {
+tUpdate(TextEditingValue oValorAnterior, TextEditingValue oValorNuevo) {
     String sDigitos = oValorNuevo.text.replaceAll(RegExp(r'[^0-9]'), '');
     final int iMaxDigitos = sMascara.split('').where((s) => s == '9').length;
     if (sDigitos.length > iMaxDigitos) {
@@ -108,4 +108,4 @@ String funcFormatearImporte(double dValor, String sFormato) {
   final String sEnteros = listPartes[0];
   final StringBuffer oSalida = StringBuffer();
   for (int i = 0; i < sEnteros.length; i++) {
-    if (i > 0 && (sEnteros.
+    if (i > 0 && (sEnteros.le

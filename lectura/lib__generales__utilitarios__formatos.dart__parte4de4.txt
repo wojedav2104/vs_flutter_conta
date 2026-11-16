@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
 PARTE 4 DE 4
 ---
-length - i) % 3 == 0) oSalida.write(sSeparadorMiles);
+ngth - i) % 3 == 0) oSalida.write(sSeparadorMiles);
     oSalida.write(sEnteros[i]);
   }
   if (listPartes[1] != '00') {

@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
 PARTE 2 DE 4
 ---
-r.write(sSeparadorMiles);
+write(sSeparadorMiles);
     oBuffer.write(sDato[i]);
   }
   return oBuffer.toString();
@@ -105,4 +105,4 @@ class ClaseFormatoMascara extends TextInputFormatter {
   final String sMascara;
 
   @override
-  TextEditingValue formatE
+  TextEditingValue formatEdi

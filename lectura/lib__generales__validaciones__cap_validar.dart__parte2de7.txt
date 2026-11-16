@@ -1,7 +1,40 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 2 DE 7
 ---
-n
+ enteros y 2 decimales.
+  /// - Los demás tipos (01 Factura Contado, 09 Nota de Débito, 10 Nota de
+  ///   Crédito, etc.): hasta 15 dígitos enteros y 2 decimales.
+  static String? validarNumeroValorPorTipo(
+      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    // 07 (Factura de Importación) admite hasta 20 dígitos enteros; el
+    // resto, hasta 15. El patrón se arma interpolando iMaximo.
+    final int iMaximo = (sTipoDocumento == '07') ? 20 : 15;
+    if (!RegExp('^[0-9]{1,$iMaximo}([.,][0-9]{1,2})?\$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMaximo');
+    }
+    return null;
+  }
+
+  // ── Documentos de compra/venta ────────────────────────────────────────
+
+  /// El valor debe tener la forma de un número de documento (999-999-9999999).
+  static String? validarNumeroDocumento(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.length != 13) {
+      return ClaseIdiomas.getTexto('validNumeroDocumento', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Formato del N° de documento según el Tipo de documento.
+  ///
+  /// - Los comprobantes con timbrado (01, 02, 03, 04, 06, 09, 10) admiten
   ///   solo dígitos y deben tener 13 (con o sin los guiones).
   /// - Los tipos 05, 07, 08, 11 admiten de 5 a 13 dígitos.
   /// - Los tipos 12 a 18 (boletas, controles internos, entradas) requieren
@@ -32,62 +65,25 @@ n
     return null;
   }
 
-  /// La hora debe tener el formato hh:mm (24 horas) y ser válida.
-  static String? validarHoraValida(String sValor, String sEtiqueta, String sIdioma) {
+  // ── Identificación ────────────────────────────────────────────────────
+
+  /// Validación general de la identificación según el tipo:
+  ///   · Cédula de Identidad: 5 a 8 dígitos (se permiten puntos).
+  ///   · R.U.C.: 6 a 8 dígitos + dígito verificador.
+  ///   · Pasaporte: letras mayúsculas, dígitos y guiones (hasta 20).
+  ///   · Cédula Extranjera: 5 a 15 caracteres (letras, dígitos, puntos o guiones).
+  ///   · Diplomático: 3 a 20 caracteres (letras, dígitos o guiones).
+  ///   · Sin Nombre: siempre '0'.
+  static String? validarIdentificacion(
+      String sValor, String sTipoIdentificacion, String sEtiqueta, String sIdioma) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
-    if (!RegExp(r'^([01]\d|2[0-3]):[0-5]\d$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto('validHoraInvalida', sIdioma)
-          .replaceAll('{0}', sEtiqueta);
-    }
-    return null;
-  }
 
-
-  /// El ejercicio debe ser un año dentro del rango admitido por la
-  /// aplicación (ClaseFechas es la única fuente de esos límites).
-  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    final int? iAno = int.tryParse(sTexto);
-    if (iAno == null
-        || iAno < ClaseFechas.iAnoMinimo
-        || iAno > ClaseFechas.getAnoMaximo()) {
-      return ClaseIdiomas.getTexto('validEjercicioRango', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', '${ClaseFechas.iAnoMinimo}')
-          .replaceAll('{2}', '${ClaseFechas.getAnoMaximo()}');
-    }
-    return null;
-  }
-
-  /// La fecha debe ser válida y estar entre fMinima y fMaxima (ambas
-  /// incluidas). Vacío se acepta (la obligatoriedad la define el campo).
-  /// Ej: fechas de movimientos → hasta el 31/12 del año actual;
-  /// vigencia de los timbrados → hasta el 31/12 del año que viene.
-  static String? validarFechaEnRango(
-      String sValor, String sEtiqueta, DateTime fMinima, DateTime fMaxima,
-      String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    final DateTime? fValor = funcParsearFecha(sTexto);
-    if (fValor == null) {
-      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
-          .replaceAll('{0}', sEtiqueta);
-    }
-    if (fValor.isBefore(fMinima) || fValor.isAfter(fMaxima)) {
-      return ClaseIdiomas.getTexto('validFechaRango', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', funcFormatearFecha(fMinima))
-          .replaceAll('{2}', funcFormatearFecha(fMaxima));
-    }
-    return null;
-  }
-
-  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
-  /// Una fecha no vacía con formato inválido también es error.
-  static String? validarFechaNoAnterior(
-      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    final DateTime? fValor = funcParsearFecha(sTexto)
+    // Cédula de identidad: de 5 a 8 dígitos (se permiten puntos).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.cedula) {
+      final String sDigitos = sTexto.replaceAll('.', '');
+      if (!RegExp(r'^\d{5,8}$').hasMatch(sDigitos)) {
+        return ClaseIdiomas.getTexto('validIdentCedula', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+  

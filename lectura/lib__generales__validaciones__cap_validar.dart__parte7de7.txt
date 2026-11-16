@@ -1,21 +1,12 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 7 DE 7
 ---
-aseIdiomas.getTexto('validFechaRango', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', funcFormatearFecha(fDesde))
-          .replaceAll('{2}', funcFormatearFecha(fHasta));
+Idioma) {
+    if (sValor.trim().isEmpty) {
+      return ClaseIdiomas.getTexto('validAlMenosUno', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
     }
     return null;
-  }
-
-  /// El importe debe ser mayor o igual que cero (se acepta vacío).
-  static String? validarImporteNoNegativo(
-      String sValor, String sEtiqueta, String sIdioma) {
-    final double? dValor = funcParsearNumero(sValor);
-    if (dValor == null || dValor >= 0) return null;
-    return ClaseIdiomas.getTexto('validNoNegativo', sIdioma)
-        .replaceAll('{0}', sEtiqueta);
   }
 
   // ── Credenciales y correo ─────────────────────────────────────────────

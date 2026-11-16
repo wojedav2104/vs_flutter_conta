@@ -1,44 +1,7 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 4 DE 7
 ---
-    }
-    return null;
-  }
-
-  // ── Identificación ──────────────────────────────────────────────────────
-
-  /// Dígito verificador del R.U.C. (algoritmo Módulo 11 de la DNIT/SET).
-  ///
-  /// Los dígitos de la base se multiplican de derecha a izquierda por los
-  /// factores 2, 3, 4, 5, 6, 7, 8, 9, 10 y 11 (el factor crece con la
-  /// posición y NO se recicla). Se calcula el resto de la suma dividida por
-  /// 11: si el resto es 0 o 1 el dígito verificador es 0; si no, es
-  /// 11 menos el resto (equivalente a: si el resultado es 10 o 11, DV = 0).
-  ///
-  /// Recibe la base del RUC (por ejemplo '80101319') o el RUC completo
-  /// (por ejemplo '80101319-4') y devuelve el dígito verificador calculado.
-  /// Ejemplos verificados: 80101319 → 4, 1069218 → 5, 80031238 → 4,
-  /// 80014477 → 5.
-  static int funcDigitoVerificador(String sRuc) {
-    final String sBase = sRuc.split('-').first.replaceAll(RegExp(r'[^0-9]'), '');
-    int iSuma   = 0;
-    int iFactor = 2;
-    for (int i = sBase.length - 1; i >= 0; i--) {
-      iSuma += int.parse(sBase[i]) * iFactor;
-      iFactor++;
-    }
-    int iDv = 11 - (iSuma % 11);
-    if (iDv >= 10) iDv = 0;
-    return iDv;
-  }
-
-  /// Completa un RUC escrito solo con la base, agregando el guion y el
-  /// dígito verificador ('1069218' → '1069218-5'). También completa
-  /// '1069218-'. Devuelve null si no hay nada que completar (valor vacío,
-  /// ya con dígito verificador o con formato no reconocido).
-  /// Es la ayuda al usuario al salir del campo; la validación al grabar
-  /// (validarRuc) sigue exigiendo el formato completo.
-  static String? funcCompletarRuc(String sValor) {
+ static String? funcCompletarRuc(String sValor) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     if (RegExp(r'^\d{6,8}-\d$').hasMatch(sTexto)) return null;
@@ -47,45 +10,84 @@ PARTE 4 DE 7
     return '$sBase-${funcDigitoVerificador(sBase)}';
   }
 
-  // ── Cuentas contables ─────────────────────────────────────────────────
+  // ── Fechas ────────────────────────────────────────────────────────────
 
-  /// Formato de cuenta 99.99.99.99.99: hasta 5 grupos de números
-  /// separados por puntos (el primero de 1 o 2 dígitos y los demás de
-  /// exactamente 2 dígitos).
-  static String? validarFormatoCuenta(String sValor, String sEtiqueta, String sIdioma) {
+  /// La fecha debe ser válida (dd/mm/aaaa y existir en el calendario).
+  static String? validarFechaValida(String sValor, String sEtiqueta, String sIdioma) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
-    if (!esFormatoCuenta(sTexto)) {
-      return ClaseIdiomas.getTexto('validFormatoCuenta', sIdioma);
+    if (funcParsearFecha(sTexto) == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
     }
     return null;
   }
 
-  /// true si sValor tiene el formato de cuenta 99.99.99.99.99: el primer
-  /// grupo tiene 1 o 2 dígitos y los demás exactamente 2 dígitos,
-  /// separados por puntos, hasta 5 grupos.                        ← LOTE 1
-  /// Ejemplos válidos: 1, 1.01, 2.03.01, 3.05.02.09, 10.02.05.03.04.
-  static bool esFormatoCuenta(String sValor) =>
-      RegExp(r'^\d{1,2}(\.\d{2}){0,4}$').hasMatch(sValor.trim());
-
-  /// Cantidad de grupos de la cuenta (1.01.04 → 3).
-  static int contarGruposCuenta(String sNumeroCuenta) =>
-      sNumeroCuenta.trim().isEmpty ? 0 : sNumeroCuenta.trim().split('.').length;
-
-  /// Cantidad de dígitos de la cuenta (ignora los puntos) (1.01.04 → 4).
-  static int contarDigitosCuenta(String sNumeroCuenta) =>
-      sNumeroCuenta.trim().replaceAll('.', '').length;
-
-  /// Cuenta superior determinística: el grupo anterior.           ← LOTE 1
-  /// 1.03.02 → '1.03' ; 10.02 → '10' ; raíz (un solo grupo) → ''.
-  static String funcCuentaSuperior(String sNumeroCuenta) {
-    final String sCuenta = sNumeroCuenta.trim();
-    if (contarGruposCuenta(sCuenta) <= 1) return '';
-    return sCuenta.substring(0, sCuenta.lastIndexOf('.'));
+  /// La fecha debe ser válida y estar entre fMinima y fMaxima (ambas
+  /// incluidas). Vacío se acepta (la obligatoriedad la define el campo).
+  /// Ej: fechas de movimientos → hasta el 31/12 del año actual;
+  /// vigencia de los timbrados → hasta el 31/12 del año que viene.
+  static String? validarFechaEnRango(
+      String sValor, String sEtiqueta, DateTime fMinima, DateTime fMaxima,
+      String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final DateTime? fValor = funcParsearFecha(sTexto);
+    if (fValor == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (fValor.isBefore(fMinima) || fValor.isAfter(fMaxima)) {
+      return ClaseIdiomas.getTexto('validFechaRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima))
+          .replaceAll('{2}', funcFormatearFecha(fMaxima));
+    }
+    return null;
   }
 
-  /// La cuenta superior es obligatoria en las cuentas con más de un grupo
-  /// (las raíces —"1", "10"— no tienen superior).                ← LOTE 1
-  static String? validarCuentaSuperior(
-      String sNumeroCuenta, String sCuentaSuperior, String sIdioma) {
-    if (conta
+  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
+  /// Una fecha no vacía con formato inválido también es error.
+  static String? validarFechaNoAnterior(
+      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final DateTime? fValor = funcParsearFecha(sTexto);
+    if (fValor == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (fValor.isBefore(fMinima)) {
+      return ClaseIdiomas.getTexto('validFechaAnterior', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima));
+    }
+    return null;
+  }
+
+  /// La fecha de fin no puede ser anterior a la fecha de inicio.
+  static String? validarFechaFinPosterior(
+      String sValorInicio, String sValorFin, String sIdioma) {
+    final DateTime? fInicio = funcParsearFecha(sValorInicio);
+    final DateTime? fFin    = funcParsearFecha(sValorFin);
+    if (fInicio == null || fFin == null) return null;
+    if (fFin.isBefore(fInicio)) {
+      return ClaseIdiomas.getTexto('validFechaFinPosterior', sIdioma);
+    }
+    return null;
+  }
+
+  /// La fecha debe estar entre el 1 de enero del ejercicio contable y
+  /// a) la fecha de hoy si el ejercicio es el año actual, o b) el 31 de
+  /// diciembre del ejercicio si es anterior al año actual.
+  static String? validarFechaEnEjercicio(
+      String sValor, String sEjercicio, String sEtiqueta, String sIdioma) {
+    final int?      iEjercicio = int.tryParse(sEjercicio.trim());
+    final DateTime? fFecha     = funcParsearFecha(sValor);
+    if (iEjercicio == null || fFecha == null) return null;
+    final DateTime fDesde = DateTime(iEjercicio, 1, 1);
+    final DateTime fHasta = (iEjercicio == DateTime.now().year)
+        ? DateTime.now()
+        : DateTime(iEjercicio, 12, 31);
+    if (fFecha.isBefore(fDesde) || fFecha.isAfter(fHasta)) {
+      return ClaseIdiomas.getTexto('validFechaRango', sIdioma)
