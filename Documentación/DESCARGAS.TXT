@@ -1,0 +1,9 @@
+Mi repositorio de GitHub es: https://github.com/wojedav2104/vs_flutter_conta
+
+Las especificaciones de este proyecto se encuentran en la carpeta "Documentación" de mi repositorio de GitHub.
+
+Por favor si lees todos esos archivos en orden alfabético pero solamente los que empiezan con el carácter "0". Los que empiezan con otros caracteres no son relevantes.
+
+Después de leer en orden alfabético todos los archivos de la carpeta "Documentación" que empiezan con el carácter "0" debes leer en orden alfabético todos los archivos que se encuentran en la carpeta "lectura" porque es en esos archivos donde encontrarás el código fuente de la aplicación, que está siendo desarrollada con Dart/Flutter.
+
+Una vez que hayas leído todos los archivos de la carpeta "Documentación" (que contiene las especificaciones de la aplicación) y de la carpeta "lectura" (que contiene el código fuente en Dart) me avisas para continuar avanzando con el desarrollo de este proyecto.

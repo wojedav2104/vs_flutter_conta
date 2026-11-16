@@ -1,6 +1,6 @@
 ================================================================
 VS_CONTA — CONTEXTO DE SESIÓN PARA CONTINUAR
-Última actualización: 23/06/2026 (tras la auditoría completa)
+Última actualización: 16/11/2026 (tras la auditoría completa)
 ================================================================
 
 ----------------------------------------------------------------
