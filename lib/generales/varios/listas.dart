@@ -70,6 +70,17 @@ abstract final class ClaseAfectaA {
     return listValores.map((String s) => getEtiqueta(s, sIdioma)).toList();
   }
 
+  /// Etiquetas de uno o varios valores guardados, separados por comas
+  /// ('FAC,NCR' → 'Factura, Nota de crédito').
+  static String getEtiquetas(String sValor, String sIdioma) {
+    final List<String> listCodigos = sValor.trim().isEmpty
+        ? <String>[]
+        : sValor.trim().split(',');
+    return listCodigos
+        .map((String s) => getEtiqueta(s, sIdioma))
+        .join(', ');
+  }
+  
 }
 
 

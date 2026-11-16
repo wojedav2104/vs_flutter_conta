@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 2 DE 9
 ---
-internos del formulario. Se pasa a cada ClaseCampoFormulario.
+o, el valor actual y los
+  /// valores internos del formulario. Se pasa a cada ClaseCampoFormulario.
   final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
 
   final bool Function(ClaseCampoAbm oCampo)        funcEsHabilitado;
@@ -114,4 +115,4 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
         widget.listCampos.where((ClaseCampoAbm o) => o.sGrupo == null).toList();
 
     return Column(
-      crossAxisAlignment : CrossAxisAlignment.stretch
+      crossAx

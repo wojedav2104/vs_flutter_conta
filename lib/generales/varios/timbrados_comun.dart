@@ -23,22 +23,30 @@ abstract final class ClaseTimbradosComun {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
+        bVigencia        : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(
             sValor, ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
-            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+            DateTime(ClaseFechas.getAnoMaximoVigencia(), 12, 31), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaInicio',
         sEtiqueta        : ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
-            sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma), sIdioma),
+        bVigencia        : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(
+            sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+            DateTime(ClaseFechas.getAnoMaximoVigencia(), 12, 31), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaFin',
         sEtiqueta        : ClaseIdiomas.getTexto('timFechaFin', sIdioma),
       ),
+      // Varios tipos de documento pueden compartir el mismo timbrado cuando
+      // se piden en la misma fecha: por eso se pueden marcar varios. Se
+      // guardan los códigos separados por comas (ej: 'FAC,NCR').
       ClaseCampoAbm(
         bEnGrilla        : false,
         bObligatorio     : true,
@@ -92,4 +100,3 @@ abstract final class ClaseTimbradosComun {
   }
 
 }
-

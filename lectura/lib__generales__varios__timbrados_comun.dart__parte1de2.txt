@@ -26,22 +26,30 @@ abstract final class ClaseTimbradosComun {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
+        bVigencia        : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(
             sValor, ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
-            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+            DateTime(ClaseFechas.getAnoMaximoVigencia(), 12, 31), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaInicio',
         sEtiqueta        : ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
-            sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma), sIdioma),
+        bVigencia        : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(
+            sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+            DateTime(ClaseFechas.getAnoMaximoVigencia(), 12, 31), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fechaFin',
         sEtiqueta        : ClaseIdiomas.getTexto('timFechaFin', sIdioma),
       ),
+      // Varios tipos de documento pueden compartir el mismo timbrado cuando
+      // se piden en la misma fecha: por eso se pueden marcar varios. Se
+      // guardan los códigos separados por comas (ej: 'FAC,NCR').
       ClaseCampoAbm(
         bEnGrilla        : false,
         bObligatorio     : true,
@@ -73,14 +81,4 @@ abstract final class ClaseTimbradosComun {
     return ClaseCapValidar.validarFechaFinPosterior(
       (oRegistro['fechaInicio'] ?? '').toString(),
       (oRegistro['fechaFin']   ?? '').toString(),
-      sIdioma,
-    );
-  }
-
-  /// Sugiere la Fecha de fin cuando está vacía y el Medio de generación es
-  /// PreImpresos: el último día del mismo mes del año siguiente al de la
-  /// Fecha de inicio (lo más común para esos talonarios).
-  /// Ejemplo de la SET: inicio 13/11/2025 → fin 30/11/2026.
-  /// El valor sugerido es editable y nunca pisa uno ya cargado.
-  static Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
-    final String sInicio = ma
+      sIdi

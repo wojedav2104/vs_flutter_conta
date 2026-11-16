@@ -1,6 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 4 DE 9
 ---
+ntrolFiltro = TextEditingController();
   final FocusNode             oFocoGrilla    = FocusNode();   // ← CAMBIO item 23
 
   @override
@@ -30,7 +31,7 @@ PARTE 4 DE 9
         && widget.iRegistro >= 0
         && widget.iRegistro < widget.listRegistros.length) {
       final int iPosicion = _listFiltrados().indexOf(widget.listRegistros[widget.iRegistro]);
-      if (iPosicion >= 0) iPagina = iPosicion ~/ ClaseGenLayout.iFilasPagina;
+      if (iPosicion >= 0) iPagina = iPosicion ~/ ClaseGenLayout.iFilasPorPagina;
     }
   }
 
@@ -74,26 +75,20 @@ PARTE 4 DE 9
     }
     final List<Map<String, dynamic>> listSalida = list.toList();
     if (sClaveOrden.isNotEmpty) {
-      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) =>
-          (a[sClaveOrden] ?? '').toString().compareTo((b[sClaveOrden] ?? '').toString()));
-      if (bOrdenDesc) return listSalida.reversed.toList();
-    }
-    return listSalida;
-  }
-
-  // ── Menú contextual por celda ────────────────────────────────────────────
-
-  Future<void> _mostrarMenuCelda(
-    BuildContext         oContexto,
-    Map<String, dynamic> oRegistro,
-    ClaseCampoAbm        oCampo,
-    Offset               oPosicion,
-  ) async {
-    final String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
-    final String? sAccion = await showMenu<String>(
-      context  : oContexto,
-      position : RelativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
-      items    : <PopupMenuEntry<String>>[
-        PopupMenuItem<String>(
-          value : 'copiarValor',
-     
+      // ← CAMBIO: orden real según el tipo de campo (los importes se ordenan
+      //   como números y las fechas como fechas, no como texto).
+      final EnumTipoCampoAbm oTipo = widget.listCampos
+          .firstWhere((ClaseCampoAbm o) => o.sClave == sClaveOrden,
+              orElse: () => widget.listCampos.first)
+          .oTipo;
+      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) {
+        final String sA = (a[sClaveOrden] ?? '').toString();
+        final String sB = (b[sClaveOrden] ?? '').toString();
+        if (oTipo == EnumTipoCampoAbm.numero) {
+          return (funcNumeroOrden(sA) ?? 0).compareTo(funcNumeroOrden(sB) ?? 0);
+        }
+        if (oTipo == EnumTipoCampoAbm.fecha) {
+          return (funcFechaOrden(sA) ?? DateTime(0))
+              .compareTo(funcFechaOrden(sB) ?? DateTime(0));
+        }
+    

@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 6 DE 6
+PARTE 6 DE 7
 ---
 listOpciones.length; i++)
           DropdownMenuItem<String>(
@@ -17,13 +17,17 @@ listOpciones.length; i++)
   }
 
   // ── Casillas (checkboxes múltiples) ──────────────────────────────────────
+  // Varios valores seleccionados se guardan separados por comas, en el orden
+  // de listValores (ej: 'FAC,NCR'). Un valor vacío = ninguna casilla marcada.
 
   Widget _construirCasillas(BuildContext oContexto) {
     final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
     final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
-    final String sValorActual = widget.sValor;
+    final List<String> listMarcados = widget.sValor.trim().isEmpty
+        ? <String>[]
+        : widget.sValor.trim().split(',');
     return Wrap(
-      spacing  : ClaseGenEspacios.dEspacio16,
+      spacing    : ClaseGenEspacios.dEspacio16,
       runSpacing : ClaseGenEspacios.dEspacio04,
       children: <Widget>[
         for (int i = 0; i < listOpciones.length; i++)
@@ -31,10 +35,18 @@ listOpciones.length; i++)
             mainAxisSize : MainAxisSize.min,
             children     : <Widget>[
               Checkbox(
-                value    : sValorActual == listValores[i],
+                value    : listMarcados.contains(listValores[i]),
                 onChanged: widget.bHabilitado
                     ? (bool? bMarcado) {
-                        widget.funcAlCambiar(bMarcado == true ? listValores[i] : '');
+                        final Set<String> setNuevos = listMarcados.toSet();
+                        if (bMarcado == true) {
+                          setNuevos.add(listValores[i]);
+                        } else {
+                          setNuevos.remove(listValores[i]);
+                        }
+                        widget.funcAlCambiar(listValores
+                            .where((String s) => setNuevos.contains(s))
+                            .join(','));
                       }
                     : null,
               ),
@@ -89,22 +101,4 @@ listOpciones.length; i++)
   Widget _construirLogico(BuildContext oContexto) {
     final bool bActivo = widget.sValor == ClaseSiNo.si;
     return Row(
-      children: <Widget>[
-        Switch(
-          value    : bActivo,
-          onChanged: widget.bHabilitado
-              ? (bool bNuevo) => widget.funcAlCambiar(bNuevo ? ClaseSiNo.si : ClaseSiNo.no)
-              : null,
-        ),
-        const SizedBox(width: ClaseGenEspacios.dEspacio08),
-        Text(
-          bActivo
-              ? ClaseIdiomas.getTexto('si', widget.sIdioma)
-              : ClaseIdiomas.getTexto('no', widget.sIdioma),
-          style : ClaseGenEstilosTexto.normalMediano(oContexto),
-        ),
-      ],
-    );
-  }
-
-}
+      c

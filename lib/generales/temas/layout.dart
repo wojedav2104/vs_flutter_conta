@@ -8,7 +8,7 @@ abstract final class ClaseGenLayout {
   static const double dAltoFilaDetalleCompacta        =   48.0;
   static const double dAltoFilaGrillaAbm              =   26.0;
   static const double dAnchoAccionesFila              =  144.0;
-  static const double dAnchoBotonAbm                  =  150.0;  
+  static const double dAnchoBotonAbm                  =  150.0;
   static const double dAnchoCampoComentario           =  400.0;
   static const double dAnchoCampoFecha                =  180.0;
   static const double dAnchoCampoHora                 =  120.0;
@@ -21,7 +21,7 @@ abstract final class ClaseGenLayout {
   static const double dAnchoMaximoColumnaCompacta     =  165.0;
   static const double dAnchoMinimoColumnaCompacta     =   80.0;
   static const double dAnchoMinimoGrillaDetalles      =  700.0;
-  static const double dAnchoNumeroFila                =   48.0 ;
+  static const double dAnchoNumeroFila                =   48.0;
   static const double dAnchoPaddingCeldaCompacta      =    4.0;
   static const double dAnchoReferencia                = 1366.0;
   static const double dAnchoTarjetaLogin              =  420.0;
@@ -35,8 +35,7 @@ abstract final class ClaseGenLayout {
   static const int    iAnchoColumnasMensaje     =   40;
   static const int    iCaracteresGrillaAbierta  =   75;
   static const int    iCaracteresGrillaCerrada  =   25;
-  static const int    iFilasPagina              =   20;
   static const int    iFilasPorPagina           =   25;
-  static const int    iMaxCaracteresCampoGrilla =   20;  
+  static const int    iMaxCaracteresCampoGrilla =   20;
 
 }

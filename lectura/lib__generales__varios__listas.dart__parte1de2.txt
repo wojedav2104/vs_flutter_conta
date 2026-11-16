@@ -73,6 +73,17 @@ abstract final class ClaseAfectaA {
     return listValores.map((String s) => getEtiqueta(s, sIdioma)).toList();
   }
 
+  /// Etiquetas de uno o varios valores guardados, separados por comas
+  /// ('FAC,NCR' → 'Factura, Nota de crédito').
+  static String getEtiquetas(String sValor, String sIdioma) {
+    final List<String> listCodigos = sValor.trim().isEmpty
+        ? <String>[]
+        : sValor.trim().split(',');
+    return listCodigos
+        .map((String s) => getEtiqueta(s, sIdioma))
+        .join(', ');
+  }
+  
 }
 
 
@@ -113,15 +124,4 @@ abstract final class ClaseTipoAfectacion {
   static const String directo     = 'DIR';
   static const String indistinto  = 'IND';
   static const String exportacion = 'EXP';
-  static const String importacion = 'IMP';
-
-  /// Valores internos, en el orden en que se muestran.
-  static const List<String> listValores = <String>[
-    directo, indistinto, exportacion, importacion,
-  ];
-
-  static const Map<String, String> _mapClaves = <String, String>{
-    directo     : 'comAfectDirecto',
-    indistinto  : 'comAfectIndistinto',
-    exportacion : 'comAfectExportacion',
-    importacion : 'comAfectImpo
+  static const String im

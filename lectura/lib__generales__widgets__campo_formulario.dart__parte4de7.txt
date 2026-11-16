@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 4 DE 6
+PARTE 4 DE 7
 ---
 turn _construirLista(oContexto);
       case EnumTipoCampoAbm.logico:

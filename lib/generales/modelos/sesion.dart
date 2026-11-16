@@ -4,8 +4,8 @@
 /// concreta se puede reemplazar: hoy es predefinida, mañana podrá ser
 /// Firebird o una falsa para pruebas.
 abstract class ClaseInterfazSesion {
-  String get sBaseDatos;
-  set sBaseDatos(String sValor);
+  String getBaseDatos();
+  void setBaseDatos(String sValor);
   String getPais();
   String getClavePais();
 }
@@ -31,11 +31,16 @@ class ClaseSesionPredefinida implements ClaseInterfazSesion {
     'POZO_COLORADO' : paisParaguay,
   };
 
-  @override
-  String sBaseDatos = 'ASUNCION';
+  String _sBaseDatos = 'ASUNCION';
 
   @override
-  String getPais() => mapPaisPorBase[sBaseDatos] ?? paisParaguay;
+  String getBaseDatos() => _sBaseDatos;
+
+  @override
+  void setBaseDatos(String sValor) => _sBaseDatos = sValor;
+
+  @override
+  String getPais() => mapPaisPorBase[_sBaseDatos] ?? paisParaguay;
 
   @override
   String getClavePais() {
@@ -74,11 +79,11 @@ abstract final class ClaseSesion {
       ClaseSesionPredefinida.mapPaisPorBase;
 
   // ── Estado de la sesión (delegado a la implementación) ───────────────
-  static String get sBaseDatos => oImplementacion.sBaseDatos;
-  static set sBaseDatos(String sValor) => oImplementacion.sBaseDatos = sValor;
+  static String getBaseDatos()              => oImplementacion.getBaseDatos();
+  static void   setBaseDatos(String sValor) => oImplementacion.setBaseDatos(sValor);
 
   // ── Métodos ──────────────────────────────────────────────────────────
   static String getPais()      => oImplementacion.getPais();
   static String getClavePais() => oImplementacion.getClavePais();
-  
+
 }

@@ -1,7 +1,22 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 6 DE 9
 ---
-           sFiltro = sValor;
+      child   : Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller : oControlFiltro,
+                      style      : ClaseGenEstilosTexto.normalChico(oContexto),
+                      decoration : InputDecoration(
+                        isDense    : true,
+                        hintText   : ClaseIdiomas.getTexto('abmBuscar', widget.sIdioma),
+                        prefixIcon : const Icon(Icons.search),
+                        border     : OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+                        ),
+                      ),
+                      onChanged: (String sValor) => setState(() {
+                        sFiltro = sValor;
                         iPagina = 0;
                       }),
                     ),
@@ -68,20 +83,4 @@ PARTE 6 DE 9
                     canRequestFocus : false,                 // ← CAMBIO item 23
                     onTap: () {                              // ← CAMBIO item 23
                       oFocoGrilla.requestFocus();
-                      widget.funcSeleccionar(iIndice);
-                    },
-                    child : Container(
-                      decoration : BoxDecoration(
-                        color  : bSeleccionado
-                            ? Theme.of(oContexto).colorScheme.primaryContainer
-                            : null,
-                        // ← CAMBIO item 23: aro visible del foco del teclado
-                        //   en la fila seleccionada.
-                        border : (bSeleccionado && oFocoGrilla.hasFocus)
-                            ? Border.all(
-                                color : Theme.of(oContexto).colorScheme.primary,
-                              )
-                            : null,
-                      ),
-                      padding : const EdgeInsets.symmetric(
-         
+                      widget.funcSelecciona

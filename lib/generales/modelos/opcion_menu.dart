@@ -11,10 +11,14 @@ class ClaseOpcionMenu {
     this.listPaises,
   });
 
-  IconData      oIcono;
-  List<String>? listPaises;
-  String        sClave;
-  String        sRuta;
+  final IconData      oIcono;
+
+  /// Países en los que se muestra la opción (códigos de paises.json).
+  /// null = se muestra en todos los países.
+  final List<String>? listPaises;
+
+  final String        sClave;
+  final String        sRuta;
 
   /// Devuelve true si la opción se muestra en el país indicado.
   /// Cuando listPaises es null la opción se muestra en todos los países.

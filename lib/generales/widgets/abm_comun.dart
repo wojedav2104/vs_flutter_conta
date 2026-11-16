@@ -12,6 +12,7 @@ import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
 import '../temas/temas.dart';
+import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
 import 'campo_formulario.dart';
 import 'ventana_mensaje.dart';
@@ -355,7 +356,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
         && widget.iRegistro >= 0
         && widget.iRegistro < widget.listRegistros.length) {
       final int iPosicion = _listFiltrados().indexOf(widget.listRegistros[widget.iRegistro]);
-      if (iPosicion >= 0) iPagina = iPosicion ~/ ClaseGenLayout.iFilasPagina;
+      if (iPosicion >= 0) iPagina = iPosicion ~/ ClaseGenLayout.iFilasPorPagina;
     }
   }
 
@@ -399,8 +400,24 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
     }
     final List<Map<String, dynamic>> listSalida = list.toList();
     if (sClaveOrden.isNotEmpty) {
-      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) =>
-          (a[sClaveOrden] ?? '').toString().compareTo((b[sClaveOrden] ?? '').toString()));
+      // ← CAMBIO: orden real según el tipo de campo (los importes se ordenan
+      //   como números y las fechas como fechas, no como texto).
+      final EnumTipoCampoAbm oTipo = widget.listCampos
+          .firstWhere((ClaseCampoAbm o) => o.sClave == sClaveOrden,
+              orElse: () => widget.listCampos.first)
+          .oTipo;
+      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) {
+        final String sA = (a[sClaveOrden] ?? '').toString();
+        final String sB = (b[sClaveOrden] ?? '').toString();
+        if (oTipo == EnumTipoCampoAbm.numero) {
+          return (funcNumeroOrden(sA) ?? 0).compareTo(funcNumeroOrden(sB) ?? 0);
+        }
+        if (oTipo == EnumTipoCampoAbm.fecha) {
+          return (funcFechaOrden(sA) ?? DateTime(0))
+              .compareTo(funcFechaOrden(sB) ?? DateTime(0));
+        }
+        return sA.compareTo(sB);
+      });
       if (bOrdenDesc) return listSalida.reversed.toList();
     }
     return listSalida;
@@ -481,10 +498,10 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
         widget.listCampos.where((ClaseCampoAbm o) => o.bEnGrilla).take(3).toList();
     final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
     final int iTotalPaginas = math.max(1,
-        (listFiltrados.length + ClaseGenLayout.iFilasPagina - 1) ~/ ClaseGenLayout.iFilasPagina);
+        (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
     final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
-    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPagina;
-    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPagina, listFiltrados.length);
+    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
+    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
     final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
         ? listFiltrados.sublist(iInicio, iFin)
         : <Map<String, dynamic>>[];
@@ -865,3 +882,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
   }
 
 }
+

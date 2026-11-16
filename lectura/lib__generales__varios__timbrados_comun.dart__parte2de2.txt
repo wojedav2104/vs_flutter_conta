@@ -1,7 +1,17 @@
 RUTA ORIGINAL: lib/generales/varios/timbrados_comun.dart
 PARTE 2 DE 2
 ---
-pValores['fechaInicio']     ?? '';
+oma,
+    );
+  }
+
+  /// Sugiere la Fecha de fin cuando está vacía y el Medio de generación es
+  /// PreImpresos: el último día del mismo mes del año siguiente al de la
+  /// Fecha de inicio (lo más común para esos talonarios).
+  /// Ejemplo de la SET: inicio 13/11/2025 → fin 30/11/2026.
+  /// El valor sugerido es editable y nunca pisa uno ya cargado.
+  static Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
+    final String sInicio = mapValores['fechaInicio']     ?? '';
     final String sFin    = mapValores['fechaFin']        ?? '';
     final String sMedio  = mapValores['medioGeneracion'] ?? '';
     if (sFin.trim().isNotEmpty)                     return null;
@@ -13,4 +23,3 @@ pValores['fechaInicio']     ?? '';
   }
 
 }
-

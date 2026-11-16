@@ -15,6 +15,7 @@ import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 import '../temas/radios.dart';
 import '../temas/temas.dart';
+import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
 import 'campo_formulario.dart';
 import 'ventana_mensaje.dart';
@@ -111,5 +112,4 @@ class ClaseFormularioCampos extends StatefulWidget {
   final void Function(String sClave, String sValor) funcAlCambiarCampo;
 
   /// Transformación del valor al salir del campo (devuelve el valor nuevo
-  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
-  /// valores 
+  /// o null si no cambia). Recibe la clave del camp

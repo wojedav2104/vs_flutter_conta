@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 3 DE 9
 ---
-,
+isAlignment : CrossAxisAlignment.stretch,
       children: <Widget>[
         if (listComunes.isNotEmpty)
           Padding(
@@ -104,4 +104,4 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   String sClaveOrden = '';
   String sFiltro     = '';
 
-  final TextEditingController oControlFiltro = TextEditingController();
+  final TextEditingController oCo

@@ -1,7 +1,34 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 8 DE 9
 ---
+                 icon      : const Icon(Icons.last_page),
+                    onPressed : (iPaginaActual < iTotalPaginas - 1)
+                        ? () => setState(() => iPagina = iTotalPaginas - 1)
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
+}
+
+
+/// Estructura común de un formulario ABM: título, grilla lateral de registros
+/// y el área de formulario (pasada como widget) a la derecha.
+/// La botonera se ubica al pie del formulario.
+class ClaseAndamiajeAbm extends StatelessWidget {
+
+  const ClaseAndamiajeAbm({
+    super.key,
+    required this.funcAlClicar,
+    required this.funcSeleccionar,
+    required this.iRegistro,
+    required this.listCampos,
     required this.listRegistros,
     required this.oFormulario,
     required this.setHabilitados,
@@ -92,26 +119,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
     EnumBotonAbm.borrar,
     EnumBotonAbm.modificar,
     EnumBotonAbm.grabar,
-    EnumBotonAbm.cancelar,
-    EnumBotonAbm.encontrar,
-    EnumBotonAbm.fin,
-  ];
-
-  /// Botones de edición: no operan en países solo visualización.
-  static const Set<EnumBotonAbm> _setBotonesEdicion = <EnumBotonAbm>{
-    EnumBotonAbm.agregar,
-    EnumBotonAbm.borrar,
-    EnumBotonAbm.modificar,
-    EnumBotonAbm.grabar,
-    EnumBotonAbm.cancelar,
-  };
-
-  /// Devuelve true si el país conectado permite edición.
-  bool _puedeOperar(EnumBotonAbm oBoton) =>
-      !_setBotonesEdicion.contains(oBoton)
-      || ClasePermisos.puedeEditar(ClaseSesion.getPais());
-
-  String _getEtiqueta(EnumBotonAbm oBoton) {
-    switch (oBoton) {
-      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
-      case EnumBotonAbm.borrar:    return ClaseIdiomas.ge
+   

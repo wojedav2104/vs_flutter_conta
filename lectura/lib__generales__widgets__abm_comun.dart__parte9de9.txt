@@ -1,7 +1,29 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 9
 ---
-tTexto('abmBorrar', sIdioma);
+ EnumBotonAbm.cancelar,
+    EnumBotonAbm.encontrar,
+    EnumBotonAbm.fin,
+  ];
+
+  /// Botones de edición: no operan en países solo visualización.
+  static const Set<EnumBotonAbm> _setBotonesEdicion = <EnumBotonAbm>{
+    EnumBotonAbm.agregar,
+    EnumBotonAbm.borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
+  };
+
+  /// Devuelve true si el país conectado permite edición.
+  bool _puedeOperar(EnumBotonAbm oBoton) =>
+      !_setBotonesEdicion.contains(oBoton)
+      || ClasePermisos.puedeEditar(ClaseSesion.getPais());
+
+  String _getEtiqueta(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
+      case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto('abmBorrar', sIdioma);
       case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto('abmCancelar', sIdioma);
       case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto('abmEncontrar', sIdioma);
       case EnumBotonAbm.fin:       return ClaseIdiomas.getTexto('abmFin', sIdioma);
@@ -63,3 +85,4 @@ tTexto('abmBorrar', sIdioma);
   }
 
 }
+

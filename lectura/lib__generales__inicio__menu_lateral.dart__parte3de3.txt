@@ -1,6 +1,8 @@
 RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
 PARTE 3 DE 3
 ---
+      ),
+    );
   }
 
   Widget construirSeccion(BuildContext oContexto, String sPais, String sClaveTitulo,

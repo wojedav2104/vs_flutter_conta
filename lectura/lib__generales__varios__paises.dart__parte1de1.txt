@@ -42,15 +42,14 @@ abstract final class ClasePaises {
   }
 
   /// Nombre del país para mostrar (ej: 'Paraguay') a partir de su código.
+  /// El único origen de la relación código → clave de idioma es paises.json.
   static String getNombre(String sCodigo, String sIdioma) {
-    const Map<String, String> mapClaves = <String, String>{
-      'ARG' : 'paisArgentina',
-      'FRA' : 'paisFrancia',
-      'PRY' : 'paisParaguay',
-      'PER' : 'paisPeru',
-      'URY' : 'paisUruguay',
-    };
-    return ClaseIdiomas.getTexto(mapClaves[sCodigo] ?? 'paisParaguay', sIdioma);
+    for (final Map<String, String> oPais in _listPaises) {
+      if (oPais['codigo'] == sCodigo) {
+        return ClaseIdiomas.getTexto(oPais['clave'] ?? 'paisParaguay', sIdioma);
+      }
+    }
+    return ClaseIdiomas.getTexto('paisParaguay', sIdioma);
   }
 
 }

@@ -18,7 +18,7 @@ import '../temas/estilos_textos.dart';
 /// Muestra las opciones del país de la Base de Datos conectada.
 /// Por ejemplo: ASUNCION muestra Marangatú (Paraguay); LIMA no lo muestra.
 class ClaseMenuLateral extends StatelessWidget {
-  
+
   const ClaseMenuLateral({
     super.key,
     required this.oPreferencias,
@@ -61,4 +61,4 @@ class ClaseMenuLateral extends StatelessWidget {
   ];
 
   static final List<ClaseOpcionMenu> _listTablas = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.business,   
+    ClaseOpcionMenu(oIcono: Icons.business,     

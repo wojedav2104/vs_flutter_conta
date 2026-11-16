@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/varios/listas.dart
 PARTE 2 DE 2
 ---
-rtacion',
+portacion = 'IMP';
+
+  /// Valores internos, en el orden en que se muestran.
+  static const List<String> listValores = <String>[
+    directo, indistinto, exportacion, importacion,
+  ];
+
+  static const Map<String, String> _mapClaves = <String, String>{
+    directo     : 'comAfectDirecto',
+    indistinto  : 'comAfectIndistinto',
+    exportacion : 'comAfectExportacion',
+    importacion : 'comAfectImportacion',
   };
 
   static String getEtiqueta(String sValor, String sIdioma) {

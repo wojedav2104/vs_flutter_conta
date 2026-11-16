@@ -15,7 +15,7 @@ import '../temas/estilos_textos.dart';
 /// Muestra las opciones del país de la Base de Datos conectada.
 /// Por ejemplo: ASUNCION muestra Marangatú (Paraguay); LIMA no lo muestra.
 class ClaseMenuLateral extends StatelessWidget {
-  
+
   const ClaseMenuLateral({
     super.key,
     required this.oPreferencias,
@@ -58,14 +58,14 @@ class ClaseMenuLateral extends StatelessWidget {
   ];
 
   static final List<ClaseOpcionMenu> _listTablas = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.business,                  sClave: 'menuEmpresa',             sRuta: ClaseRutas.rutaEmpresa),
-    ClaseOpcionMenu(oIcono: Icons.settings_outlined,         sClave: 'menuConfiguracion',       sRuta: ClaseRutas.rutaConfiguracion),
-    ClaseOpcionMenu(oIcono: Icons.store_outlined,            sClave: 'menuSucursales',          sRuta: ClaseRutas.rutaSucursales),
-    ClaseOpcionMenu(oIcono: Icons.person_outline,            sClave: 'menuClientes',            sRuta: ClaseRutas.rutaClientes),
-    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,   sClave: 'menuProveedores',         sRuta: ClaseRutas.rutaProveedores),
-    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios', sRuta: ClaseRutas.rutaTimbradosPropios),
-    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined, sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
-    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,   sClave: 'menuCuentasAsignadas',    sRuta: ClaseRutas.rutaCuentasAsignadas),
+    ClaseOpcionMenu(oIcono: Icons.business,                    sClave: 'menuEmpresa',             sRuta: ClaseRutas.rutaEmpresa),
+    ClaseOpcionMenu(oIcono: Icons.settings_outlined,           sClave: 'menuConfiguracion',       sRuta: ClaseRutas.rutaConfiguracion),
+    ClaseOpcionMenu(oIcono: Icons.store_outlined,              sClave: 'menuSucursales',          sRuta: ClaseRutas.rutaSucursales),
+    ClaseOpcionMenu(oIcono: Icons.person_outline,              sClave: 'menuClientes',            sRuta: ClaseRutas.rutaClientes),
+    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,     sClave: 'menuProveedores',         sRuta: ClaseRutas.rutaProveedores),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios',   sRuta: ClaseRutas.rutaTimbradosPropios),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined,   sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
+    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,     sClave: 'menuCuentasAsignadas',    sRuta: ClaseRutas.rutaCuentasAsignadas),
   ];
 
   static final List<ClaseOpcionMenu> _listUtilitarios = <ClaseOpcionMenu>[
@@ -122,7 +122,7 @@ class ClaseMenuLateral extends StatelessWidget {
           const SizedBox(height: ClaseGenEspacios.dEspacio04),
           Text(ClaseIdiomas.getTexto('baseConectada', sIdioma),
                style: ClaseGenEstilosTexto.normalChico(oContexto)),
-          Text(ClaseSesion.sBaseDatos,
+          Text(ClaseSesion.getBaseDatos(),
                style: ClaseGenEstilosTexto.textoCampo(oContexto)
                         .copyWith(color: oTema.colorScheme.onPrimaryContainer,
                                   fontWeight: FontWeight.w600)),

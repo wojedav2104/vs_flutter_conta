@@ -541,13 +541,17 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   }
 
   // ── Casillas (checkboxes múltiples) ──────────────────────────────────────
+  // Varios valores seleccionados se guardan separados por comas, en el orden
+  // de listValores (ej: 'FAC,NCR'). Un valor vacío = ninguna casilla marcada.
 
   Widget _construirCasillas(BuildContext oContexto) {
     final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
     final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
-    final String sValorActual = widget.sValor;
+    final List<String> listMarcados = widget.sValor.trim().isEmpty
+        ? <String>[]
+        : widget.sValor.trim().split(',');
     return Wrap(
-      spacing  : ClaseGenEspacios.dEspacio16,
+      spacing    : ClaseGenEspacios.dEspacio16,
       runSpacing : ClaseGenEspacios.dEspacio04,
       children: <Widget>[
         for (int i = 0; i < listOpciones.length; i++)
@@ -555,10 +559,18 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             mainAxisSize : MainAxisSize.min,
             children     : <Widget>[
               Checkbox(
-                value    : sValorActual == listValores[i],
+                value    : listMarcados.contains(listValores[i]),
                 onChanged: widget.bHabilitado
                     ? (bool? bMarcado) {
-                        widget.funcAlCambiar(bMarcado == true ? listValores[i] : '');
+                        final Set<String> setNuevos = listMarcados.toSet();
+                        if (bMarcado == true) {
+                          setNuevos.add(listValores[i]);
+                        } else {
+                          setNuevos.remove(listValores[i]);
+                        }
+                        widget.funcAlCambiar(listValores
+                            .where((String s) => setNuevos.contains(s))
+                            .join(','));
                       }
                     : null,
               ),

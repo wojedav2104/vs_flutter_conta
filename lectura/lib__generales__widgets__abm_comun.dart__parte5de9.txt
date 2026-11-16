@@ -1,7 +1,29 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 5 DE 9
 ---
-     child : Text(ClaseIdiomas.getTexto('menuCopiarValor', widget.sIdioma)),
+    return sA.compareTo(sB);
+      });
+      if (bOrdenDesc) return listSalida.reversed.toList();
+    }
+    return listSalida;
+  }
+
+  // ── Menú contextual por celda ────────────────────────────────────────────
+
+  Future<void> _mostrarMenuCelda(
+    BuildContext         oContexto,
+    Map<String, dynamic> oRegistro,
+    ClaseCampoAbm        oCampo,
+    Offset               oPosicion,
+  ) async {
+    final String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
+    final String? sAccion = await showMenu<String>(
+      context  : oContexto,
+      position : RelativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
+      items    : <PopupMenuEntry<String>>[
+        PopupMenuItem<String>(
+          value : 'copiarValor',
+          child : Text(ClaseIdiomas.getTexto('menuCopiarValor', widget.sIdioma)),
         ),
         PopupMenuItem<String>(
           value : 'buscarValor',
@@ -61,10 +83,10 @@ PARTE 5 DE 9
         widget.listCampos.where((ClaseCampoAbm o) => o.bEnGrilla).take(3).toList();
     final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
     final int iTotalPaginas = math.max(1,
-        (listFiltrados.length + ClaseGenLayout.iFilasPagina - 1) ~/ ClaseGenLayout.iFilasPagina);
+        (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
     final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
-    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPagina;
-    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPagina, listFiltrados.length);
+    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
+    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
     final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
         ? listFiltrados.sublist(iInicio, iFin)
         : <Map<String, dynamic>>[];
@@ -83,19 +105,4 @@ PARTE 5 DE 9
           children: <Widget>[
             Padding(
               padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
-              child   : Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller : oControlFiltro,
-                      style      : ClaseGenEstilosTexto.normalChico(oContexto),
-                      decoration : InputDecoration(
-                        isDense    : true,
-                        hintText   : ClaseIdiomas.getTexto('abmBuscar', widget.sIdioma),
-                        prefixIcon : const Icon(Icons.search),
-                        border     : OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
-                        ),
-                      ),
-                      onChanged: (String sValor) => setState(() {
-             
+        
