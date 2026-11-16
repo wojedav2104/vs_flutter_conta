@@ -89,6 +89,14 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
     ];
     const List<String> listIvaValores = <String>['GEN', 'SIM', 'NPG'];
 
+    // Países vigentes para la Empresa: Argentina, Paraguay y Perú.
+    // Francia nunca aparece porque es de solo lectura. Uruguay se
+    // agregará cuando esté vigente.
+    const List<String> listPaisesValores = <String>['ARG', 'PRY', 'PER'];
+    final List<String> listPaisesOpciones = listPaisesValores
+        .map((String s) => ClasePaises.getEtiqueta(s, sIdioma))
+        .toList();
+
     return <ClaseCampoAbm>[
 
       // ── Grupo 1: Generales ──────────────────────────────────────────────
@@ -143,9 +151,9 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        iAnchoCaracteres : funcAnchoOpcion(ClasePaises.getListOpciones(sIdioma)),
-        listOpciones     : ClasePaises.getListOpciones(sIdioma),
-        listValores      : ClasePaises.getListValores(),
+        iAnchoCaracteres : funcAnchoOpcion(listPaisesOpciones),
+        listOpciones     : listPaisesOpciones,
+        listValores      : listPaisesValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'pais',
         sEtiqueta        : ClaseIdiomas.getTexto('empPais', sIdioma),

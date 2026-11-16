@@ -38,6 +38,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
     required this.listCamposDetalle,
     required this.listRegistros,
     required this.oPreferencias,
+    this.sClaveCampoAlPie,    
     this.sClaveDebe  = 'debe',
     this.sClaveHaber = 'haber',
     required this.sTitulo,
@@ -75,6 +76,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
   final ClasePreferencias oPreferencias;
 
   /// Claves de las columnas del Debe y del Haber.
+  final String? sClaveCampoAlPie;
   final String sClaveDebe;
   final String sClaveHaber;
   final String sTitulo;
@@ -547,8 +549,12 @@ class ClaseEstadoFormularioCabeceraDetalle
 
   @override
   Widget build(BuildContext oContexto) {
-
-    // Resetear el pedido de foco después de este frame.                   ← CAMBIO item 10
+    final List<ClaseCampoAbm> listCabecera = (widget.sClaveCampoAlPie == null)
+        ? widget.listCamposCabecera
+        : widget.listCamposCabecera
+            .where((ClaseCampoAbm oCampo) => oCampo.sClave != widget.sClaveCampoAlPie)
+            .toList();
+    // Resetear el pedido de foco después de este frame.
     if (bPedirFoco) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         bPedirFoco = false;
@@ -572,7 +578,7 @@ class ClaseEstadoFormularioCabeceraDetalle
               funcAlCambiarCampo  : _alCambiarCampo,
               funcAlPerderFoco    : widget.funcAlPerderFoco,              
               funcEsHabilitado    : _getHabilitado,
-              listCampos          : widget.listCamposCabecera,
+              listCampos          : listCabecera,
               mapValores          : mapValores,
               sIdioma             : getIdioma(),
             ),
@@ -620,6 +626,7 @@ class ClaseEstadoFormularioCabeceraDetalle
           ),
         ),
         _construirFilaTotales(oContexto),
+        _construirCampoAlPie(oContexto),
         Padding(
           padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
           child   : Align(
@@ -634,6 +641,28 @@ class ClaseEstadoFormularioCabeceraDetalle
         ),
       ],
     );
+  }
+
+  /// Campo de la cabecera que se muestra al pie, debajo de la fila de totales (spec 02_02 y 02_03: el campo Comentarios).
+  Widget _construirCampoAlPie(BuildContext oContexto) {
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.sClave != widget.sClaveCampoAlPie) continue;
+      return Padding(
+        padding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio04,
+        ),
+        child : ClaseCampoFormulario(
+          bHabilitado   : _getHabilitado(oCampo),
+          funcAlCambiar : (String sValor) => _alCambiarCampo(oCampo.sClave, sValor),
+          mapValores    : mapValores,
+          oCampo        : oCampo,
+          sIdioma       : getIdioma(),
+          sValor        : mapValores[oCampo.sClave] ?? '',
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _construirFilaEncabezado(BuildContext oContexto) {
@@ -741,21 +770,12 @@ class ClaseEstadoFormularioCabeceraDetalle
               : null,
         );
       case EnumTipoCampoAbm.numero:
-        return TextField(
-          controller      : listControles[iFila][oCampo.sClave],
-          enabled         : bHabilitado,
-          style           : ClaseGenEstilosTexto.normalChico(oContexto),
-          textAlign       : TextAlign.right,
-          inputFormatters : <TextInputFormatter>[
-            if (oCampo.bTieneDecimales)
-              ClaseFormateadorImporte()
-            else
-              FilteringTextInputFormatter.digitsOnly,
-            if (oCampo.iAnchoCaracteres > 0)
-              LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres),
-          ],
-          onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
-          decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+        return _ClaseCeldaNumero(
+          bHabilitado   : bHabilitado,
+          funcAlCambiar : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          oCampo        : oCampo,
+          oControl      : listControles[iFila][oCampo.sClave]!,
+          sValor        : sValor,
         );
       default:
         return TextField(
@@ -830,4 +850,92 @@ class ClaseEstadoFormularioCabeceraDetalle
     );
   }
 
+}
+
+/// Celda numérica de la grilla de detalles: guarda el valor plano y lo
+/// muestra formateado con la máscara cuando pierde el foco (regla 9).
+class _ClaseCeldaNumero extends StatefulWidget {
+  const _ClaseCeldaNumero({
+    required this.bHabilitado,
+    required this.funcAlCambiar,
+    required this.oCampo,
+    required this.oControl,
+    required this.sValor,
+  });
+
+  final bool                         bHabilitado;
+  final void Function(String sValor) funcAlCambiar;
+  final ClaseCampoAbm                oCampo;
+  final TextEditingController        oControl;
+  final String                       sValor;
+
+  @override
+  State<_ClaseCeldaNumero> createState() => _ClaseEstadoCeldaNumero();
+}
+
+class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
+
+  final FocusNode oFoco = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    oFoco.addListener(_alCambiarFoco);
+  }
+
+  @override
+  void dispose() {
+    oFoco.removeListener(_alCambiarFoco);
+    super.dispose();
+  }
+
+  void _alCambiarFoco() {
+    if (oFoco.hasFocus) {
+      if (widget.oControl.text != widget.sValor) widget.oControl.text = widget.sValor;
+      return;
+    }
+    _mostrarFormateado();
+  }
+
+  void _mostrarFormateado() {
+    final String? sMascara = widget.oCampo.sMascara;
+    if (sMascara == null) return;
+    String sSeparadorMiles = '.';
+    for (int i = 0; i < sMascara.length; i++) {
+      if (sMascara[i] != '9') {
+        sSeparadorMiles = sMascara[i];
+        break;
+      }
+    }
+    final String sFormato = (widget.sValor.trim().isEmpty)
+        ? ''
+        : funcFormatearNumero(widget.sValor.replaceAll('.', ','), sMascara, sSeparadorMiles);
+    if (sFormato != widget.oControl.text) widget.oControl.text = sFormato;
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    final int iLimite = widget.oCampo.sMascara
+            ?.split('')
+            .where((String s) => s == '9')
+            .length ??
+        widget.oCampo.iAnchoCaracteres;
+    return TextField(
+      controller      : widget.oControl,
+      enabled         : widget.bHabilitado,
+      focusNode       : oFoco,
+      style           : ClaseGenEstilosTexto.normalChico(oContexto),
+      textAlign       : TextAlign.right,
+      inputFormatters : <TextInputFormatter>[
+        if (widget.oCampo.bTieneDecimales)
+          ClaseFormateadorImporte()
+        else
+          FilteringTextInputFormatter.digitsOnly,
+        if (iLimite > 0)
+          LengthLimitingTextInputFormatter(iLimite),
+      ],
+      onChanged       : widget.funcAlCambiar,
+      decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+    );
+  }
 }

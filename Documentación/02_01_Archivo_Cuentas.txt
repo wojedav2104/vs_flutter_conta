@@ -1,6 +1,6 @@
 El Plan de Cuentas debe tener tener dos grupos, uno para el Plan de Cuentas local, y otro para el Plan de Cuentas utilizado en Francia. También debe tener datos que son comunes a ambos grupos.
 
-Nota 1: El formato de los números de cuenta es: 9.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Algunos números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
+Nota 1: El formato de los números de cuenta es: 99.99.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Algunos números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
 
 Nota 2: Se debe tener una correspondencia uno a uno entre cada cuenta usada en Latinoamérica según la legislación del país respectivo con el Plan de Cuentas utilizado en Francia según la legislación de Francia
 

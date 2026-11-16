@@ -52,7 +52,45 @@ abstract final class ClaseIdiomasTerceros {
     'cliRazonSocial'        : 'Razón social',
     'cliRuc'                : 'R.U.C.',
     'cliTelefono'           : 'Teléfono',
+
+    // ── Tipos de documento de identidad (compartido) ─────────────────
+    'docRuc'               : 'R.U.C.',
+    'docCedulaIdentidad'   : 'Cédula de Identidad',
+    'docPasaporte'         : 'Pasaporte',
+    'docCedulaExtranjera'  : 'Cédula Extranjera',
+    'docSinNombre'         : 'Sin Nombre',
+    'docDiplomatico'       : 'Diplomático',
+
+    // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
+    'prvCodigo'            : 'Código',
+    'prvNombre'            : 'Nombre',
+    'prvDireccion'         : 'Dirección',
+    'prvTelefono'          : 'Teléfono',
+    'prvCelular'           : 'Celular',
+    'prvLocalidad'         : 'Localidad',
+    'prvEmail'             : 'Correo electrónico',
+    'prvTipoIdentificacion': 'Tipo de identificación',
+    'prvIdentificacion'    : 'Identificación N°',
+    'prvTipoProveedor'     : 'Tipo de proveedor',
+    'prvEsServicioPublico' : 'Es servicio público',
+    'prvHintNombre'        : 'Nombre del proveedor',
+    'prvHintTelefono'      : 'Nro teléfono',
+    'prvHintCelular'       : 'Nro celular',
+    'prvHintLocalidad'     : 'Nombre de la localidad',
+    'prvHintEmail'         : 'Correo electrónico',
+    'prvHintIdentificacion': 'Número de identidad',
+
+    // ── Timbrados (claves usadas en las dos pantallas) ───────────────
+    'timUltimoDocumento'   : 'Número del último documento',
+    'timPrvNombre'         : 'Nombre del proveedor',
+    'timPrvRuc'            : 'R.U.C.',
+    'timPrvHintNombre'     : 'Nombre del proveedor',
+    'timPrvHintRuc'        : 'Número de RUC del proveedor',
+
   };
+
+
+
 
   static const Map<String, String> mapFr = <String, String> {
 
@@ -101,6 +139,41 @@ abstract final class ClaseIdiomasTerceros {
     'cliRazonSocial'        : 'Raison sociale',
     'cliRuc'                : 'N.I.T.',
     'cliTelefono'           : 'Téléphone',
-  };
+
+    // ── Tipos de documento de identidad (compartido) ─────────────────
+    'docRuc'               : 'N.I.T.',
+    'docCedulaIdentidad'   : "Carte d'identité",
+    'docPasaporte'         : 'Passeport',
+    'docCedulaExtranjera'  : "Carte d'identité étrangère",
+    'docSinNombre'         : 'Sans nom',
+    'docDiplomatico'       : 'Diplomate',
+
+    // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
+    'prvCodigo'            : 'Code',
+    'prvNombre'            : 'Nom',
+    'prvDireccion'         : 'Adresse',
+    'prvTelefono'          : 'Téléphone',
+    'prvCelular'           : 'Portable',
+    'prvLocalidad'         : 'Localité',
+    'prvEmail'             : 'Adresse e-mail',
+    'prvTipoIdentificacion': "Type d'identification",
+    'prvIdentificacion'    : 'Identification N°',
+    'prvTipoProveedor'     : 'Type de fournisseur',
+    'prvEsServicioPublico' : 'Est un service public',
+    'prvHintNombre'        : 'Nom du fournisseur',
+    'prvHintTelefono'      : 'N° de téléphone',
+    'prvHintCelular'       : 'N° de portable',
+    'prvHintLocalidad'     : 'Nom de la localité',
+    'prvHintEmail'         : 'Adresse électronique',
+    'prvHintIdentificacion': "Numéro de pièce d'identité",
+
+    // ── Timbrados (claves usadas en las dos pantallas) ───────────────
+    'timUltimoDocumento'   : 'Numéro du dernier document',
+    'timPrvNombre'         : 'Nom du fournisseur',
+    'timPrvRuc'            : 'N.I.T.',
+    'timPrvHintNombre'     : 'Nom du fournisseur',
+    'timPrvHintRuc'        : 'Numéro de N.I.T. du fournisseur',
+
+  };  
 
 }

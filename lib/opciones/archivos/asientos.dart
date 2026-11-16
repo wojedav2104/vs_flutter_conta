@@ -47,11 +47,13 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioCabeceraDetalle(
+//      bEnGrilla            : false,
       funcValidarRegistro  : validarRegistro,
       listCamposCabecera   : listCamposCabecera,
       listCamposDetalle    : listCamposDetalle,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
+      sClaveCampoAlPie     : 'comentarios',
       sTitulo              : ClaseIdiomas.getTexto('menuAsientos', getIdioma()),
     );
   }
@@ -151,11 +153,12 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
         sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : 40,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'nombreCuenta',
-        sEtiqueta        : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
-        sHint            : ClaseIdiomas.getTexto('detHintNombreCuenta', sIdioma),
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 40,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'nombreCuenta',
+        sEtiqueta             : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint                 : ClaseIdiomas.getTexto('detHintNombreCuenta', sIdioma),
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 15,

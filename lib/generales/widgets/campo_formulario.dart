@@ -384,14 +384,19 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             ]
           : null;
     }
-    // Número: decimales o enteros.
+    // Número: decimales o enteros. El límite de dígitos es el de la máscara
+    // (el ancho visual incluye los separadores de miles).
+    final String? sMascara = _getMascara();
+    final int    iLimite   = (sMascara != null && !widget.oCampo.bTieneDecimales)
+        ? sMascara.split('').where((String s) => s == '9').length
+        : widget.oCampo.iAnchoCaracteres;
     return <TextInputFormatter>[
       if (widget.oCampo.bTieneDecimales)
         ClaseFormateadorImporte()
       else
         FilteringTextInputFormatter.digitsOnly,
-      if (widget.oCampo.iAnchoCaracteres > 0)
-        LengthLimitingTextInputFormatter(widget.oCampo.iAnchoCaracteres),
+      if (iLimite > 0)
+        LengthLimitingTextInputFormatter(iLimite),
     ];
   }
 

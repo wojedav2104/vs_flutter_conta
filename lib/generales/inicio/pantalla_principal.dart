@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../rutas/generador_rutas.dart';
 import '../idiomas/idiomas.dart';
+import '../modelos/sesion.dart';
 import '../preferencias/preferencias.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
@@ -72,8 +73,18 @@ class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
     return Scaffold(
       key   : oClaveAndamio,
       appBar: AppBar(
-        title : Text(ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
-                  style: ClaseGenEstilosTexto.subtituloGrande(oContexto)),
+        title : Column(
+          crossAxisAlignment : CrossAxisAlignment.start,
+          mainAxisAlignment  : MainAxisAlignment.center,
+          children: <Widget>[
+            Text(ClaseSesion.getBaseDatos(),
+                 style: ClaseGenEstilosTexto.tituloMediano(oContexto)
+                          .copyWith(fontWeight: FontWeight.w600)),
+            Text(ClaseIdiomas.getTexto(ClaseSesion.getClavePais(),
+                 widget.oPreferencias.getIdioma()),
+                 style: ClaseGenEstilosTexto.normalChico(oContexto)),
+          ],
+        ),
         actions: <Widget>[
           ClaseControlesPreferencias(
             oPreferencias : widget.oPreferencias,

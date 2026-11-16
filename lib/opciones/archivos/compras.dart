@@ -61,6 +61,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       listCamposDetalle    : listCamposDetalle,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
+      sClaveCampoAlPie     : 'comentarios',
       sTitulo              : ClaseIdiomas.getTexto('menuLibroCompras', getIdioma()),
     );
   }
@@ -297,14 +298,15 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sValorDefecto    : '01',
       ),
       ClaseCampoAbm(
-        bObligatorio     : true,
-        funcMascara      : (mapValores) => ClaseTipoDocumento.esConMascara(
+        bMayusculas       : true,
+        bObligatorio      : true,
+        funcMascara       : (mapValores) => ClaseTipoDocumento.esConMascara(
             mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
-        iAnchoCaracteres : 16,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'numero',
-        sEtiqueta        : ClaseIdiomas.getTexto('comNumero', sIdioma),
-        sGrupo           : 'comGenerales',
+        iAnchoCaracteres  : 16,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'numero',
+        sEtiqueta         : ClaseIdiomas.getTexto('comNumero', sIdioma),
+        sGrupo            : 'comGenerales',
       ),
       ClaseCampoAbm(
         funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(
