@@ -1,7 +1,22 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 5 DE 9
+PARTE 5 DE 10
 ---
-    return sA.compareTo(sB);
+  //   como números y las fechas como fechas, no como texto).
+      final EnumTipoCampoAbm oTipo = widget.listCampos
+          .firstWhere((ClaseCampoAbm o) => o.sClave == sClaveOrden,
+              orElse: () => widget.listCampos.first)
+          .oTipo;
+      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) {
+        final String sA = (a[sClaveOrden] ?? '').toString();
+        final String sB = (b[sClaveOrden] ?? '').toString();
+        if (oTipo == EnumTipoCampoAbm.numero) {
+          return (funcNumeroOrden(sA) ?? 0).compareTo(funcNumeroOrden(sB) ?? 0);
+        }
+        if (oTipo == EnumTipoCampoAbm.fecha) {
+          return (funcFechaOrden(sA) ?? DateTime(0))
+              .compareTo(funcFechaOrden(sB) ?? DateTime(0));
+        }
+        return sA.compareTo(sB);
       });
       if (bOrdenDesc) return listSalida.reversed.toList();
     }
@@ -79,30 +94,14 @@ PARTE 5 DE 9
       );
     }
 
-    final List<ClaseCampoAbm> listColumnas =
-        widget.listCampos.where((ClaseCampoAbm o) => o.bEnGrilla).take(3).toList();
+    // Regla: los campos Comentarios nunca se muestran en la grilla lateral.
+    final List<ClaseCampoAbm> listColumnas = widget.listCampos
+        .where((ClaseCampoAbm o) =>
+            o.bEnGrilla && o.oTipo != EnumTipoCampoAbm.comentario)
+        .take(3)
+        .toList();
+
     final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
     final int iTotalPaginas = math.max(1,
         (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
-    final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
-    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
-    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
-    final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
-        ? listFiltrados.sublist(iInicio, iFin)
-        : <Map<String, dynamic>>[];
-
-    // ← CAMBIO item 23: el foco del teclado queda en la grilla y las
-    //   flechas arriba/abajo mueven la selección.
-    return Focus(
-      focusNode     : oFocoGrilla,
-      onKeyEvent    : _alPulsarTecla,
-      onFocusChange : (bool bTieneFoco) {
-        if (mounted) setState(() {});
-      },
-      child: SizedBox(
-        width : ClaseGenLayout.dAnchoGrillaRegistros,
-        child : Column(
-          children: <Widget>[
-            Padding(
-              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
-        
+    final int iPaginaActual = (iPagina < iTot

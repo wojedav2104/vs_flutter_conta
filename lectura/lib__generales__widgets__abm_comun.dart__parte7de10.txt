@@ -1,7 +1,27 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 7 DE 9
+PARTE 7 DE 10
 ---
-r(iIndice);
+erflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const Divider(height: ClaseGenEspacios.dEspacio01),
+            Expanded(
+              child: ListView.builder(
+                itemCount : listPagina.length,
+                itemBuilder: (oContextoFila, i) {
+                  final Map<String, dynamic> oRegistro = listPagina[i];
+                  final int  iIndice      = widget.listRegistros.indexOf(oRegistro);
+                  final bool bSeleccionado = (iIndice == widget.iRegistro);
+                  return InkWell(
+                    canRequestFocus : false,                 // ← CAMBIO item 23
+                    onTap: () {                              // ← CAMBIO item 23
+                      oFocoGrilla.requestFocus();
+                      widget.funcSeleccionar(iIndice);
                     },
                     child : Container(
                       decoration : BoxDecoration(
@@ -60,23 +80,4 @@ r(iIndice);
                     tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
                     icon      : const Icon(Icons.chevron_left),
                     onPressed : (iPaginaActual > 0)
-                        ? () => setState(() => iPagina = iPaginaActual - 1)
-                        : null,
-                  ),
-                  Expanded(
-                    child: Text(
-                      '${iPaginaActual + 1} / $iTotalPaginas',
-                      textAlign : TextAlign.center,
-                      style     : ClaseGenEstilosTexto.normalChico(oContexto),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip   : ClaseIdiomas.getTexto('paginaSiguiente', widget.sIdioma),
-                    icon      : const Icon(Icons.chevron_right),
-                    onPressed : (iPaginaActual < iTotalPaginas - 1)
-                        ? () => setState(() => iPagina = iPaginaActual + 1)
-                        : null,
-                  ),
-                  IconButton(
-                    tooltip   : ClaseIdiomas.getTexto('menuUltimaFila', widget.sIdioma),
-   
+               

@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/asientos.dart
 PARTE 3 DE 3
 ---
-ng>{
-            'concepto'     : 'Aporte de capital',
+rte de capital',
             'cuenta'       : '3.01.01',
             'debe'         : '',
             'haber'        : '5000000',

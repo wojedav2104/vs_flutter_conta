@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 6 DE 9
+PARTE 6 DE 10
 ---
-      child   : Row(
+alPaginas) ? iPagina : iTotalPaginas - 1;
+    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
+    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
+    final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
+        ? listFiltrados.sublist(iInicio, iFin)
+        : <Map<String, dynamic>>[];
+
+    // ← CAMBIO item 23: el foco del teclado queda en la grilla y las
+    //   flechas arriba/abajo mueven la selección.
+    return Focus(
+      focusNode     : oFocoGrilla,
+      onKeyEvent    : _alPulsarTecla,
+      onFocusChange : (bool bTieneFoco) {
+        if (mounted) setState(() {});
+      },
+      child: SizedBox(
+        width : ClaseGenLayout.dAnchoGrillaRegistros,
+        child : Column(
+          children: <Widget>[
+            Padding(
+              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+              child   : Row(
                 children: <Widget>[
                   Expanded(
                     child: TextField(
@@ -63,24 +84,4 @@ PARTE 6 DE 9
                                 : TextAlign.left,
                             style    : ClaseGenEstilosTexto.normalChico(oContexto),
                             maxLines : 1,
-                            overflow : TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const Divider(height: ClaseGenEspacios.dEspacio01),
-            Expanded(
-              child: ListView.builder(
-                itemCount : listPagina.length,
-                itemBuilder: (oContextoFila, i) {
-                  final Map<String, dynamic> oRegistro = listPagina[i];
-                  final int  iIndice      = widget.listRegistros.indexOf(oRegistro);
-                  final bool bSeleccionado = (iIndice == widget.iRegistro);
-                  return InkWell(
-                    canRequestFocus : false,                 // ← CAMBIO item 23
-                    onTap: () {                              // ← CAMBIO item 23
-                      oFocoGrilla.requestFocus();
-                      widget.funcSelecciona
+                            overflow : TextOv

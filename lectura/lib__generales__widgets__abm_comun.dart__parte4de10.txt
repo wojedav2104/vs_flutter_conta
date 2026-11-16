@@ -1,7 +1,32 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 4 DE 9
+PARTE 4 DE 10
 ---
-ntrolFiltro = TextEditingController();
+gistros,
+    required this.sIdioma,
+  });
+
+  /// Selecciona el registro por su índice en listRegistros.
+  final void Function(int iIndice) funcSeleccionar;
+
+  /// Índice en listRegistros del registro seleccionado (-1 si ninguno).
+  final int                        iRegistro;
+  final List<ClaseCampoAbm>        listCampos;
+  final List<Map<String, dynamic>> listRegistros;
+  final String                     sIdioma;
+
+  @override
+  State<ClaseGrillaRegistros> createState() => ClaseEstadoGrillaRegistros();
+}
+
+class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
+
+  bool   bOrdenDesc  = false;
+  bool   bVisible    = true;
+  int    iPagina     = 0;
+  String sClaveOrden = '';
+  String sFiltro     = '';
+
+  final TextEditingController oControlFiltro = TextEditingController();
   final FocusNode             oFocoGrilla    = FocusNode();   // ← CAMBIO item 23
 
   @override
@@ -76,19 +101,4 @@ ntrolFiltro = TextEditingController();
     final List<Map<String, dynamic>> listSalida = list.toList();
     if (sClaveOrden.isNotEmpty) {
       // ← CAMBIO: orden real según el tipo de campo (los importes se ordenan
-      //   como números y las fechas como fechas, no como texto).
-      final EnumTipoCampoAbm oTipo = widget.listCampos
-          .firstWhere((ClaseCampoAbm o) => o.sClave == sClaveOrden,
-              orElse: () => widget.listCampos.first)
-          .oTipo;
-      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) {
-        final String sA = (a[sClaveOrden] ?? '').toString();
-        final String sB = (b[sClaveOrden] ?? '').toString();
-        if (oTipo == EnumTipoCampoAbm.numero) {
-          return (funcNumeroOrden(sA) ?? 0).compareTo(funcNumeroOrden(sB) ?? 0);
-        }
-        if (oTipo == EnumTipoCampoAbm.fecha) {
-          return (funcFechaOrden(sA) ?? DateTime(0))
-              .compareTo(funcFechaOrden(sB) ?? DateTime(0));
-        }
     

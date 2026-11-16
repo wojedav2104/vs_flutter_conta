@@ -1,0 +1,18 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 10 DE 10
+---
+ ),
+        child : Text(
+          _getEtiqueta(oBoton),
+          style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
+            color : bHabilitado
+                ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+

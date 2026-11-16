@@ -50,7 +50,6 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioCabeceraDetalle(
-//      bEnGrilla            : false,
       funcValidarRegistro  : validarRegistro,
       listCamposCabecera   : listCamposCabecera,
       listCamposDetalle    : listCamposDetalle,
@@ -104,4 +103,4 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdi
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoA

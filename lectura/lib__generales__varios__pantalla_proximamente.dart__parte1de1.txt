@@ -7,6 +7,8 @@ import '../idiomas/idiomas.dart';
 import '../preferencias/preferencias.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
+import '../widgets/abm_comun.dart';
+
 
 /// Pantalla provisoria para las opciones del menú cuyo módulo aún no está
 /// desarrollado: la ruta existe pero la pantalla definitiva no.
@@ -25,7 +27,7 @@ class ClasePantallaProximamente extends StatelessWidget {
   Widget build(BuildContext oContexto) {
     return Scaffold(
       appBar : AppBar(
-        title: Text(sTitulo, style: ClaseGenEstilosTexto.tituloMediano(oContexto)),
+        title: funcConstruirTituloAppBar(oContexto, oPreferencias.getIdioma(), sTitulo),
       ),
       body: Center(
         child: Column(

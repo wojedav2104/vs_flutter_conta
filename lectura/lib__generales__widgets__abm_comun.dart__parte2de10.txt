@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 2 DE 9
+PARTE 2 DE 10
 ---
-o, el valor actual y los
+olumna; con grupos,
+/// los campos comunes arriba y una pestaña por grupo.
+class ClaseFormularioCampos extends StatefulWidget {
+
+  const ClaseFormularioCampos({
+    super.key,
+    this.bAutoFocus = false,
+    required this.funcAlCambiarCampo,
+    this.funcAlPerderFoco,
+    required this.funcEsHabilitado,
+    this.funcEtiquetaGrupo,
+    required this.listCampos,
+    required this.mapValores,
+    required this.sIdioma,
+  });
+
+  /// true para mover el foco al primer campo habilitado (item 10).
+  final bool                                       bAutoFocus;
+  final void Function(String sClave, String sValor) funcAlCambiarCampo;
+
+  /// Transformación del valor al salir del campo (devuelve el valor nuevo
+  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
   /// valores internos del formulario. Se pasa a cada ClaseCampoFormulario.
   final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
 
@@ -90,29 +111,4 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
     ClaseCampoAbm? oPrimeroHabilitado;
     for (final ClaseCampoAbm oCampo in widget.listCampos) {
       if (widget.funcEsHabilitado(oCampo)) {
-        oPrimeroHabilitado = oCampo;
-        break;
-      }
-    }
-
-    final List<String> listGrupos = _getListGrupos();
-
-    if (listGrupos.isEmpty) {
-      return SingleChildScrollView(
-        padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
-        child   : Column(
-          crossAxisAlignment : CrossAxisAlignment.start,
-          children: <Widget>[
-            for (final ClaseCampoAbm oCampo in widget.listCampos)
-              _construirCampo(oCampo,
-                  bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
-          ],
-        ),
-      );
-    }
-
-    final List<ClaseCampoAbm> listComunes =
-        widget.listCampos.where((ClaseCampoAbm o) => o.sGrupo == null).toList();
-
-    return Column(
-      crossAx
+        oPrimeroHab

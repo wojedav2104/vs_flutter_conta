@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 1 DE 9
+PARTE 1 DE 10
 ---
 import 'dart:math' as math;
 
@@ -90,26 +90,22 @@ Future<String?> funcMostrarEncontrar(
   return sTexto.isEmpty ? null : sTexto;
 }
 
+/// Título de los AppBar: el nombre de la pantalla y, debajo, la Base de
+/// Datos conectada y el país (regla: la Base de Datos se muestra en el
+/// drawer y en todos los AppBar de la aplicación).
+Widget funcConstruirTituloAppBar(BuildContext oContexto, String sIdioma, String sTitulo) {
+  return Column(
+    crossAxisAlignment : CrossAxisAlignment.start,
+    mainAxisAlignment  : MainAxisAlignment.center,
+    children: <Widget>[
+      Text(sTitulo,
+           style: ClaseGenEstilosTexto.tituloMediano(oContexto)
+                    .copyWith(fontWeight: FontWeight.w600)),
+      Text('${ClaseSesion.getBaseDatos()} · ${ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma)}',
+           style: ClaseGenEstilosTexto.normalChico(oContexto)),
+    ],
+  );
+}
 
-/// Formulario de campos de cabecera: sin grupo, una sola columna; con grupos,
-/// los campos comunes arriba y una pestaña por grupo.
-class ClaseFormularioCampos extends StatefulWidget {
 
-  const ClaseFormularioCampos({
-    super.key,
-    this.bAutoFocus = false,
-    required this.funcAlCambiarCampo,
-    this.funcAlPerderFoco,
-    required this.funcEsHabilitado,
-    this.funcEtiquetaGrupo,
-    required this.listCampos,
-    required this.mapValores,
-    required this.sIdioma,
-  });
-
-  /// true para mover el foco al primer campo habilitado (item 10).
-  final bool                                       bAutoFocus;
-  final void Function(String sClave, String sValor) funcAlCambiarCampo;
-
-  /// Transformación del valor al salir del campo (devuelve el valor nuevo
-  /// o null si no cambia). Recibe la clave del camp
+/// Formulario de campos de cabecera: sin grupo, una sola c

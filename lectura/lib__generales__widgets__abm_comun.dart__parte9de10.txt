@@ -1,7 +1,35 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 9 DE 9
+PARTE 9 DE 10
 ---
- EnumBotonAbm.cancelar,
+o claro/oscuro).
+///
+/// Los botones de edición quedan deshabilitados en los países sin permiso
+/// de edición (Francia: solo visualización). La confirmación de Borrar
+/// vive en el borrar() de cada formulario, no aquí.
+class ClaseBotoneraAbm extends StatelessWidget {
+
+  const ClaseBotoneraAbm({
+    super.key,
+    required this.esHabilitado,
+    required this.funcAccion,
+    required this.sIdioma,
+  });
+
+  /// Devuelve true si el botón debe estar habilitado en el estado actual.
+  final bool Function(EnumBotonAbm oBoton) esHabilitado;
+
+  /// Acción a ejecutar cuando se presiona un botón.
+  final void Function(EnumBotonAbm oBoton) funcAccion;
+
+  final String sIdioma;
+
+  /// Orden visual fijo de los botones (item 1).
+  static const List<EnumBotonAbm> _listOrden = <EnumBotonAbm>[
+    EnumBotonAbm.agregar,
+    EnumBotonAbm.borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
     EnumBotonAbm.encontrar,
     EnumBotonAbm.fin,
   ];
@@ -71,18 +99,4 @@ PARTE 9 DE 9
             borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
           ),
           padding : EdgeInsets.zero,
-        ),
-        child : Text(
-          _getEtiqueta(oBoton),
-          style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
-            color : bHabilitado
-                ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-                : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-          ),
-        ),
-      ),
-    );
-  }
-
-}
-
+       

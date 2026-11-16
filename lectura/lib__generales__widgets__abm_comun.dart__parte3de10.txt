@@ -1,7 +1,32 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 3 DE 9
+PARTE 3 DE 10
 ---
-isAlignment : CrossAxisAlignment.stretch,
+ilitado = oCampo;
+        break;
+      }
+    }
+
+    final List<String> listGrupos = _getListGrupos();
+
+    if (listGrupos.isEmpty) {
+      return SingleChildScrollView(
+        padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+        child   : Column(
+          crossAxisAlignment : CrossAxisAlignment.start,
+          children: <Widget>[
+            for (final ClaseCampoAbm oCampo in widget.listCampos)
+              _construirCampo(oCampo,
+                  bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
+          ],
+        ),
+      );
+    }
+
+    final List<ClaseCampoAbm> listComunes =
+        widget.listCampos.where((ClaseCampoAbm o) => o.sGrupo == null).toList();
+
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
       children: <Widget>[
         if (listComunes.isNotEmpty)
           Padding(
@@ -79,29 +104,4 @@ class ClaseGrillaRegistros extends StatefulWidget {
     required this.funcSeleccionar,
     required this.iRegistro,
     required this.listCampos,
-    required this.listRegistros,
-    required this.sIdioma,
-  });
-
-  /// Selecciona el registro por su índice en listRegistros.
-  final void Function(int iIndice) funcSeleccionar;
-
-  /// Índice en listRegistros del registro seleccionado (-1 si ninguno).
-  final int                        iRegistro;
-  final List<ClaseCampoAbm>        listCampos;
-  final List<Map<String, dynamic>> listRegistros;
-  final String                     sIdioma;
-
-  @override
-  State<ClaseGrillaRegistros> createState() => ClaseEstadoGrillaRegistros();
-}
-
-class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
-
-  bool   bOrdenDesc  = false;
-  bool   bVisible    = true;
-  int    iPagina     = 0;
-  String sClaveOrden = '';
-  String sFiltro     = '';
-
-  final TextEditingController oCo
+    required this.listRe
