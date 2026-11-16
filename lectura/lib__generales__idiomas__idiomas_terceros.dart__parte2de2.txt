@@ -1,7 +1,23 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_terceros.dart
-PARTE 3 DE 3
+PARTE 2 DE 2
 ---
-Carte d\'identité étrangère',
+      : 'E-mail',
+    'cliEsDiplomatico'      : 'Est agent diplomatique',
+    'cliHintCelular'        : 'N° de portable',
+    'cliHintDireccion'      : 'Rue et N° de résidence',
+    'cliHintEmail'          : 'Adresse électronique',
+    'cliHintIdentificacion' : 'N° de document',
+    'cliHintLocalidad'      : 'Localité du domicile',
+    'cliHintNombre'         : 'Nom de ce client',
+    'cliHintTelefono'       : 'N° de téléphone',
+    'cliIdentificacion'     : 'Identification N°',
+    'cliLocalidad'          : 'Localité',
+    'cliNombre'             : 'Nom',
+    'cliTelefono'           : 'Téléphone N°',
+    'cliTipoCliente'        : 'Type de client',
+    'cliTipoIdentificacion' : 'Type d\'identification',
+    // ── Documentos de identidad (compartido) ─────────────────────────────
+    'docCedulaExtranjera'   : 'Carte d\'identité étrangère',
     'docCedulaIdentidad'    : 'Carte d\'identité',
     'docDiplomatico'        : 'Diplomatique',
     'docPasaporte'          : 'Passeport',

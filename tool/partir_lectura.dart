@@ -72,7 +72,22 @@ void main() {
     }
   }
 
-  File('lectura/00_indice.txt').writeAsStringSync(listIndice.join('\n'));
+  // Índice en casilleros fijos de 60 líneas (menos de 4000 caracteres),
+  // para poder leerlos sin saber de antemano cuántos hay.
+  const int iLineasPorParte = 60;
+  for (int i = 0; i < 6; i++) {
+    final int ini = i * iLineasPorParte;
+    final int fin = (ini + iLineasPorParte < listIndice.length)
+        ? ini + iLineasPorParte
+        : listIndice.length;
+    final List<String> listParte =
+        (ini < listIndice.length) ? listIndice.sublist(ini, fin) : <String>[];
+    File('lectura/00_indice_${i + 1}.txt').writeAsStringSync(listParte.join('\n'));
+  }
+  File('lectura/00_total.txt').writeAsStringSync('${listIndice.length} fragmentos\n');
   print('${listIndice.length} fragmentos escritos en lectura/');
+
+  print('${listIndice.length} fragmentos escritos en lectura/');
+
 }
 
