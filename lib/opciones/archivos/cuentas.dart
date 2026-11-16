@@ -147,8 +147,8 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         sGrupo           : sGrupo,
         sHint            : ClaseIdiomas.getTexto('planHintNombreCuenta', sIdioma),
       ),
-
       ClaseCampoAbm(
+        bCompletarCeros  : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
             sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
@@ -157,7 +157,6 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
         sEtiqueta        : ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma),
         sGrupo           : sGrupo,
       ),
-
       ClaseCampoAbm(
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,

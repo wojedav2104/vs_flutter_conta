@@ -41,8 +41,7 @@ class ClaseEstadoSucursales extends State<ClaseSucursales> {
       listCampos    : listCampos,
       listRegistros : listRegistros,
       oPreferencias : widget.oPreferencias,
-      sTitulo       : ClaseIdiomas.getTexto(
-                        widget.oPreferencias.getIdioma(), 'menuSucursales'),
+      sTitulo       : ClaseIdiomas.getTexto('menuSucursales', widget.oPreferencias.getIdioma()),
     );
   }
 

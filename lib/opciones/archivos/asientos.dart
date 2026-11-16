@@ -81,13 +81,13 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRangoEntero(
-            sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma),
-            ClaseFechas.iAnoMinimo, DateTime.now().year, sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
+            sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('asiEjercicio', sIdioma),
+        sValorDefecto    : ClaseFechas.getAnoMaximo().toString(),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -133,6 +133,8 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
+            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -140,6 +142,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
         sHint            : ClaseIdiomas.getTexto('detHintCuenta', sIdioma),
       ),
       ClaseCampoAbm(
+        bCompletarCeros  : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
             sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
