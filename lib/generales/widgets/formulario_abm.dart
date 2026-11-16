@@ -74,6 +74,10 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   bool   bModoEdicion = false;
   int    iRegistro    = -1;
 
+  /// Registro que se estaba viendo antes de hacer clic en Agregar (-1 si
+  /// ninguno): al cancelar se vuelve a él y se muestra de nuevo.
+  int    iRegistroAnterior = -1;
+
   /// true después de Agregar/Modificar → mover foco al primer campo.
   bool   bPedirFoco   = false;                          // ← CAMBIO item 10
 
@@ -81,6 +85,10 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   /// campo con error al fallar el grabado (item 14).
   final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
       GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
+
+  /// Nodo de foco de la grilla lateral: al cancelar la edición, el foco
+  /// vuelve a la grilla.
+  final FocusNode _oFocoGrilla = FocusNode();
 
   Map<String, String> mapValores = <String, String>{};
 
@@ -95,6 +103,12 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
     }
   }
 
+  @override
+  void dispose() {
+    _oFocoGrilla.dispose();
+    super.dispose();
+  }
+
   String getIdioma() => widget.oPreferencias.getIdioma();
 
   // ── Acciones del formulario ──────────────────────────────────────────────
@@ -105,6 +119,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
         for (final ClaseCampoAbm oCampo in widget.listCampos)
           oCampo.sClave: oCampo.sValorDefecto ?? '',
       };
+      iRegistroAnterior = iRegistro;                    // para Cancelar
       iRegistro    = -1;
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -114,6 +129,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
   void modificar() {
     if (iRegistro < 0) return;
     setState(() {
+      iRegistroAnterior = iRegistro;                    // para Cancelar
       mapValores   = _desdeRegistro(widget.listRegistros[iRegistro]);
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -129,11 +145,13 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
       bMostrarCancelar : false,
     );
+
     if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
     setState(() {
       widget.listRegistros.removeAt(iRegistro);
       mapValores   = <String, String>{};
       iRegistro    = -1;
+      iRegistroAnterior = -1;
       bModoEdicion = false;
     });
     await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
@@ -141,10 +159,19 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
 
   void cancelar() {
     setState(() {
+      // Si se estaba agregando, volver al registro que se estaba viendo.
+      if (iRegistro < 0 && iRegistroAnterior >= 0) {
+        iRegistro = iRegistroAnterior;
+      }
       mapValores = (iRegistro >= 0)
           ? _desdeRegistro(widget.listRegistros[iRegistro])
           : <String, String>{};
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    // El foco vuelve a la grilla lateral: el usuario sigue viendo el registro.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _oFocoGrilla.requestFocus();
     });
   }
 
@@ -188,9 +215,11 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       } else {
         widget.listRegistros[iRegistro] = Map<String, dynamic>.from(mapValores);
       }
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
     });
     await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
+
   }
 
   Future<void> encontrar() async {
@@ -259,7 +288,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
         EnumBotonAbm.grabar,
         EnumBotonAbm.cancelar,
       ],
-      EnumBotonAbm.fin,
+      if (!bModoEdicion) EnumBotonAbm.fin,
     };
   }
 
@@ -315,6 +344,7 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       iRegistro       : iRegistro,
       listCampos      : widget.listCampos,
       listRegistros   : widget.listRegistros,
+      oFocoGrilla     : _oFocoGrilla,
       oFormulario     : ClaseFormularioCampos(
         key                : _oLlaveFormulario,            // ← CAMBIO item 14
         bAutoFocus         : bPedirFoco,                   // ← CAMBIO item 10

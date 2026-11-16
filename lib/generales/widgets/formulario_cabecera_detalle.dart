@@ -89,10 +89,15 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
 }
 
 class ClaseEstadoFormularioCabeceraDetalle
+
     extends State<ClaseFormularioCabeceraDetalle> {
 
   bool   bModoEdicion = false;
   int    iRegistro    = -1;
+
+  /// Registro que se estaba viendo antes de hacer clic en Agregar (-1 si
+  /// ninguno): al cancelar se vuelve a él y se muestra de nuevo.
+  int    iRegistroAnterior = -1;
 
   /// true después de Agregar/Modificar → mover foco al primer campo.
   bool   bPedirFoco   = false;                          // ← CAMBIO item 10
@@ -101,6 +106,9 @@ class ClaseEstadoFormularioCabeceraDetalle
   /// campo con error al fallar el grabado (item 14).
   final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
       GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
+
+  /// Nodo de foco de la grilla lateral: al cancelar la edición, el foco vuelve a la grilla.
+  final FocusNode _oFocoGrilla = FocusNode();
 
   /// Filas de detalle que se están editando (valores internos).
   List<Map<String, String>> listDetalles = <Map<String, String>>[];
@@ -127,6 +135,7 @@ class ClaseEstadoFormularioCabeceraDetalle
   @override
   void dispose() {
     _liberarControles();
+    _oFocoGrilla.dispose();
     super.dispose();
   }
 
@@ -175,6 +184,7 @@ class ClaseEstadoFormularioCabeceraDetalle
           oCampo.sClave: oCampo.sValorDefecto ?? '',
       };
       _reemplazarDetalles(<Map<String, String>>[_crearFilaVacia()]);
+      iRegistroAnterior = iRegistro;                    // para Cancelar
       iRegistro    = -1;
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -185,7 +195,8 @@ class ClaseEstadoFormularioCabeceraDetalle
     if (iRegistro < 0) return;
     final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
     setState(() {
-      mapValores = _desdeRegistro(oRegistro);
+      iRegistroAnterior = iRegistro;                    // para Cancelar
+      mapValores        = _desdeRegistro(oRegistro);
       _reemplazarDetalles(_desdeDetalles(oRegistro));
       bModoEdicion = true;
       bPedirFoco   = true;                              // ← CAMBIO item 10
@@ -206,14 +217,19 @@ class ClaseEstadoFormularioCabeceraDetalle
       widget.listRegistros.removeAt(iRegistro);
       mapValores   = <String, String>{};
       _reemplazarDetalles(<Map<String, String>>[]);
-      iRegistro    = -1;
-      bModoEdicion = false;
+      iRegistro         = -1;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
     });
     await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
   }
 
   void cancelar() {
     setState(() {
+      // Si se estaba agregando, volver al registro que se estaba viendo.
+      if (iRegistro < 0 && iRegistroAnterior >= 0) {
+        iRegistro = iRegistroAnterior;
+      }
       if (iRegistro >= 0) {
         final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
         mapValores = _desdeRegistro(oRegistro);
@@ -222,7 +238,12 @@ class ClaseEstadoFormularioCabeceraDetalle
         mapValores = <String, String>{};
         _reemplazarDetalles(<Map<String, String>>[]);
       }
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    // El foco vuelve a la grilla lateral: el usuario sigue viendo el registro.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _oFocoGrilla.requestFocus();
     });
   }
 
@@ -287,7 +308,8 @@ class ClaseEstadoFormularioCabeceraDetalle
       } else {
         widget.listRegistros[iRegistro] = oNuevo;
       }
-      bModoEdicion = false;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
     });
     await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
   }
@@ -507,7 +529,7 @@ class ClaseEstadoFormularioCabeceraDetalle
         EnumBotonAbm.grabar,
         EnumBotonAbm.cancelar,
       ],
-      EnumBotonAbm.fin,
+      if (!bModoEdicion) EnumBotonAbm.fin,
     };
   }
 
@@ -567,6 +589,7 @@ class ClaseEstadoFormularioCabeceraDetalle
       iRegistro       : iRegistro,
       listCampos      : widget.listCamposCabecera,
       listRegistros   : widget.listRegistros,
+      oFocoGrilla     : _oFocoGrilla,
       oFormulario: Column(
         crossAxisAlignment : CrossAxisAlignment.stretch,
         children: <Widget>[

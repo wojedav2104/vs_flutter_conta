@@ -319,6 +319,7 @@ class ClaseGrillaRegistros extends StatefulWidget {
     required this.iRegistro,
     required this.listCampos,
     required this.listRegistros,
+    this.oFocoExterno,
     required this.sIdioma,
   });
 
@@ -329,6 +330,9 @@ class ClaseGrillaRegistros extends StatefulWidget {
   final int                        iRegistro;
   final List<ClaseCampoAbm>        listCampos;
   final List<Map<String, dynamic>> listRegistros;
+
+  /// Nodo de foco externo (opcional): el formulario lo usa para devolverle el foco a la grilla, ej: al cancelar la edición.
+  final FocusNode?                 oFocoExterno;
   final String                     sIdioma;
 
   @override
@@ -344,7 +348,12 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   String sFiltro     = '';
 
   final TextEditingController oControlFiltro = TextEditingController();
-  final FocusNode             oFocoGrilla    = FocusNode();   // ← CAMBIO item 23
+
+  /// Nodo de foco interno de la grilla (item 23).
+  final FocusNode _oFocoInterno = FocusNode();
+
+  /// Nodo de foco que usa la grilla: el externo si el formulario lo provee, o el propio. Se elige una sola vez en initState.
+  late final FocusNode oFocoGrilla = widget.oFocoExterno ?? _oFocoInterno;
 
   @override
   void initState() {
@@ -361,7 +370,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   @override
   void dispose() {
     oControlFiltro.dispose();
-    oFocoGrilla.dispose();                                  // ← CAMBIO item 23
+    _oFocoInterno.dispose();
     super.dispose();
   }
 
@@ -731,6 +740,7 @@ class ClaseAndamiajeAbm extends StatelessWidget {
     required this.iRegistro,
     required this.listCampos,
     required this.listRegistros,
+    this.oFocoGrilla,
     required this.oFormulario,
     required this.setHabilitados,
     required this.sIdioma,
@@ -742,9 +752,12 @@ class ClaseAndamiajeAbm extends StatelessWidget {
   final int                                iRegistro;
   final List<ClaseCampoAbm>                listCampos;
   final List<Map<String, dynamic>>         listRegistros;
-
+  /// Nodo de foco de la grilla lateral (opcional): para devolverle el foco desde el formulario, ej: al cancelar la edición.
+  final FocusNode?                         oFocoGrilla;
+  
   /// Área derecha: el formulario (campos, o cabecera + detalles).
   final Widget                             oFormulario;
+
   final Set<EnumBotonAbm>                  setHabilitados;
   final String                             sIdioma;
   final String                             sTitulo;
@@ -767,6 +780,7 @@ class ClaseAndamiajeAbm extends StatelessWidget {
                   iRegistro       : iRegistro,
                   listCampos      : listCampos,
                   listRegistros   : listRegistros,
+                  oFocoExterno    : oFocoGrilla,
                   sIdioma         : sIdioma,
                 ),
                 const VerticalDivider(width: ClaseGenEspacios.dEspacio01),

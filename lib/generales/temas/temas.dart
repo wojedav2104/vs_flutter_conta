@@ -145,11 +145,36 @@ abstract final class ClaseGenTemas {
     return oTemaBase.copyWith(
       scaffoldBackgroundColor: oEsquema.surface,
       // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
-      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y 
+      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
       // multiplican por su cuenta.
-      textTheme : oTemaBase.textTheme
-          .merge(ClaseGenEstilosTexto.oTextTheme)
-          .apply(fontSizeFactor: ClaseGenEstilosTexto.dFactorTexto),
+      textTheme : _escalarTexto(oTemaBase.textTheme.merge(ClaseGenEstilosTexto.oTextTheme)),
+    );
+  }
+
+  /// Escala todos los estilos del TextTheme por dFactorTexto.
+  /// Se calcula el tamaño estilo por estilo en vez de usar
+  /// TextStyle.apply(fontSizeFactor:), porque apply exige fontSize definido
+  /// cuando el factor no es 1.0 y algún estilo del tema base no lo trae.
+  static TextTheme _escalarTexto(TextTheme oText) {
+    TextStyle escalar(TextStyle? oEstilo) =>
+        (oEstilo ?? const TextStyle()).copyWith(
+            fontSize: (oEstilo?.fontSize ?? 14.0) * ClaseGenEstilosTexto.dFactorTexto);
+    return TextTheme(
+      displayLarge  : escalar(oText.displayLarge),
+      displayMedium : escalar(oText.displayMedium),
+      displaySmall  : escalar(oText.displaySmall),
+      headlineLarge : escalar(oText.headlineLarge),
+      headlineMedium: escalar(oText.headlineMedium),
+      headlineSmall : escalar(oText.headlineSmall),
+      titleLarge    : escalar(oText.titleLarge),
+      titleMedium   : escalar(oText.titleMedium),
+      titleSmall    : escalar(oText.titleSmall),
+      bodyLarge     : escalar(oText.bodyLarge),
+      bodyMedium    : escalar(oText.bodyMedium),
+      bodySmall     : escalar(oText.bodySmall),
+      labelLarge    : escalar(oText.labelLarge),
+      labelMedium   : escalar(oText.labelMedium),
+      labelSmall    : escalar(oText.labelSmall),
     );
   }
 
