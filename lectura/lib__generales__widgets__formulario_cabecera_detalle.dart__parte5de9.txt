@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 5 DE 8
+PARTE 5 DE 9
 ---
-(mapFila),
+g, String> mapFila in listOrigen)
+        Map<String, String>.from(mapFila),
     ];
   }
 
@@ -112,17 +113,11 @@ PARTE 5 DE 8
 
   @override
   Widget build(BuildContext oContexto) {
-
-    // Resetear el pedido de foco después de este frame.                   ← CAMBIO item 10
+    final List<ClaseCampoAbm> listCabecera = (widget.sClaveCampoAlPie == null)
+        ? widget.listCamposCabecera
+        : widget.listCamposCabecera
+            .where((ClaseCampoAbm oCampo) => oCampo.sClave != widget.sClaveCampoAlPie)
+            .toList();
+    // Resetear el pedido de foco después de este frame.
     if (bPedirFoco) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        bPedirFoco = false;
-      });
-    }
-
-    return ClaseAndamiajeAbm(
-      funcAlClicar    : _alClicarBoton,
-      funcSeleccionar : seleccionar,
-      iRegistro       : iRegistro,
-      listCampos      : widget.listCamposCabecera,
-      lis
+      WidgetsBindi

@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 1 DE 8
+PARTE 1 DE 9
 ---
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +41,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
     required this.listCamposDetalle,
     required this.listRegistros,
     required this.oPreferencias,
+    this.sClaveCampoAlPie,    
     this.sClaveDebe  = 'debe',
     this.sClaveHaber = 'haber',
     required this.sTitulo,
@@ -78,6 +79,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
   final ClasePreferencias oPreferencias;
 
   /// Claves de las columnas del Debe y del Haber.
+  final String? sClaveCampoAlPie;
   final String sClaveDebe;
   final String sClaveHaber;
   final String sTitulo;
@@ -104,6 +106,4 @@ class ClaseEstadoFormularioCabeceraDetalle
       GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
 
   /// Filas de detalle que se están editando (valores internos).
-  List<Map<String, String>> listDetalles = <Map<String, String>>[];
-
-  /// Un control p
+  List<Map<String, Str

@@ -1,7 +1,44 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_terceros.dart
 PARTE 2 DE 2
 ---
-   'cliDocumentoIdentidad' : 'Pièce d\'identité',
+c const Map<String, String> mapFr = <String, String> {
+
+    // ── Pantalla Proveedores (ABM) ──────────────────────────────────
+
+    'proAlta'               : 'Création',
+    'proApellidoMaterno'    : 'Nom de la mère',
+    'proApellidoPaterno'    : 'Nom du père',
+    'proAutonomo'           : 'Travailleur indépendant',
+    'proCiudad'             : 'Ville',
+    'proContacto'           : 'Personne de contact',
+    'proCorreo'             : 'Adresse e-mail',
+    'proDireccion'          : 'Adresse',
+    'proDocumentoIdentidad' : 'Pièce d\'identité',
+    'proEsContribuyente'    : 'Est contribuable',
+    'proEsDiplomatico'      : 'Est agent diplomatique',
+    'proExterior'           : 'Étranger',
+    'proLocal'              : 'Local',
+    'proNombreComercial'    : 'Nom commercial',
+    'proNombreFantasia'     : 'Nom de fantaisie',
+    'proRazonSocial'        : 'Raison sociale',
+    'proRuc'                : 'N.I.T.',
+    'proTelefono'           : 'Téléphone',
+    'proTerceroPorDefecto'  : 'Fournisseur par défaut',
+
+    // ── Pantalla Clientes (ABM) ────────────────────────────────────
+
+    'terTerceros'           : 'Tiers',
+
+    'cliAlta'               : 'Création',
+    'cliApellidoMaterno'    : 'Nom de la mère',
+    'cliApellidoPaterno'    : 'Nom du père',
+    'cliAutonomo'           : 'Travailleur indépendant',
+    'cliCiudad'             : 'Ville',
+    'cliClientePorDefecto'  : 'Client par défaut',
+    'cliContacto'           : 'Personne de contact',
+    'cliCorreo'             : 'Adresse e-mail',
+    'cliDireccion'          : 'Adresse',
+    'cliDocumentoIdentidad' : 'Pièce d\'identité',
     'cliEsContribuyente'    : 'Est contribuable',
     'cliEsDiplomatico'      : 'Est agent diplomatique',
     'cliExterior'           : 'Étranger',
@@ -11,6 +48,41 @@ PARTE 2 DE 2
     'cliRazonSocial'        : 'Raison sociale',
     'cliRuc'                : 'N.I.T.',
     'cliTelefono'           : 'Téléphone',
-  };
+
+    // ── Tipos de documento de identidad (compartido) ─────────────────
+    'docRuc'               : 'N.I.T.',
+    'docCedulaIdentidad'   : "Carte d'identité",
+    'docPasaporte'         : 'Passeport',
+    'docCedulaExtranjera'  : "Carte d'identité étrangère",
+    'docSinNombre'         : 'Sans nom',
+    'docDiplomatico'       : 'Diplomate',
+
+    // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
+    'prvCodigo'            : 'Code',
+    'prvNombre'            : 'Nom',
+    'prvDireccion'         : 'Adresse',
+    'prvTelefono'          : 'Téléphone',
+    'prvCelular'           : 'Portable',
+    'prvLocalidad'         : 'Localité',
+    'prvEmail'             : 'Adresse e-mail',
+    'prvTipoIdentificacion': "Type d'identification",
+    'prvIdentificacion'    : 'Identification N°',
+    'prvTipoProveedor'     : 'Type de fournisseur',
+    'prvEsServicioPublico' : 'Est un service public',
+    'prvHintNombre'        : 'Nom du fournisseur',
+    'prvHintTelefono'      : 'N° de téléphone',
+    'prvHintCelular'       : 'N° de portable',
+    'prvHintLocalidad'     : 'Nom de la localité',
+    'prvHintEmail'         : 'Adresse électronique',
+    'prvHintIdentificacion': "Numéro de pièce d'identité",
+
+    // ── Timbrados (claves usadas en las dos pantallas) ───────────────
+    'timUltimoDocumento'   : 'Numéro du dernier document',
+    'timPrvNombre'         : 'Nom du fournisseur',
+    'timPrvRuc'            : 'N.I.T.',
+    'timPrvHintNombre'     : 'Nom du fournisseur',
+    'timPrvHintRuc'        : 'Numéro de N.I.T. du fournisseur',
+
+  };  
 
 }

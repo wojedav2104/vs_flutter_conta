@@ -1,22 +1,17 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 2 DE 7
 ---
- enteros y 2 decimales.
-  /// - Los demás tipos (01 Factura Contado, 09 Nota de Débito, 10 Nota de
-  ///   Crédito, etc.): hasta 15 dígitos enteros y 2 decimales.
-  static String? validarNumeroValorPorTipo(
-      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    // 07 (Factura de Importación) admite hasta 20 dígitos enteros; el
-    // resto, hasta 15. El patrón se arma interpolando iMaximo.
-    final int iMaximo = (sTipoDocumento == '07') ? 20 : 15;
-    if (!RegExp('^[0-9]{1,$iMaximo}([.,][0-9]{1,2})?\$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', '$iMaximo');
+');
     }
     return null;
+  }
+
+  /// Valor según el Tipo de documento: el máximo es el mismo para todos los
+  /// tipos (12 dígitos enteros y 2 decimales). Se conserva el parámetro del
+  /// tipo por si en el futuro algún tipo admite otro ancho.
+  static String? validarNumeroValorPorTipo(
+      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
+    return validarNumeroValor(sValor, sEtiqueta, sIdioma);
   }
 
   // ── Documentos de compra/venta ────────────────────────────────────────
@@ -86,4 +81,14 @@ PARTE 2 DE 7
         return ClaseIdiomas.getTexto('validIdentCedula', sIdioma)
             .replaceAll('{0}', sEtiqueta);
       }
-  
+      return null;
+    }
+
+    // RUC: con dígito verificador.
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.ruc) {
+      return validarRuc(sTexto, sEtiqueta, sIdioma);
+    }
+
+    // Pasaporte: letras mayúsculas, dígitos y guiones, hasta 20 caracteres
+    // (el campo se pone en mayúsculas al escribir).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.pasap

@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 2 DE 9
 ---
- // Timbrado: en blanco cuando el Tipo de documento no lleva máscara.
+ciones['cantidadCuotas'] = '0';
+    }
+
+    // Timbrado: en blanco cuando el Tipo de documento no lleva máscara.
     if (!ClaseTipoDocumento.esConMascara(sTipoDocumento)) {
       mapActualizaciones['timbrado'] = '';
     }
@@ -77,5 +80,4 @@ PARTE 2 DE 9
 
     // Timbrado: obligatorio de 8 dígitos solo si el Tipo de documento lleva
     // la máscara 999-999-9999999; en blanco y deshabilitado en los demás casos.
-    final String sTimbrado = (oRegistro['timbrado'] ?? '').toString();
-    if (ClaseTi
+    final String sTimbrado = (oRegistro['t

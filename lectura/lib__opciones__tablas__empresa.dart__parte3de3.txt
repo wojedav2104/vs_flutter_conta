@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
 PARTE 3 DE 3
 ---
-mpo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
+sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintRuc', sIdioma),
+      ),
+
+      // ── Grupo 2: Varios ─────────────────────────────────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
             sValor, ClaseIdiomas.getTexto('empEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,

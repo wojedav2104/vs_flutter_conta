@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 6 DE 7
 ---
-listOpciones.length; i++)
+alor : null,
+      isExpanded   : true,
+      // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
+      style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+      decoration   : _getDecoracion(),
+      items: <DropdownMenuItem<String>>[
+        for (int i = 0; i < listOpciones.length; i++)
           DropdownMenuItem<String>(
             value : listValores[i],
             child : Text(listOpciones[i],
@@ -90,15 +96,4 @@ listOpciones.length; i++)
                 ]
               : null,
           onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
-          decoration      : _getDecoracion(sHint: widget.oCampo.sHint),
-        ),
-      ],
-    );
-  }
-
-  // ── Lógico (switch Sí/No) ────────────────────────────────────────────────
-
-  Widget _construirLogico(BuildContext oContexto) {
-    final bool bActivo = widget.sValor == ClaseSiNo.si;
-    return Row(
-      c
+          decoration      : _getD

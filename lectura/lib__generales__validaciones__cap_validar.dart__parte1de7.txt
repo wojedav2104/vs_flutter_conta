@@ -91,18 +91,14 @@ class ClaseCapValidar {
     return null;
   }
 
-  /// Moneda: máximo 15 dígitos enteros y 2 decimales.
+  /// Moneda: máximo 12 dígitos enteros y 2 decimales. Con los puntos de
+  /// separación de miles, el valor mostrado no supera los 15 caracteres
+  /// (la máscara '999.999.999.999').
   static String? validarNumeroValor(
       String sValor, String sEtiqueta, String sIdioma) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
-    if (!RegExp(r'^\d{1,15}([.,]\d{1,2})?$').hasMatch(sTexto)) {
+    if (!RegExp(r'^\d{1,12}([.,]\d{1,2})?$').hasMatch(sTexto)) {
       return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
           .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', '15');
-    }
-    return null;
-  }
-
-  /// Valor según el Tipo de documento:
-  /// - 07 (Factura de Importación): hasta 20 dígitos
+          .replaceAll('{1}', '12

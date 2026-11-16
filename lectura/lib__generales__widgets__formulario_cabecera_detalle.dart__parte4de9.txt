@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 4 DE 8
+PARTE 4 DE 9
 ---
-Controles.removeAt(iFila);
+les[iFila].values) {
+        oCtrl.dispose();
+      }
+      listControles.removeAt(iFila);
       listDetalles.removeAt(iFila);
     });
   }
@@ -109,5 +112,4 @@ Controles.removeAt(iFila);
 
   List<Map<String, String>> _clonarDetalles(List<Map<String, String>> listOrigen) {
     return <Map<String, String>>[
-      for (final Map<String, String> mapFila in listOrigen)
-        Map<String, String>.from
+      for (final Map<Strin

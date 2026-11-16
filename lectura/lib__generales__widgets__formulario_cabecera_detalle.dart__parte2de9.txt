@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 2 DE 8
+PARTE 2 DE 9
 ---
-or celda, para conservar el cursor y actualizar valores
+ing>> listDetalles = <Map<String, String>>[];
+
+  /// Un control por celda, para conservar el cursor y actualizar valores
   /// derivados (ej: el nombre de la cuenta).
   List<Map<String, TextEditingController>> listControles =
       <Map<String, TextEditingController>>[];
@@ -112,5 +114,4 @@ or celda, para conservar el cursor y actualizar valores
     setState(() {
       if (iRegistro >= 0) {
         final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
-        mapValores = _desdeRegistro(oRegistro);
-        _reemplazarDetalles(_desdeDetalles(oRegistro));
+        mapValores = _desdeRegistro(oRe

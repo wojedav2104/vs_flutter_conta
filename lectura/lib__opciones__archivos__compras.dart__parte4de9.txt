@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 4 DE 9
 ---
-ar.validarHoraValida(
+darCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
             sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.hora,
@@ -29,14 +29,15 @@ ar.validarHoraValida(
         sValorDefecto    : '01',
       ),
       ClaseCampoAbm(
-        bObligatorio     : true,
-        funcMascara      : (mapValores) => ClaseTipoDocumento.esConMascara(
+        bMayusculas       : true,
+        bObligatorio      : true,
+        funcMascara       : (mapValores) => ClaseTipoDocumento.esConMascara(
             mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
-        iAnchoCaracteres : 16,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'numero',
-        sEtiqueta        : ClaseIdiomas.getTexto('comNumero', sIdioma),
-        sGrupo           : 'comGenerales',
+        iAnchoCaracteres  : 16,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'numero',
+        sEtiqueta         : ClaseIdiomas.getTexto('comNumero', sIdioma),
+        sGrupo            : 'comGenerales',
       ),
       ClaseCampoAbm(
         funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(
@@ -82,5 +83,4 @@ ar.validarHoraValida(
             mapValores['tipoDocumento'] ?? ''),
         iAnchoCaracteres     : 8,
         oTipo                : EnumTipoCampoAbm.texto,
-        sClave               : 'timbrado',
-        sEtiqueta            : ClaseIdiomas.getTexto('co
+        sClav

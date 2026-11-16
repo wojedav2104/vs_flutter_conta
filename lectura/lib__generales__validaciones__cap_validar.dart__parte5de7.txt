@@ -1,17 +1,7 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 5 DE 7
 ---
-
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', funcFormatearFecha(fDesde))
-          .replaceAll('{2}', funcFormatearFecha(fHasta));
-    }
-    return null;
-  }
-
-  /// El ejercicio debe ser un año dentro del rango admitido por la
-  /// aplicación (ClaseFechas es la única fuente de esos límites).
-  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
+ng sEtiqueta, String sIdioma) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
     final int? iAno = int.tryParse(sTexto);
@@ -95,4 +85,12 @@ PARTE 5 DE 7
     return null;
   }
 
-  /// true si sValor tiene el formato de cuenta 99.99.99.99.99: e
+  /// true si sValor tiene el formato de cuenta 99.99.99.99.99: el primer
+  /// grupo tiene 1 o 2 dígitos y los demás exactamente 2 dígitos,
+  /// separados por puntos, hasta 5 grupos.
+  /// Ejemplos válidos: 1, 1.01, 2.03.01, 3.05.02.09, 10.02.05.03.04.
+  static bool esFormatoCuenta(String sValor) =>
+      RegExp(r'^\d{1,2}(\.\d{2}){0,4}$').hasMatch(sValor.trim());
+
+  /// Cantidad de grupos de la cuenta (1.01.04 → 3).
+  static int co

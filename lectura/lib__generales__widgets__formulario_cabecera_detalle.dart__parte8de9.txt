@@ -1,7 +1,26 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 8 DE 8
+PARTE 8 DE 9
 ---
-
+wnMenuItem<String>(
+                value : listValores[i],
+                child : Text(listOpciones[i],
+                    style: ClaseGenEstilosTexto.normalChico(oContexto)),
+              ),
+          ],
+          onChanged: bHabilitado
+              ? (String? sNuevo) => _alCambiarFila(iFila, oCampo.sClave, sNuevo ?? '')
+              : null,
+        );
+      case EnumTipoCampoAbm.numero:
+        return _ClaseCeldaNumero(
+          bHabilitado   : bHabilitado,
+          funcAlCambiar : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          oCampo        : oCampo,
+          oControl      : listControles[iFila][oCampo.sClave]!,
+          sValor        : sValor,
+        );
+      default:
+        return TextField(
           controller      : listControles[iFila][oCampo.sClave],
           enabled         : bHabilitado,
           style           : ClaseGenEstilosTexto.normalChico(oContexto),
@@ -74,3 +93,13 @@ PARTE 8 DE 8
   }
 
 }
+
+/// Celda numérica de la grilla de detalles: guarda el valor plano y lo
+/// muestra formateado con la máscara cuando pierde el foco (regla 9).
+class _ClaseCeldaNumero extends StatefulWidget {
+  const _ClaseCeldaNumero({
+    required this.bHabilitado,
+    required this.funcAlCambiar,
+    required this.oCampo,
+    required this.oControl,
+    required this.sVal

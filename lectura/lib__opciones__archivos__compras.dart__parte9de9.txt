@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 9 DE 9
 ---
-        : '0001 - Sucursal Central',
+',
+        'proveedor'           : 'Importadora Brasil Ltda.',
+        'sucursal'            : '0001 - Sucursal Central',
         'timbrado'            : '55667788',
         'tipoAfectacion'      : ClaseTipoAfectacion.indistinto,
         'tipoDocumento'       : '01',

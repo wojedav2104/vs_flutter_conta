@@ -55,43 +55,44 @@ abstract final class ClaseIdiomasTerceros {
     'cliRazonSocial'        : 'Razón social',
     'cliRuc'                : 'R.U.C.',
     'cliTelefono'           : 'Teléfono',
+
+    // ── Tipos de documento de identidad (compartido) ─────────────────
+    'docRuc'               : 'R.U.C.',
+    'docCedulaIdentidad'   : 'Cédula de Identidad',
+    'docPasaporte'         : 'Pasaporte',
+    'docCedulaExtranjera'  : 'Cédula Extranjera',
+    'docSinNombre'         : 'Sin Nombre',
+    'docDiplomatico'       : 'Diplomático',
+
+    // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
+    'prvCodigo'            : 'Código',
+    'prvNombre'            : 'Nombre',
+    'prvDireccion'         : 'Dirección',
+    'prvTelefono'          : 'Teléfono',
+    'prvCelular'           : 'Celular',
+    'prvLocalidad'         : 'Localidad',
+    'prvEmail'             : 'Correo electrónico',
+    'prvTipoIdentificacion': 'Tipo de identificación',
+    'prvIdentificacion'    : 'Identificación N°',
+    'prvTipoProveedor'     : 'Tipo de proveedor',
+    'prvEsServicioPublico' : 'Es servicio público',
+    'prvHintNombre'        : 'Nombre del proveedor',
+    'prvHintTelefono'      : 'Nro teléfono',
+    'prvHintCelular'       : 'Nro celular',
+    'prvHintLocalidad'     : 'Nombre de la localidad',
+    'prvHintEmail'         : 'Correo electrónico',
+    'prvHintIdentificacion': 'Número de identidad',
+
+    // ── Timbrados (claves usadas en las dos pantallas) ───────────────
+    'timUltimoDocumento'   : 'Número del último documento',
+    'timPrvNombre'         : 'Nombre del proveedor',
+    'timPrvRuc'            : 'R.U.C.',
+    'timPrvHintNombre'     : 'Nombre del proveedor',
+    'timPrvHintRuc'        : 'Número de RUC del proveedor',
+
   };
 
-  static const Map<String, String> mapFr = <String, String> {
 
-    // ── Pantalla Proveedores (ABM) ──────────────────────────────────
 
-    'proAlta'               : 'Création',
-    'proApellidoMaterno'    : 'Nom de la mère',
-    'proApellidoPaterno'    : 'Nom du père',
-    'proAutonomo'           : 'Travailleur indépendant',
-    'proCiudad'             : 'Ville',
-    'proContacto'           : 'Personne de contact',
-    'proCorreo'             : 'Adresse e-mail',
-    'proDireccion'          : 'Adresse',
-    'proDocumentoIdentidad' : 'Pièce d\'identité',
-    'proEsContribuyente'    : 'Est contribuable',
-    'proEsDiplomatico'      : 'Est agent diplomatique',
-    'proExterior'           : 'Étranger',
-    'proLocal'              : 'Local',
-    'proNombreComercial'    : 'Nom commercial',
-    'proNombreFantasia'     : 'Nom de fantaisie',
-    'proRazonSocial'        : 'Raison sociale',
-    'proRuc'                : 'N.I.T.',
-    'proTelefono'           : 'Téléphone',
-    'proTerceroPorDefecto'  : 'Fournisseur par défaut',
 
-    // ── Pantalla Clientes (ABM) ────────────────────────────────────
-
-    'terTerceros'           : 'Tiers',
-
-    'cliAlta'               : 'Création',
-    'cliApellidoMaterno'    : 'Nom de la mère',
-    'cliApellidoPaterno'    : 'Nom du père',
-    'cliAutonomo'           : 'Travailleur indépendant',
-    'cliCiudad'             : 'Ville',
-    'cliClientePorDefecto'  : 'Client par défaut',
-    'cliContacto'           : 'Personne de contact',
-    'cliCorreo'             : 'Adresse e-mail',
-    'cliDireccion'          : 'Adresse',
- 
+  stati

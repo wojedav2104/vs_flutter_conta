@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 5 DE 7
 ---
-Vigencia()
+             widget.sIdioma,
+                    funcParsearFecha(widget.sValor) ?? DateTime.now(),
+                    DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+                    DateTime(
+                      widget.oCampo.bVigencia
+                          ? ClaseFechas.getAnoMaximoVigencia()
                           : ClaseFechas.getAnoMaximo(),
                       12, 31),
                   );
@@ -96,10 +101,4 @@ Vigencia()
     final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
     return DropdownButtonFormField<String>(
       key          : ValueKey<String>('${widget.oCampo.sClave}_${widget.sValor}'),
-      initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
-      isExpanded   : true,
-      // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
-      style        : ClaseGenEstilosTexto.textoCampo(oContexto),
-      decoration   : _getDecoracion(),
-      items: <DropdownMenuItem<String>>[
-        for (int i = 0; i < 
+      initialValue : listValores.contains(widget.sValor) ? widget.sV

@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 5 DE 9
 ---
-mTimbrado', sIdioma),
+e               : 'timbrado',
+        sEtiqueta            : ClaseIdiomas.getTexto('comTimbrado', sIdioma),
         sGrupo               : 'comGenerales',
       ),
       ClaseCampoAbm(
@@ -84,5 +85,4 @@ mTimbrado', sIdioma),
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         oTipo                 : EnumTipoCampoAbm.numero,
-        sClave                : 'total',
-        sEtiqueta             : ClaseIdiomas.getTexto('comTotal', sIdioma),
+        sClave                : 

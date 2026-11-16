@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 3 DE 9
 ---
-poDocumento.esConMascara(sTipoDoc)) {
+imbrado'] ?? '').toString();
+    if (ClaseTipoDocumento.esConMascara(sTipoDoc)) {
       if (sTimbrado.trim().isEmpty) {
         return ClaseCapValidar.validarObligatorio(sTimbrado,
             ClaseIdiomas.getTexto('comTimbrado', sIdioma), sIdioma);
@@ -97,4 +98,4 @@ poDocumento.esConMascara(sTipoDoc)) {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValid
+        funcVali

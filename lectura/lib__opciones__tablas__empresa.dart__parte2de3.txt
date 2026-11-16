@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
 PARTE 2 DE 3
 ---
-empApellidos', sIdioma),
+  sEtiqueta        : ClaseIdiomas.getTexto('empNombre', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintNombre', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 25,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'apellidos',
+        sEtiqueta        : ClaseIdiomas.getTexto('empApellidos', sIdioma),
         sGrupo           : 'empGrupoGenerales',
         sHint            : ClaseIdiomas.getTexto('empHintApellidos', sIdioma),
       ),
@@ -39,9 +47,9 @@ empApellidos', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        iAnchoCaracteres : funcAnchoOpcion(ClasePaises.getListOpciones(sIdioma)),
-        listOpciones     : ClasePaises.getListOpciones(sIdioma),
-        listValores      : ClasePaises.getListValores(),
+        iAnchoCaracteres : funcAnchoOpcion(listPaisesOpciones),
+        listOpciones     : listPaisesOpciones,
+        listValores      : listPaisesValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'pais',
         sEtiqueta        : ClaseIdiomas.getTexto('empPais', sIdioma),
@@ -81,12 +89,4 @@ empApellidos', sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'ruc',
-        sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
-        sGrupo           : 'empGrupoGenerales',
-        sHint            : ClaseIdiomas.getTexto('empHintRuc', sIdioma),
-      ),
-
-      // ── Grupo 2: Varios ─────────────────────────────────────────────────
-      ClaseCampoAbm(
-        bObligatorio     : true,
-        funcValidarCa
+        

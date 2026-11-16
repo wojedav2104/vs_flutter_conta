@@ -1,15 +1,7 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 6 DE 7
 ---
-l primer
-  /// grupo tiene 1 o 2 dígitos y los demás exactamente 2 dígitos,
-  /// separados por puntos, hasta 5 grupos.
-  /// Ejemplos válidos: 1, 1.01, 2.03.01, 3.05.02.09, 10.02.05.03.04.
-  static bool esFormatoCuenta(String sValor) =>
-      RegExp(r'^\d{1,2}(\.\d{2}){0,4}$').hasMatch(sValor.trim());
-
-  /// Cantidad de grupos de la cuenta (1.01.04 → 3).
-  static int contarGruposCuenta(String sNumeroCuenta) =>
+ntarGruposCuenta(String sNumeroCuenta) =>
       sNumeroCuenta.trim().isEmpty ? 0 : sNumeroCuenta.trim().split('.').length;
 
   /// Cantidad de dígitos de la cuenta (ignora los puntos) (1.01.04 → 4).
@@ -95,4 +87,15 @@ l primer
 
   /// Al menos una opción seleccionada.
   static String? validarAlMenosUnoSeleccionado(
-      String sValor, String sEtiqueta, String s
+      String sValor, String sEtiqueta, String sIdioma) {
+    if (sValor.trim().isEmpty) {
+      return ClaseIdiomas.getTexto('validAlMenosUno', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  // ── Credenciales y correo ─────────────────────────────────────────────
+
+  /// Credenciales iniciales. Más adelante vendrán del ABM de Usuarios y de la BD.
+  static const String sContrasenaIn

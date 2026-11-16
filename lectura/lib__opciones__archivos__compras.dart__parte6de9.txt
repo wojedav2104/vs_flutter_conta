@@ -1,6 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 6 DE 9
 ---
+'total',
+        sEtiqueta             : ClaseIdiomas.getTexto('comTotal', sIdioma),
         sGrupo                : 'comGenerales',
         sMascara              : '999.999.999.999',
       ),
@@ -88,6 +90,3 @@ PARTE 6 DE 9
         sMascara         : '999.999.999.999',
         sValorDefecto    : '0',
       ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTi

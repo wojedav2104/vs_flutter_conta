@@ -1,18 +1,7 @@
 RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
 PARTE 7 DE 7
 ---
-Idioma) {
-    if (sValor.trim().isEmpty) {
-      return ClaseIdiomas.getTexto('validAlMenosUno', sIdioma)
-          .replaceAll('{0}', sEtiqueta);
-    }
-    return null;
-  }
-
-  // ── Credenciales y correo ─────────────────────────────────────────────
-
-  /// Credenciales iniciales. Más adelante vendrán del ABM de Usuarios y de la BD.
-  static const String sContrasenaInicial = '1234';
+icial = '1234';
   static const String sNombreInicial     = 'admin';
 
   /// Valida las credenciales del login.

@@ -1,7 +1,17 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 6 DE 8
+PARTE 6 DE 9
 ---
-tRegistros   : widget.listRegistros,
+ng.instance.addPostFrameCallback((_) {
+        bPedirFoco = false;
+      });
+    }
+
+    return ClaseAndamiajeAbm(
+      funcAlClicar    : _alClicarBoton,
+      funcSeleccionar : seleccionar,
+      iRegistro       : iRegistro,
+      listCampos      : widget.listCamposCabecera,
+      listRegistros   : widget.listRegistros,
       oFormulario: Column(
         crossAxisAlignment : CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -13,7 +23,7 @@ tRegistros   : widget.listRegistros,
               funcAlCambiarCampo  : _alCambiarCampo,
               funcAlPerderFoco    : widget.funcAlPerderFoco,              
               funcEsHabilitado    : _getHabilitado,
-              listCampos          : widget.listCamposCabecera,
+              listCampos          : listCabecera,
               mapValores          : mapValores,
               sIdioma             : getIdioma(),
             ),
@@ -61,6 +71,7 @@ tRegistros   : widget.listRegistros,
           ),
         ),
         _construirFilaTotales(oContexto),
+        _construirCampoAlPie(oContexto),
         Padding(
           padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
           child   : Align(
@@ -77,38 +88,26 @@ tRegistros   : widget.listRegistros,
     );
   }
 
-  Widget _construirFilaEncabezado(BuildContext oContexto) {
-    return Padding(
-      padding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio08,
-        vertical   : ClaseGenEspacios.dEspacio04,
-      ),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width : ClaseGenLayout.dAnchoNumeroFila,
-            child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
-                style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
-          ),
-          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
-            SizedBox(
-              width : oCampo.getAnchoColumna(),
-              child : Text(oCampo.sEtiqueta,
-                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
-                  maxLines : 1,
-                  overflow : TextOverflow.ellipsis),
-            ),
-          const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
-        ],
-      ),
-    );
+  /// Campo de la cabecera que se muestra al pie, debajo de la fila de totales (spec 02_02 y 02_03: el campo Comentarios).
+  Widget _construirCampoAlPie(BuildContext oContexto) {
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.sClave != widget.sClaveCampoAlPie) continue;
+      return Padding(
+        padding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio04,
+        ),
+        child : ClaseCampoFormulario(
+          bHabilitado   : _getHabilitado(oCampo),
+          funcAlCambiar : (String sValor) => _alCambiarCampo(oCampo.sClave, sValor),
+          mapValores    : mapValores,
+          oCampo        : oCampo,
+          sIdioma       : getIdioma(),
+          sValor        : mapValores[oCampo.sClave] ?? '',
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
-  Widget _construirFilaDetalle(BuildContext oContexto, int iFila) {
-    return Padding(
-      padding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio08,
-        vertical   : ClaseGenEspacios.dEspacio04,
-      ),
-      child: Row(
-        
+  Widget _construirFil

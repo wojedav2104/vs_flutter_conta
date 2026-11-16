@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 7 DE 7
 ---
-hildren: <Widget>[
+ecoracion(sHint: widget.oCampo.sHint),
+        ),
+      ],
+    );
+  }
+
+  // ── Lógico (switch Sí/No) ────────────────────────────────────────────────
+
+  Widget _construirLogico(BuildContext oContexto) {
+    final bool bActivo = widget.sValor == ClaseSiNo.si;
+    return Row(
+      children: <Widget>[
         Switch(
           value    : bActivo,
           onChanged: widget.bHabilitado

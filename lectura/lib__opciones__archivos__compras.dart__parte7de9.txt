@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 7 DE 9
 ---
-poCampoAbm.numero,
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeNoImputable',
         sEtiqueta        : ClaseIdiomas.getTexto('comImporteNoImputable', sIdioma),
         sGrupo           : 'comResolucion',
@@ -97,6 +99,4 @@ poCampoAbm.numero,
             'concepto'     : 'Compra de mercadería',
             'cuenta'       : '1.03.01',
             'debe'         : '200000',
-            'haber'        : '',
-            'nombreCuenta' : 'I.V.A Crédito Fiscal 10%',
-      
+           

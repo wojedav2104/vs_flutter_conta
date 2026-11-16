@@ -64,6 +64,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       listCamposDetalle    : listCamposDetalle,
       listRegistros        : listRegistros,
       oPreferencias        : widget.oPreferencias,
+      sClaveCampoAlPie     : 'comentarios',
       sTitulo              : ClaseIdiomas.getTexto('menuLibroCompras', getIdioma()),
     );
   }
@@ -96,7 +97,4 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         mapActualizaciones['cantidadCuotas'] = '1';
       }
     } else {
-      mapActualizaciones['cantidadCuotas'] = '0';
-    }
-
-   
+      mapActualiza

@@ -1,6 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 3 DE 8
+PARTE 3 DE 9
 ---
+gistro);
+        _reemplazarDetalles(_desdeDetalles(oRegistro));
       } else {
         mapValores = <String, String>{};
         _reemplazarDetalles(<Map<String, String>>[]);
@@ -109,7 +111,4 @@ PARTE 3 DE 8
 
   void borrarFila(int iFila) {
     setState(() {
-      for (final TextEditingController oCtrl in listControles[iFila].values) {
-        oCtrl.dispose();
-      }
-      list
+      for (final TextEditingController oCtrl in listContro
