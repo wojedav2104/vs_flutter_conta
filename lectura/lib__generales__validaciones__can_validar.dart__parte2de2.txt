@@ -1,0 +1,28 @@
+RUTA ORIGINAL: lib/generales/validaciones/can_validar.dart
+PARTE 2 DE 2
+---
+────────────────────
+
+  /// Valida que la fecha de compra esté dentro de la vigencia del timbrado.
+  static Future<String?> validarCompraDentroVigencia(
+    String sTimbradoNumero,
+    String sFechaCompra,
+    String sIdioma,
+  ) async {
+    // TODO: SELECT 1 FROM TIMBRADOS_PROVEEDORES WHERE TIMBRADO_NUMERO = ?
+    //          AND FECHA_INICIO <= ? AND (FECHA_FIN IS NULL OR FECHA_FIN >= ?)
+    return null;
+  }
+
+  /// Valida que la fecha de venta esté dentro de la vigencia del timbrado.
+  static Future<String?> validarVentaDentroVigencia(
+    String sTimbradoNumero,
+    String sFechaVenta,
+    String sIdioma,
+  ) async {
+    // TODO: SELECT 1 FROM TIMBRADOS_PROPIOS WHERE TIMBRADO_NUMERO = ?
+    //          AND FECHA_INICIO <= ? AND (FECHA_FIN IS NULL OR FECHA_FIN >= ?)
+    return null;
+  }
+
+}

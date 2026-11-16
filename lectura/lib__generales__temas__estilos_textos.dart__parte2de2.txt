@@ -1,0 +1,15 @@
+RUTA ORIGINAL: lib/generales/temas/estilos_textos.dart
+PARTE 2 DE 2
+---
+grita: cumple WCAG AA como texto grande sobre los colores
+  /// de los botones y es más legible para usuarios noveles.
+  static TextStyle botonGrande(BuildContext oContexto) {
+    return _estilo(oContexto, oTextTheme.displayLarge, sFamilia: _sFamiliaBase);
+  }
+
+  /// Texto destacado (nombre de la Base en la cabecera, opción Fin).
+  static TextStyle textoDestacado(BuildContext oContexto) {
+    return textoCampo(oContexto).copyWith(fontWeight: FontWeight.w600);
+  }
+
+}

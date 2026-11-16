@@ -1,0 +1,114 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 6 DE 8
+---
+tRegistros   : widget.listRegistros,
+      oFormulario: Column(
+        crossAxisAlignment : CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            flex  : 2,
+            child : ClaseFormularioCampos(
+              key                 : _oLlaveFormulario,       // ← CAMBIO item 14
+              bAutoFocus          : bPedirFoco,              // ← CAMBIO item 10
+              funcAlCambiarCampo  : _alCambiarCampo,
+              funcAlPerderFoco    : widget.funcAlPerderFoco,              
+              funcEsHabilitado    : _getHabilitado,
+              listCampos          : widget.listCamposCabecera,
+              mapValores          : mapValores,
+              sIdioma             : getIdioma(),
+            ),
+          ),
+          const Divider(height: ClaseGenEspacios.dEspacio01),
+          Expanded(
+            flex  : 3,
+            child : _construirDetalle(oContexto),
+          ),
+        ],
+      ),
+      setHabilitados : _getBotonesHabilitados(),
+      sIdioma        : getIdioma(),
+      sTitulo        : widget.sTitulo,
+    );
+  }
+
+  // ── Grilla editable de detalles ──────────────────────────────────────────
+
+  double _getAnchoDetalle() {
+    double dAncho = ClaseGenLayout.dAnchoNumeroFila + ClaseGenLayout.dAnchoAccionesFila;
+    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+      dAncho += oCampo.getAnchoColumna();
+    }
+    return dAncho;
+  }
+
+  Widget _construirDetalle(BuildContext oContexto) {
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection : Axis.horizontal,
+            child: SizedBox(
+              width  : _getAnchoDetalle(),
+              child  : ListView(
+                children: <Widget>[
+                  _construirFilaEncabezado(oContexto),
+                  for (int i = 0; i < listDetalles.length; i++)
+                    _construirFilaDetalle(oContexto, i),
+                ],
+              ),
+            ),
+          ),
+        ),
+        _construirFilaTotales(oContexto),
+        Padding(
+          padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+          child   : Align(
+            alignment : Alignment.centerLeft,
+            child     : OutlinedButton.icon(
+              onPressed : bModoEdicion ? agregarFila : null,
+              icon      : const Icon(Icons.add),
+              label     : Text(ClaseIdiomas.getTexto('detAgregarFila', getIdioma()),
+                  style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _construirFilaEncabezado(BuildContext oContexto) {
+    return Padding(
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width : ClaseGenLayout.dAnchoNumeroFila,
+            child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
+                style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+          ),
+          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+            SizedBox(
+              width : oCampo.getAnchoColumna(),
+              child : Text(oCampo.sEtiqueta,
+                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+                  maxLines : 1,
+                  overflow : TextOverflow.ellipsis),
+            ),
+          const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirFilaDetalle(BuildContext oContexto, int iFila) {
+    return Padding(
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        

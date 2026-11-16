@@ -1,0 +1,103 @@
+RUTA ORIGINAL: lib/opciones/archivos/cuentas.dart
+PARTE 3 DE 3
+---
+', sIdioma), sIdioma),
+        iAnchoCaracteres : 1,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : '${sPrefijo}Nivel',
+        sEtiqueta        : ClaseIdiomas.getTexto('planNivel', sIdioma),
+        sGrupo           : sGrupo,
+      ),
+
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : '${sPrefijo}Asentable',
+        sEtiqueta        : ClaseIdiomas.getTexto('planAsentable', sIdioma),
+        sGrupo           : sGrupo,
+      ),
+    ];
+  }
+
+  List<ClaseCampoAbm> crearCampos() {
+
+    final String sIdioma = getIdioma();
+
+    return <ClaseCampoAbm>[
+
+      // ── Datos comunes (sin grupo, siempre visibles) ──────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
+            sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
+        iAnchoCaracteres : 4,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'ejercicio',
+        sEtiqueta        : ClaseIdiomas.getTexto('planEjercicio', sIdioma),
+        sValorDefecto    : DateTime.now().year.toString(),
+      ),
+
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 44,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'sucursal',
+        sEtiqueta        : ClaseIdiomas.getTexto('planSucursal', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('planHintSucursal', sIdioma),
+      ),
+
+      // ── Grupo Principal (Plan de Cuentas local) ──────────────────────────
+      ...crearCamposGrupo('pri', 'planPrincipal'),
+
+      // ── Grupo Alternativo (Plan de Cuentas Francia) ──────────────────────
+      ...crearCamposGrupo('alt', 'planAlternativo'),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // La jerarquía no sigue la numeración: 2.01 depende de 1 (no de 2).
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'altAsentable'         : ClaseSiNo.si,
+        'altCuentaSuperior'    : '1',
+        'altNivel'             : '2',
+        'altNombreCuenta'      : 'Fonds commercial',
+        'altNombreSubcuenta'   : '',
+        'altNumeroCuenta'      : '2.01',
+        'altNumeroSubcuenta'   : '',
+        'ejercicio'            : '2026',
+        'priAsentable'         : ClaseSiNo.si,
+        'priCuentaSuperior'    : '1',
+        'priNivel'             : '2',
+        'priNombreCuenta'      : 'Caja y Bancos',
+        'priNombreSubcuenta'   : 'Banco Nacional',
+        'priNumeroCuenta'      : '1.01',
+        'priNumeroSubcuenta'   : '00001',
+        'sucursal'             : '0001 - Sucursal Central',
+      },
+      <String, dynamic>{
+        'altAsentable'         : ClaseSiNo.no,
+        'altCuentaSuperior'    : '',
+        'altNivel'             : '1',
+        'altNombreCuenta'      : 'Actif',
+        'altNombreSubcuenta'   : '',
+        'altNumeroCuenta'      : '1',
+        'altNumeroSubcuenta'   : '',
+        'ejercicio'            : '2026',
+        'priAsentable'         : ClaseSiNo.no,
+        'priCuentaSuperior'    : '',
+        'priNivel'             : '1',
+        'priNombreCuenta'      : 'Activo',
+        'priNombreSubcuenta'   : '',
+        'priNumeroCuenta'      : '1',
+        'priNumeroSubcuenta'   : '',
+        'sucursal'             : '0001 - Sucursal Central',
+      },
+    ];
+  }
+
+}

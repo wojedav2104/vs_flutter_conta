@@ -1,0 +1,85 @@
+RUTA ORIGINAL: lib/generales/temas/temas.dart
+PARTE 2 DE 3
+---
+rficieOscura,
+    onSurface               : ClaseGenColores.colorGris1,
+    surfaceContainerLowest  : ClaseGenColores.colorNegro,
+    surfaceContainerLow     : ClaseGenColores.colorGris4,
+    surfaceContainer        : ClaseGenColores.colorSuperficieOscuraElevada,
+    surfaceContainerHigh    : ClaseGenColores.colorSuperficieOscuraElevada,
+    surfaceContainerHighest : ClaseGenColores.colorGris4,
+    onSurfaceVariant        : ClaseGenColores.colorGris3,
+    outline                 : ClaseGenColores.colorGris3,
+    outlineVariant          : ClaseGenColores.colorGris4,
+    inverseSurface          : ClaseGenColores.colorGris1,
+    onInverseSurface        : ClaseGenColores.colorGris4,
+    surfaceTint             : ClaseGenColores.colorCyan1,
+    shadow                  : ClaseGenColores.colorNegro,
+    scrim                   : ClaseGenColores.colorNegro,
+  );
+
+  // ── Colores de los botones ABM (respetan el modo claro/oscuro) ────────────
+  // Regla de diseño: habilitado = #1E88E5 con texto blanco, igual en ambos
+  // modos (3.7:1 con el texto grande del botón). Deshabilitado cambia según
+  // el modo: en oscuro el gris claro deslumbra.
+  static Color colorBotonHabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorBotonHabilitado;
+
+  /// Color del icono de la ventana de advertencia (respetando el modo).
+  static Color colorIconoAdvertencia(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorAmarillo1
+          : ClaseGenColores.colorAmarilloOscuro1;
+
+  /// Color de acento decorativo (línea bajo el título del login).
+  static Color colorAcento(BuildContext oContexto) => ClaseGenColores.colorAmarillo1;
+            
+  static Color colorTextoBotonHabilitado(BuildContext oContexto) =>
+      ClaseGenColores.colorTextoBotonHabilitado;
+
+  static Color colorBotonDeshabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorBotonDeshabilitadoOscuro
+          : ClaseGenColores.colorBotonDeshabilitado;
+
+  static Color colorTextoBotonDeshabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoBotonDeshabilitadoOscuro
+          : ClaseGenColores.colorTextoBotonDeshabilitado;
+
+  static bool _esModoOscuro(BuildContext oContexto) =>
+      Theme.of(oContexto).brightness == Brightness.dark;
+
+  // ── Temas cacheados (se reconstruyen si cambia el factor de texto) ────────
+  static double    _dFactorCache = -1.0;
+  static ThemeData? _temaClaroCache;
+  static ThemeData? _temaOscuroCache;
+
+  static ThemeData get getTemaClaro  { _actualizarTemas(); return _temaClaroCache!; }
+  static ThemeData get getTemaOscuro { _actualizarTemas(); return _temaOscuroCache!; }
+
+  static void _actualizarTemas() {
+    if (_dFactorCache != ClaseGenEstilosTexto.dFactorTexto) {
+      _dFactorCache    = ClaseGenEstilosTexto.dFactorTexto;
+      _temaClaroCache  = _construir(_oEsquemaClaro);
+      _temaOscuroCache = _construir(_oEsquemaOscuro);
+    }
+  }
+
+  static ThemeData _construir(ColorScheme oEsquema) {
+    // Base M3 completa: provee `headlineSmall`, `titleSmall`, `labelLarge`,
+    // `displaySmall`, `headlineMedium`, `headlineLarge` (que
+    // `ClaseGenEstilosTexto.oTextTheme` no define). Sin este merge, esos
+    // estilos quedan `null` y widgets como `AppBar`, `Dialog`, `ListTile`
+    // los heredan de `DefaultTextStyle`, rompiendo la consistencia.
+    final ThemeData oTemaBase = ThemeData(
+      colorScheme : oEsquema,
+      useMaterial3: true,
+    );
+    return oTemaBase.copyWith(
+      scaffoldBackgroundColor: oEsquema.surface,
+      // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
+      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y 
+      // multiplican por su cuenta.
+      textTheme : oTemaBase.textTheme
+      

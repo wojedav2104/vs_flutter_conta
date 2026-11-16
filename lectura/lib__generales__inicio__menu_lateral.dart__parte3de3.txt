@@ -1,0 +1,56 @@
+RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
+PARTE 3 DE 3
+---
+  }
+
+  Widget construirSeccion(BuildContext oContexto, String sPais, String sClaveTitulo,
+                          List<ClaseOpcionMenu> listOpciones) {
+    final List<ClaseOpcionMenu> listVisibles = listOpciones
+        .where((oOpcion) => oOpcion.puedeMostrar(sPais))
+        .toList();
+    if (listVisibles.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding : const EdgeInsets.fromLTRB(
+            ClaseGenEspacios.dEspacio16,
+            ClaseGenEspacios.dEspacio16,
+            ClaseGenEspacios.dEspacio16,
+            ClaseGenEspacios.dEspacio04,
+          ),
+          child: Text(
+            ClaseIdiomas.getTexto(sClaveTitulo, oPreferencias.getIdioma()).toUpperCase(),
+            style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                     .copyWith(color: Theme.of(oContexto).colorScheme.primary),
+          ),
+        ),
+        for (final ClaseOpcionMenu oOpcion in listVisibles)
+          construirOpcion(oContexto, oOpcion),
+      ],
+    );
+  }
+
+  Widget construirOpcion(BuildContext oContexto, ClaseOpcionMenu oOpcion) {
+    final ThemeData oTema = Theme.of(oContexto);
+    return ListTile(
+      leading : Icon(oOpcion.oIcono, color: oTema.colorScheme.onSurfaceVariant),
+      title   : Text(ClaseIdiomas.getTexto(oOpcion.sClave, oPreferencias.getIdioma()),
+                     style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+      onTap   : () => elegirOpcion(oContexto, oOpcion),
+    );
+  }
+
+  Widget construirFin(BuildContext oContexto, String sIdioma) {
+    return ListTile(
+      leading : Icon(Icons.power_settings_new,
+                     color: Theme.of(oContexto).colorScheme.error),
+      title   : Text(ClaseIdiomas.getTexto('menuFin', sIdioma),
+                     style: ClaseGenEstilosTexto.normalMediano(oContexto)
+                              .copyWith(color: Theme.of(oContexto).colorScheme.error,
+                                        fontWeight: FontWeight.w600)),
+      onTap   : finalizar,
+    );
+  }
+
+}

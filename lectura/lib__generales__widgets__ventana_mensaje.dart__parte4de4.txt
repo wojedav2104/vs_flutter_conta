@@ -1,0 +1,39 @@
+RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
+PARTE 4 DE 4
+---
+      autofocus    : true,
+                keyboardType : TextInputType.emailAddress,
+                style        : ClaseGenEstilosTexto.textoCampo(oContextoVentana),
+                decoration   : InputDecoration(
+                  labelText : sEtiquetaCampo,
+                  border    : const OutlineInputBorder(),
+                ),
+                onSubmitted : (String sValor) =>
+                    Navigator.of(oContextoVentana).pop('aceptar'),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          if (bMostrarCancelar)
+            funcConstruirBoton(
+              oContexto : oContextoVentana,
+              sTexto    : ClaseIdiomas.getTexto('cancelar', sIdioma),
+              oIcono    : Icons.cancel_outlined,
+              bRelleno  : false,
+              oAlClicar : () => Navigator.of(oContextoVentana).pop(),
+            ),
+          funcConstruirBoton(
+            oContexto : oContextoVentana,
+            sTexto    : ClaseIdiomas.getTexto('aceptar', sIdioma),
+            oIcono    : Icons.check,
+            oAlClicar : () => Navigator.of(oContextoVentana).pop('aceptar'),
+          ),
+        ],
+      );
+    },
+  );
+  final String sTextoIngresado = oControl.text.trim();
+  oControl.dispose();
+  return (sAccion == null) ? null : sTextoIngresado;
+}

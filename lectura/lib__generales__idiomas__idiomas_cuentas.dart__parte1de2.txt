@@ -1,0 +1,67 @@
+RUTA ORIGINAL: lib/generales/idiomas/idiomas_cuentas.dart
+PARTE 1 DE 2
+---
+/// Textos del idioma: Cuentas asignadas y Plan de Cuentas.
+abstract final class ClaseIdiomasCuentas {
+
+  static const Map<String, String> mapEs = <String, String>{
+    // ── Pantalla Cuentas asignadas (ABM) ─────────────────────────────────
+    'ctaCaja'                    : 'Caja',
+    'ctaDebeVentaContado'        : 'Debe en Ventas al contado',
+    'ctaDebeVentaCredito'        : 'Debe en Ventas a crédito',
+    'ctaEjercicio'               : 'Ejercicio contable',
+    'ctaHaberCompraContado'      : 'Haber en Compras al contado',
+    'ctaHaberCompraCredito'      : 'Haber en Compras a crédito',
+    'ctaHintCaja'                : 'Número de la cuenta Caja',
+    'ctaHintDebeVentaContado'    : 'Número de la cuenta a poner en el Debe cuando es contado',
+    'ctaHintDebeVentaCredito'    : 'Número de la cuenta a poner en el Debe cuando es crédito',
+    'ctaHintHaberCompraContado'  : 'Número de la cuenta a poner en el Haber cuando es contado',
+    'ctaHintHaberCompraCredito'  : 'Número de la cuenta a poner en el Haber cuando es crédito',
+    'ctaHintIvaCredito10'        : 'Número de la cuenta I.V.A Crédito Fiscal 10%',
+    'ctaHintIvaCredito5'         : 'Número de la cuenta I.V.A Crédito Fiscal 5%',
+    'ctaHintIvaDebito10'         : 'Número de la cuenta I.V.A Débito Fiscal 10%',
+    'ctaHintIvaDebito5'          : 'Número de la cuenta I.V.A Débito Fiscal 5%',
+    'ctaHintMercExentas'         : 'Número de la cuenta Mercaderías Exentas',
+    'ctaHintMercGravadas10'      : 'Número de la cuenta Mercaderías Gravadas 10%',
+    'ctaHintMercGravadas5'       : 'Número de la cuenta Mercaderías Gravadas 5%',
+    'ctaHintResultados'          : 'Número de la cuenta Resultados del Ejercicio',
+    'ctaHintSucursal'            : 'Código y Nombre de la sucursal',
+    'ctaHintVentasExentas'       : 'Número de la cuenta Ventas Exentas',
+    'ctaHintVentasGravadas10'    : 'Número de la cuenta Ventas Gravadas 10%',
+    'ctaHintVentasGravadas5'     : 'Número de la cuenta Ventas Gravadas 5%',
+    'ctaIvaCredito10'            : 'I.V.A Crédito Fiscal 10%',
+    'ctaIvaCredito5'             : 'I.V.A Crédito Fiscal 5%',
+    'ctaIvaDebito10'             : 'I.V.A Débito Fiscal 10%',
+    'ctaIvaDebito5'              : 'I.V.A Débito Fiscal 5%',
+    'ctaMercaderiasExentas'      : 'Mercaderías Exentas',
+    'ctaMercaderiasGravadas10'   : 'Mercaderías Gravadas 10%',
+    'ctaMercaderiasGravadas5'    : 'Mercaderías Gravadas 5%',
+    'ctaResultadosEjercicio'     : 'Resultados del Ejercicio',
+    'ctaSucursal'                : 'Sucursal',
+    'ctaVentasExentas'           : 'Ventas Exentas',
+    'ctaVentasGravadas10'        : 'Ventas Gravadas 10%',
+    'ctaVentasGravadas5'         : 'Ventas Gravadas 5%',
+    // ── Pantalla Plan de Cuentas (ABM) ───────────────────────────────────
+    'planAlternativo'        : 'Alternativo',
+    'planAsentable'          : 'Asentable',
+    'planCuentaSuperior'     : 'Cuenta de nivel superior',
+    'planEjercicio'          : 'Ejercicio contable',
+    'planHintCuenta'         : 'Cuenta N°',
+    'planHintCuentaSuperior' : 'La cuenta padre de esta cuenta',
+    'planHintNombreCuenta'   : 'Nombre de la cuenta contable',
+    'planHintNombreSubcuenta': 'Nombre de la subcuenta contable',
+    'planHintSucursal'       : 'Código y Nombre de la sucursal',
+    'planNivel'              : 'Nivel de la cuenta',
+    'planNombreCuenta'       : 'Nombre de la cuenta',
+    'planNombreSubcuenta'    : 'Nombre de la subcuenta',
+    'planNumeroCuenta'       : 'Número de la cuenta',
+    'planNumeroSubcuenta'    : 'Número de la subcuenta',
+    'planPrincipal'          : 'Principal',
+    'planSucursal'           : 'Sucursal',
+  };
+
+  static const Map<String, String> mapFr = <String, String>{
+    // ── Pantalla Cuentas asignadas (ABM) ─────────────────────────────────
+    'ctaCaja'                    : 'Caisse',
+    'ctaDebeVentaContado'        : 'Doit en ventes au comptant',
+    'ctaDebeVentaCredito'        :

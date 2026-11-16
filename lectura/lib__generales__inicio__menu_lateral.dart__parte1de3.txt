@@ -1,0 +1,64 @@
+RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../rutas/rutas.dart';
+import '../idiomas/idiomas.dart';
+import '../modelos/opcion_menu.dart';
+import '../modelos/sesion.dart';
+import '../preferencias/preferencias.dart';
+import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
+
+
+/// Menú lateral (drawer) de la pantalla principal.
+///
+/// Muestra las opciones del país de la Base de Datos conectada.
+/// Por ejemplo: ASUNCION muestra Marangatú (Paraguay); LIMA no lo muestra.
+class ClaseMenuLateral extends StatelessWidget {
+  
+  const ClaseMenuLateral({
+    super.key,
+    required this.oPreferencias,
+  });
+
+  final ClasePreferencias oPreferencias;
+
+  // ── Opciones del menú ───────────────────────────────────────────────────
+  static final List<ClaseOpcionMenu> _listArchivos = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.account_tree_outlined,        sClave: 'menuPlanCuentas',         sRuta: ClaseRutas.rutaCuentas),
+    ClaseOpcionMenu(oIcono: Icons.edit_note,                    sClave: 'menuAsientos',            sRuta: ClaseRutas.rutaAsientos),
+    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined,       sClave: 'menuLibroCompras',        sRuta: ClaseRutas.rutaCompras),
+    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined,       sClave: 'menuLibroVentas',         sRuta: ClaseRutas.rutaVentas),
+    ClaseOpcionMenu(oIcono: Icons.people_outline,               sClave: 'menuRetencionesClientes', sRuta: ClaseRutas.rutaRetencionesClientes),
+    ClaseOpcionMenu(oIcono: Icons.business_outlined,            sClave: 'menuRetencionesProveedores', sRuta: ClaseRutas.rutaRetencionesProveedores),
+  ];
+
+  static final List<ClaseOpcionMenu> _listInformes = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.fact_check_outlined,    sClave: 'menuVerificacionDatos',   sRuta: ClaseRutas.rutaVerificacionDatos),
+    ClaseOpcionMenu(oIcono: Icons.account_tree_outlined,  sClave: 'menuPlanCuentas',         sRuta: ClaseRutas.rutaPlanCuentas),
+    ClaseOpcionMenu(oIcono: Icons.menu_book_outlined,     sClave: 'menuLibroDiario',         sRuta: ClaseRutas.rutaLibroDiario),
+    ClaseOpcionMenu(oIcono: Icons.auto_stories_outlined,  sClave: 'menuLibroMayor',          sRuta: ClaseRutas.rutaLibroMayor),
+    ClaseOpcionMenu(oIcono: Icons.balance_outlined,       sClave: 'menuBalanceSumasSaldos',  sRuta: ClaseRutas.rutaBalanceSumasSaldos),
+    ClaseOpcionMenu(oIcono: Icons.pie_chart_outline,      sClave: 'menuBalanceGeneral',      sRuta: ClaseRutas.rutaBalanceGeneral),
+    ClaseOpcionMenu(oIcono: Icons.trending_up,            sClave: 'menuEstadoResultados',    sRuta: ClaseRutas.rutaEstadoResultados),
+    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined, sClave: 'menuLibroCompras',        sRuta: ClaseRutas.rutaInformeLibroCompras),
+    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined, sClave: 'menuLibroVentas',         sRuta: ClaseRutas.rutaInformeLibroVentas),
+  ];
+
+  static final List<ClaseOpcionMenu> _listProcesos = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.sort,                    sClave: 'menuReorganizarAsientos', sRuta: ClaseRutas.rutaReorganizarAsientos),
+    ClaseOpcionMenu(oIcono: Icons.event_busy_outlined,     sClave: 'menuCierreAnual',         sRuta: ClaseRutas.rutaCierreAnual),
+    ClaseOpcionMenu(oIcono: Icons.lock_open_outlined,      sClave: 'menuReaperturaCuentas',   sRuta: ClaseRutas.rutaReaperturaCuentas),
+    ClaseOpcionMenu(oIcono: Icons.upload_file_outlined,    sClave: 'menuMarangatu',           sRuta: ClaseRutas.rutaMarangatu,
+                    listPaises: <String>[ClaseSesion.paisParaguay]),
+  ];
+
+  static final List<ClaseOpcionMenu> _listSistema = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.storage_outlined, sClave: 'menuBasesDatos', sRuta: ClaseRutas.rutaBasesDatos),
+  ];
+
+  static final List<ClaseOpcionMenu> _listTablas = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.business,   

@@ -1,0 +1,68 @@
+RUTA ORIGINAL: lib/opciones/tablas/cuentas_asignadas.dart
+PARTE 2 DE 2
+---
+           'ctaIvaCredito5',           'ctaHintIvaCredito5'),
+      crearCampoCuenta('ivaDebito10',           'ctaIvaDebito10',           'ctaHintIvaDebito10'),
+      crearCampoCuenta('ivaDebito5',            'ctaIvaDebito5',            'ctaHintIvaDebito5'),
+      crearCampoCuenta('mercaderiasExentas',    'ctaMercaderiasExentas',    'ctaHintMercExentas'),
+      crearCampoCuenta('mercaderiasGravadas10', 'ctaMercaderiasGravadas10', 'ctaHintMercGravadas10'),
+      crearCampoCuenta('mercaderiasGravadas5',  'ctaMercaderiasGravadas5',  'ctaHintMercGravadas5'),
+      crearCampoCuenta('ventasExentas',         'ctaVentasExentas',         'ctaHintVentasExentas'),
+      crearCampoCuenta('ventasGravadas10',      'ctaVentasGravadas10',      'ctaHintVentasGravadas10'),
+      crearCampoCuenta('ventasGravadas5',       'ctaVentasGravadas5',       'ctaHintVentasGravadas5'),
+      crearCampoCuenta('debeVentaContado',      'ctaDebeVentaContado',      'ctaHintDebeVentaContado'),
+      crearCampoCuenta('debeVentaCredito',      'ctaDebeVentaCredito',      'ctaHintDebeVentaCredito'),
+      crearCampoCuenta('haberCompraContado',    'ctaHaberCompraContado',    'ctaHintHaberCompraContado'),
+      crearCampoCuenta('haberCompraCredito',    'ctaHaberCompraCredito',    'ctaHintHaberCompraCredito'),
+      crearCampoCuenta('resultadosEjercicio',   'ctaResultadosEjercicio',   'ctaHintResultados'),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'caja'                  : '1.01.01',
+        'debeVentaContado'      : '1.02.01',
+        'debeVentaCredito'      : '1.02.02',
+        'ejercicio'             : '2026',
+        'haberCompraContado'    : '2.01.01',
+        'haberCompraCredito'    : '2.01.02',
+        'ivaCredito10'          : '1.03.01',
+        'ivaCredito5'           : '1.03.02',
+        'ivaDebito10'           : '2.03.01',
+        'ivaDebito5'            : '2.03.02',
+        'mercaderiasExentas'    : '1.04.01',
+        'mercaderiasGravadas10' : '1.04.02',
+        'mercaderiasGravadas5'  : '1.04.03',
+        'resultadosEjercicio'   : '3.01.01',
+        'sucursal'              : '0001 - Sucursal Central',
+        'ventasExentas'         : '4.01.01',
+        'ventasGravadas10'      : '4.01.02',
+        'ventasGravadas5'       : '4.01.03',
+      },
+      <String, dynamic>{
+        'caja'                  : '1.01.01',
+        'debeVentaContado'      : '1.02.01',
+        'debeVentaCredito'      : '1.02.02',
+        'ejercicio'             : '2025',
+        'haberCompraContado'    : '2.01.01',
+        'haberCompraCredito'    : '2.01.02',
+        'ivaCredito10'          : '1.03.01',
+        'ivaCredito5'           : '1.03.02',
+        'ivaDebito10'           : '2.03.01',
+        'ivaDebito5'            : '2.03.02',
+        'mercaderiasExentas'    : '1.04.01',
+        'mercaderiasGravadas10' : '1.04.02',
+        'mercaderiasGravadas5'  : '1.04.03',
+        'resultadosEjercicio'   : '3.01.01',
+        'sucursal'              : '0002 - Sucursal Luque',
+        'ventasExentas'         : '4.01.01',
+        'ventasGravadas10'      : '4.01.02',
+        'ventasGravadas5'       : '4.01.03',
+      },
+    ];
+  }
+
+}

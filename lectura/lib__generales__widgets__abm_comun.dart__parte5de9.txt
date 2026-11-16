@@ -1,0 +1,101 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 5 DE 9
+---
+     child : Text(ClaseIdiomas.getTexto('menuCopiarValor', widget.sIdioma)),
+        ),
+        PopupMenuItem<String>(
+          value : 'buscarValor',
+          child : Text(ClaseIdiomas.getTexto('menuBuscarValor', widget.sIdioma)),
+        ),
+        PopupMenuItem<String>(
+          value : 'copiarFila',
+          child : Text(ClaseIdiomas.getTexto('menuCopiarFila', widget.sIdioma)),
+        ),
+      ],
+    );
+    if (!mounted || sAccion == null) return;
+    if (sAccion == 'copiarValor' || sAccion == 'copiarFila') {
+      final String sTexto = (sAccion == 'copiarValor')
+          ? sValor
+          : widget.listCampos
+                .map((ClaseCampoAbm o) => (oRegistro[o.sClave] ?? '').toString())
+                .join('\t');
+      await Clipboard.setData(ClipboardData(text: sTexto));
+      if (!mounted) return;
+      await funcMostrarInformacion(
+        context,
+        widget.sIdioma,
+        ClaseIdiomas.getTexto('aplicacion', widget.sIdioma),
+        ClaseIdiomas.getTexto('copiadoPortapapeles', widget.sIdioma),
+      );
+    } else {
+      setState(() {
+        sFiltro            = sValor;
+        oControlFiltro.text = sValor;
+        iPagina            = 0;
+      });
+    }
+  }
+
+  // ── Construcción de la interfaz ──────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext oContexto) {
+    if (!bVisible) {
+      return SizedBox(
+        width : ClaseGenLayout.dAnchoTiraGrilla,
+        child : Column(
+          children: <Widget>[
+            const SizedBox(height: ClaseGenEspacios.dEspacio08),
+            IconButton(
+              tooltip   : ClaseIdiomas.getTexto('expandirGrilla', widget.sIdioma),
+              icon      : const Icon(Icons.last_page),
+              onPressed : () => setState(() => bVisible = true),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final List<ClaseCampoAbm> listColumnas =
+        widget.listCampos.where((ClaseCampoAbm o) => o.bEnGrilla).take(3).toList();
+    final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
+    final int iTotalPaginas = math.max(1,
+        (listFiltrados.length + ClaseGenLayout.iFilasPagina - 1) ~/ ClaseGenLayout.iFilasPagina);
+    final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
+    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPagina;
+    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPagina, listFiltrados.length);
+    final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
+        ? listFiltrados.sublist(iInicio, iFin)
+        : <Map<String, dynamic>>[];
+
+    // ← CAMBIO item 23: el foco del teclado queda en la grilla y las
+    //   flechas arriba/abajo mueven la selección.
+    return Focus(
+      focusNode     : oFocoGrilla,
+      onKeyEvent    : _alPulsarTecla,
+      onFocusChange : (bool bTieneFoco) {
+        if (mounted) setState(() {});
+      },
+      child: SizedBox(
+        width : ClaseGenLayout.dAnchoGrillaRegistros,
+        child : Column(
+          children: <Widget>[
+            Padding(
+              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+              child   : Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller : oControlFiltro,
+                      style      : ClaseGenEstilosTexto.normalChico(oContexto),
+                      decoration : InputDecoration(
+                        isDense    : true,
+                        hintText   : ClaseIdiomas.getTexto('abmBuscar', widget.sIdioma),
+                        prefixIcon : const Icon(Icons.search),
+                        border     : OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+                        ),
+                      ),
+                      onChanged: (String sValor) => setState(() {
+             

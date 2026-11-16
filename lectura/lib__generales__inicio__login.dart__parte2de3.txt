@@ -1,0 +1,111 @@
+RUTA ORIGINAL: lib/generales/inicio/login.dart
+PARTE 2 DE 3
+---
+trarError(
+        context,
+        sIdioma,
+        ClaseIdiomas.getTexto('aplicacion', sIdioma),
+        ClaseIdiomas.getTexto('correoInvalido', sIdioma),
+      );
+      return;
+    }
+    await funcMostrarInformacion(
+      context,
+      sIdioma,
+      ClaseIdiomas.getTexto('aplicacion', sIdioma),
+      ClaseIdiomas.getTexto('olvidasteConfirmacion', sIdioma),
+    );
+  }
+
+  // ── Construcción de la interfaz ─────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return Scaffold(
+      backgroundColor : Theme.of(oContexto).colorScheme.surface,
+      body: Stack(
+        children: <Widget>[
+          Center(
+            child: SingleChildScrollView(
+              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio24),
+              child   : construirTarjeta(oContexto),
+            ),
+          ),
+          Positioned(
+            top   : ClaseGenEspacios.dEspacio16,
+            right : ClaseGenEspacios.dEspacio16,
+            child : ClaseControlesPreferencias(
+              funcAlCambiar : widget.funcAlCambiar,
+              oPreferencias : widget.oPreferencias,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget construirTarjeta(BuildContext oContexto) {
+    return SizedBox(
+      width : ClaseGenLayout.dAnchoTarjetaLogin,
+      child : Card(
+        elevation : ClaseGenLayout.dElevacionTarjeta,
+        shape     : RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ClaseGenRadios.dGrande),
+        ),
+        child: Padding(
+          padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio32),
+          child   : Column(
+            mainAxisSize        : MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(
+                ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
+                style : ClaseGenEstilosTexto.tituloGrande(oContexto),
+              ),
+              Container(
+                margin     : const EdgeInsets.only(
+                  top    : ClaseGenEspacios.dEspacio08,
+                  bottom : ClaseGenEspacios.dEspacio32,
+                ),
+                width      : ClaseGenEspacios.dEspacio64,
+                height     : ClaseGenEspacios.dEspacio04,
+                decoration : BoxDecoration(
+                  color        : ClaseGenTemas.colorAcento(oContexto),
+                  borderRadius : BorderRadius.circular(ClaseGenRadios.dCompleto),
+                ),
+              ),
+              construirCampoNombre(oContexto),
+              const SizedBox(height: ClaseGenEspacios.dEspacio20),
+              construirCampoContrasena(oContexto),
+              const SizedBox(height: ClaseGenEspacios.dEspacio08),
+              Align(
+                alignment : Alignment.centerRight,
+                child     : TextButton(
+                  onPressed : recuperarContrasena,
+                  child     : Text(
+                    ClaseIdiomas.getTexto('olvidasteContrasena', widget.oPreferencias.getIdioma()),
+                    style : ClaseGenEstilosTexto.normalChico(oContexto),
+                  ),
+                ),
+              ),
+              const SizedBox(height: ClaseGenEspacios.dEspacio16),
+              construirBotones(oContexto),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget construirCampoNombre(BuildContext oContexto) {
+    final String sIdioma = widget.oPreferencias.getIdioma();
+    return TextField(
+      controller      : oControlNombre,
+      autofocus       : true,                       // ← foco inicial (decisión 3)
+      style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+      textInputAction : TextInputAction.next,
+      decoration      : InputDecoration(
+        label : Row(
+          mainAxisSize : MainAxisSize.min,
+          children     : <Widget>[
+            Text

@@ -1,0 +1,125 @@
+RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
+PARTE 2 DE 4
+---
+      oIcono    : Icons.check,
+              oAlClicar : () => Navigator.of(oContextoVentana)
+                  .pop(EnumRespuestaConfirmacion.si),
+            ),
+        ],
+      );
+    },
+  );
+  return oRespuesta ?? EnumRespuestaConfirmacion.cancelar;
+}
+
+// ── Ventana error ───────────────────────────────────────────────────────────
+
+Future<void> funcMostrarError(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+) async {
+  await showDialog<void>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (BuildContext oContextoVentana) {
+      return funcConstruirVentana(
+        oContexto    : oContextoVentana,
+        sIdioma      : sIdioma,
+        sTitulo      : sTitulo,
+        sTexto       : sTexto,
+        oIcono       : Icons.error_outline,
+        colorIcono   : Theme.of(oContextoVentana).colorScheme.error,
+        listAcciones : <Widget>[funcConstruirBotonAceptar(oContextoVentana, sIdioma)],
+      );
+    },
+  );
+}
+
+// ── Ventana información ─────────────────────────────────────────────────────
+
+Future<void> funcMostrarInformacion(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+) async {
+  await showDialog<void>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (BuildContext oContextoVentana) {
+      return funcConstruirVentana(
+        oContexto    : oContextoVentana,
+        sIdioma      : sIdioma,
+        sTitulo      : sTitulo,
+        sTexto       : sTexto,
+        oIcono       : Icons.info_outline,
+        colorIcono   : Theme.of(oContextoVentana).colorScheme.primary,
+        listAcciones : <Widget>[funcConstruirBotonAceptar(oContextoVentana, sIdioma)],
+      );
+    },
+  );
+}
+
+// ── Piezas compartidas (uso interno de este archivo) ────────────────────────
+
+/// Cuerpo común de las ventanas: icono identificatorio, título, botón X para
+/// cerrar y el texto del mensaje.
+Widget funcConstruirVentana({
+  required BuildContext oContexto,
+  required String       sIdioma,
+  required String       sTitulo,
+  required String       sTexto,
+  required IconData     oIcono,
+  required Color        colorIcono,
+  required List<Widget> listAcciones,
+}) {
+  return AlertDialog(
+    title: Row(
+      children: <Widget>[
+        Icon(oIcono, color: colorIcono, size: ClaseGenLayout.dTamanoIconoVentana),
+        const SizedBox(width: ClaseGenEspacios.dEspacio08),
+        Expanded(
+          child: Text(sTitulo, style: ClaseGenEstilosTexto.subtituloMediano(oContexto)),
+        ),
+        IconButton(
+          tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
+          icon      : const Icon(Icons.close),
+          onPressed : () => Navigator.of(oContexto).pop(),
+        ),
+      ],
+    ),
+    content: SizedBox(
+      width : ClaseGenLayout.iAnchoColumnasMensaje * ClaseGenLayout.dAnchoCaracter,
+      child : Text(sTexto, style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+    ),
+    actions: listAcciones,
+  );
+}
+
+/// Botón con icono a la izquierda (regla 00-00). bRelleno=false para los
+/// botones secundarios (No, Cancelar).
+Widget funcConstruirBoton({
+  required BuildContext oContexto,
+  required String       sTexto,
+  required IconData     oIcono,
+  required VoidCallback oAlClicar,
+  bool                  bRelleno = true,
+}) {
+  final TextStyle oEstilo = ClaseGenEstilosTexto.normalMediano(oContexto);
+  return bRelleno
+      ? FilledButton.icon(
+          onPressed : oAlClicar,
+          icon      : Icon(oIcono),
+          label     : Text(sTexto, style: oEstilo),
+        )
+      : OutlinedButton.icon(
+          onPressed : oAlClicar,
+          icon      : Icon(oIcono),
+          label     : Text(sTexto, style: oEstilo),
+        );
+}
+
+/// Botón Aceptar estándar de las ventanas advertencia, error e información.
+Widget funcConstruir

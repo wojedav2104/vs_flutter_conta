@@ -1,0 +1,102 @@
+RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
+PARTE 5 DE 7
+---
+rGruposCuenta(sNumeroCuenta) > 1 && sCuentaSuperior.trim().isEmpty) {
+      return ClaseIdiomas.getTexto('validCuentaSuperior', sIdioma);
+    }
+    return null;
+  }
+
+  /// El nivel de la cuenta debe estar entre 1 y 5.                ← LOTE 1
+  static String? validarNivelCuenta(String sValor, String sEtiqueta, String sIdioma) {
+    final String? sError = validarSoloEntero(sValor, sEtiqueta, sIdioma);
+    if (sError != null) return sError;
+    final int iNivel = int.tryParse(sValor.trim()) ?? 0;
+    if (iNivel < 1 || iNivel > 5) {
+      return ClaseIdiomas.getTexto('validNivelCuenta', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// La suma del Debe debe ser igual a la suma del Haber.
+  static String? validarSumaDebeHaber(double dDebe, double dHaber, String sIdioma) {
+    if ((dDebe - dHaber).abs() > 0.005) {
+      return ClaseIdiomas.getTexto('validSumaDebeHaber', sIdioma);
+    }
+    return null;
+  }
+
+  /// El valor debe estar entre las opciones permitidas (lista de códigos).
+  static String? validarOpciones(
+      String sValor, String sEtiqueta, List<String> listValoresPermitidos,
+      String sIdioma) {
+    if (sValor.trim().isEmpty) return null;
+    if (!listValoresPermitidos.contains(sValor)) {
+      return ClaseIdiomas.getTexto('validValorLista', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Al menos una opción seleccionada.
+  static String? validarAlMenosUnoSeleccionado(
+      String sValor, String sEtiqueta, String sIdioma) {
+    if (sValor.trim().isEmpty) {
+      return ClaseIdiomas.getTexto('validAlMenosUno', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// El día debe ser válido para el mes y año indicados (1..31, 1..30, etc.).
+  /// Ej: validarRangoDiasMes('31', '04', '2025', …) → error (abril tiene 30).
+  static String? validarRangoDiasMes(
+      String sValor, String sMes, String sAnio, String sEtiqueta, String sIdioma) {
+    final int? iDia   = int.tryParse(sValor.trim());
+    final int? iMes   = int.tryParse(sMes.trim());
+    final int? iAnio  = int.tryParse(sAnio.trim());
+    if (iDia == null || iMes == null || iAnio == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    final DateTime fInicioMes = DateTime(iAnio, iMes, 1);
+    final DateTime fFinMes    = DateTime(iAnio, iMes + 1, 0);
+    if (iDia < fInicioMes.day || iDia > fFinMes.day) {
+      return ClaseIdiomas.getTexto('validDiaRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '${fInicioMes.day}')
+          .replaceAll('{2}', '${fFinMes.day}');
+    }
+    return null;
+  }
+
+  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
+  static String? validarFechaNoAnterior(
+      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
+    final DateTime? fValor = funcParsearFecha(sValor);
+    if (fValor == null) return null;
+    if (fValor.isBefore(fMinima)) {
+      return ClaseIdiomas.getTexto('validFechaAnterior', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima));
+    }
+    return null;
+  }
+
+  /// La fecha de fin no puede ser anterior a la fecha de inicio.
+  static String? validarFechaFinPosterior(
+      String sValorInicio, String sValorFin, String sIdioma) {
+    final DateTime? fInicio = funcParsearFecha(sValorInicio);
+    final DateTime? fFin    = funcParsearFecha(sValorFin);
+    if (fInicio == null || fFin == null) return null;
+    if (fFin.isBefore(fInicio)) {
+      return ClaseIdiomas.getTexto('validFechaFinPosterior', sIdioma);
+    }
+    return null;
+  }
+
+  /// La fecha debe ser válida (dd/mm/aaaa y existir en el calendario).
+  static String? validarFechaValida(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+  

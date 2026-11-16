@@ -1,0 +1,117 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 3 DE 6
+---
+──────────────────────────
+
+  /// Etiqueta a la derecha, con asterisco rojo si el campo es obligatorio
+  /// (item 4).
+  Widget _construirEtiqueta(BuildContext oContexto) {
+    return Text.rich(
+      TextSpan(
+        style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+        children: <InlineSpan>[
+          TextSpan(text: widget.oCampo.sEtiqueta),
+          if (widget.oCampo.bObligatorio)
+            TextSpan(
+              text  : ' *',
+              style : ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error),
+            ),
+        ],
+      ),
+      textAlign : TextAlign.right,
+    );
+  }
+
+  // ── Botón de borrar el contenido del campo ─────────────────────────────
+
+  /// Muestra el botón de borrar solo si el campo está habilitado y tiene
+  /// contenido (compartido por texto, fecha y hora).
+  bool _getMostrarBorrarCampo() =>
+      widget.bHabilitado && widget.sValor.isNotEmpty;
+
+  Widget _construirBotonBorrarCampo() {
+    return IconButton(
+      tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
+      icon      : const Icon(Icons.close, size: 18),
+      onPressed : () {
+        oControl.text = '';
+        widget.funcAlCambiar('');
+      },
+    );
+  }
+
+  // ── Mayúsculas y máscara al cambiar el valor ───────────────────────────
+
+  /// Conversión a mayúsculas y aplicación de la máscara (si existe);
+  /// actualiza el display solo si el valor cambió.
+  /// bConMascara=false para el comentario (sin máscara) y para los números
+  /// (la máscara de números se aplica al salir del campo, item 9).
+  void _alCambiarTexto(String sValor, {bool bConMascara = true}) {
+    String sSalida = sValor;
+    if (widget.oCampo.bMayusculas) {
+      sSalida = sValor.toUpperCase();
+      if (sSalida != oControl.text) {
+        oControl.value = TextEditingValue(
+          text      : sSalida,
+          selection : TextSelection.collapsed(offset: sSalida.length),
+        );
+      }
+    }
+    if (bConMascara) {
+      final String? sMascaraNueva = _getMascara();
+      if (sMascaraNueva != null) {
+        final String sDigitos = sSalida.replaceAll(RegExp(r'[^0-9]'), '');
+        final String sConMascara = funcAplicarMascara(sDigitos, sMascaraNueva);
+        if (sConMascara != sSalida) {
+          sSalida = sConMascara;
+          oControl.value = TextEditingValue(
+            text      : sSalida,
+            selection : TextSelection.collapsed(offset: sSalida.length),
+          );
+        }
+      }
+    }
+    widget.funcAlCambiar(sSalida);
+  }
+
+  // ── Construcción de la interfaz ──────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return Padding(
+      padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
+      child   : Row(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width : ClaseGenLayout.dAnchoEtiquetaCampo,
+            child : Padding(
+              padding : const EdgeInsets.only(
+                top   : ClaseGenEspacios.dEspacio14,
+                right : ClaseGenEspacios.dEspacio04,
+              ),
+              child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
+            ),
+          ),
+          SizedBox(
+            width : _getAnchoCampo(),
+            child : _construirControl(oContexto),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirControl(BuildContext oContexto) {
+    switch (widget.oCampo.oTipo) {
+      case EnumTipoCampoAbm.casillas:
+        return _construirCasillas(oContexto);
+      case EnumTipoCampoAbm.comentario:
+        return _construirComentario(oContexto);
+      case EnumTipoCampoAbm.fecha:
+        return _construirFecha(oContexto);
+      case EnumTipoCampoAbm.hora:
+        return _construirHora(oContexto);
+      case EnumTipoCampoAbm.lista:
+        re

@@ -1,0 +1,107 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+
+import '../idiomas/idiomas.dart';
+import '../modelos/campo_abm.dart';
+import '../preferencias/preferencias.dart';
+import '../utilitarios/formatos.dart';
+import 'abm_comun.dart';
+import 'ventana_mensaje.dart';
+
+/// Formulario ABM genérico para tablas de múltiples registros.
+///
+/// Cabecera con los botones ABM, formulario a la derecha (con pestañas si
+/// los campos tienen grupo) y grilla de registros a la izquierda.
+/// La estructura compartida vive en abm_comun.dart.
+///
+/// Los valores de los registros y del formulario son internos (códigos):
+/// la traducción se hace al mostrar. Con listValores se guardan los códigos
+/// de listOpciones; con sValorDefecto se inicializan los campos al agregar;
+/// con bCompletarCeros el valor se completa a la izquierda al grabar.
+class ClaseFormularioAbm extends StatefulWidget {
+
+  const ClaseFormularioAbm({
+    super.key,
+    this.bPermitirEncontrar   = true,
+    this.bTablaUnSoloRegistro = false,
+    this.funcActualizarCampos,
+    this.funcAlPerderFoco,
+    this.funcEtiquetaGrupo,
+    this.funcValidarRegistro,
+    required this.listCampos,
+    required this.listRegistros,
+    required this.oPreferencias,
+    required this.sTitulo,
+  });
+
+  /// false deshabilita el botón Encontrar (ej: la tabla Empresa).
+  final bool bPermitirEncontrar;
+
+  /// true si la tabla admite un solo registro (ej: la tabla Empresa).
+  final bool bTablaUnSoloRegistro;
+
+  /// Auto-cálculos: recibe los valores internos y devuelve los campos a
+  /// actualizar (o null si no hay cambios).
+  final Map<String, String>? Function(Map<String, String> mapValores)? funcActualizarCampos;
+
+  /// Transformación del valor al salir del campo (devuelve el valor nuevo
+  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
+  /// valores internos del formulario. Ej: completar el RUC al salir del
+  /// campo de la identificación.
+  final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
+
+  /// Etiqueta personalizada de cada pestaña de grupo (opcional). Recibe la
+  /// clave del grupo; si no se provee, se usa el texto traducido de la clave.
+  final String Function(String sClaveGrupo)? funcEtiquetaGrupo;
+
+  /// Validación cruzada del registro completo (o null si es válido).
+  final String? Function(Map<String, dynamic> oRegistro)? funcValidarRegistro;
+
+  /// Especificación de los campos del formulario.
+  final List<ClaseCampoAbm> listCampos;
+
+  /// Registros de la tabla (se modifica al grabar y borrar).
+  final List<Map<String, dynamic>> listRegistros;
+
+  final ClasePreferencias oPreferencias;
+  final String            sTitulo;
+
+  @override
+  State<ClaseFormularioAbm> createState() => ClaseEstadoFormularioAbm();
+}
+
+class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
+
+  bool   bModoEdicion = false;
+  int    iRegistro    = -1;
+
+  /// true después de Agregar/Modificar → mover foco al primer campo.
+  bool   bPedirFoco   = false;                          // ← CAMBIO item 10
+
+  /// Llave del formulario de campos: para colocar el foco en el primer
+  /// campo con error al fallar el grabado (item 14).
+  final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
+      GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
+
+  Map<String, String> mapValores = <String, String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar, seleccionar la primera fila de la
+    //   grilla si hay registros, para que el formulario muestre sus datos.
+    if (widget.listRegistros.isNotEmpty) {
+      iRegistro  = 0;
+      mapValores = _desdeRegistro(widget.listRegistros[0]);
+    }
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Acciones del formulario ──────────────────────────────────────────────
+
+  void agregar() {
+    setState(() {
+      mapValores 

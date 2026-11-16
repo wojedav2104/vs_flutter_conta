@@ -1,0 +1,87 @@
+RUTA ORIGINAL: lib/generales/modelos/sesion.dart
+PARTE 1 DE 1
+---
+/// Contrato de la sesión: Base de Datos conectada y país.
+///
+/// Los consumidores dependen de este contrato (DIP). La implementación
+/// concreta se puede reemplazar: hoy es predefinida, mañana podrá ser
+/// Firebird o una falsa para pruebas.
+abstract class ClaseInterfazSesion {
+  String get sBaseDatos;
+  set sBaseDatos(String sValor);
+  String getPais();
+  String getClavePais();
+}
+
+/// Implementación con valores predefinidos (sin conexión a BD).
+///
+/// Cada Base de Datos corresponde a un país. Los valores son predefinidos;
+/// la conexión real llegará más adelante.
+class ClaseSesionPredefinida implements ClaseInterfazSesion {
+
+  // ── Países (códigos de paises.json) ──────────────────────────────────
+  static const String paisArgentina = 'ARG';
+  static const String paisFrancia   = 'FRA';
+  static const String paisParaguay  = 'PRY';
+  static const String paisPeru      = 'PER';
+  static const String paisUruguay   = 'URY';
+
+  // ── País de cada Base de Datos (sin la extensión .fdb) ───────────────
+  static const Map<String, String> mapPaisPorBase = <String, String>{
+    'ASUNCION'      : paisParaguay,
+    'LA_PLATA'      : paisArgentina,
+    'LIMA'          : paisPeru,
+    'POZO_COLORADO' : paisParaguay,
+  };
+
+  @override
+  String sBaseDatos = 'ASUNCION';
+
+  @override
+  String getPais() => mapPaisPorBase[sBaseDatos] ?? paisParaguay;
+
+  @override
+  String getClavePais() {
+    switch (getPais()) {
+      case paisArgentina : return 'paisArgentina';
+      case paisFrancia   : return 'paisFrancia';
+      case paisPeru      : return 'paisPeru';
+      case paisUruguay   : return 'paisUruguay';
+      default            : return 'paisParaguay';
+    }
+  }
+}
+
+/// Fachada estática: conserva la API pública de siempre.
+///
+/// La implementación concreta vive en oImplementacion y se puede
+/// reemplazar (por ejemplo al conectar Firebird, o por un doble de
+/// prueba). Los valores por defecto de la sesión son predefinidos.
+abstract final class ClaseSesion {
+
+  /// Implementación activa de la sesión.
+  static ClaseInterfazSesion oImplementacion = ClaseSesionPredefinida();
+
+  // ── Países ───────────────────────────────────────────────────────────
+  static const String paisArgentina = ClaseSesionPredefinida.paisArgentina;
+  static const String paisFrancia   = ClaseSesionPredefinida.paisFrancia;
+  static const String paisParaguay  = ClaseSesionPredefinida.paisParaguay;
+  static const String paisPeru      = ClaseSesionPredefinida.paisPeru;
+  static const String paisUruguay   = ClaseSesionPredefinida.paisUruguay;
+
+  // ── Valores por defecto ──────────────────────────────────────────────
+  static const String sBaseDatosPorDefecto = 'ASUNCION';
+
+  // ── País de cada Base de Datos (sin la extensión .fdb) ───────────────
+  static const Map<String, String> mapPaisPorBase =
+      ClaseSesionPredefinida.mapPaisPorBase;
+
+  // ── Estado de la sesión (delegado a la implementación) ───────────────
+  static String get sBaseDatos => oImplementacion.sBaseDatos;
+  static set sBaseDatos(String sValor) => oImplementacion.sBaseDatos = sValor;
+
+  // ── Métodos ──────────────────────────────────────────────────────────
+  static String getPais()      => oImplementacion.getPais();
+  static String getClavePais() => oImplementacion.getClavePais();
+  
+}

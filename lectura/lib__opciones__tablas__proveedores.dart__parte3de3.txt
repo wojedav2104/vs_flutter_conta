@@ -1,0 +1,38 @@
+RUTA ORIGINAL: lib/opciones/tablas/proveedores.dart
+PARTE 3 DE 3
+---
+idora del Sur S.A.',
+        'telefono'           : '021 300 200',
+        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
+        'tipoProveedor'      : ClaseLocalExterior.local,
+      },
+      <String, dynamic>{
+        'celular'            : '0983 456 789',
+        'codigo'             : '000002',
+        'direccion'          : 'Ruta Transchaco Km 5',
+        'email'              : 'contacto@essap.com.py',
+        'esServicioPublico'  : ClaseSiNo.si,
+        'identificacion'     : '80076543-3',
+        'localidad'          : 'Loma Plata',
+        'nombre'             : 'Energía S.A.',
+        'telefono'           : '021 400 300',
+        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
+        'tipoProveedor'      : ClaseLocalExterior.local,
+      },
+      <String, dynamic>{
+        'celular'            : '+55 11 98765 4321',
+        'codigo'             : '000003',
+        'direccion'          : 'Av. Paulista 1000',
+        'email'              : 'import@brasil.com.br',
+        'esServicioPublico'  : ClaseSiNo.no,
+        'identificacion'     : 'EX789012',
+        'localidad'          : 'Ciudad del Este',
+        'nombre'             : 'Importadora Brasil Ltda.',
+        'telefono'           : '061 500 400',
+        'tipoIdentificacion' : ClaseTipoIdentificacion.cedulaExtranjera,
+        'tipoProveedor'      : ClaseLocalExterior.exterior,
+      },
+    ];
+  }
+
+}

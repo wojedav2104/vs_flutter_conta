@@ -1,0 +1,113 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 4 DE 8
+---
+Controles.removeAt(iFila);
+      listDetalles.removeAt(iFila);
+    });
+  }
+
+  void subirFila(int iFila) {
+    if (iFila <= 0) return;
+    setState(() {
+      listDetalles.insert(iFila - 1, listDetalles.removeAt(iFila));
+      listControles.insert(iFila - 1, listControles.removeAt(iFila));
+    });
+  }
+
+  void bajarFila(int iFila) {
+    if (iFila >= listDetalles.length - 1) return;
+    setState(() {
+      listDetalles.insert(iFila + 1, listDetalles.removeAt(iFila));
+      listControles.insert(iFila + 1, listControles.removeAt(iFila));
+    });
+  }
+
+  void _alCambiarFila(int iFila, String sClave, String sValor) {
+    String sSalida = sValor;
+    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+      if (oCampo.sClave == sClave && oCampo.bMayusculas) {
+        sSalida = sValor.toUpperCase();
+        final TextEditingController? oCtrl = listControles[iFila][sClave];
+        if (oCtrl != null && oCtrl.text != sSalida) {
+          oCtrl.value = TextEditingValue(
+            text      : sSalida,
+            selection : TextSelection.collapsed(offset: sSalida.length),
+          );
+        }
+        break;
+      }
+    }
+    setState(() {
+      listDetalles[iFila][sClave] = sSalida;
+      final Map<String, String>? mapActualizaciones =
+          widget.funcActualizarFila?.call(listDetalles[iFila]);
+      if (mapActualizaciones != null) {
+        listDetalles[iFila].addAll(mapActualizaciones);
+        _sincronizarControles(iFila, listDetalles[iFila]);
+      }
+    });
+  }
+
+  // ── Validación de las filas de detalle ───────────────────────────────────
+
+  String? _validarDetalles(String sIdioma) {
+
+    // Al menos una fila de detalle.
+    final bool bAlgunaConContenido = listDetalles.any((Map<String, String> mapFila) =>
+        mapFila.values.any((String s) => s.trim().isNotEmpty));
+    if (!bAlgunaConContenido) {
+      return ClaseIdiomas.getTexto('detDetalleVacio', sIdioma);
+    }
+
+    int iFila = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      iFila++;
+      final bool bConContenido =
+          mapFila.values.any((String s) => s.trim().isNotEmpty);
+      if (!bConContenido) continue;
+
+      // Validación de cada campo de la fila.
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+        final String? sError =
+            funcValidarCampoAbm(oCampo, mapFila[oCampo.sClave] ?? '', sIdioma);
+        if (sError != null) {
+          return _traducirFila(sIdioma, iFila, sError);
+        }
+      }
+
+      // Debe o Haber: uno solo de los dos.
+      final String sDebe  = (mapFila[widget.sClaveDebe]  ?? '').trim();
+      final String sHaber = (mapFila[widget.sClaveHaber] ?? '').trim();
+      if (sDebe.isNotEmpty == sHaber.isNotEmpty) {
+        return _traducirFila(
+            sIdioma, iFila, ClaseIdiomas.getTexto('detErrorDebeHaber', sIdioma));
+      }
+    }
+
+    // La suma del Debe debe ser igual a la suma del Haber.
+    double dDebe  = 0;
+    double dHaber = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      dDebe  += funcParsearNumero(mapFila[widget.sClaveDebe]  ?? '') ?? 0;
+      dHaber += funcParsearNumero(mapFila[widget.sClaveHaber] ?? '') ?? 0;
+    }
+    return ClaseCapValidar.validarSumaDebeHaber(dDebe, dHaber, sIdioma);
+  }
+
+  String _traducirFila(String sIdioma, int iFila, String sError) {
+    return ClaseIdiomas.getTexto('detErrorFila', sIdioma)
+        .replaceAll('{0}', '$iFila')
+        .replaceAll('{1}', sError);
+  }
+
+  List<Map<String, String>> _listDetallesLimpias() {
+    return _clonarDetalles(listDetalles
+        .where((Map<String, String> mapFila) =>
+            mapFila.values.any((String s) => s.trim().isNotEmpty))
+        .toList());
+  }
+
+  List<Map<String, String>> _clonarDetalles(List<Map<String, String>> listOrigen) {
+    return <Map<String, String>>[
+      for (final Map<String, String> mapFila in listOrigen)
+        Map<String, String>.from

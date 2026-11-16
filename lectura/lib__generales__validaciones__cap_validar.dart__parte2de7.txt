@@ -1,0 +1,93 @@
+RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
+PARTE 2 DE 7
+---
+n
+  ///   solo dígitos y deben tener 13 (con o sin los guiones).
+  /// - Los tipos 05, 07, 08, 11 admiten de 5 a 13 dígitos.
+  /// - Los tipos 12 a 18 (boletas, controles internos, entradas) requieren
+  ///   exactamente 7 dígitos.
+  static String? validarNumeroDocumentoPorTipo(
+      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (ClaseTipoDocumento.esConMascara(sTipoDocumento)) {
+      return validarNumeroDocumento(sTexto, sEtiqueta, sIdioma);
+    }
+    // Tipo 05 (Comprobante de Tributo Único) y similares: entre 5 y 13 dígitos.
+    if (sTipoDocumento == '05' || sTipoDocumento == '07' ||
+        sTipoDocumento == '08' || sTipoDocumento == '11') {
+      final String sDigitos = sTexto.replaceAll(RegExp(r'[^0-9]'), '');
+      if (!RegExp(r'^\d+$').hasMatch(sDigitos)
+          || sDigitos.length < 5 || sDigitos.length > 13) {
+        return ClaseIdiomas.getTexto('validNumeroDocumentoRango', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+    // Tipos 12 a 18 (boletas, controles internos, entradas): 7 dígitos.
+    final int? iCodigo = int.tryParse(sTipoDocumento);
+    if (iCodigo != null && iCodigo >= 12 && iCodigo <= 18) {
+      return validarDigitosExactos(sTexto, sEtiqueta, 7, sIdioma);
+    }
+    return null;
+  }
+
+  /// La hora debe tener el formato hh:mm (24 horas) y ser válida.
+  static String? validarHoraValida(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^([01]\d|2[0-3]):[0-5]\d$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validHoraInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+
+  /// El ejercicio debe ser un año dentro del rango admitido por la
+  /// aplicación (ClaseFechas es la única fuente de esos límites).
+  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final int? iAno = int.tryParse(sTexto);
+    if (iAno == null
+        || iAno < ClaseFechas.iAnoMinimo
+        || iAno > ClaseFechas.getAnoMaximo()) {
+      return ClaseIdiomas.getTexto('validEjercicioRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '${ClaseFechas.iAnoMinimo}')
+          .replaceAll('{2}', '${ClaseFechas.getAnoMaximo()}');
+    }
+    return null;
+  }
+
+  /// La fecha debe ser válida y estar entre fMinima y fMaxima (ambas
+  /// incluidas). Vacío se acepta (la obligatoriedad la define el campo).
+  /// Ej: fechas de movimientos → hasta el 31/12 del año actual;
+  /// vigencia de los timbrados → hasta el 31/12 del año que viene.
+  static String? validarFechaEnRango(
+      String sValor, String sEtiqueta, DateTime fMinima, DateTime fMaxima,
+      String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final DateTime? fValor = funcParsearFecha(sTexto);
+    if (fValor == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (fValor.isBefore(fMinima) || fValor.isAfter(fMaxima)) {
+      return ClaseIdiomas.getTexto('validFechaRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima))
+          .replaceAll('{2}', funcFormatearFecha(fMaxima));
+    }
+    return null;
+  }
+
+  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
+  /// Una fecha no vacía con formato inválido también es error.
+  static String? validarFechaNoAnterior(
+      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final DateTime? fValor = funcParsearFecha(sTexto)

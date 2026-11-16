@@ -1,0 +1,87 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras.dart
+PARTE 5 DE 9
+---
+mTimbrado', sIdioma),
+        sGrupo               : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
+            sValor, ClaseIdiomas.getTexto('comVigenteDesde', sIdioma), sIdioma),
+        iAnchoCaracteres : 10,
+        oTipo            : EnumTipoCampoAbm.fecha,
+        sClave           : 'vigenteDesde',
+        sEtiqueta        : ClaseIdiomas.getTexto('comVigenteDesde', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaValida(
+            sValor, ClaseIdiomas.getTexto('comVigenteHasta', sIdioma), sIdioma),
+        iAnchoCaracteres : 10,
+        oTipo            : EnumTipoCampoAbm.fecha,
+        sClave           : 'vigenteHasta',
+        sEtiqueta        : ClaseIdiomas.getTexto('comVigenteHasta', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'esFacturaElectronica',
+        sEtiqueta        : ClaseIdiomas.getTexto('comEsFacturaElectronica', sIdioma),
+        sGrupo           : 'comGenerales',
+        sValorDefecto    : ClaseSiNo.si,
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comGravadas10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'gravadas10',
+        sEtiqueta        : ClaseIdiomas.getTexto('comGravadas10', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comIva10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'iva10',
+        sEtiqueta        : ClaseIdiomas.getTexto('comIva10', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comGravadas5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'gravadas5',
+        sEtiqueta        : ClaseIdiomas.getTexto('comGravadas5', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comIva5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'iva5',
+        sEtiqueta        : ClaseIdiomas.getTexto('comIva5', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comExentas', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'exentas',
+        sEtiqueta        : ClaseIdiomas.getTexto('comExentas', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        

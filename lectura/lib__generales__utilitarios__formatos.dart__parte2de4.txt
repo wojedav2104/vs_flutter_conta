@@ -1,0 +1,108 @@
+RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
+PARTE 2 DE 4
+---
+r.write(sSeparadorMiles);
+    oBuffer.write(sDato[i]);
+  }
+  return oBuffer.toString();
+}
+
+/// Formatea un número según la máscara de entrada y el separador de miles
+/// del formato elegido.
+///
+/// · Limita la cantidad de dígitos enteros a la que admite la máscara.
+/// · Si se ingresaron más decimales de los que admite la máscara, el valor
+///   se redondea HACIA ARRIBA (regla Paraguay: 1000,7 se convierte en 1001).
+String funcFormatearNumero(String sValor, String sMascara, String sSeparadorMiles) {
+
+  final int iPosComa   = sMascara.indexOf(',');
+  final int iDecimales = (iPosComa < 0) ? 0 : sMascara.length - iPosComa - 1;
+  final int iMaxEnteros = (iPosComa < 0)
+      ? sMascara.split('').where((s) => s == '9').length
+      : sMascara.substring(0, iPosComa).split('').where((s) => s == '9').length;
+
+  final List<String> listPartes = sValor.split(',');
+  String sEnteros   = listPartes[0].replaceAll(RegExp(r'[^0-9]'), '');
+  String sDecimales = (listPartes.length > 1)
+      ? listPartes[1].replaceAll(RegExp(r'[^0-9]'), '')
+      : '';
+
+  if (sEnteros.isEmpty && sDecimales.isEmpty) return '';
+  if (sEnteros.length > iMaxEnteros) sEnteros = sEnteros.substring(0, iMaxEnteros);
+
+  // Valor escalado a iDecimales decimales, redondeando hacia arriba cuando
+  // el usuario ingresó decimales de más.
+  int iValor;
+  if (sDecimales.length <= iDecimales) {
+    iValor = int.parse(
+        (sEnteros.isEmpty ? '0' : sEnteros) + sDecimales.padRight(iDecimales, '0'));
+  } else {
+    iValor = int.parse(
+        (sEnteros.isEmpty ? '0' : sEnteros) + sDecimales.substring(0, iDecimales));
+    if (sDecimales.substring(iDecimales).contains(RegExp(r'[1-9]'))) iValor += 1;
+  }
+
+  final String sEscalar      = iValor.toString().padLeft(iDecimales + 1, '0');
+  final String sParteEntera  = sEscalar.substring(0, sEscalar.length - iDecimales);
+  final String sParteDecimal = sEscalar.substring(sEscalar.length - iDecimales);
+
+  final StringBuffer oBuffer = StringBuffer();
+  for (int i = 0; i < sParteEntera.length; i++) {
+    if (i > 0 && (sParteEntera.length - i) % 3 == 0) oBuffer.write(sSeparadorMiles);
+    oBuffer.write(sParteEntera[i]);
+  }
+  String sResultado = oBuffer.toString();
+  if (iDecimales > 0) sResultado = '$sResultado,$sParteDecimal';
+  return sResultado;
+
+}
+
+
+// ── Formateadores de entrada ────────────────────────────────────────────────
+
+/// Formateador para números enteros con separador de miles.
+/// Ejemplo: el usuario escribe 1234567 y se visualiza 1.234.567
+class ClaseFormatoMiles extends TextInputFormatter {
+
+  ClaseFormatoMiles({
+    this.iMaxDigitos     = 12,
+    this.sSeparadorMiles = '.',
+  });
+
+  final int    iMaxDigitos;
+  final String sSeparadorMiles;
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oValorAnterior, TextEditingValue oValorNuevo) {
+    String sDigitos = oValorNuevo.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.length > iMaxDigitos) sDigitos = sDigitos.substring(0, iMaxDigitos);
+    if (sDigitos.isEmpty) {
+      return const TextEditingValue(text: '', selection: TextSelection.collapsed(offset: 0));
+    }
+    sDigitos = sDigitos.replaceFirst(RegExp(r'^0+(?=\d)'), '');
+    final StringBuffer oBuffer = StringBuffer();
+    for (int i = 0; i < sDigitos.length; i++) {
+      if (i > 0 && (sDigitos.length - i) % 3 == 0) oBuffer.write(sSeparadorMiles);
+      oBuffer.write(sDigitos[i]);
+    }
+    final String sResultado = oBuffer.toString();
+    return TextEditingValue(
+      text      : sResultado,
+      selection : TextSelection.collapsed(offset: sResultado.length),
+    );
+  }
+
+}
+
+/// Formateador de entrada para máscaras fijas como 999-999-9999999.
+/// Los caracteres '9' representan un dígito (0-9); los demás son fijos.
+class ClaseFormatoMascara extends TextInputFormatter {
+
+  ClaseFormatoMascara({
+    required this.sMascara,
+  });
+
+  final String sMascara;
+
+  @override
+  TextEditingValue formatE

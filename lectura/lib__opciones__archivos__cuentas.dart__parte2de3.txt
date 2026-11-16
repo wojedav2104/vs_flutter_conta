@@ -1,0 +1,94 @@
+RUTA ORIGINAL: lib/opciones/archivos/cuentas.dart
+PARTE 2 DE 3
+---
+             : sSuperior);
+      }
+    }
+    return mapActualizaciones.isEmpty ? null : mapActualizaciones;
+  }
+
+  // ── Validación del registro completo ────────────────────────────────────
+
+  /// La cuenta superior es obligatoria solo en las cuentas con más de un
+  /// grupo (regla de ClaseCapValidar.validarCuentaSuperior): por eso el
+  /// campo no lleva bObligatorio, que exigiría el dato también en las raíces.
+  String? validarRegistro(Map<String, dynamic> oRegistro) {
+    for (final String sPrefijo in <String>['pri', 'alt']) {
+      final String? sError = ClaseCapValidar.validarCuentaSuperior(
+        (oRegistro['${sPrefijo}NumeroCuenta']    ?? '').toString(),
+        (oRegistro['${sPrefijo}CuentaSuperior']  ?? '').toString(),
+        getIdioma(),
+      );
+      if (sError != null) return sError;
+    }
+    return null;
+  }
+
+  // ── Creación de campos ──────────────────────────────────────────────────
+
+  /// Crea los 7 campos de un grupo (Principal o Alternativo).
+  List<ClaseCampoAbm> crearCamposGrupo(String sPrefijo, String sGrupo) {
+
+    final String sIdioma = getIdioma();
+
+    return <ClaseCampoAbm>[
+
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
+            sValor, ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 16,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : '${sPrefijo}NumeroCuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma),
+        sGrupo           : sGrupo,
+        sHint            : ClaseIdiomas.getTexto('planHintCuenta', sIdioma),
+      ),
+
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(
+            sValor, ClaseIdiomas.getTexto('planNombreCuenta', sIdioma), 3, sIdioma),
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : '${sPrefijo}NombreCuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('planNombreCuenta', sIdioma),
+        sGrupo           : sGrupo,
+        sHint            : ClaseIdiomas.getTexto('planHintNombreCuenta', sIdioma),
+      ),
+
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
+            sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : '${sPrefijo}NumeroSubcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma),
+        sGrupo           : sGrupo,
+      ),
+
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : '${sPrefijo}NombreSubcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('planNombreSubcuenta', sIdioma),
+        sGrupo           : sGrupo,
+        sHint            : ClaseIdiomas.getTexto('planHintNombreSubcuenta', sIdioma),
+      ),
+
+      // Sin bObligatorio: la obligatoriedad condicional (>1 grupo) la
+      // valida ClaseCapValidar.validarCuentaSuperior en validarRegistro.
+      ClaseCampoAbm(
+        funcActualizarEstado : (mapValores) => habilitarCuentaSuperior(mapValores, sPrefijo),
+        iAnchoCaracteres     : 58,
+        oTipo                : EnumTipoCampoAbm.texto,
+        sClave               : '${sPrefijo}CuentaSuperior',
+        sEtiqueta            : ClaseIdiomas.getTexto('planCuentaSuperior', sIdioma),
+        sGrupo               : sGrupo,
+        sHint                : ClaseIdiomas.getTexto('planHintCuentaSuperior', sIdioma),
+      ),
+
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(
+            sValor, ClaseIdiomas.getTexto('planNivel

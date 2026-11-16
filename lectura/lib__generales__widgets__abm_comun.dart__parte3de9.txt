@@ -1,0 +1,107 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 3 DE 9
+---
+,
+      children: <Widget>[
+        if (listComunes.isNotEmpty)
+          Padding(
+            padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio16),
+            child   : Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
+              children: <Widget>[
+                for (final ClaseCampoAbm oCampo in listComunes)
+                  _construirCampo(oCampo,
+                      bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
+              ],
+            ),
+          ),
+        TabBar(
+          controller : oControladorPestanas,                // ← CAMBIO item 14
+          tabs: <Widget>[
+            for (final String sGrupo in listGrupos)
+              Tab(text: widget.funcEtiquetaGrupo?.call(sGrupo)   // ← CAMBIO etiqueta de grupo
+                  ?? ClaseIdiomas.getTexto(sGrupo, widget.sIdioma)),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller : oControladorPestanas,              // ← CAMBIO item 14
+            children: <Widget>[
+              for (final String sGrupo in listGrupos)
+                SingleChildScrollView(
+                  padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+                  child   : Column(
+                    crossAxisAlignment : CrossAxisAlignment.start,
+                    children: <Widget>[
+                      for (final ClaseCampoAbm oCampo in widget.listCampos
+                          .where((ClaseCampoAbm o) => o.sGrupo == sGrupo))
+                        _construirCampo(oCampo,
+                            bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ← CAMBIO item 10: aceptar y propagar bAutoFocus
+  // ← CAMBIO item 14: inyectar el nodo de foco del campo.
+  Widget _construirCampo(ClaseCampoAbm oCampo, {bool bAutoFocus = false}) {
+    return ClaseCampoFormulario(
+      bAutoFocus       : bAutoFocus,
+      bHabilitado      : widget.funcEsHabilitado(oCampo),
+      funcAlCambiar    : (String sValor) => widget.funcAlCambiarCampo(oCampo.sClave, sValor),
+      funcAlPerderFoco : widget.funcAlPerderFoco,
+      mapValores       : widget.mapValores,
+      oCampo           : oCampo,
+      oFocoExterno     : mapFocos[oCampo.sClave],
+      sIdioma          : widget.sIdioma,
+      sValor           : widget.mapValores[oCampo.sClave] ?? '',
+    );
+  }
+
+}
+
+
+/// Grilla lateral de registros: filtro, orden por columna, paginación, menú
+/// contextual por celda y contraer/expandir. Lleva su propio estado; solo la
+/// selección (iRegistro) vive en el padre.
+///
+/// El foco del teclado vive en la grilla (item 23): al ingresar recibe el
+/// foco y las flechas arriba/abajo mueven la selección entre las filas.
+class ClaseGrillaRegistros extends StatefulWidget {
+
+  const ClaseGrillaRegistros({
+    super.key,
+    required this.funcSeleccionar,
+    required this.iRegistro,
+    required this.listCampos,
+    required this.listRegistros,
+    required this.sIdioma,
+  });
+
+  /// Selecciona el registro por su índice en listRegistros.
+  final void Function(int iIndice) funcSeleccionar;
+
+  /// Índice en listRegistros del registro seleccionado (-1 si ninguno).
+  final int                        iRegistro;
+  final List<ClaseCampoAbm>        listCampos;
+  final List<Map<String, dynamic>> listRegistros;
+  final String                     sIdioma;
+
+  @override
+  State<ClaseGrillaRegistros> createState() => ClaseEstadoGrillaRegistros();
+}
+
+class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
+
+  bool   bOrdenDesc  = false;
+  bool   bVisible    = true;
+  int    iPagina     = 0;
+  String sClaveOrden = '';
+  String sFiltro     = '';
+
+  final TextEditingController oControlFiltro = TextEditingController();

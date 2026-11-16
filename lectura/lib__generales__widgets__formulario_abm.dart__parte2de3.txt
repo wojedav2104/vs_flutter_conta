@@ -1,0 +1,122 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
+PARTE 2 DE 3
+---
+= <String, String>{
+        for (final ClaseCampoAbm oCampo in widget.listCampos)
+          oCampo.sClave: oCampo.sValorDefecto ?? '',
+      };
+      iRegistro    = -1;
+      bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
+    });
+  }
+
+  void modificar() {
+    if (iRegistro < 0) return;
+    setState(() {
+      mapValores   = _desdeRegistro(widget.listRegistros[iRegistro]);
+      bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
+    });
+  }
+
+  Future<void> borrar() async {
+    if (iRegistro < 0) return;
+    final EnumRespuestaConfirmacion oRespuesta = await funcMostrarConfirmacion(
+      context,
+      getIdioma(),
+      widget.sTitulo,
+      ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
+      bMostrarCancelar : false,
+    );
+    if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
+    setState(() {
+      widget.listRegistros.removeAt(iRegistro);
+      mapValores   = <String, String>{};
+      iRegistro    = -1;
+      bModoEdicion = false;
+    });
+    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
+  }
+
+  void cancelar() {
+    setState(() {
+      mapValores = (iRegistro >= 0)
+          ? _desdeRegistro(widget.listRegistros[iRegistro])
+          : <String, String>{};
+      bModoEdicion = false;
+    });
+  }
+
+  Future<void> grabar() async {
+    final String sIdioma = getIdioma();
+
+    // 0) Ceros a la izquierda ANTES de validar (regla de la subcuenta:
+    //    '1' → '00001' y recién entonces se valida como de 5 dígitos).
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      if (oCampo.bCompletarCeros) {
+        mapValores[oCampo.sClave] =
+            funcCompletarCeros(mapValores[oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
+      }
+    }
+
+    // 1) Obligatorios, longitud máxima (regla 14) y validación por campo.
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      final String? sError =
+          funcValidarCampoAbm(oCampo, mapValores[oCampo.sClave] ?? '', sIdioma);
+      if (sError != null) {
+        await _mostrarError(sError);
+        // ← CAMBIO item 14: el foco se coloca en el primer campo con error.
+        _oLlaveFormulario.currentState?.enfocarCampo(oCampo.sClave);
+        return;
+      }
+    }
+
+    // 2) Validación cruzada del registro.
+    final String? sError = widget.funcValidarRegistro
+        ?.call(Map<String, dynamic>.from(mapValores));
+    if (sError != null) {
+      await _mostrarError(sError);
+      return;
+    }
+
+    // 3) Grabación.
+    setState(() {
+      if (iRegistro < 0) {
+        widget.listRegistros.add(Map<String, dynamic>.from(mapValores));
+        iRegistro = widget.listRegistros.length - 1;
+      } else {
+        widget.listRegistros[iRegistro] = Map<String, dynamic>.from(mapValores);
+      }
+      bModoEdicion = false;
+    });
+    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
+  }
+
+  Future<void> encontrar() async {
+    final String sIdioma = getIdioma();
+    final String? sTexto =
+        await funcMostrarEncontrar(context, sIdioma, widget.listCampos.first);
+    if (sTexto == null) return;
+    final String sBusqueda = sTexto.toLowerCase();
+    for (int i = 0; i < widget.listRegistros.length; i++) {
+      if ((widget.listRegistros[i][widget.listCampos.first.sClave] ?? '')
+          .toString().toLowerCase().contains(sBusqueda)) {
+        seleccionar(i);
+        return;
+      }
+    }
+    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
+  }
+
+  // ── Selección y auto-cálculos ────────────────────────────────────────────
+
+  void seleccionar(int iIndice) {
+    setState(() {
+      iRegistro    = iIndice;
+      mapValores   = _desdeRegistro(widget.listRegistros[iIndice]);
+      bModoEdicion = false;
+    });
+  }
+
+  Map<String, String> _desdeRegistro(Map<

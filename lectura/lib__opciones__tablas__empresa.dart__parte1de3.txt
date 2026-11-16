@@ -1,0 +1,111 @@
+RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+
+import '../../generales/idiomas/idiomas.dart';
+import '../../generales/modelos/campo_abm.dart';
+import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+import '../../generales/varios/paises.dart';
+import '../../generales/widgets/formulario_abm.dart';
+
+/// Pantalla de la tabla Empresa (primer ABM con pestañas).
+///
+/// Reglas propias de esta tabla:
+///   · Debe tener un solo registro: Agregar se deshabilita si ya hay uno.
+///   · El botón Encontrar debe estar siempre deshabilitado.
+class ClaseEmpresa extends StatefulWidget {
+
+  const ClaseEmpresa({
+    super.key,
+    required this.oPreferencias,
+  });
+
+  final ClasePreferencias oPreferencias;
+
+  /// Valor del campo 'pais' en los datos de prueba (es también el valor por
+  /// defecto del campo).
+  static const String sPaisDefecto = 'PRY';
+
+  /// País del registro único de la Empresa.
+  /// Por ahora devuelve sPaisDefecto; cuando haya conexión con la Base de
+  /// Datos devolverá el país grabado en la tabla Empresa.
+  static String getPaisElegido() {
+    return sPaisDefecto;                                  // ← CAMBIO limpieza sPaisDefecto
+  }
+
+  @override
+  State<ClaseEmpresa> createState() => ClaseEstadoEmpresa();
+}
+
+class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
+
+  late final List<ClaseCampoAbm>        listCampos;
+  late final List<Map<String, dynamic>> listRegistros;
+
+  @override
+  void initState() {
+    super.initState();
+    listCampos    = crearCampos();
+    listRegistros = crearRegistrosPrueba();
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return ClaseFormularioAbm(
+      bPermitirEncontrar   : false,
+      bTablaUnSoloRegistro : true,
+      funcAlPerderFoco     : completarRuc,
+      listCampos           : listCampos,
+      listRegistros        : listRegistros,
+      oPreferencias        : widget.oPreferencias,
+      sTitulo              : ClaseIdiomas.getTexto('menuEmpresa', getIdioma()),
+    );
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Auto-completado al salir del campo ──────────────────────────────────
+
+  /// Completa el guion y el dígito verificador del RUC cuando el usuario
+  /// escribe solo la base ('80012345' → '80012345-0'), al salir del campo.
+  /// Es una ayuda para el usuario: la validación al grabar sigue exigiendo
+  /// el formato completo.
+  String? completarRuc(String sClave, String sValor, Map<String, String> mapValores) {
+    if (sClave != 'ruc') return null;
+    return ClaseCapValidar.funcCompletarRuc(sValor);
+  }
+  // ── Campos de los tres grupos ───────────────────────────────────────────
+
+  List<ClaseCampoAbm> crearCampos() {
+
+    final String sIdioma = getIdioma();
+
+    // Códigos internos del tipo de IVA (solo se usan en esta pantalla).
+    final List<String> listIvaOpciones = <String>[
+      ClaseIdiomas.getTexto('empIvaGeneral', sIdioma),
+      ClaseIdiomas.getTexto('empIvaSimplificado', sIdioma),
+      ClaseIdiomas.getTexto('empNoPagaIva', sIdioma),
+    ];
+    const List<String> listIvaValores = <String>['GEN', 'SIM', 'NPG'];
+
+    return <ClaseCampoAbm>[
+
+      // ── Grupo 1: Generales ──────────────────────────────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 50,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'nombre',
+        sEtiqueta        : ClaseIdiomas.getTexto('empNombre', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintNombre', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 25,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'apellidos',
+        sEtiqueta        : ClaseIdiomas.getTexto('

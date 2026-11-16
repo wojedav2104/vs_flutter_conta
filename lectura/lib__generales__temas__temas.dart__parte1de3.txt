@@ -1,0 +1,73 @@
+RUTA ORIGINAL: lib/generales/temas/temas.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+
+import 'colores.dart';
+import 'estilos_textos.dart';
+
+/// Especificaciones de los temas claro y oscuro de la aplicación.
+///
+/// Regla de oro: los widgets toman los colores de esta clase (directamente o
+/// vía Theme.of), nunca de colores.dart, para respetar el modo claro/oscuro.
+abstract final class ClaseGenTemas {
+
+  // ── Esquema claro ────────────────────────────────────────────────────────
+  static const ColorScheme _oEsquemaClaro = ColorScheme(
+    brightness              : Brightness.light,
+    primary                 : ClaseGenColores.colorAzulOscuro1,
+    onPrimary               : ClaseGenColores.colorBlanco,
+    primaryContainer        : ClaseGenColores.colorPrimarioContenedorClaro,
+    onPrimaryContainer      : ClaseGenColores.colorAzulOscuro1,
+    secondary               : ClaseGenColores.colorGris4,
+    onSecondary             : ClaseGenColores.colorBlanco,
+    secondaryContainer      : ClaseGenColores.colorSecundarioContenedorClaro,
+    onSecondaryContainer    : ClaseGenColores.colorGris4,
+    tertiary                : ClaseGenColores.colorMorado1,
+    onTertiary              : ClaseGenColores.colorBlanco,
+    tertiaryContainer       : ClaseGenColores.colorTerciarioContenedorClaro,
+    onTertiaryContainer     : ClaseGenColores.colorMorado1,
+    error                   : ClaseGenColores.colorError,
+    onError                 : ClaseGenColores.colorBlanco,
+    errorContainer          : ClaseGenColores.colorErrorContenedorClaro,
+    onErrorContainer        : ClaseGenColores.colorRojo1,
+    surface                 : ClaseGenColores.colorSuperficieClara,
+    onSurface               : ClaseGenColores.colorGris4,
+    surfaceContainerLowest  : ClaseGenColores.colorSuperficieClara,
+    surfaceContainerLow     : ClaseGenColores.colorGris1,
+    surfaceContainer        : ClaseGenColores.colorGris1,
+    surfaceContainerHigh    : ClaseGenColores.colorGris2,
+    surfaceContainerHighest : ClaseGenColores.colorGris2,
+    // AA para texto normal: 7.6:1 sobre blanco y 5.6:1 sobre la fila
+    // seleccionada (colorGris3 solo daba 2.5:1).
+    onSurfaceVariant        : ClaseGenColores.colorTextoSecundarioClaro,
+    outline                 : ClaseGenColores.colorGris3,
+    outlineVariant          : ClaseGenColores.colorGris2,
+    inverseSurface          : ClaseGenColores.colorGris4,
+    onInverseSurface        : ClaseGenColores.colorBlanco,
+    surfaceTint             : ClaseGenColores.colorAzulOscuro1,
+    shadow                  : ClaseGenColores.colorNegro,
+    scrim                   : ClaseGenColores.colorNegro,
+  );
+
+  // ── Esquema oscuro ───────────────────────────────────────────────────────
+  static const ColorScheme _oEsquemaOscuro = ColorScheme(
+    brightness              : Brightness.dark,
+    primary                 : ClaseGenColores.colorCyan1,
+    onPrimary               : ClaseGenColores.colorNegro,
+    primaryContainer        : ClaseGenColores.colorPrimarioContenedorOscuro,
+    onPrimaryContainer      : ClaseGenColores.colorCyan1,
+    secondary               : ClaseGenColores.colorGris3,
+    onSecondary             : ClaseGenColores.colorNegro,
+    secondaryContainer      : ClaseGenColores.colorSecundarioContenedorOscuro,
+    onSecondaryContainer    : ClaseGenColores.colorGris1,
+    tertiary                : ClaseGenColores.colorRosa1,
+    onTertiary              : ClaseGenColores.colorNegro,
+    tertiaryContainer       : ClaseGenColores.colorTerciarioContenedorOscuro,
+    onTertiaryContainer     : ClaseGenColores.colorRosa1,
+    // AA para texto normal: 7.7:1 sobre #1E1F22 (colorError solo daba 3.3:1).
+    error                   : ClaseGenColores.colorErrorOscuro,
+    onError                 : ClaseGenColores.colorNegro,
+    errorContainer          : ClaseGenColores.colorErrorContenedorOscuro,
+    onErrorContainer        : ClaseGenColores.colorBlanco,
+    surface                 : ClaseGenColores.colorSupe

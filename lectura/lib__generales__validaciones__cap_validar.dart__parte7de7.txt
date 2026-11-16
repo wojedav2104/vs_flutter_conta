@@ -1,0 +1,36 @@
+RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
+PARTE 7 DE 7
+---
+aseIdiomas.getTexto('validFechaRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fDesde))
+          .replaceAll('{2}', funcFormatearFecha(fHasta));
+    }
+    return null;
+  }
+
+  /// El importe debe ser mayor o igual que cero (se acepta vacío).
+  static String? validarImporteNoNegativo(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final double? dValor = funcParsearNumero(sValor);
+    if (dValor == null || dValor >= 0) return null;
+    return ClaseIdiomas.getTexto('validNoNegativo', sIdioma)
+        .replaceAll('{0}', sEtiqueta);
+  }
+
+  // ── Credenciales y correo ─────────────────────────────────────────────
+
+  /// Credenciales iniciales. Más adelante vendrán del ABM de Usuarios y de la BD.
+  static const String sContrasenaInicial = '1234';
+  static const String sNombreInicial     = 'admin';
+
+  /// Valida las credenciales del login.
+  static bool validarCredenciales(String sNombre, String sContrasena) {
+    return sNombre == sNombreInicial && sContrasena == sContrasenaInicial;
+  }
+
+  /// Formato básico del e-mail.
+  static bool esCorreoValido(String sCorreo) =>
+      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(sCorreo);
+
+}

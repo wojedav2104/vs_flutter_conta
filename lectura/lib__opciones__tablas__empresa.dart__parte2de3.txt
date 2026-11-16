@@ -1,0 +1,92 @@
+RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
+PARTE 2 DE 3
+---
+empApellidos', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintApellidos', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 25,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'nombres',
+        sEtiqueta        : ClaseIdiomas.getTexto('empNombres', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintNombres', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'ramo',
+        sEtiqueta        : ClaseIdiomas.getTexto('empRamo', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintRamo', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'direccion',
+        sEtiqueta        : ClaseIdiomas.getTexto('empDireccion', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintDireccion', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'telefono',
+        sEtiqueta        : ClaseIdiomas.getTexto('empTelefono', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintTelefono', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(ClasePaises.getListOpciones(sIdioma)),
+        listOpciones     : ClasePaises.getListOpciones(sIdioma),
+        listValores      : ClasePaises.getListValores(),
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'pais',
+        sEtiqueta        : ClaseIdiomas.getTexto('empPais', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sValorDefecto    : ClaseEmpresa.sPaisDefecto,     // ← CAMBIO limpieza sPaisDefecto
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 29,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'departamento',
+        sEtiqueta        : ClaseIdiomas.getTexto('empDepartamento', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintDepartamento', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'localidad',
+        sEtiqueta        : ClaseIdiomas.getTexto('empLocalidad', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintLocalidad', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'email',
+        sEtiqueta        : ClaseIdiomas.getTexto('empEmail', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintEmail', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRuc(
+            sValor, ClaseIdiomas.getTexto('empRuc', sIdioma), sIdioma),
+        iAnchoCaracteres : 10,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'ruc',
+        sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintRuc', sIdioma),
+      ),
+
+      // ── Grupo 2: Varios ─────────────────────────────────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCa

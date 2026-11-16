@@ -1,0 +1,90 @@
+RUTA ORIGINAL: lib/opciones/tablas/proveedores.dart
+PARTE 2 DE 3
+---
+EnumTipoCampoAbm.texto,
+        sClave           : 'direccion',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvDireccion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintDireccion', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'telefono',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvTelefono', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintTelefono', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'celular',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvCelular', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintCelular', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'localidad',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvLocalidad', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintLocalidad', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'email',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvEmail', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('prvHintEmail', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(
+            ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
+        listValores      : ClaseTipoIdentificacion.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoIdentificacion',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvTipoIdentificacion', sIdioma),
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
+      ),
+      ClaseCampoAbm(
+        bMayusculas       : true,
+        bObligatorio      : true,
+        iAnchoCaracteres  : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'identificacion',
+        sEtiqueta         : ClaseIdiomas.getTexto('prvIdentificacion', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('prvHintIdentificacion', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
+        listOpciones     : ClaseLocalExterior.getListOpciones(sIdioma),
+        listValores      : ClaseLocalExterior.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoProveedor',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvTipoProveedor', sIdioma),
+        sValorDefecto    : ClaseLocalExterior.local,
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'esServicioPublico',
+        sEtiqueta        : ClaseIdiomas.getTexto('prvEsServicioPublico', sIdioma),
+        sValorDefecto    : ClaseSiNo.no,
+      ),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // Los RUC tienen dígito verificador válido según funcDigitoVerificador.
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'celular'            : '0981 987 654',
+        'codigo'             : '000001',
+        'direccion'          : 'Av. Mariscal López 2500',
+        'email'              : 'pedro@email.com',
+        'esServicioPublico'  : ClaseSiNo.no,
+        'identificacion'     : '80098765-9',
+        'localidad'          : 'Asunción',
+        'nombre'             : 'Distribu

@@ -1,0 +1,73 @@
+RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
+PARTE 3 DE 3
+---
+mpo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
+            sValor, ClaseIdiomas.getTexto('empEjercicio', sIdioma), sIdioma),
+        iAnchoCaracteres : 4,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'ejercicio',
+        sEtiqueta        : ClaseIdiomas.getTexto('empEjercicio', sIdioma),
+        sGrupo           : 'empGrupoVarios',
+      ),
+
+      // ── Grupo 3: Impuestos ──────────────────────────────────────────────
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(listIvaOpciones),
+        listOpciones     : listIvaOpciones,
+        listValores      : listIvaValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'iva',
+        sEtiqueta        : ClaseIdiomas.getTexto('empIva', sIdioma),
+        sGrupo           : 'empGrupoImpuestos',
+        sValorDefecto    : 'GEN',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'ireSimple',
+        sEtiqueta        : ClaseIdiomas.getTexto('empIreSimple', sIdioma),
+        sGrupo           : 'empGrupoImpuestos',
+        sValorDefecto    : ClaseSiNo.no,
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'irp',
+        sEtiqueta        : ClaseIdiomas.getTexto('empIrp', sIdioma),
+        sGrupo           : 'empGrupoImpuestos',
+        sValorDefecto    : ClaseSiNo.no,
+      ),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // El RUC tiene dígito verificador válido según funcDigitoVerificador.
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'apellidos'    : '',
+        'departamento' : 'Central',
+        'direccion'    : 'Av. España 1234',
+        'ejercicio'    : '2026',
+        'email'        : 'info@empresa.com.py',
+        'ireSimple'    : ClaseSiNo.no,
+        'irp'          : ClaseSiNo.si,
+        'iva'          : 'GEN',
+        'localidad'    : 'Luque',
+        'nombre'       : 'Empresa de Prueba S.A.',
+        'nombres'      : '',
+        'pais'         : ClaseEmpresa.sPaisDefecto,       // ← CAMBIO limpieza sPaisDefecto
+        'ramo'         : 'Servicios contables',
+        'ruc'          : '80012345-0',
+        'telefono'     : '021 500 400',
+      },
+    ];
+  }
+
+}
+

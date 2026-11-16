@@ -1,0 +1,6 @@
+RUTA ORIGINAL: lib/generales/utilitarios/menu_navegador_movil.dart
+PARTE 1 DE 1
+---
+/// No aplica fuera de web: escritorio y celular no tienen menú del navegador.
+void funcDesactivarMenuNavegador() {
+}

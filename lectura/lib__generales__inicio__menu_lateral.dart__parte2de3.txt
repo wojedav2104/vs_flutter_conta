@@ -1,0 +1,76 @@
+RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
+PARTE 2 DE 3
+---
+               sClave: 'menuEmpresa',             sRuta: ClaseRutas.rutaEmpresa),
+    ClaseOpcionMenu(oIcono: Icons.settings_outlined,         sClave: 'menuConfiguracion',       sRuta: ClaseRutas.rutaConfiguracion),
+    ClaseOpcionMenu(oIcono: Icons.store_outlined,            sClave: 'menuSucursales',          sRuta: ClaseRutas.rutaSucursales),
+    ClaseOpcionMenu(oIcono: Icons.person_outline,            sClave: 'menuClientes',            sRuta: ClaseRutas.rutaClientes),
+    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,   sClave: 'menuProveedores',         sRuta: ClaseRutas.rutaProveedores),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios', sRuta: ClaseRutas.rutaTimbradosPropios),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined, sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
+    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,   sClave: 'menuCuentasAsignadas',    sRuta: ClaseRutas.rutaCuentasAsignadas),
+  ];
+
+  static final List<ClaseOpcionMenu> _listUtilitarios = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.manage_accounts_outlined, sClave: 'menuUsuarios', sRuta: ClaseRutas.rutaUsuarios),
+  ];
+
+  // ── Acciones ────────────────────────────────────────────────────────────
+  void elegirOpcion(BuildContext oContexto, ClaseOpcionMenu oOpcion) {
+    final String sTitulo = ClaseIdiomas.getTexto(oOpcion.sClave, oPreferencias.getIdioma());
+    final NavigatorState oNavegador = Navigator.of(oContexto);
+    oNavegador.pop(); // cierra el drawer
+    oNavegador.pushNamed(oOpcion.sRuta, arguments: sTitulo);
+  }
+
+  void finalizar() {
+    SystemNavigator.pop();
+  }
+
+  // ── Construcción de la interfaz ─────────────────────────────────────────
+  @override
+  Widget build(BuildContext oContexto) {
+    final String sIdioma = oPreferencias.getIdioma();
+    final String sPais   = ClaseSesion.getPais();
+    return Drawer(
+      child: ListView(
+        padding : EdgeInsets.zero,
+        children: <Widget>[
+          construirCabecera(oContexto, sIdioma),
+          construirSeccion(oContexto, sPais, 'menuArchivos',    _listArchivos),
+          construirSeccion(oContexto, sPais, 'menuTablas',      _listTablas),
+          construirSeccion(oContexto, sPais, 'menuProcesos',    _listProcesos),
+          construirSeccion(oContexto, sPais, 'menuInformes',    _listInformes),
+          construirSeccion(oContexto, sPais, 'menuUtilitarios', _listUtilitarios),
+          construirSeccion(oContexto, sPais, 'menuSistema',     _listSistema),
+          const Divider(),
+          construirFin(oContexto, sIdioma),
+          const SizedBox(height: ClaseGenEspacios.dEspacio16),
+        ],
+      ),
+    );
+  }
+
+  Widget construirCabecera(BuildContext oContexto, String sIdioma) {
+    final ThemeData oTema = Theme.of(oContexto);
+    return DrawerHeader(
+      decoration: BoxDecoration(color: oTema.colorScheme.primaryContainer),
+      child: Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        mainAxisAlignment  : MainAxisAlignment.end,
+        children: <Widget>[
+          Text(ClaseIdiomas.getTexto('aplicacion', sIdioma),
+               style: ClaseGenEstilosTexto.tituloMediano(oContexto)
+                        .copyWith(color: oTema.colorScheme.onPrimaryContainer)),
+          const SizedBox(height: ClaseGenEspacios.dEspacio04),
+          Text(ClaseIdiomas.getTexto('baseConectada', sIdioma),
+               style: ClaseGenEstilosTexto.normalChico(oContexto)),
+          Text(ClaseSesion.sBaseDatos,
+               style: ClaseGenEstilosTexto.textoCampo(oContexto)
+                        .copyWith(color: oTema.colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.w600)),
+          Text(ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma),
+               style: ClaseGenEstilosTexto.normalChico(oContexto)),
+        ],
+      ),
+    );

@@ -1,0 +1,37 @@
+RUTA ORIGINAL: lib/generales/idiomas/idiomas_tablas.dart
+PARTE 2 DE 2
+---
+empIrp'               : 'Paye-t-elle l\'I.R.P. ?',
+    'empIva'               : 'Quelle T.V.A. paye-t-elle ?',
+    'empIvaGeneral'        : 'T.V.A. générale',
+    'empIvaSimplificado'   : 'T.V.A. simplifiée',
+    'empLocalidad'         : 'Localité',
+    'empNoPagaIva'         : 'Ne paie pas de T.V.A.',
+    'empNombre'            : 'Nom de l\'entreprise',
+    'empNombres'           : 'Prénoms',
+    'empPais'              : 'Pays',
+    'empRamo'              : 'Secteur ou activité',
+    'empRuc'               : 'R.U.C.',
+    'empTelefono'          : 'Téléphone N°',
+    // ── Pantalla Configuración (ABM con pestañas) ────────────────────────
+    'cfgCantidadBackups'      : 'Nombre de sauvegardes à conserver',
+    'cfgCarpetaMarangatu'     : 'Dossier pour Marangatú',
+    'cfgCrearBackup'          : 'Créer une sauvegarde tous les jours à',
+    'cfgGrupoBackups'         : 'Sauvegardes',
+    'cfgGrupoEmpresa'         : 'Entreprise',
+    'cfgHintCarpetaMarangatu' : 'Dossier où seront enregistrés les fichiers de Marangatú',
+    'cfgHintSucursal'         : 'Nom de la succursale',
+    'cfgSucursal'             : 'Succursale actuelle',
+    // ── Pantalla Sucursales (ABM) ────────────────────────────────────────
+    'sucCodigo'          : 'Code',
+    'sucDireccion'       : 'Adresse',
+    'sucHintDireccion'   : 'Rue et N° de l\'emplacement de cette succursale',
+    'sucHintLocalidad'   : 'Nom de la localité',
+    'sucHintNombre'      : 'Nom de cette succursale',
+    'sucHintTelefono'    : 'N° de téléphone',
+    'sucLocalidad'       : 'Localité',
+    'sucNombre'          : 'Nom',
+    'sucTelefono'        : 'Téléphone N°',
+  };
+
+}

@@ -1,0 +1,96 @@
+RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
+PARTE 1 DE 4
+---
+import 'package:flutter/services.dart';
+
+
+
+/// Límites de años admitidos en toda la aplicación.
+/// Única fuente de estos límites (validaciones y selectores de fecha).
+///
+/// Regla: ningún año puede ser mayor que el año actual — por eso el tope
+/// superior es un getter y no una constante.
+abstract final class ClaseFechas {
+
+  static        int get getAnoMaximo => DateTime.now().year;
+  static        int getAnoMaximoVigencia() => DateTime.now().year + 1;
+  static const  int iAnoMinimo = 2020; 
+
+}
+
+// ── Fechas y horas ──────────────────────────────────────────────────────────
+
+/// Formatea una fecha como dd/mm/aaaa.
+String funcFormatearFecha(DateTime fFecha) {
+  return '${fFecha.day.toString().padLeft(2, '0')}/'
+         '${fFecha.month.toString().padLeft(2, '0')}/'
+         '${fFecha.year}';
+}
+
+/// Formatea una hora como hh:mm.
+String funcFormatearHora(int iHora, int iMinuto) {
+  return '${iHora.toString().padLeft(2, '0')}:'
+         '${iMinuto.toString().padLeft(2, '0')}';
+}
+
+/// Convierte una cadena dd/mm/aaaa a DateTime.
+/// Devuelve null si el formato no es válido, si la fecha no existe
+/// (31/02/2026, 30/02/2026, 29/02 fuera de año bisiesto) o si el año está
+/// fuera del rango admitido por ClaseFechas (hasta el año que viene, para
+/// poder validar las vigencias de los timbrados; los movimientos acotan el
+/// año con validarFechaEnRango, validarEjercicio y validarFechaEnEjercicio).
+DateTime? funcParsearFecha(String sValor) {
+  final RegExpMatch? oMatch =
+      RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})$').firstMatch(sValor.trim());
+  if (oMatch == null) return null;
+  final int? iDia  = int.tryParse(oMatch.group(1)!);
+  final int? iMes  = int.tryParse(oMatch.group(2)!);
+  final int? iAno = int.tryParse(oMatch.group(3)!);
+  if (iDia == null || iMes == null || iAno == null) return null;
+  if (iAno < ClaseFechas.iAnoMinimo || iAno > ClaseFechas.getAnoMaximoVigencia()) return null;
+  final DateTime fFecha = DateTime(iAno, iMes, iDia);
+  // DateTime normaliza las fechas imposibles (31/02/2026 → 03/03/2026):
+  // si los componentes cambiaron, la fecha original no existía.
+  if (fFecha.day != iDia || fFecha.month != iMes || fFecha.year != iAno) return null;
+  return fFecha;
+}
+
+/// Convierte una cadena hh:mm a los minutos contados desde las 00:00.
+/// Devuelve null si el formato no es válido o si la hora está fuera
+/// del rango 00:00–23:59.
+int? funcParsearHora(String sValor) {
+  final RegExpMatch? oMatch =
+      RegExp(r'^(\d{1,2}):(\d{1,2})$').firstMatch(sValor.trim());
+  if (oMatch == null) return null;
+  final int? iHora   = int.tryParse(oMatch.group(1)!);
+  final int? iMinuto = int.tryParse(oMatch.group(2)!);
+  if (iHora == null || iMinuto == null) return null;
+  if (iHora > 23 || iMinuto > 59) return null;
+  return iHora * 60 + iMinuto;
+}
+
+
+// ── Números ─────────────────────────────────────────────────────────────────
+
+/// Convierte "1.234.567" a 1234567 (elimina separadores de miles).
+/// Devuelve 0 si el texto no representa un número entero.
+int funcParsearEnteroMiles(String sValor) {
+  return funcParsearEnteroMilesEstricto(sValor) ?? 0;
+}
+
+/// Igual que funcParsearEnteroMiles pero devuelve null cuando el texto no
+/// representa un número entero válido. Pensada para validaciones estrictas.
+int? funcParsearEnteroMilesEstricto(String sValor) {
+  final String sLimpio = sValor.trim().replaceAll('.', '').replaceAll(' ', '');
+  if (sLimpio.isEmpty) return null;
+  return int.tryParse(sLimpio);
+}
+
+/// Convierte 1234567 a "1.234.567" (o "1 234 567"), usando el separador de
+/// miles del formato elegido ('latino' usa punto; 'frances' usa espacio).
+String funcFormatearEnteroMiles(int iValor, String sSeparadorMiles) {
+  final String sDato = iValor.abs().toString();
+  final StringBuffer oBuffer = StringBuffer();
+  if (iValor < 0) oBuffer.write('-');
+  for (int i = 0; i < sDato.length; i++) {
+    if (i > 0 && (sDato.length - i) % 3 == 0) oBuffe

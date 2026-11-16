@@ -1,0 +1,110 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 1 DE 6
+---
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../idiomas/idiomas.dart';
+import '../modelos/campo_abm.dart';
+import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
+import '../temas/layout.dart';
+import '../utilitarios/formatos.dart';
+import '../varios/listas.dart';
+import 'ventana_mensaje.dart';
+
+/// Admite dígitos y, como máximo, un separador decimal (',' o '.').
+class ClaseFormateadorImporte extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oViejo, TextEditingValue oNuevo) {
+    final StringBuffer oSalida = StringBuffer();
+    int iSeparadores = 0;
+    for (int i = 0; i < oNuevo.text.length; i++) {
+      final String c = oNuevo.text[i];
+      if (RegExp(r'[0-9]').hasMatch(c)) {
+        oSalida.write(c);
+      } else if ((c == ',' || c == '.') && iSeparadores == 0) {
+        iSeparadores++;
+        oSalida.write(c);
+      }
+    }
+    final String sFinal = oSalida.toString();
+    return TextEditingValue(
+      text      : sFinal,
+      selection : TextSelection.collapsed(offset: sFinal.length),
+    );
+  }
+}
+
+
+/// Campo individual de un formulario ABM: etiqueta + control de entrada.
+///
+/// Cada campo renderiza según su tipo (texto, número, fecha, hora, lista,
+/// casillas, comentario, lógico). El texto visible se traduce con ClaseIdiomas;
+/// el valor interno es el código que se guarda en el registro.
+class ClaseCampoFormulario extends StatefulWidget {
+
+  const ClaseCampoFormulario({
+    super.key,
+    this.bAutoFocus = false,
+    required this.bHabilitado,
+    required this.funcAlCambiar,
+    this.funcAlPerderFoco,
+    required this.mapValores,
+    required this.oCampo,
+    this.oFocoExterno,
+    required this.sIdioma,
+    required this.sValor,
+  });
+
+  /// true para mover el foco a este campo al entrar en modo edición.
+  final bool                                bAutoFocus;
+  final bool                                bHabilitado;
+  final void Function(String sValor)         funcAlCambiar;
+
+  /// Transformación del valor al salir del campo (devuelve el valor nuevo
+  /// o null si no cambia). Recibe la clave del campo, el valor actual y los
+  /// valores internos del formulario. Ej: completar el guion y el dígito
+  /// verificador del RUC ('8003214' → '8003214-5') al salir de la identificación.
+  final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
+
+  final Map<String, String>                  mapValores;
+  final ClaseCampoAbm                        oCampo;
+
+  /// Nodo de foco externo (item 14): permite al formulario colocar el foco
+  /// en este campo cuando el grabado encuentra un error en él.
+  final FocusNode?                           oFocoExterno;
+  final String                               sIdioma;
+  final String                               sValor;
+
+  @override
+  State<ClaseCampoFormulario> createState() => _ClaseEstadoCampoFormulario();
+}
+
+class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
+
+  late TextEditingController oControl;
+  final FocusNode oFocoInterno = FocusNode();
+  String sMascaraActual = '';
+
+  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo
+  /// provee, o el propio. Se elige una sola vez en initState.
+  late final FocusNode oFoco;
+
+  @override
+  void initState() {
+    super.initState();
+    oFoco = widget.oFocoExterno ?? oFocoInterno;
+    oControl = TextEditingController(text: widget.sValor);
+    oFoco.addListener(_alCambiarFoco);                       // ← CAMBIO item 9
+    if (widget.bAutoFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) oFoco.requestFocus();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ClaseCampoFormulario oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.sValor != widget.sValor && oControl.text != widge

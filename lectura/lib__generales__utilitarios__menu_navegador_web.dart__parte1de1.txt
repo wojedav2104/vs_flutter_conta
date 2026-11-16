@@ -1,0 +1,17 @@
+RUTA ORIGINAL: lib/generales/utilitarios/menu_navegador_web.dart
+PARTE 1 DE 1
+---
+import 'dart:js_interop';
+import 'package:web/web.dart' as web;
+
+
+/// Desactiva el menú contextual del navegador dentro de la aplicación (web).
+void funcDesactivarMenuNavegador() {
+  web.document.addEventListener('contextmenu', _onContextMenu.toJS);
+}
+
+
+void _onContextMenu(web.Event oEvento) {
+  oEvento.preventDefault();
+}
+

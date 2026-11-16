@@ -1,0 +1,16 @@
+RUTA ORIGINAL: lib/generales/varios/timbrados_comun.dart
+PARTE 2 DE 2
+---
+pValores['fechaInicio']     ?? '';
+    final String sFin    = mapValores['fechaFin']        ?? '';
+    final String sMedio  = mapValores['medioGeneracion'] ?? '';
+    if (sFin.trim().isNotEmpty)                     return null;
+    if (sMedio != ClaseMedioGeneracion.preImpresos) return null;
+    final DateTime? fInicio = funcParsearFecha(sInicio);
+    if (fInicio == null) return null;
+    final DateTime fFin = DateTime(fInicio.year + 1, fInicio.month + 1, 0);
+    return <String, String>{'fechaFin': funcFormatearFecha(fFin)};
+  }
+
+}
+

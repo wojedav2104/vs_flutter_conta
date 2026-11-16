@@ -1,0 +1,117 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 8 DE 9
+---
+
+    required this.listRegistros,
+    required this.oFormulario,
+    required this.setHabilitados,
+    required this.sIdioma,
+    required this.sTitulo,
+  });
+
+  final void Function(EnumBotonAbm oBoton) funcAlClicar;
+  final void Function(int iIndice)         funcSeleccionar;
+  final int                                iRegistro;
+  final List<ClaseCampoAbm>                listCampos;
+  final List<Map<String, dynamic>>         listRegistros;
+
+  /// Área derecha: el formulario (campos, o cabecera + detalles).
+  final Widget                             oFormulario;
+  final Set<EnumBotonAbm>                  setHabilitados;
+  final String                             sIdioma;
+  final String                             sTitulo;
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return Scaffold(
+      appBar : AppBar(
+        title: Text(sTitulo, style: ClaseGenEstilosTexto.tituloMediano(oContexto)),
+      ),
+      body: Column(
+        children: <Widget>[
+          // ← CAMBIO item 3: contenido arriba, botonera abajo
+          Expanded(
+            child: Row(
+              crossAxisAlignment : CrossAxisAlignment.stretch,
+              children: <Widget>[
+                ClaseGrillaRegistros(
+                  funcSeleccionar : funcSeleccionar,
+                  iRegistro       : iRegistro,
+                  listCampos      : listCampos,
+                  listRegistros   : listRegistros,
+                  sIdioma         : sIdioma,
+                ),
+                const VerticalDivider(width: ClaseGenEspacios.dEspacio01),
+                Expanded(child: oFormulario),
+              ],
+            ),
+          ),
+          // ← CAMBIO items 1,2,3,6: botonera al pie, delegada a ClaseBotoneraAbm
+          ClaseBotoneraAbm(
+            esHabilitado : (EnumBotonAbm oBoton) => setHabilitados.contains(oBoton),
+            funcAccion   : funcAlClicar,
+            sIdioma      : sIdioma,
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+
+/// Barra de botones ABM al pie del formulario.
+///
+/// Orden visual fijo, tamaño uniforme y colores consistentes: mismo color
+/// para todos los habilitados, mismo color para todos los deshabilitados.
+/// Los colores provienen de ClaseGenTemas (respetan el modo claro/oscuro).
+///
+/// Los botones de edición quedan deshabilitados en los países sin permiso
+/// de edición (Francia: solo visualización). La confirmación de Borrar
+/// vive en el borrar() de cada formulario, no aquí.
+class ClaseBotoneraAbm extends StatelessWidget {
+
+  const ClaseBotoneraAbm({
+    super.key,
+    required this.esHabilitado,
+    required this.funcAccion,
+    required this.sIdioma,
+  });
+
+  /// Devuelve true si el botón debe estar habilitado en el estado actual.
+  final bool Function(EnumBotonAbm oBoton) esHabilitado;
+
+  /// Acción a ejecutar cuando se presiona un botón.
+  final void Function(EnumBotonAbm oBoton) funcAccion;
+
+  final String sIdioma;
+
+  /// Orden visual fijo de los botones (item 1).
+  static const List<EnumBotonAbm> _listOrden = <EnumBotonAbm>[
+    EnumBotonAbm.agregar,
+    EnumBotonAbm.borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
+    EnumBotonAbm.encontrar,
+    EnumBotonAbm.fin,
+  ];
+
+  /// Botones de edición: no operan en países solo visualización.
+  static const Set<EnumBotonAbm> _setBotonesEdicion = <EnumBotonAbm>{
+    EnumBotonAbm.agregar,
+    EnumBotonAbm.borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
+  };
+
+  /// Devuelve true si el país conectado permite edición.
+  bool _puedeOperar(EnumBotonAbm oBoton) =>
+      !_setBotonesEdicion.contains(oBoton)
+      || ClasePermisos.puedeEditar(ClaseSesion.getPais());
+
+  String _getEtiqueta(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
+      case EnumBotonAbm.borrar:    return ClaseIdiomas.ge

@@ -1,0 +1,110 @@
+RUTA ORIGINAL: lib/opciones/tablas/clientes.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+
+import '../../generales/idiomas/idiomas.dart';
+import '../../generales/modelos/campo_abm.dart';
+import '../../generales/modelos/documentos.dart';
+import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+import '../../generales/widgets/formulario_abm.dart';
+
+/// Pantalla de la tabla Clientes (ABM de múltiples registros).
+///
+/// Se muestra la grilla lateral izquierda y el botón Encontrar está habilitado.
+class ClaseClientes extends StatefulWidget {
+
+  const ClaseClientes({
+    super.key,
+    required this.oPreferencias,
+  });
+
+  final ClasePreferencias oPreferencias;
+
+  @override
+  State<ClaseClientes> createState() => ClaseEstadoClientes();
+}
+
+class ClaseEstadoClientes extends State<ClaseClientes> {
+
+  late final List<ClaseCampoAbm>        listCampos;
+  late final List<Map<String, dynamic>> listRegistros;
+
+  @override
+  void initState() {
+    super.initState();
+    listCampos    = crearCampos();
+    listRegistros = crearRegistrosPrueba();
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return ClaseFormularioAbm(
+      funcAlPerderFoco   : completarIdentificacion,
+      funcValidarRegistro : validarRegistro,
+      listCampos          : listCampos,
+      listRegistros       : listRegistros,
+      oPreferencias       : widget.oPreferencias,
+      sTitulo             : ClaseIdiomas.getTexto('menuClientes', getIdioma()),
+    );
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Validación cruzada ──────────────────────────────────────────────────
+
+  /// El formato de la identificación depende del Tipo de identificación.
+  String? validarRegistro(Map<String, dynamic> oRegistro) {
+    final String sIdioma = getIdioma();
+    return ClaseCapValidar.validarIdentificacion(
+      (oRegistro['identificacion']      ?? '').toString(),
+      (oRegistro['tipoIdentificacion']  ?? '').toString(),
+      ClaseIdiomas.getTexto('cliIdentificacion', sIdioma),
+      sIdioma,
+    );
+  }
+
+  // ── Auto-completado al salir del campo ──────────────────────────────────
+
+  /// Completa el guion y el dígito verificador del RUC cuando el usuario
+  /// escribe solo la base ('8003214' → '8003214-5'), al salir del campo de
+  /// la identificación. Con otros campos o tipos de identificación no toca
+  /// nada. Es una ayuda para el usuario: la validación al grabar sigue
+  /// exigiendo el formato completo.
+  String? completarIdentificacion(String sClave, String sValor, Map<String, String> mapValores) {
+    if (sClave != 'identificacion') return null;
+    if (mapValores['tipoIdentificacion'] != ClaseTipoIdentificacion.ruc) return null;
+    return ClaseCapValidar.funcCompletarRuc(sValor);
+  }
+
+  // ── Campos ──────────────────────────────────────────────────────────────
+
+  List<ClaseCampoAbm> crearCampos() {
+
+    final String sIdioma = getIdioma();
+
+    return <ClaseCampoAbm>[
+      ClaseCampoAbm(
+        bCompletarCeros  : true,
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
+            sValor, ClaseIdiomas.getTexto('cliCodigo', sIdioma), sIdioma),
+        iAnchoCaracteres : 6,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'codigo',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliCodigo', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'nombre',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliNombre', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintNombre', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        oTipo            : EnumTipoCampoAbm.texto,

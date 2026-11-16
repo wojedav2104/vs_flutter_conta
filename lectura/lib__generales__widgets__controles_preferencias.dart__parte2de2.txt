@@ -1,0 +1,16 @@
+RUTA ORIGINAL: lib/generales/widgets/controles_preferencias.dart
+PARTE 2 DE 2
+---
+laves[i], oPreferencias.getIdioma()),
+                     style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+              ],
+            ),
+          ),
+      ],
+      onChanged       : funcAlElegir,
+      underline       : const SizedBox.shrink(),
+      value           : sValor,
+    );
+  }
+
+}

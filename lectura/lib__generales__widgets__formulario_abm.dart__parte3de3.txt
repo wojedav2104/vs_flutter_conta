@@ -1,0 +1,118 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
+PARTE 3 DE 3
+---
+String, dynamic> oRegistro) {
+    return <String, String>{
+      for (final ClaseCampoAbm oCampo in widget.listCampos)
+        oCampo.sClave: (oRegistro[oCampo.sClave] ?? '').toString(),
+    };
+  }
+
+  void _alCambiarCampo(String sClave, String sValor) {
+    setState(() {
+      mapValores[sClave] = sValor;
+      final Map<String, String>? mapActualizaciones =
+          widget.funcActualizarCampos?.call(mapValores);
+      if (mapActualizaciones != null) mapValores.addAll(mapActualizaciones);
+    });
+  }
+
+  bool _getHabilitado(ClaseCampoAbm oCampo) {
+    return bModoEdicion
+        && !oCampo.bSiempreDeshabilitado
+        && !oCampo.bSoloLecturaPorRol
+        && (oCampo.funcActualizarEstado?.call(mapValores) ?? true);
+  }
+
+  // ── Botonera ─────────────────────────────────────────────────────────────
+
+  Set<EnumBotonAbm> _getBotonesHabilitados() {
+    return <EnumBotonAbm>{
+      if (!bModoEdicion
+          && !(widget.bTablaUnSoloRegistro && widget.listRegistros.isNotEmpty))
+        EnumBotonAbm.agregar,
+      if (iRegistro >= 0 && !bModoEdicion) ...<EnumBotonAbm>[
+        EnumBotonAbm.modificar,
+        EnumBotonAbm.borrar,
+      ],
+      if (widget.bPermitirEncontrar && !widget.bTablaUnSoloRegistro && !bModoEdicion)
+        EnumBotonAbm.encontrar,
+      if (bModoEdicion) ...<EnumBotonAbm>[
+        EnumBotonAbm.grabar,
+        EnumBotonAbm.cancelar,
+      ],
+      EnumBotonAbm.fin,
+    };
+  }
+
+  void _alClicarBoton(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   agregar();
+      case EnumBotonAbm.borrar:    borrar();
+      case EnumBotonAbm.cancelar:  cancelar();
+      case EnumBotonAbm.encontrar: encontrar();
+      case EnumBotonAbm.fin:       Navigator.of(context).pop();
+      case EnumBotonAbm.grabar:    grabar();
+      case EnumBotonAbm.modificar: modificar();
+    }
+  }
+
+  // ── Ventanas de mensajes ─────────────────────────────────────────────────
+
+  Future<void> _mostrarError(String sTexto) async {
+    if (!mounted) return;
+    await funcMostrarError(
+      context,
+      getIdioma(),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
+      sTexto,
+    );
+  }
+
+  Future<void> _mostrarInformacion(String sTexto) async {
+    if (!mounted) return;
+    await funcMostrarInformacion(
+      context,
+      getIdioma(),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
+      sTexto,
+    );
+  }
+
+  // ── Construcción de la interfaz ──────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext oContexto) {
+
+    // Resetear el pedido de foco después de este frame.                   ← CAMBIO item 10
+    if (bPedirFoco) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bPedirFoco = false;
+      });
+    }
+
+    return ClaseAndamiajeAbm(
+      funcAlClicar    : _alClicarBoton,
+      funcSeleccionar : seleccionar,
+      iRegistro       : iRegistro,
+      listCampos      : widget.listCampos,
+      listRegistros   : widget.listRegistros,
+      oFormulario     : ClaseFormularioCampos(
+        key                : _oLlaveFormulario,            // ← CAMBIO item 14
+        bAutoFocus         : bPedirFoco,                   // ← CAMBIO item 10
+        funcAlCambiarCampo : _alCambiarCampo,
+        funcAlPerderFoco   : widget.funcAlPerderFoco,
+        funcEsHabilitado   : _getHabilitado,
+        funcEtiquetaGrupo  : widget.funcEtiquetaGrupo,     // ← CAMBIO etiqueta de grupo
+        listCampos         : widget.listCampos,
+        mapValores         : mapValores,
+        sIdioma            : getIdioma(),
+      ),
+      setHabilitados : _getBotonesHabilitados(),
+      sIdioma        : getIdioma(),
+      sTitulo        : widget.sTitulo,
+    );
+  }
+
+}
+

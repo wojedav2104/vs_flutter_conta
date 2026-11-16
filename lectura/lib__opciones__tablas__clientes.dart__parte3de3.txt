@@ -1,0 +1,36 @@
+RUTA ORIGINAL: lib/opciones/tablas/clientes.dart
+PARTE 3 DE 3
+---
+      'tipoCliente'        : ClaseLocalExterior.local,
+        'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
+      },
+      <String, dynamic>{
+        'celular'            : '0982 654 321',
+        'codigo'             : '000002',
+        'direccion'          : 'Mariscal López 567',
+        'email'              : 'maria@email.com',
+        'esDiplomatico'      : ClaseSiNo.no,
+        'identificacion'     : '2345678',
+        'localidad'          : 'Luque',
+        'nombre'             : 'María González',
+        'telefono'           : '021 600 500',
+        'tipoCliente'        : ClaseLocalExterior.local,
+        'tipoIdentificacion' : ClaseTipoIdentificacion.cedula,
+      },
+      <String, dynamic>{
+        'celular'            : '+33 6 12 34 56 78',
+        'codigo'             : '000003',
+        'direccion'          : 'Ruta 1 Km 8',
+        'email'              : 'pierre@email.com',
+        'esDiplomatico'      : ClaseSiNo.si,
+        'identificacion'     : 'AB123456',
+        'localidad'          : 'Encarnación',
+        'nombre'             : 'Pierre Dupont',
+        'telefono'           : '071 200 300',
+        'tipoCliente'        : ClaseLocalExterior.exterior,
+        'tipoIdentificacion' : ClaseTipoIdentificacion.pasaporte,
+      },
+    ];
+  }
+
+}

@@ -1,0 +1,105 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 5 DE 6
+---
+Vigencia()
+                          : ClaseFechas.getAnoMaximo(),
+                      12, 31),
+                  );
+                  if (fElegida != null) {
+                    final String sFecha = funcFormatearFecha(fElegida);
+                    oControl.text = sFecha;
+                    widget.funcAlCambiar(sFecha);
+                  }
+                }
+              : null,
+        ),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
+      ],
+    );
+  }
+
+  // ── Hora ─────────────────────────────────────────────────────────────────
+
+  Widget _construirHora(BuildContext oContexto) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+            keyboardType : TextInputType.datetime,
+            onChanged    : _alCambiarHora,
+            onSubmitted  : (_) => _normalizarHora(),
+            decoration   : _getDecoracion(sHint: 'hh:mm'),
+          ),
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio04),
+        IconButton(
+          tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
+          icon      : const Icon(Icons.schedule),
+          onPressed : widget.bHabilitado
+              ? () async {
+                  final int? iMinutos = await funcMostrarSelectorHora(
+                    oContexto,
+                    widget.sIdioma,
+                    widget.sValor,
+                  );
+                  if (iMinutos != null) {
+                    final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+                    oControl.text = sHora;
+                    widget.funcAlCambiar(sHora);
+                  }
+                }
+              : null,
+        ),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
+      ],
+    );
+  }
+
+  /// Normaliza la hora mientras se teclea: el valor interno siempre queda
+  /// en formato hh:mm. El display solo se corrige cuando los minutos ya
+  /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
+  void _alCambiarHora(String sValor) {
+    final int? iMinutos = funcParsearHora(sValor);
+    final String sHora = (iMinutos != null)
+        ? funcFormatearHora(iMinutos ~/ 60, iMinutos % 60)
+        : sValor;
+    widget.funcAlCambiar(sHora);
+    if (sHora != oControl.text && RegExp(r':\d{2}$').hasMatch(sValor.trim())) {
+      oControl.value = TextEditingValue(
+        text      : sHora,
+        selection : TextSelection.collapsed(offset: sHora.length),
+      );
+    }
+  }
+
+  /// Normaliza el display al confirmar (Enter): rellena con ceros.
+  /// Ej: '1:30' → '01:30', '12:5' → '12:05', '9:8' → '09:08'.
+  void _normalizarHora() {
+    final int? iMinutos = funcParsearHora(oControl.text);
+    if (iMinutos != null) {
+      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+      if (sHora != oControl.text) {
+        oControl.text = sHora;
+        widget.funcAlCambiar(sHora);
+      }
+    }
+  }
+
+  // ── Lista (dropdown) ─────────────────────────────────────────────────────
+
+  Widget _construirLista(BuildContext oContexto) {
+    final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
+    final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
+    return DropdownButtonFormField<String>(
+      key          : ValueKey<String>('${widget.oCampo.sClave}_${widget.sValor}'),
+      initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
+      isExpanded   : true,
+      // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
+      style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+      decoration   : _getDecoracion(),
+      items: <DropdownMenuItem<String>>[
+        for (int i = 0; i < 

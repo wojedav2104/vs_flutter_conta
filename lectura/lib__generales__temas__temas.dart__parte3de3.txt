@@ -1,0 +1,10 @@
+RUTA ORIGINAL: lib/generales/temas/temas.dart
+PARTE 3 DE 3
+---
+    .merge(ClaseGenEstilosTexto.oTextTheme)
+          .apply(fontSizeFactor: ClaseGenEstilosTexto.dFactorTexto),
+    );
+  }
+
+}
+

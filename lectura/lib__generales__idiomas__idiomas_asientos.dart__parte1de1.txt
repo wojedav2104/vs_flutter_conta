@@ -1,0 +1,68 @@
+RUTA ORIGINAL: lib/generales/idiomas/idiomas_asientos.dart
+PARTE 1 DE 1
+---
+/// Textos del idioma: Asientos y detalle contable.
+///
+/// Las claves det* son compartidas por los formularios cabecera/detalle
+/// (Asientos y Libro Compras); las claves asi* son exclusivas de Asientos.
+abstract final class ClaseIdiomasAsientos {
+
+  static const Map<String, String> mapEs = <String, String>{
+    // ── Detalle contable (compartido) ────────────────────────────────────
+    'detAgregarFila'     : 'Agregar fila',
+    'detBorrarFila'      : 'Eliminar esta fila',
+    'detConcepto'        : 'Concepto',
+    'detCuenta'          : 'Cuenta N°',
+    'detDebe'            : 'Debe',
+    'detDetalleVacio'    : 'Debe agregar al menos una fila de detalle con una cuenta',
+    'detErrorDebeHaber'  : 'Debe indicar el importe del Debe o el del Haber en cada fila de detalle (uno solo de los dos)',
+    'detErrorFila'       : 'Fila {0}: {1}',
+    'detFila'            : 'Fila',
+    'detHaber'           : 'Haber',
+    'detHintConcepto'    : 'Concepto del movimiento',
+    'detHintCuenta'      : 'Número de cuenta',
+    'detHintNombreCuenta': 'Nombre de la cuenta contable',
+    'detHintSubcuenta'   : 'N° subcuenta',
+    'detNombreCuenta'    : 'Nombre de la cuenta',
+    'detSubcuenta'       : 'Subc.',
+    'detTotales'         : 'TOTALES',
+    // ── Pantalla Asientos ───────────────────────────────────────────────
+    'asiComentarios'     : 'Comentarios',
+    'asiEjercicio'       : 'Ejercicio contable',
+    'asiFecha'           : 'Fecha del asiento',
+    'asiHintComentarios' : 'Comentarios sobre este asiento contable',
+    'asiHintSucursal'    : 'Código y Nombre de la sucursal',
+    'asiNumero'          : 'Número del asiento',
+    'asiSucursal'        : 'Sucursal',
+  };
+
+  static const Map<String, String> mapFr = <String, String>{
+    // ── Detalle contable (compartido) ────────────────────────────────────
+    'detAgregarFila'     : 'Ajouter une ligne',
+    'detBorrarFila'      : 'Supprimer cette ligne',
+    'detConcepto'        : 'Libellé',
+    'detCuenta'          : 'Compte N°',
+    'detDebe'            : 'Doit',
+    'detDetalleVacio'    : 'Vous devez ajouter au moins une ligne de détail avec un compte',
+    'detErrorDebeHaber'  : 'Vous devez indiquer le montant du Doit ou de l\'Avoir dans chaque ligne de détail (un seul des deux)',
+    'detErrorFila'       : 'Ligne {0} : {1}',
+    'detFila'            : 'Ligne',
+    'detHaber'           : 'Avoir',
+    'detHintConcepto'    : 'Libellé du mouvement',
+    'detHintCuenta'      : 'Numéro de compte',
+    'detHintNombreCuenta': 'Nom du compte comptable',
+    'detHintSubcuenta'   : 'N° sous-compte',
+    'detNombreCuenta'    : 'Nom du compte',
+    'detSubcuenta'       : 'Sous-c.',
+    'detTotales'         : 'TOTAUX',
+    // ── Pantalla Asientos ───────────────────────────────────────────────
+    'asiComentarios'     : 'Commentaires',
+    'asiEjercicio'       : 'Exercice comptable',
+    'asiFecha'           : 'Date de l\'écriture',
+    'asiHintComentarios' : 'Commentaires sur cette écriture comptable',
+    'asiHintSucursal'    : 'Code et nom de la succursale',
+    'asiNumero'          : 'Numéro de l\'écriture',
+    'asiSucursal'        : 'Succursale',
+  };
+
+}

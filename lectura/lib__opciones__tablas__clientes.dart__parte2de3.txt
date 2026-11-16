@@ -1,0 +1,91 @@
+RUTA ORIGINAL: lib/opciones/tablas/clientes.dart
+PARTE 2 DE 3
+---
+        sClave           : 'direccion',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliDireccion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintDireccion', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'telefono',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliTelefono', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintTelefono', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'celular',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliCelular', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintCelular', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'localidad',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliLocalidad', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintLocalidad', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'email',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliEmail', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintEmail', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(
+            ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
+        listValores      : ClaseTipoIdentificacion.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoIdentificacion',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliTipoIdentificacion', sIdioma),
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
+      ),
+      ClaseCampoAbm(
+        bMayusculas     : true,
+        bObligatorio     : true,
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'identificacion',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliIdentificacion', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('cliHintIdentificacion', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseLocalExterior.getListOpciones(sIdioma)),
+        listOpciones     : ClaseLocalExterior.getListOpciones(sIdioma),
+        listValores      : ClaseLocalExterior.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoCliente',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliTipoCliente', sIdioma),
+        sValorDefecto    : ClaseLocalExterior.local,
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'esDiplomatico',
+        sEtiqueta        : ClaseIdiomas.getTexto('cliEsDiplomatico', sIdioma),
+        sValorDefecto    : ClaseSiNo.no,
+      ),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+  // Los RUC tienen dígito verificador válido según funcDigitoVerificador.
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'celular'            : '0981 123 456',
+        'codigo'             : '000001',
+        'direccion'          : 'Av. España 1234',
+        'email'              : 'juan@email.com',
+        'esDiplomatico'      : ClaseSiNo.no,
+        'identificacion'     : '1234567-9',
+        'localidad'          : 'Asunción',
+        'nombre'             : 'Juan Pérez',
+        'telefono'           : '021 500 400',
+  

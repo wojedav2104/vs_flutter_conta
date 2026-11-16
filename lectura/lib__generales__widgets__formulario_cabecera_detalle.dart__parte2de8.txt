@@ -1,0 +1,116 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 2 DE 8
+---
+or celda, para conservar el cursor y actualizar valores
+  /// derivados (ej: el nombre de la cuenta).
+  List<Map<String, TextEditingController>> listControles =
+      <Map<String, TextEditingController>>[];
+
+  Map<String, String> mapValores = <String, String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar, seleccionar la primera fila de la
+    //   grilla si hay registros, para que el formulario muestre sus datos.
+    if (widget.listRegistros.isNotEmpty) {
+      iRegistro  = 0;
+      mapValores = _desdeRegistro(widget.listRegistros[0]);
+      _reemplazarDetalles(_desdeDetalles(widget.listRegistros[0]));
+    }
+  }
+
+  @override
+  void dispose() {
+    _liberarControles();
+    super.dispose();
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Controles de las celdas ──────────────────────────────────────────────
+
+  Map<String, TextEditingController> _crearControles(Map<String, String> mapFila) {
+    return <String, TextEditingController>{
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+        oCampo.sClave: TextEditingController(text: mapFila[oCampo.sClave] ?? ''),
+    };
+  }
+
+  void _liberarControles() {
+    for (final Map<String, TextEditingController> mapCtrl in listControles) {
+      for (final TextEditingController oCtrl in mapCtrl.values) {
+        oCtrl.dispose();
+      }
+    }
+    listControles = <Map<String, TextEditingController>>[];
+  }
+
+  void _reemplazarDetalles(List<Map<String, String>> listNuevas) {
+    _liberarControles();
+    listDetalles  = listNuevas;
+    listControles = <Map<String, TextEditingController>>[
+      for (final Map<String, String> mapFila in listDetalles) _crearControles(mapFila),
+    ];
+  }
+
+  void _sincronizarControles(int iFila, Map<String, String> mapFila) {
+    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+      final TextEditingController? oCtrl = listControles[iFila][oCampo.sClave];
+      final String sValor = mapFila[oCampo.sClave] ?? '';
+      if (oCtrl != null && oCtrl.text != sValor) oCtrl.text = sValor;
+    }
+  }
+
+  // ── Acciones del formulario ──────────────────────────────────────────────
+
+  void agregar() {
+    setState(() {
+      mapValores = <String, String>{
+        for (final ClaseCampoAbm oCampo in widget.listCamposCabecera)
+          oCampo.sClave: oCampo.sValorDefecto ?? '',
+      };
+      _reemplazarDetalles(<Map<String, String>>[_crearFilaVacia()]);
+      iRegistro    = -1;
+      bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
+    });
+  }
+
+  void modificar() {
+    if (iRegistro < 0) return;
+    final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
+    setState(() {
+      mapValores = _desdeRegistro(oRegistro);
+      _reemplazarDetalles(_desdeDetalles(oRegistro));
+      bModoEdicion = true;
+      bPedirFoco   = true;                              // ← CAMBIO item 10
+    });
+  }
+
+  Future<void> borrar() async {
+    if (iRegistro < 0) return;
+    final EnumRespuestaConfirmacion oRespuesta = await funcMostrarConfirmacion(
+      context,
+      getIdioma(),
+      widget.sTitulo,
+      ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
+      bMostrarCancelar : false,
+    );
+    if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
+    setState(() {
+      widget.listRegistros.removeAt(iRegistro);
+      mapValores   = <String, String>{};
+      _reemplazarDetalles(<Map<String, String>>[]);
+      iRegistro    = -1;
+      bModoEdicion = false;
+    });
+    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
+  }
+
+  void cancelar() {
+    setState(() {
+      if (iRegistro >= 0) {
+        final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
+        mapValores = _desdeRegistro(oRegistro);
+        _reemplazarDetalles(_desdeDetalles(oRegistro));

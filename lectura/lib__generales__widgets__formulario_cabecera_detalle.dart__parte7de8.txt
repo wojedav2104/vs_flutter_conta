@@ -1,0 +1,92 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 7 DE 8
+---
+children: <Widget>[
+          SizedBox(
+            width : ClaseGenLayout.dAnchoNumeroFila,
+            child : Text('${iFila + 1}',
+                style: ClaseGenEstilosTexto.normalChico(oContexto)),
+          ),
+          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+            SizedBox(
+              width : oCampo.getAnchoColumna(),
+              child : Padding(
+                padding : const EdgeInsets.only(right: ClaseGenEspacios.dEspacio04),
+                child   : _construirCelda(oContexto, iFila, oCampo),
+              ),
+            ),
+          SizedBox(
+            width : ClaseGenLayout.dAnchoAccionesFila,
+            child : Row(
+              mainAxisSize : MainAxisSize.min,
+              children     : <Widget>[
+                IconButton(
+                  tooltip   : ClaseIdiomas.getTexto('menuSubirFila', getIdioma()),
+                  icon      : const Icon(Icons.keyboard_arrow_up),
+                  onPressed : (bModoEdicion && iFila > 0) ? () => subirFila(iFila) : null,
+                ),
+                IconButton(
+                  tooltip   : ClaseIdiomas.getTexto('menuBajarFila', getIdioma()),
+                  icon      : const Icon(Icons.keyboard_arrow_down),
+                  onPressed : (bModoEdicion && iFila < listDetalles.length - 1)
+                      ? () => bajarFila(iFila)
+                      : null,
+                ),
+                IconButton(
+                  tooltip   : ClaseIdiomas.getTexto('detBorrarFila', getIdioma()),
+                  icon      : const Icon(Icons.delete_outline),
+                  onPressed : bModoEdicion ? () => borrarFila(iFila) : null,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirCelda(BuildContext oContexto, int iFila, ClaseCampoAbm oCampo) {
+    final String sValor = listDetalles[iFila][oCampo.sClave] ?? '';
+    final bool bHabilitado = bModoEdicion
+        && !oCampo.bSiempreDeshabilitado
+        && !oCampo.bSoloLecturaPorRol;
+    switch (oCampo.oTipo) {
+      case EnumTipoCampoAbm.lista:
+        final List<String> listOpciones = oCampo.listOpciones ?? <String>[];
+        final List<String> listValores  = oCampo.listValores  ?? listOpciones;
+        return DropdownButtonFormField<String>(
+          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
+          initialValue : listValores.contains(sValor) ? sValor : null,
+          isExpanded   : true,
+          decoration   : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+          items: <DropdownMenuItem<String>>[
+            for (int i = 0; i < listOpciones.length; i++)
+              DropdownMenuItem<String>(
+                value : listValores[i],
+                child : Text(listOpciones[i],
+                    style: ClaseGenEstilosTexto.normalChico(oContexto)),
+              ),
+          ],
+          onChanged: bHabilitado
+              ? (String? sNuevo) => _alCambiarFila(iFila, oCampo.sClave, sNuevo ?? '')
+              : null,
+        );
+      case EnumTipoCampoAbm.numero:
+        return TextField(
+          controller      : listControles[iFila][oCampo.sClave],
+          enabled         : bHabilitado,
+          style           : ClaseGenEstilosTexto.normalChico(oContexto),
+          textAlign       : TextAlign.right,
+          inputFormatters : <TextInputFormatter>[
+            if (oCampo.bTieneDecimales)
+              ClaseFormateadorImporte()
+            else
+              FilteringTextInputFormatter.digitsOnly,
+            if (oCampo.iAnchoCaracteres > 0)
+              LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres),
+          ],
+          onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+        );
+      default:
+        return TextField(

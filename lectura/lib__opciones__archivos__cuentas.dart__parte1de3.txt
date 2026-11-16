@@ -1,0 +1,98 @@
+RUTA ORIGINAL: lib/opciones/archivos/cuentas.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+
+import '../../generales/idiomas/idiomas.dart';
+import '../../generales/modelos/campo_abm.dart';
+import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+import '../../generales/varios/paises.dart';
+import '../../generales/widgets/formulario_abm.dart';
+
+import '../../opciones/tablas/empresa.dart';
+
+/// Pantalla del Plan de Cuentas (ABM de múltiples registros con pestañas).
+///
+/// Dos grupos: "Principal" (Plan de Cuentas local) y "Alternativo" (Plan de
+/// Cuentas de Francia). Datos comunes (Ejercicio, Sucursal) fuera de pestañas.
+///
+/// Correspondencia uno a uno entre cada cuenta local y la cuenta de Francia.
+/// Al conectar la Base de Datos, Cuenta Superior será búsqueda desde el
+/// propio Plan de Cuentas.
+class ClaseCuentas extends StatefulWidget {
+
+  const ClaseCuentas({
+    super.key,
+    required this.oPreferencias,
+  });
+
+  final ClasePreferencias oPreferencias;
+
+  @override
+  State<ClaseCuentas> createState() => ClaseEstadoCuentas();
+}
+
+class ClaseEstadoCuentas extends State<ClaseCuentas> {
+
+  late final List<ClaseCampoAbm>        listCampos;
+  late final List<Map<String, dynamic>> listRegistros;
+
+  @override
+  void initState() {
+    super.initState();
+    listCampos    = crearCampos();
+    listRegistros = crearRegistrosPrueba();
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return ClaseFormularioAbm(
+      funcActualizarCampos : actualizarCampos,
+      funcEtiquetaGrupo    : (String sClave) => (sClave == 'planPrincipal')
+          ? '${ClaseIdiomas.getTexto('planPrincipal', getIdioma())} '
+            '(${ClasePaises.getNombre(ClaseEmpresa.getPaisElegido(), getIdioma())})'
+          : ClaseIdiomas.getTexto(sClave, getIdioma()),
+      funcValidarRegistro  : validarRegistro,
+      listCampos           : listCampos,
+      listRegistros        : listRegistros,
+      oPreferencias        : widget.oPreferencias,
+      sTitulo              : ClaseIdiomas.getTexto('menuPlanCuentas', getIdioma()),
+    );
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Habilitación dinámica ───────────────────────────────────────────────
+
+  /// La cuenta superior se habilita solo si la cuenta tiene más de un grupo.
+  bool habilitarCuentaSuperior(Map<String, String> mapValores, String sPrefijo) {
+    return ClaseCapValidar.contarGruposCuenta(
+        mapValores['${sPrefijo}NumeroCuenta'] ?? '') > 1;
+  }
+
+  // ── Actualización automática de campos dependientes ─────────────────────
+
+  /// Por cada grupo (pri y alt):
+  ///   · Nivel: se deriva de la cantidad de grupos de la cuenta (1.01.04 → 3).
+  ///   · Cuenta superior: sugerida quitando el último grupo (1.01.04 → 1.01),
+  ///     solo si está vacía (la jerarquía puede no seguir la numeración).
+  ///     Se vacía sola si la cuenta es raíz (un solo grupo: "1", "10").
+  Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
+    final Map<String, String> mapActualizaciones = <String, String>{};
+    for (final String sPrefijo in <String>['pri', 'alt']) {
+      final String sCuenta = (mapValores['${sPrefijo}NumeroCuenta'] ?? '').trim();
+      if (ClaseCapValidar.esFormatoCuenta(sCuenta)) {
+        mapActualizaciones['${sPrefijo}Nivel'] =
+            '${ClaseCapValidar.contarGruposCuenta(sCuenta)}';
+        // Solo se sugiere si está vacía (la jerarquía puede no seguir la
+        // numeración); las raíces quedan sin superior.
+        final String sSuperior = (mapValores['${sPrefijo}CuentaSuperior'] ?? '').trim();
+        mapActualizaciones['${sPrefijo}CuentaSuperior'] =
+            (ClaseCapValidar.contarGruposCuenta(sCuenta) <= 1)
+                ? ''
+                : (sSuperior.isEmpty
+                    ? ClaseCapValidar.funcCuentaSuperior(sCuenta)
+       

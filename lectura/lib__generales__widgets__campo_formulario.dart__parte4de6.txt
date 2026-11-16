@@ -1,0 +1,105 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 4 DE 6
+---
+turn _construirLista(oContexto);
+      case EnumTipoCampoAbm.logico:
+        return _construirLogico(oContexto);
+      case EnumTipoCampoAbm.numero:
+        return _construirTexto(oContexto, bNumero: true);
+      case EnumTipoCampoAbm.texto:
+        return _construirTexto(oContexto);
+    }
+  }
+
+  // ── Texto y número ──────────────────────────────────────────────────────
+
+  Widget _construirTexto(BuildContext oContexto, {bool bNumero = false}) {
+
+    final String? sMascara = _getMascara();
+
+    // Si hay máscara y cambió, re-aplicarla al valor actual. Solo texto:
+    // el número se formatea al salir del campo (item 9).
+    if (!bNumero && sMascara != null && sMascara != sMascaraActual) {
+      sMascaraActual = sMascara;
+      final String sDigitos = widget.sValor.replaceAll(RegExp(r'[^0-9]'), '');
+      final String sConMascara = funcAplicarMascara(sDigitos, sMascara);
+      if (sConMascara != widget.sValor) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            oControl.text = sConMascara;
+            widget.funcAlCambiar(sConMascara);
+          }
+        });
+      }
+    }
+
+    return TextField(
+      controller      : oControl,
+      enabled         : widget.bHabilitado,
+      focusNode       : oFoco,
+      style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+      textAlign       : bNumero ? TextAlign.right : TextAlign.left,
+      keyboardType    : bNumero
+          ? (widget.oCampo.bTieneDecimales
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : TextInputType.number)
+          : null,
+      inputFormatters : _getFormateadores(bNumero),
+      onChanged       : (String sValor) =>
+          _alCambiarTexto(sValor, bConMascara: !bNumero),    // ← CAMBIO item 9
+      decoration      : _getDecoracion(
+        sHint        : widget.oCampo.sHint,
+        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
+      ),
+    );
+  }
+
+  List<TextInputFormatter>? _getFormateadores(bool bNumero) {
+    if (!bNumero) {
+      return widget.oCampo.iAnchoCaracteres > 0
+          ? <TextInputFormatter>[
+              LengthLimitingTextInputFormatter(widget.oCampo.iAnchoCaracteres),
+            ]
+          : null;
+    }
+    // Número: decimales o enteros.
+    return <TextInputFormatter>[
+      if (widget.oCampo.bTieneDecimales)
+        ClaseFormateadorImporte()
+      else
+        FilteringTextInputFormatter.digitsOnly,
+      if (widget.oCampo.iAnchoCaracteres > 0)
+        LengthLimitingTextInputFormatter(widget.oCampo.iAnchoCaracteres),
+    ];
+  }
+
+  // ── Fecha ────────────────────────────────────────────────────────────────
+
+  Widget _construirFecha(BuildContext oContexto) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+            keyboardType : TextInputType.datetime,
+            onChanged    : (String sValor) => widget.funcAlCambiar(sValor),
+            decoration   : _getDecoracion(sHint: 'dd/mm/aaaa'),
+          ),
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio04),
+        IconButton(
+          tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
+          icon      : const Icon(Icons.calendar_month),
+          onPressed : widget.bHabilitado
+              ? () async {
+                  final DateTime? fElegida = await funcMostrarSelectorFecha(
+                    oContexto,
+                    widget.sIdioma,
+                    funcParsearFecha(widget.sValor) ?? DateTime.now(),
+                    DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+                    DateTime(
+                      widget.oCampo.bVigencia
+                          ? ClaseFechas.getAnoMaximo

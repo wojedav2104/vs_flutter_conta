@@ -1,0 +1,106 @@
+RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
+PARTE 1 DE 7
+---
+import '../idiomas/idiomas.dart';
+import '../utilitarios/formatos.dart';
+import '../modelos/documentos.dart';
+
+
+/// Validaciones de los distintos tipos de datos, con mensajes en el idioma
+/// del usuario. Todas devuelven null si el valor es válido, o un mensaje de
+/// error traducido. Las cadenas de error admiten {0}, {1} (cuando el texto
+/// traducido se construye por partes).
+///
+/// Los textos de error (valid*) se definen en idiomas_validaciones y se usan con ClaseIdiomas.getTexto + replaceAll.
+class ClaseCapValidar {
+
+  // ── Texto ─────────────────────────────────────────────────────────────
+
+  /// El valor no puede estar vacío.
+  static String? validarObligatorio(String sValor, String sEtiqueta, String sIdioma) {
+    if (sValor.trim().isEmpty) {
+      return ClaseIdiomas.getTexto('validObligatorio', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// La longitud del valor no puede superar iMaximo caracteres.
+  static String? validarLongitudMaxima(
+      String sValor, String sEtiqueta, int iMaximo, String sIdioma) {
+    if (sValor.length > iMaximo) {
+      return ClaseIdiomas.getTexto('validLongMaxima', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMaximo');
+    }
+    return null;
+  }
+
+  /// La longitud del valor debe ser de al menos iMinimo caracteres.
+  static String? validarLongitudMinima(
+      String sValor, String sEtiqueta, int iMinimo, String sIdioma) {
+    if (sValor.trim().length < iMinimo) {
+      return ClaseIdiomas.getTexto('validLongMinima', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMinimo');
+    }
+    return null;
+  }
+
+  // ── Números ───────────────────────────────────────────────────────────
+
+  /// El valor debe ser un número entero dentro del rango [iMinimo, iMaximo].
+  static String? validarRangoEntero(
+      String sValor, String sEtiqueta, int iMinimo, int iMaximo, String sIdioma) {
+    final int? iNumero = int.tryParse(sValor.trim());
+    if (iNumero == null) {
+      return ClaseIdiomas.getTexto('validSoloEntero', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (iNumero < iMinimo || iNumero > iMaximo) {
+      return ClaseIdiomas.getTexto('validRangoEntero', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMinimo')
+          .replaceAll('{2}', '$iMaximo');
+    }
+    return null;
+  }
+
+  /// El valor debe ser un número entero (con signo opcional).
+  static String? validarSoloEntero(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^[+-]?\d+$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validSoloEntero', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// El valor debe tener exactamente iCantidad dígitos (se ignoran los
+  /// espacios en blanco).
+  static String? validarDigitosExactos(
+      String sValor, String sEtiqueta, int iCantidad, String sIdioma) {
+    final String sDigitos = sValor.replaceAll(' ', '');
+    if (sDigitos.length != iCantidad || !RegExp(r'^\d+$').hasMatch(sDigitos)) {
+      return ClaseIdiomas.getTexto('validDigitosExactos', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iCantidad');
+    }
+    return null;
+  }
+
+  /// El valor debe tener la forma de un número de documento (999-999-9999999).
+  static String? validarNumeroDocumento(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.length != 13) {
+      return ClaseIdiomas.getTexto('validNumeroDocumento', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Formato del N° de documento según el Tipo de documento.
+  ///
+  /// - Los comprobantes con timbrado (01, 02, 03, 04, 06, 09, 10) admite

@@ -1,0 +1,86 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras.dart
+PARTE 4 DE 9
+---
+ar.validarHoraValida(
+            sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.hora,
+        sClave           : 'hora',
+        sEtiqueta        : ClaseIdiomas.getTexto('comHora', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'numeroAsiento',
+        sEtiqueta             : ClaseIdiomas.getTexto('comNumeroAsiento', sIdioma),
+        sGrupo                : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoDocumento.getListOpciones(sIdioma)),
+        listOpciones     : ClaseTipoDocumento.getListOpciones(sIdioma),
+        listValores      : ClaseTipoDocumento.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoDocumento',
+        sEtiqueta        : ClaseIdiomas.getTexto('comTipoDocumento', sIdioma),
+        sGrupo           : 'comGenerales',
+        sValorDefecto    : '01',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcMascara      : (mapValores) => ClaseTipoDocumento.esConMascara(
+            mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
+        iAnchoCaracteres : 16,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'numero',
+        sEtiqueta        : ClaseIdiomas.getTexto('comNumero', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(
+            mapValores['tipoDocumento'] ?? ''),
+        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
+            sValor, ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma),
+        iAnchoCaracteres     : 3,
+        oTipo                : EnumTipoCampoAbm.numero,
+        sClave               : 'cantidadCuotas',
+        sEtiqueta            : ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma),
+        sGrupo               : 'comGenerales',
+        sValorDefecto        : '0',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 48,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'proveedor',
+        sEtiqueta        : ClaseIdiomas.getTexto('comProveedor', sIdioma),
+        sGrupo           : 'comGenerales',
+        sHint            : ClaseIdiomas.getTexto('comHintProveedor', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
+        listValores      : ClaseTipoIdentificacion.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoIdentificacion',
+        sEtiqueta        : ClaseIdiomas.getTexto('comTipoIdentificacion', sIdioma),
+        sGrupo           : 'comGenerales',
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'identificacion',
+        sEtiqueta             : ClaseIdiomas.getTexto('comIdentificacion', sIdioma),
+        sGrupo                : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esConMascara(
+            mapValores['tipoDocumento'] ?? ''),
+        iAnchoCaracteres     : 8,
+        oTipo                : EnumTipoCampoAbm.texto,
+        sClave               : 'timbrado',
+        sEtiqueta            : ClaseIdiomas.getTexto('co

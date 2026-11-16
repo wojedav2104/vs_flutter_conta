@@ -1,0 +1,26 @@
+RUTA ORIGINAL: lib/generales/modelos/campo_abm.dart
+PARTE 2 DE 2
+---
+echa:
+      case EnumTipoCampoAbm.hora:
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
+               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar
+               + ClaseGenLayout.dAnchoIconoFlecha;
+      case EnumTipoCampoAbm.logico:
+      case EnumTipoCampoAbm.numero:
+      case EnumTipoCampoAbm.texto:
+        return iCaracteres * ClaseGenLayout.dAnchoCaracter
+               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar;
+    }
+  }
+
+  /// Ancho de la columna de este campo dentro de la grilla editable de
+  /// detalles (sin iconos: el borrado es por fila completa). La columna es de
+  /// ancho fijo, por eso usa la máscara estática del campo.
+  double getAnchoColumna() {
+    final int iCaracteres = sMascara?.length ?? iAnchoCaracteres;
+    return iCaracteres * ClaseGenLayout.dAnchoCaracter
+           + ClaseGenEspacios.dEspacio48;
+  }
+
+}

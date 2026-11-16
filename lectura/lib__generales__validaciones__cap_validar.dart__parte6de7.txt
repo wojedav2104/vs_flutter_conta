@@ -1,0 +1,93 @@
+RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
+PARTE 6 DE 7
+---
+  if (sTexto.isEmpty) return null;
+    if (funcParsearFecha(sTexto) == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// La subcuenta debe tener exactamente 5 dígitos, entre 00001 y 99999.
+  /// El valor tecleado con menos dígitos se completa con ceros a la
+  /// izquierda antes de validar (regla: 1 → 00001, 123 → 00123).
+  static String? validarNumeroSubcuenta(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{5}$').hasMatch(sTexto) || int.parse(sTexto) < 1) {
+      return ClaseIdiomas.getTexto('validSubcuentaRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Moneda: máximo 15 dígitos enteros y 2 decimales.
+  static String? validarNumeroValor(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{1,15}([.,]\d{1,2})?$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '15');
+    }
+    return null;
+  }
+
+  /// Valor según el Tipo de documento:
+  /// - 07 (Factura de Importación): hasta 20 dígitos enteros y 2 decimales.
+  /// - Los demás tipos (01 Factura Contado, 09 Nota de Débito, 10 Nota de
+  ///   Crédito, etc.): hasta 15 dígitos enteros y 2 decimales.
+  static String? validarNumeroValorPorTipo(
+      String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    // 07 (Factura de Importación) admite hasta 20 dígitos enteros; el
+    // resto, hasta 15. El patrón se arma interpolando iMaximo.
+    final int iMaximo = (sTipoDocumento == '07') ? 20 : 15;
+    if (!RegExp('^[0-9]{1,$iMaximo}([.,][0-9]{1,2})?\$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '$iMaximo');
+    }
+    return null;
+  }
+
+  /// La hora debe estar dentro del rango permitido (ej: 07:00 a 19:00).
+  /// Ej: validarHoraRango('08:30', '07:00', '19:00', …) → null.
+  static String? validarHoraRango(
+      String sValor, String sMinima, String sMaxima, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final String? sError = validarHoraValida(sTexto, sEtiqueta, sIdioma);
+    if (sError != null) return sError;
+    final int iMinima = funcParsearHora(sMinima) ?? 0;
+    final int iMaxima = funcParsearHora(sMaxima) ?? 24 * 60 - 1;
+    final int? iValor = funcParsearHora(sTexto);
+    if (iValor == null || iValor < iMinima || iValor > iMaxima) {
+      return ClaseIdiomas.getTexto('validHoraRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', sMinima)
+          .replaceAll('{2}', sMaxima);
+    }
+    return null;
+  }
+
+  // ── Fechas e importes ─────────────────────────────────────────────────
+
+  /// La fecha debe estar entre el 1 de enero del ejercicio contable y
+  /// a) la fecha de hoy si el ejercicio es el año actual, o b) el 31 de
+  /// diciembre del ejercicio si es anterior al año actual.
+  static String? validarFechaEnEjercicio(
+      String sValor, String sEjercicio, String sEtiqueta, String sIdioma) {
+    final int?      iEjercicio = int.tryParse(sEjercicio.trim());
+    final DateTime? fFecha     = funcParsearFecha(sValor);
+    if (iEjercicio == null || fFecha == null) return null;
+    final DateTime fDesde = DateTime(iEjercicio, 1, 1);
+    final DateTime fHasta = (iEjercicio == DateTime.now().year)
+        ? DateTime.now()
+        : DateTime(iEjercicio, 12, 31);
+    if (fFecha.isBefore(fDesde) || fFecha.isAfter(fHasta)) {
+      return Cl

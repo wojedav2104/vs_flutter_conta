@@ -1,0 +1,19 @@
+RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
+PARTE 4 DE 4
+---
+length - i) % 3 == 0) oSalida.write(sSeparadorMiles);
+    oSalida.write(sEnteros[i]);
+  }
+  if (listPartes[1] != '00') {
+    oSalida..write(sSeparadorDecimal)..write(listPartes[1]);
+  }
+  return '${dValor < 0 ? '-' : ''}$oSalida';
+}
+
+/// Formatea un importe sin separador de miles ('2200000.5'), para escribirlo
+/// en un campo que se parsea con funcParsearNumero.
+String funcFormatearNumeroPlano(double dValor) {
+  final String sBase = dValor.toStringAsFixed(2);
+  return sBase.endsWith('.00') ? sBase.substring(0, sBase.length - 3) : sBase;
+}
+

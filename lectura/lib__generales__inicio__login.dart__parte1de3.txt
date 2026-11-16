@@ -1,0 +1,128 @@
+RUTA ORIGINAL: lib/generales/inicio/login.dart
+PARTE 1 DE 3
+---
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../idiomas/idiomas.dart';
+import '../preferencias/preferencias.dart';
+import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
+import '../temas/layout.dart';
+import '../temas/radios.dart';
+import '../temas/temas.dart';
+import '../validaciones/cap_validar.dart';
+import '../widgets/controles_preferencias.dart';
+import '../widgets/ventana_mensaje.dart';
+import 'pantalla_principal.dart';
+
+
+/// Pantalla de login de VS_CONTA.
+class ClaseLogin extends StatefulWidget {
+  const ClaseLogin({
+    super.key,
+    required this.funcAlCambiar,
+    required this.oPreferencias,
+  });
+
+  final VoidCallback      funcAlCambiar;
+  final ClasePreferencias oPreferencias;
+
+  @override
+  State<ClaseLogin> createState() => ClaseEstadoLogin();
+}
+
+class ClaseEstadoLogin extends State<ClaseLogin> {
+
+  bool bMostrarContrasena = false;
+
+  final TextEditingController oControlContrasena = TextEditingController();
+  final TextEditingController oControlNombre     = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    oControlContrasena.text = ClaseCapValidar.sContrasenaInicial;
+    oControlNombre.text     = ClaseCapValidar.sNombreInicial;
+  }
+
+  @override
+  void dispose() {
+    oControlContrasena.dispose();
+    oControlNombre.dispose();
+    super.dispose();
+  }
+
+  // ── Acciones ────────────────────────────────────────────────────────────
+
+  /// Sale de la aplicación, previa confirmación para evitar salidas
+  /// accidentales.
+  Future<void> cancelar() async {
+    final String sIdioma = widget.oPreferencias.getIdioma();
+    if (!mounted) return;
+    final EnumRespuestaConfirmacion oRespuesta = await funcMostrarConfirmacion(
+      context,
+      sIdioma,
+      ClaseIdiomas.getTexto('aplicacion', sIdioma),
+      ClaseIdiomas.getTexto('confirmarSalir', sIdioma),
+      bMostrarCancelar : false,
+    );
+    if (oRespuesta == EnumRespuestaConfirmacion.si && mounted) {
+      SystemNavigator.pop();
+    }
+  }
+
+  Future<void> ingresar() async {
+
+    final String sIdioma     = widget.oPreferencias.getIdioma();
+    final String sNombre     = oControlNombre.text.trim();
+    final String sContrasena = oControlContrasena.text;
+
+    if (sNombre.isEmpty || sContrasena.isEmpty) {
+      if (!mounted) return;
+      await funcMostrarError(
+        context,
+        sIdioma,
+        ClaseIdiomas.getTexto('aplicacion', sIdioma),
+        ClaseIdiomas.getTexto('campoObligatorio', sIdioma),
+      );
+      return;
+    }
+    if (!ClaseCapValidar.validarCredenciales(sNombre, sContrasena)) {
+      if (!mounted) return;
+      await funcMostrarError(
+        context,
+        sIdioma,
+        ClaseIdiomas.getTexto('aplicacion', sIdioma),
+        ClaseIdiomas.getTexto('credencialesIncorrectas', sIdioma),
+      );
+      return;
+    }
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (oContexto) => ClasePantallaPrincipal(
+          funcAlCambiar : widget.funcAlCambiar,
+          oPreferencias : widget.oPreferencias,
+        ),
+      ),
+    );
+
+  }
+
+  /// Recuperación de contraseña: pide el e-mail y muestra el aviso estándar.
+  /// TODO: cuando exista conexión con la BD, verificar que el e-mail esté
+  /// registrado y enviar el mensaje para crear la nueva contraseña.
+  Future<void> recuperarContrasena() async {
+    final String sIdioma = widget.oPreferencias.getIdioma();
+    if (!mounted) return;
+    final String? sCorreo = await funcMostrarPedirTexto(
+      context,
+      sIdioma,
+      ClaseIdiomas.getTexto('olvidasteContrasena', sIdioma),
+      ClaseIdiomas.getTexto('olvidasteMensaje', sIdioma),
+      ClaseIdiomas.getTexto('correoElectronico', sIdioma),
+    );
+    if (sCorreo == null || !mounted) return;
+    if (!ClaseCapValidar.esCorreoValido(sCorreo)) {
+      await funcMos

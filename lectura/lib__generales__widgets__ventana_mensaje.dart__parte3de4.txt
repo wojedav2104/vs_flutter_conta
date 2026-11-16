@@ -1,0 +1,107 @@
+RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
+PARTE 3 DE 4
+---
+BotonAceptar(BuildContext oContexto, String sIdioma) {
+  return funcConstruirBoton(
+    oContexto : oContexto,
+    sTexto    : ClaseIdiomas.getTexto('aceptar', sIdioma),
+    oIcono    : Icons.check,
+    oAlClicar : () => Navigator.of(oContexto).pop(),
+  );
+}
+
+// ── Selectores de fecha y de hora (sin cambios) ─────────────────────────────
+
+/// Muestra el selector de fecha y devuelve la fecha elegida (o null si se
+/// cancela). La fecha inicial se formatea como dd/mm/aaaa.
+/// Si la fecha inicial está fuera del rango, se ofrece el extremo más cercano.
+Future<DateTime?> funcMostrarSelectorFecha(
+  BuildContext oContexto,
+  String        sIdioma,
+  DateTime      fFecha,
+  DateTime      fPrimeraFecha,
+  DateTime      fUltimaFecha,
+) async {
+  DateTime fInicial = fFecha;
+  if (fInicial.isBefore(fPrimeraFecha)) fInicial = fPrimeraFecha;
+  if (fInicial.isAfter(fUltimaFecha))   fInicial = fUltimaFecha;
+  return showDatePicker(
+    context      : oContexto,
+    locale       : Locale(sIdioma),
+    initialDate  : fInicial,
+    firstDate    : fPrimeraFecha,
+    lastDate     : fUltimaFecha,
+  );
+}
+
+/// Muestra el selector de hora (formato 24 horas) y devuelve los minutos
+/// contados desde las 00:00 (o null si se cancela).
+/// Si la hora actual no es válida, se ofrece la hora del sistema.
+Future<int?> funcMostrarSelectorHora(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sHora,
+) async {
+  final int? iMinutos = funcParsearHora(sHora);
+  final TimeOfDay fInicial = (iMinutos != null)
+      ? TimeOfDay(hour: iMinutos ~/ 60, minute: iMinutos % 60)
+      : TimeOfDay.now();
+  final TimeOfDay? fElegida = await showTimePicker(
+    context     : oContexto,
+    initialTime : fInicial,
+    builder     : (oContextoDialogo, oHijo) => MediaQuery(
+      data: MediaQuery.of(oContextoDialogo)
+              .copyWith(alwaysUse24HourFormat: true),
+      child: oHijo!,
+    ),
+  );
+  return (fElegida == null) ? null : fElegida.hour * 60 + fElegida.minute;
+}
+
+// ── Ventana de entrada de texto (ej: e-mail de recuperación) ────────────────
+
+/// Pide un texto al usuario (campo único). Devuelve el texto escrito
+/// (recortado) o null si se cancela o se cierra la ventana.
+Future<String?> funcMostrarPedirTexto(
+  BuildContext oContexto,
+  String        sIdioma,
+  String        sTitulo,
+  String        sTexto,
+  String        sEtiquetaCampo, {
+  bool bMostrarCancelar = true,
+}) async {
+  final TextEditingController oControl = TextEditingController();
+  final String? sAccion = await showDialog<String>(
+    context            : oContexto,
+    barrierDismissible : false,
+    builder            : (BuildContext oContextoVentana) {
+      return AlertDialog(
+        title: Row(
+          children: <Widget>[
+            Icon(Icons.edit_outlined,
+                 color: Theme.of(oContextoVentana).colorScheme.primary,
+                 size : ClaseGenLayout.dTamanoIconoVentana),
+            const SizedBox(width: ClaseGenEspacios.dEspacio08),
+            Expanded(
+              child: Text(sTitulo,
+                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoVentana)),
+            ),
+            IconButton(
+              tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
+              icon      : const Icon(Icons.close),
+              onPressed : () => Navigator.of(oContextoVentana).pop(),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width : ClaseGenLayout.iAnchoColumnasMensaje * ClaseGenLayout.dAnchoCaracter,
+          child : Column(
+            mainAxisSize : MainAxisSize.min,
+            crossAxisAlignment : CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(sTexto,
+                  style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
+              const SizedBox(height: ClaseGenEspacios.dEspacio16),
+              TextField(
+                controller   : oControl,
+          

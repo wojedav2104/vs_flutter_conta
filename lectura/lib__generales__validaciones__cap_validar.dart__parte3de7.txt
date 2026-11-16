@@ -1,0 +1,102 @@
+RUTA ORIGINAL: lib/generales/validaciones/cap_validar.dart
+PARTE 3 DE 7
+---
+;
+    if (fValor == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (fValor.isBefore(fMinima)) {
+      return ClaseIdiomas.getTexto('validFechaAnterior', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima));
+    }
+    return null;
+  }
+  
+  /// La fecha no puede ser anterior a la mínima (ej: no antes del 01/01/2020).
+  /// Una fecha no vacía con formato inválido también es error.
+  static String? validarFechaNoAnterior(
+      String sValor, String sEtiqueta, DateTime fMinima, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final DateTime? fValor = funcParsearFecha(sTexto);
+    if (fValor == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    if (fValor.isBefore(fMinima)) {
+      return ClaseIdiomas.getTexto('validFechaAnterior', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', funcFormatearFecha(fMinima));
+    }
+    return null;
+  }
+  /// El ejercicio debe ser un año dentro del rango admitido por la
+  /// aplicación (ClaseFechas es la única fuente de esos límites).
+  static String? validarEjercicio(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final int? iAno = int.tryParse(sTexto);
+    if (iAno == null
+        || iAno < ClaseFechas.iAnoMinimo
+        || iAno > ClaseFechas.getAnoMaximo()) {
+      return ClaseIdiomas.getTexto('validEjercicioRango', sIdioma)
+          .replaceAll('{0}', sEtiqueta)
+          .replaceAll('{1}', '${ClaseFechas.iAnoMinimo}')
+          .replaceAll('{2}', '${ClaseFechas.getAnoMaximo()}');
+    }
+    return null;
+  }
+
+  /// RUC con dígito verificador (módulo 11).
+  static String? validarRuc(String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    if (!RegExp(r'^\d{6,8}-\d$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validIdentRuc', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    final int iDv = funcDigitoVerificador(sTexto.split('-')[0]);
+    if (iDv != int.parse(sTexto.split('-')[1])) {
+      return ClaseIdiomas.getTexto('validIdentRucDv', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
+  /// Validación general de la identificación según el tipo.
+  static String? validarIdentificacion(
+      String sValor, String sTipoIdentificacion, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+
+    // Pasaporte: letras mayúsculas, dígitos y guiones, hasta 20 caracteres
+    // (el campo se pone en mayúsculas al escribir).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.pasaporte) {
+      if (!RegExp(r'^[A-Z0-9-]{1,20}$').hasMatch(sTexto)) {
+        return ClaseIdiomas.getTexto('validIdentPasaporte', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // RUC: con dígito verificador.
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.ruc) {
+      return validarRuc(sTexto, sEtiqueta, sIdioma);
+    }
+
+    // Cédula de identidad: de 5 a 8 dígitos (se permiten puntos).
+    if (sTipoIdentificacion == ClaseTipoIdentificacion.cedula) {
+      final String sDigitos = sTexto.replaceAll('.', '');
+      if (!RegExp(r'^\d{5,8}$').hasMatch(sDigitos)) {
+        return ClaseIdiomas.getTexto('validIdentCedula', sIdioma)
+            .replaceAll('{0}', sEtiqueta);
+      }
+      return null;
+    }
+
+    // Cédula extranjera, diplomáticos y otros: de 5 a 15 caracteres.
+    if (!RegExp(r'^[A-Za-z0-9.\-]{5,15}$').hasMatch(sTexto)) {
+      return ClaseIdiomas.getTexto('validIdentOtros', sIdioma)
+          .replaceAll('{0}', sEtiqueta);

@@ -1,0 +1,84 @@
+RUTA ORIGINAL: lib/generales/inicio/login.dart
+PARTE 3 DE 3
+---
+(ClaseIdiomas.getTexto('nombre', sIdioma),
+                 style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+            Text(' *',
+                 style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error)),
+          ],
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+        ),
+      ),
+    );
+  }
+
+  Widget construirCampoContrasena(BuildContext oContexto) {
+    final String sIdioma = widget.oPreferencias.getIdioma();
+    return TextField(
+      controller        : oControlContrasena,
+      obscureText       : !bMostrarContrasena,
+      autocorrect       : false,
+      enableSuggestions : false,
+      style             : ClaseGenEstilosTexto.textoCampo(oContexto),
+      textInputAction   : TextInputAction.done,
+      onSubmitted       : (sValor) => ingresar(),
+      decoration        : InputDecoration(
+        label : Row(
+          mainAxisSize : MainAxisSize.min,
+          children     : <Widget>[
+            Text(ClaseIdiomas.getTexto('contrasena', sIdioma),
+                 style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+            Text(' *',
+                 style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error)),
+          ],
+        ),
+        suffixIcon: IconButton(
+          tooltip   : ClaseIdiomas.getTexto('verContrasena', sIdioma),
+          icon      : Icon(bMostrarContrasena ? Icons.visibility_off : Icons.visibility),
+          onPressed : () => setState(() => bMostrarContrasena = !bMostrarContrasena),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
+        ),
+      ),
+    );
+  }
+
+  Widget construirBotones(BuildContext oContexto) {
+    final String sIdioma   = widget.oPreferencias.getIdioma();
+    final String sCancelar = ClaseIdiomas.getTexto('cancelar', sIdioma);
+    final String sIngresar = ClaseIdiomas.getTexto('ingresar', sIdioma);
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: FilledButton.icon(
+            onPressed : ingresar,
+            style     : FilledButton.styleFrom(
+              minimumSize: const Size(0, ClaseGenLayout.dAltoBoton),
+            ),
+            icon      : const Icon(Icons.login),
+            label     : Text(sIngresar,
+                        style: ClaseGenEstilosTexto.botonGrande(oContexto)),
+          ),
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio16),
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed : cancelar,
+            style     : OutlinedButton.styleFrom(
+              minimumSize: const Size(0, ClaseGenLayout.dAltoBoton),
+            ),
+            icon      : const Icon(Icons.cancel_outlined),
+            label     : Text(sCancelar,
+                        style: ClaseGenEstilosTexto.botonGrande(oContexto)),
+          ),
+        ),
+      ],
+    );
+  }
+
+}

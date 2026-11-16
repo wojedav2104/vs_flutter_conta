@@ -1,0 +1,107 @@
+RUTA ORIGINAL: lib/opciones/archivos/asientos.dart
+PARTE 2 DE 3
+---
+'asiFecha', sIdioma),
+            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        iAnchoCaracteres : 10,
+        oTipo            : EnumTipoCampoAbm.fecha,
+        sClave           : 'fecha',
+        sEtiqueta        : ClaseIdiomas.getTexto('asiFecha', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'numero',
+        sEtiqueta             : ClaseIdiomas.getTexto('asiNumero', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        iMaxComentario   : 500,
+        oTipo            : EnumTipoCampoAbm.comentario,
+        sClave           : 'comentarios',
+        sEtiqueta        : ClaseIdiomas.getTexto('asiComentarios', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('asiHintComentarios', sIdioma),
+      ),
+    ];
+  }
+
+  // ── Columnas de la grilla de detalles ───────────────────────────────────
+
+  List<ClaseCampoAbm> crearCamposDetalle() {
+
+    final String sIdioma = getIdioma();
+
+    return <ClaseCampoAbm>[
+      ClaseCampoAbm(
+        iAnchoCaracteres : 16,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'cuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
+            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'subcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 40,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'nombreCuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintNombreCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'debe',
+        sEtiqueta        : ClaseIdiomas.getTexto('detDebe', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'haber',
+        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'concepto',
+        sEtiqueta        : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
+      ),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'comentarios' : 'Aporte de capital inicial',
+        'detalles'    : <Map<String, String>>[
+          <String, String>{
+            'concepto'     : 'Aporte de capital',
+            'cuenta'       : '1.01.01',
+            'debe'         : '5000000',
+            'haber'        : '',
+            'nombreCuenta' : 'Caja',
+            'subcuenta'    : '',
+          },
+          <String, String>{
+            'concepto'     : 'Aporte de capital',
+            'cuenta'       : '3.01.01',
+            'debe'         : '',
+            'haber'        : '5000000',
+            'nombreCuenta' : 'Capital Social',
+            'subcuenta'    : '',
+          },
+        ],
+        'ejercicio'   : '2026',
+        'fecha'       : '05/01/2026',

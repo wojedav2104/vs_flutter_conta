@@ -1,0 +1,48 @@
+RUTA ORIGINAL: pubspec.yaml
+PARTE 1 DE 1
+---
+name: vs_conta
+description: "VS_CONTA. Aplicación de Contabilidad multi-país, multi-moneda, multi-sucursal, multi-usuario y multi-idioma. Permite llevar la contabilidad de una empresa en 
+              varios países, con varias monedas, varias sucursales, varios usuarios y varios idiomas. La aplicación está diseñada para ser utilizada por contadores y empresas 
+              que necesitan llevar la contabilidad de sus operaciones en varios países y monedas."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:      # para los textos en español/francés
+    sdk: flutter
+  cupertino_icons: ^2.0.0
+  intl: ^0.20.3
+  shared_preferences: ^2.5.6
+  web: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/datos/
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+    - family: Roboto Mono
+      fonts:
+        - asset: assets/fonts/RobotoMono-Regular.ttf
+        - asset: assets/fonts/RobotoMono-Bold.ttf
+          weight: 700
