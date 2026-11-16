@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 /// superior es un getter y no una constante.
 abstract final class ClaseFechas {
 
-  static        int get getAnoMaximo => DateTime.now().year;
+  static        int getAnoMaximo() => DateTime.now().year;
   static        int getAnoMaximoVigencia() => DateTime.now().year + 1;
   static const  int iAnoMinimo = 2020; 
 
