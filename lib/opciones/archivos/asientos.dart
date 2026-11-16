@@ -47,7 +47,6 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
   @override
   Widget build(BuildContext oContexto) {
     return ClaseFormularioCabeceraDetalle(
-//      bEnGrilla            : false,
       funcValidarRegistro  : validarRegistro,
       listCamposCabecera   : listCamposCabecera,
       listCamposDetalle    : listCamposDetalle,

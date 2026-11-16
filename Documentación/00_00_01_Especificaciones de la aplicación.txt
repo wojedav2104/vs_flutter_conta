@@ -23,7 +23,7 @@ En la pantalla de login deben mostrarse:
 2. El campo "Nombre" y a continuación un asterisco para indicar que es obligatorio
 3. El campo "Contraseña" y a continuación un asterisco para indicar que es obligatorio y también el iconito de un ojo para que el usuario vea/oculte el texto del campo "Contraseña"
 4. Una etiqueta con el texto "¿Olvidaste tu contraseña?"
-5. Un botón "Ingresar"
+5. Un botón "Ingresar" y a su derecha:
 6. Un botón "Cancelar"
 7. Un iconito para que elija el tema: claro u oscuro (arriba y a la derecha de la pantalla)
 8. Un iconito para que elija el idioma: español o francés (arriba y a la derecha de la pantalla)

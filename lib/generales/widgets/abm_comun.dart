@@ -87,6 +87,23 @@ Future<String?> funcMostrarEncontrar(
   return sTexto.isEmpty ? null : sTexto;
 }
 
+/// Título de los AppBar: el nombre de la pantalla y, debajo, la Base de
+/// Datos conectada y el país (regla: la Base de Datos se muestra en el
+/// drawer y en todos los AppBar de la aplicación).
+Widget funcConstruirTituloAppBar(BuildContext oContexto, String sIdioma, String sTitulo) {
+  return Column(
+    crossAxisAlignment : CrossAxisAlignment.start,
+    mainAxisAlignment  : MainAxisAlignment.center,
+    children: <Widget>[
+      Text(sTitulo,
+           style: ClaseGenEstilosTexto.tituloMediano(oContexto)
+                    .copyWith(fontWeight: FontWeight.w600)),
+      Text('${ClaseSesion.getBaseDatos()} · ${ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma)}',
+           style: ClaseGenEstilosTexto.normalChico(oContexto)),
+    ],
+  );
+}
+
 
 /// Formulario de campos de cabecera: sin grupo, una sola columna; con grupos,
 /// los campos comunes arriba y una pestaña por grupo.
@@ -494,8 +511,13 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
       );
     }
 
-    final List<ClaseCampoAbm> listColumnas =
-        widget.listCampos.where((ClaseCampoAbm o) => o.bEnGrilla).take(3).toList();
+    // Regla: los campos Comentarios nunca se muestran en la grilla lateral.
+    final List<ClaseCampoAbm> listColumnas = widget.listCampos
+        .where((ClaseCampoAbm o) =>
+            o.bEnGrilla && o.oTipo != EnumTipoCampoAbm.comentario)
+        .take(3)
+        .toList();
+
     final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
     final int iTotalPaginas = math.max(1,
         (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
@@ -731,7 +753,7 @@ class ClaseAndamiajeAbm extends StatelessWidget {
   Widget build(BuildContext oContexto) {
     return Scaffold(
       appBar : AppBar(
-        title: Text(sTitulo, style: ClaseGenEstilosTexto.tituloMediano(oContexto)),
+        title: funcConstruirTituloAppBar(oContexto, sIdioma, sTitulo),
       ),
       body: Column(
         children: <Widget>[

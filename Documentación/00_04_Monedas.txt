@@ -1,3 +1,5 @@
+Estas monedas se usarán en las consultas y en los informes (símbolo y formato según el país).
+
 Argentina=ARS=Peso argentino
 Francia=EUR=Euro
 Paraguay=PYG=Guarani
