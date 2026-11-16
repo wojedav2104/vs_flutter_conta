@@ -88,36 +88,27 @@ class ClaseCapValidar {
     return null;
   }
 
-  /// Moneda: máximo 15 dígitos enteros y 2 decimales.
+  /// Moneda: máximo 12 dígitos enteros y 2 decimales. Con los puntos de
+  /// separación de miles, el valor mostrado no supera los 15 caracteres
+  /// (la máscara '999.999.999.999').
   static String? validarNumeroValor(
       String sValor, String sEtiqueta, String sIdioma) {
     final String sTexto = sValor.trim();
     if (sTexto.isEmpty) return null;
-    if (!RegExp(r'^\d{1,15}([.,]\d{1,2})?$').hasMatch(sTexto)) {
+    if (!RegExp(r'^\d{1,12}([.,]\d{1,2})?$').hasMatch(sTexto)) {
       return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
           .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', '15');
+          .replaceAll('{1}', '12');
     }
     return null;
   }
 
-  /// Valor según el Tipo de documento:
-  /// - 07 (Factura de Importación): hasta 20 dígitos enteros y 2 decimales.
-  /// - Los demás tipos (01 Factura Contado, 09 Nota de Débito, 10 Nota de
-  ///   Crédito, etc.): hasta 15 dígitos enteros y 2 decimales.
+  /// Valor según el Tipo de documento: el máximo es el mismo para todos los
+  /// tipos (12 dígitos enteros y 2 decimales). Se conserva el parámetro del
+  /// tipo por si en el futuro algún tipo admite otro ancho.
   static String? validarNumeroValorPorTipo(
       String sValor, String sTipoDocumento, String sEtiqueta, String sIdioma) {
-    final String sTexto = sValor.trim();
-    if (sTexto.isEmpty) return null;
-    // 07 (Factura de Importación) admite hasta 20 dígitos enteros; el
-    // resto, hasta 15. El patrón se arma interpolando iMaximo.
-    final int iMaximo = (sTipoDocumento == '07') ? 20 : 15;
-    if (!RegExp('^[0-9]{1,$iMaximo}([.,][0-9]{1,2})?\$').hasMatch(sTexto)) {
-      return ClaseIdiomas.getTexto('validNumeroValor', sIdioma)
-          .replaceAll('{0}', sEtiqueta)
-          .replaceAll('{1}', '$iMaximo');
-    }
-    return null;
+    return validarNumeroValor(sValor, sEtiqueta, sIdioma);
   }
 
   // ── Documentos de compra/venta ────────────────────────────────────────

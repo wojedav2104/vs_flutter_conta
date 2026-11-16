@@ -1,0 +1,270 @@
+================================================================
+VS_CONTA — CONTEXTO DE SESIÓN PARA CONTINUAR
+Última actualización: 23/06/2026 (tras la auditoría completa)
+================================================================
+
+----------------------------------------------------------------
+1. QUÉ ES EL PROYECTO
+----------------------------------------------------------------
+VS_CONTA: aplicación contable multi-país desarrollada en Flutter,
+pensada principalmente para Paraguay (Marangatú / DNIT) y con
+proyección a Argentina, Perú, Uruguay y Francia. La base de datos
+será Firebird (todavía NO está conectada: la app trabaja con datos
+de prueba en memoria). El idioma de la interfaz es español/francés
+(ClaseIdiomas), la moneda y los formatos son configurables.
+
+Estructura de carpetas:
+  lib/
+    generales/
+      idiomas/       idiomas.dart + 8 módulos (general, interfaz,
+                     validaciones, tablas, terceros, asientos,
+                     compras, cuentas)
+      inicio/        login.dart, menu_lateral.dart, pantalla_principal.dart
+      modelos/       campo_abm.dart, opcion_menu.dart, permisos.dart,
+                     sesion.dart, documentos.dart
+      preferencias/  preferencias.dart (shared_preferences)
+      temas/         colores, espacios, estilos_textos, layout,
+                     radios, temas
+      utilitarios/   formatos.dart, menu_navegador_movil/web.dart
+      validaciones/  cap_validar.dart (sin BD), can_validar.dart
+                     (con BD — stubs async para Firebird)
+      varios/        listas.dart, paises.dart, pantalla_proximamente.dart,
+                     timbrados_comun.dart
+      widgets/       abm_comun.dart, campo_formulario.dart,
+                     controles_preferencias.dart, formulario_abm.dart,
+                     formulario_cabecera_detalle.dart,
+                     ventana_configuracion.dart, ventana_mensaje.dart
+    opciones/
+      archivos/      asientos.dart, compras.dart, cuentas.dart
+      tablas/        clientes, configuracion, cuentas_asignadas,
+                     empresa, proveedores, sucursales,
+                     timbrados_propios, timbrados_proveedores
+    rutas/           generador_rutas.dart, rutas.dart
+    main.dart
+  assets/datos/      paises.json
+  pubspec.yaml
+
+----------------------------------------------------------------
+2. FLUJO DE TRABAJO (MUY IMPORTANTE)
+----------------------------------------------------------------
+- El código vive en VS Code local. Repositorio espejo en GitHub:
+  https://github.com/wojedav2104/vs_flutter_conta (rama main).
+- El script partir_lectura.dart divide cada archivo en fragmentos
+  de hasta 4000 caracteres dentro de lectura/ (nombres tipo
+  lib__generales__validaciones__cap_validar.dart__parte3de7.txt) y
+  genera 00_indice_1..N.txt + 00_total.txt con el listado total
+  (132 fragmentos en el último push).
+- El asistente lee los fragmentos por URL raw.githubusercontent.com
+  (máx. 15 URLs por llamada), audita contra las reglas y devuelve
+  parches o archivos completos. El usuario aplica, ejecuta el
+  programa, agrega al stage, commitea y hace push; luego se releen
+  los fragmentos actualizados.
+- ESTADO: auditoría completa del proyecto REALIZADA (se leyeron los
+  132 fragmentos). Todos los archivos verificados contra las reglas.
+
+----------------------------------------------------------------
+3. CONVENCIONES DE CÓDIGO (REGLAS DE ORO)
+----------------------------------------------------------------
+- Nomenclatura húngara: prefijo según tipo (s=texto, i=entero,
+  d=double, b=booleano, f=fecha, o=objeto, list=lista, map=mapa,
+  set=conjunto, func=función/callback, enum=Enum...).
+- Clases: prefijo Clase + sustantivo. Utilidades estáticas con
+  abstract final class.
+- Getters: SIEMPRE con "get" (getIdioma, getBaseDatos, getAnoMaximo).
+  Setters: SIEMPRE con "set".
+- NUNCA ñ ni acentos en identificadores (iAno, getAnoMaximo,
+  pequeno, numero). En textos al usuario sí.
+- Sin emojis. Mensajes al usuario solo vía ClaseIdiomas.getTexto
+  (claves por módulo; mapEs/mapFr en orden alfabético por clave;
+  una clave vive en UN solo módulo).
+- Colores solo desde ClaseGenColores/ClaseGenTemas/Theme.of;
+  espacios desde ClaseGenEspacios; anchos/elevaciones desde
+  ClaseGenLayout; radios desde ClaseGenRadios; estilos desde
+  ClaseGenEstilosTexto.
+- Validaciones sin BD en ClaseCapValidar (String? = null si OK);
+  validaciones con BD en ClaseCanValidar (Future<String?>, stubs).
+- Funciones sueltas con prefijo func (funcParsearFecha,
+  funcFormatearNumero, funcCompletarCeros).
+- Campos ABM se especifican con ClaseCampoAbm (oTipo, sClave,
+  sEtiqueta, bObligatorio, bVigencia, bCompletarCeros,
+  bSiempreDeshabilitado, iAnchoCaracteres, sMascara, listOpciones/
+  listValores, sValorDefecto, funcValidarCampo, funcMascara,
+  funcActualizarEstado, funcAlPerderFoco...). El ancho sale de
+  ClaseCampoAbm.getAnchoCampo()/getAnchoColumna() (único punto de
+  cambio).
+- ValidarCampos: los campos OPCIONALES aceptan vacío (los
+  validadores devuelven null con valor vacío); la obligatoriedad
+  se define con bObligatorio.
+
+----------------------------------------------------------------
+4. REGLAS DE NEGOCIO / VALIDACIONES CLAVE
+----------------------------------------------------------------
+- Tipos de identificación (documentos.dart, catálogo SET): RUC,
+  Cédula, Pasaporte, Cédula Extranjera, Diplomático (DIP, valida el
+  N° del carné, 3-20 alfanumérico), Sin Nombre (SD, identificación
+  '0'). LOS SEIS PERMANECEN. "Es agente diplomático" es OTRO campo
+  Sí/No en Clientes/Proveedores (situación fiscal), no confundir.
+  · CI: 5-8 dígitos (se aceptan puntos).
+  · RUC: base 6-8 dígitos + guion + DV.
+  · PAS: mayúsculas, dígitos y guiones (hasta 20).
+  · CEX: 5-15 alfanumérico (letras, dígitos, puntos o guiones).
+  · SD: la identificación es el literal '0'.
+- DV del RUC (módulo 11 DNIT/SET): factores 2..11 de derecha a
+  izquierda (NO se reciclan), suma ponderada, resto = suma % 11,
+  dv = 11 - resto; si dv >= 10 → 0. Ejemplos verificados:
+  80101319→4, 1069218→5, 80031238→4, 80014477→5, 80012345→0,
+  1234567→9, 80098765→9, 8003214→1, 80076543→5, 5566778→3.
+  Existe funcCompletarRuc ('1069218' → '1069218-5') al salir del
+  campo (ayuda al usuario; la validación al grabar exige el formato
+  completo).
+- Importes (REGLA NUEVA): máximo 12 dígitos enteros y 2 decimales.
+  Con los puntos de separación de miles el campo NO supera los 15
+  caracteres. Máscara de los campos: '999.999.999.999'.
+  validarNumeroValor y validarNumeroValorPorTipo validan con 12
+  (la excepción del tipo 07 con 20 dígitos fue eliminada).
+- Cuentas contables: formato 99.99.99.99.99 (máx. 5 grupos; primero
+  1-2 dígitos, los demás exactamente 2, separados por punto).
+  Nivel 1-5. Cuenta superior = grupo anterior (funcCuentaSuperior:
+  '1.03.02' → '1.03'; raíz → ''). Subcuenta: exactamente 5 dígitos
+  (00001-99999), bCompletarCeros = true (se completa ANTES de
+  validar: 1 → 00001).
+- Años: única fuente ClaseFechas en formatos.dart:
+  iAnoMinimo = 2020; getAnoMaximo() = año actual;
+  getAnoMaximoVigencia() = año actual + 1. Ningún año mayor que el
+  actual para movimientos/ejercicios; vigencias de timbrados hasta
+  el año que viene.
+- Fechas: dd/mm/aaaa (funcParsearFecha estricta: rechaza 31/02,
+  29/02 fuera de bisiesto y años fuera de rango). Formato de
+  números/fechas configurable (latino/francés). Redondeo de
+  importes hacia arriba (regla PY).
+- Timbrados Propios y de Proveedores comparten 5 campos
+  (timbrados_comun.dart): N° de timbrado (8 dígitos exactos),
+  Fecha inicio y fin (vigencia; fin estrictamente posterior al
+  inicio; sugerencia automática para PreImpresos: último día del
+  mismo mes del año siguiente), "Afecta a" y Medio de generación.
+  · "Afecta a" permite marcar VARIOS documentos (varios tipos
+    comparten timbrado si se piden en la misma fecha). Se guarda
+    como códigos separados por coma en orden canónico ('FAC,NCR').
+  · En Libro Compras, vigenteDesde/vigenteHasta son de SOLO
+    LECTURA (bSiempreDeshabilitado): provienen de la tabla
+    TIMBRADOS_PROVEEDORES; el usuario las ve pero no las cambia.
+- Libro Compras: tipos de documento '01'..'18'. N° de documento
+  según tipo (13 dígitos con máscara 999-999-9999999 en 01,02,03,
+  04,06,09,10; 5-13 dígitos en 05/07/08/11; 7 dígitos en 12-18).
+  Los tipos sin máscara admiten hasta 16 caracteres en el campo.
+  Cantidad de cuotas (solo factura de crédito '02'): 1-240.
+  Tipo de afectación: DIR/IND/EXP/IMP. Validaciones cruzadas:
+  fecha en ejercicio, timbrado obligatorio de 8 dígitos solo con
+  máscara, formato de identificación por tipo, vigencia fin >
+  inicio, y si enviarMarangatu = Sí: Total del comprobante = suma
+  del Debe. Auto-cálculos: Total Grupo 1, sugerencias Resolución
+  90/2021 (solo si vacías), Total comprobante = suma de los 6
+  importes del Grupo 2, cuotas según tipo, timbrado en blanco sin
+  máscara.
+- Permisos: Francia (FRA) nunca tiene BD propia — solo
+  visualización (ClasePermisos.puedeEditar; botones ABM de edición
+  deshabilitados). El menú lateral filtra opciones por país
+  (ClaseOpcionMenu.listPaises; Marangatú solo en Paraguay).
+- Sesión: ClaseSesion (fachada estática) delega en
+  ClaseInterfazSesion (DIP) → ClaseSesionPredefinida. Accesores:
+  getBaseDatos()/setBaseDatos().
+- Pantalla principal: drawer que se abre solo al ingresar y al
+  volver (RouteObserver). Login con credenciales precargadas
+  admin/1234 (definidas en cap_validar: sNombreInicial/
+  sContrasenaInicial + validarCredenciales) — QUITAR ANTES DE
+  PUBLICAR.
+
+----------------------------------------------------------------
+5. DECISIONES TOMADAS (resumen)
+----------------------------------------------------------------
+a) Los 6 tipos de identificación permanecen (incluidos Diplomático
+   y Sin Nombre; el campo "Es agente diplomático" es independiente).
+b) "Afecta a" es multi-selección, guardado 'FAC,NCR'.
+c) layout.dart: todo unificado en iFilasPorPagina (= 25).
+d) sesion.dart usa getBaseDatos()/setBaseDatos().
+e) opcion_menu.dart con campos final.
+f) abm_comun: la grilla ordena por tipo real (funcNumeroOrden /
+   funcFechaOrden / texto).
+g) paises.dart: getNombre() lee la clave del idioma desde
+   paises.json (única fuente).
+h) idiomas_terceros.dart sin claves emp*/suc* (solo en
+   idiomas_tablas).
+i) cap_validar completo y sin duplicados (6 tipos de identificación,
+   validarFechaEnEjercicio, validarEjercicio, validarHoraRango,
+   validarRangoDiasMes, validarSumaDebeHaber, validarOpciones,
+   validarAlMenosUnoSeleccionado, etc.).
+j) Importes: máximo 12 dígitos enteros (campo de 15 caracteres con
+   los puntos de miles). validado en validarNumeroValor.
+k) En Compras, las vigencias del timbrado son solo lectura.
+l) flutter_localizations configurado en main.dart (delegates +
+   supportedLocales es/fr) para los selectores de fecha/hora.
+m) Auditoría completa realizada: sin errores abiertos; ver
+   sección 7 para lo pendiente.
+
+----------------------------------------------------------------
+6. ARCHIVOS CLAVE VERIFICADOS EN LA AUDITORÍA (todos OK)
+----------------------------------------------------------------
+Todos los 132 fragmentos fueron leídos y verificados:
+- cap_validar.dart (7 partes): OK (con el parche de importes de la
+  sección 7 pendiente de aplicar si aún no se hizo).
+- formatos.dart (4 partes): ClaseFechas con getAnoMaximo como
+  método, funcNumeroOrden/funcFechaOrden presentes.
+- campo_formulario.dart (7 partes): casillas múltiples OK
+  ('FAC,NCR'), bVigencia en selector de fecha OK, asterisco de
+  obligatorio, contador de comentario, foco externo.
+- abm_comun.dart (9 partes): orden por tipo, iFilasPorPagina.
+- formulario_abm.dart, formulario_cabecera_detalle.dart,
+  ventana_mensaje.dart (4), ventana_configuracion.dart: OK.
+- timbrados_comun.dart, timbrados_propios/proveedores.dart:
+  multi-selección aplicada en datos de prueba.
+- asientos, compras, cuentas, clientes, configuracion,
+  cuentas_asignadas, empresa, proveedores, sucursales: OK.
+- main.dart, rutas, generador_rutas, menu_lateral, login,
+  pantalla_principal: OK.
+- idiomas (todos los módulos), listas, paises, documentos,
+  campo_abm, sesion, opcion_menu, permisos, preferencias: OK.
+
+----------------------------------------------------------------
+7. PENDIENTES (PRÓXIMA SESIÓN)
+----------------------------------------------------------------
+1) APlicar el parche de importes (si aún no se hizo): en
+   cap_validar.dart, cambiar validarNumeroValor a máximo 12 dígitos
+   enteros (RegExp r'^\d{1,12}([.,]\d{1,2})?$', {1} → '12') y
+   validarNumeroValorPorTipo para que delegue en validarNumeroValor
+   (elimina la excepción del tipo 07 con 20 dígitos).
+2) Quitar credenciales precargadas del login ANTES de publicar
+   (sNombreInicial/sContrasenaInicial en cap_validar.dart).
+3) Mejora al conectar la BD: al salir del campo timbrado en
+   Libro Compras, cargar vigenteDesde/vigenteHasta desde la tabla
+   TIMBRADOS_PROVEEDORES (hoy solo los datos de prueba).
+4) Verificar si se aplicaron las mejoras sugeridas en la auditoría:
+   · B1: la grilla de abm_comun muestra códigos internos
+     ('FAC,NCR', 'S') en lugar de etiquetas traducidas; sugerido
+     mapear con getEtiqueta()/getEtiquetas() de listas.dart.
+   · B2: sucursales.dart campo 'codigo': agregar bCompletarCeros
+     y validarSoloEntero (igual que cliCodigo/prvCodigo).
+   · B3: configuracion.dart campo 'cantidadBackups': definir rango
+     con validarRangoEntero (ej: 1-365).
+5) Conexión a Firebird (futuro): can_validar.dart ya tiene los
+   stubs async; los getters de ClaseSesionPredefinida se
+   reemplazarán por datos de BD.
+6) El usuario confirmó: campos opcionales aceptan vacío (ya
+   verificado en cap_validar); DV de 8003214 = 1.
+
+----------------------------------------------------------------
+8. CÓMO CONTINUAR (mensaje sugerido al abrir sesión nueva)
+----------------------------------------------------------------
+Pegar este archivo como primer mensaje y agregar:
+
+"Este es el contexto de mi proyecto VS_CONTA y del trabajo que
+venimos haciendo. Por favor: (1) lee los fragmentos de lectura/ en
+el repositorio GitHub wojedav2104/vs_flutter_conta (rama main,
+máx. 15 por llamada) empezando por los pendientes de la sección 7,
+(2) aplica lo pendiente y audita cualquier cambio nuevo respetando
+las convenciones de la sección 3 y las reglas de negocio de la
+sección 4, y (3) si hago cambios, esperá a que haga push antes de
+releer."
+
+================================================================
+FIN DEL CONTEXTO
+================================================================
