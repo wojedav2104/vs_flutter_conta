@@ -53,6 +53,23 @@ abstract final class ClaseIdiomasTerceros {
     'cliRuc'                : 'R.U.C.',
     'cliTelefono'           : 'Teléfono',
 
+    // ── Pantalla Clientes (claves que usa clientes.dart) ─────────────
+    'cliCodigo'            : 'Código',
+    'cliNombre'            : 'Nombre',
+    'cliCelular'           : 'Celular',
+    'cliLocalidad'         : 'Localidad',
+    'cliEmail'             : 'Correo electrónico',
+    'cliTipoIdentificacion': 'Tipo de identificación',
+    'cliIdentificacion'    : 'Identificación N°',
+    'cliTipoCliente'       : 'Tipo de cliente',
+    'cliHintNombre'        : 'Nombre del cliente',
+    'cliHintDireccion'     : 'Dirección del cliente',
+    'cliHintTelefono'      : 'Nro teléfono',
+    'cliHintCelular'       : 'Nro celular',
+    'cliHintLocalidad'     : 'Nombre de la localidad',
+    'cliHintEmail'         : 'Correo electrónico',
+    'cliHintIdentificacion': 'Número de identidad',
+
     // ── Tipos de documento de identidad (compartido) ─────────────────
     'docRuc'               : 'R.U.C.',
     'docCedulaIdentidad'   : 'Cédula de Identidad',
@@ -86,6 +103,27 @@ abstract final class ClaseIdiomasTerceros {
     'timPrvRuc'            : 'R.U.C.',
     'timPrvHintNombre'     : 'Nombre del proveedor',
     'timPrvHintRuc'        : 'Número de RUC del proveedor',
+
+    // ── Timbrados (campos comunes, ClaseTimbradosComun) ──────────────
+    'timTimbrado'          : 'N° de timbrado',
+    'timFechaInicio'       : 'Fecha de inicio',
+    'timFechaFin'          : 'Fecha de fin',
+    'timAfectaA'           : 'Afecta a',
+    'timMedioGeneracion'   : 'Medio de generación',
+
+    // ── Timbrados (opciones de Afecta a y Medio de generación) ───────
+    'timFactura'           : 'Factura',
+    'timNotaCredito'       : 'Nota de crédito',
+    'timNotaDebito'        : 'Nota de débito',
+    'timNotaRemision'      : 'Nota de remisión',
+    'timAutoImpresores'    : 'Autoimpresores',
+    'timPreImpresos'       : 'Preimpresos',
+    'timComprobantesVirtuales'  : 'Comprobantes virtuales',
+    'timDocumentosElectronicos' : 'Documentos electrónicos',
+
+    // ── Opciones compartidas de terceros ─────────────────────────────
+    'valorLocal'           : 'Local',
+    'valorExterior'        : 'Exterior',
 
   };
 
@@ -140,6 +178,23 @@ abstract final class ClaseIdiomasTerceros {
     'cliRuc'                : 'N.I.T.',
     'cliTelefono'           : 'Téléphone',
 
+    // ── Pantalla Clientes (claves que usa clientes.dart) ─────────────
+    'cliCodigo'            : 'Code',
+    'cliNombre'            : 'Nom',
+    'cliCelular'           : 'Portable',
+    'cliLocalidad'         : 'Localité',
+    'cliEmail'             : 'Adresse e-mail',
+    'cliTipoIdentificacion': "Type d'identification",
+    'cliIdentificacion'    : 'Identification N°',
+    'cliTipoCliente'       : 'Type de client',
+    'cliHintNombre'        : 'Nom du client',
+    'cliHintDireccion'     : 'Adresse du client',
+    'cliHintTelefono'      : 'N° de téléphone',
+    'cliHintCelular'       : 'N° de portable',
+    'cliHintLocalidad'     : 'Nom de la localité',
+    'cliHintEmail'         : 'Adresse électronique',
+    'cliHintIdentificacion': "Numéro de pièce d'identité",
+
     // ── Tipos de documento de identidad (compartido) ─────────────────
     'docRuc'               : 'N.I.T.',
     'docCedulaIdentidad'   : "Carte d'identité",
@@ -173,6 +228,27 @@ abstract final class ClaseIdiomasTerceros {
     'timPrvRuc'            : 'N.I.T.',
     'timPrvHintNombre'     : 'Nom du fournisseur',
     'timPrvHintRuc'        : 'Numéro de N.I.T. du fournisseur',
+
+    // ── Timbrados (campos comunes, ClaseTimbradosComun) ──────────────
+    'timTimbrado'          : 'Numéro de timbrado',
+    'timFechaInicio'       : 'Date de début',
+    'timFechaFin'          : 'Date de fin',
+    'timAfectaA'           : "S'applique à",
+    'timMedioGeneracion'   : 'Mode de génération',
+
+    // ── Timbrados (opciones de Afecta a y Medio de generación) ───────
+    'timFactura'           : 'Facture',
+    'timNotaCredito'       : 'Note de crédit',
+    'timNotaDebito'        : 'Note de débit',
+    'timNotaRemision'      : "Note d'expédition",
+    'timAutoImpresores'    : 'Auto-impression',
+    'timPreImpresos'       : 'Pré-imprimés',
+    'timComprobantesVirtuales'  : 'Justificatifs virtuels',
+    'timDocumentosElectronicos' : 'Documents électroniques',
+
+    // ── Opciones compartidas de terceros ─────────────────────────────
+    'valorLocal'           : 'Local',
+    'valorExterior'        : 'Étranger',
 
   };  
 

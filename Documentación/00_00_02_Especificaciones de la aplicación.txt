@@ -2,7 +2,7 @@ NOMENCLATURA
 ------------
 Aunque sé muy bien que en Dart no se usa esto, es lo que estoy acostumbrado a usar yo, me resulta muy claro y muy sencillo de entender cuando para los nombres de variables, funciones, propiedades, clases, y métodos, se siguen estas convenciones:
 
-Variables y propiedades: Cada variable o propiedad llevará un prefijo en minúscula que indicará su tipo de dato fundamental:
+VARIABLES Y PROPIEDADES: Cada variable o propiedad llevará un prefijo en minúscula que indicará su tipo de dato fundamental:
 d	Decimales (decimal SQL, con hasta 4 decimales)	Ejemplos: dPrecio, dTemperatura
 f	Fechas						Ejemplos: fFechaNacimiento, fFechaVenta
 i	Enteros (int)					Ejemplos: iContador, iEdad
@@ -12,27 +12,33 @@ o	Objetos de clases propias			Ejemplos: oFactura, oUsuario
 s	Cadenas de texto (String)			Ejemplos: sDireccion, sNombre, sTelefono
 w	Widget						Ejemplos: wColor, wGestoDetectado, wTexto
 
-Colecciones: Para los tipos de datos que agrupan múltiples elementos, se usarán prefijos específicos antes del nombre en lowerCamelCase:
+COLECCIONES: 
+Para los tipos de datos que agrupan múltiples elementos, se usarán prefijos específicos antes del nombre en lowerCamelCase:
 list		Para listas (List).		Ejemplos: listAlumnos, listProductos
 set		Para conjuntos (Set).		Ejemplos: setFrutas, setTiposDocumentos
 map		Para clave-valor (Map).		Ejemplos: mapConfiguraciones, mapMarcas
 Enum		Para enumerar (Enum).		Ejemplos: EnumCalificaciones, EnumEstados
 
-Funciones propias: Para diferenciar fácilmente una función creada por nosotros de una función nativa de Dart (como print() o main()), el nombre de todas las funciones propias comenzará con el prefijo func.
+FUNCIONES PROPIAS: 
+Para diferenciar fácilmente una función creada por nosotros de una función nativa de Dart (como print() o main()), el nombre de todas las funciones propias comenzará con el prefijo func.
 Ejemplos: funcCalcularTotal(), funcImprimirFactura(), funcValidarUsuario()
 
-Clases propias: Al igual que con las funciones, para saber rápidamente que se está instanciando una clase creada en nuestro proyecto y no una clase nativa del SDK de Dart (como String o DateTime), las clases propias llevarán el prefijo Clase.
+CLASES PROPIAS: 
+Al igual que con las funciones, para saber rápidamente que se está instanciando una clase creada en nuestro proyecto y no una clase nativa del SDK de Dart (como String o DateTime), las clases propias llevarán el prefijo Clase.
 Ejemplos: ClaseConexionBD, ClaseFactura, ClaseUsuario
 
-Métodos: Los nombres de los métodos no empiezan con func porque no es necesario, como están dentro de una clase es muy fácil saber que se trata de un método propio.
+MÉTODOS: 
+Los nombres de los métodos no empiezan con func porque no es necesario, como están dentro de una clase es muy fácil saber que se trata de un método propio.
 Ejemplos: grabar, mostrar, validarFecha
 
-Getters y Setters: Los getters siempre empiezan con el prefijo get y los setters siempre empiezan con el prefijo set.
+GETTERS Y SETTERS: 
+Los getters siempre empiezan con el prefijo get y los setters siempre empiezan con el prefijo set.
 Ejemplos: getNombre, getEmail, setNombre, setEmail
 
-Idioma: Salvo muy raras excepciones, los nombres de todas las variables, colecciones, funciones propias, clases propias, y métodos, deben estar en español, no en inglés.
+IDIOMA: 
+Salvo muy raras excepciones, los nombres de todas las variables, colecciones, funciones propias, clases propias, y métodos, deben estar en español, no en inglés.
 
-Orden de las variables y de las propiedades:
+ORDEN DE LAS VARIABLES Y DE LAS PROPIEDADES:
 Se ordenan por tipo de dato y dentro de cada tipo de datos en forma alfabética. Yo sé que en Dart cuando se usan parámetros nombrados se los puede escribir en cualquier orden pero a mí me gusta que estén muy bien ordenados, porque eso me facilita mucho la lectura del código fuente.
 Ejemplos: 
   bool   bEstaActivo
@@ -45,14 +51,14 @@ Ejemplos:
 
 como se puede ver en las líneas anteriores, los nombres de todas las variables/propiedades empiezan en la misma columna. Eso facilita la lectura
 
-Alineación del símbolo =
+ALINEACIÓN DEL SÍMBOLO =
 Para mejorar la legibilidad del código fuente, todos los símbolos = deben encontrarse en la misma columna. Ejemplos:
   static const colorAmarillo1   = Color(0xFFF5A623);
   static const colorAzulOscuro1 = Color(0xFF0080B0);
   static const colorAzulPuro1   = Color(0xFF0000FF);
   static const colorBlanco      = Color(0xFFFFFFFF);
 
-Alineación del símbolo :
+ALINEACIÓN DEL SÍMBOLO :
 Análogamente al símbolo = cuando hay varias asignaciones usando el símbolo : se debe poner a todos los símbolos : en la misma columna.
 Ejemplos:
       inputDecorationTheme : InputDecorationTheme(
@@ -66,15 +72,15 @@ Ejemplos:
         focusedErrorBorder : _Borde(oEsquema.error, dGrosor: ClaseGenLayout.dGrosorBorde),
       ),
 
-Tipo de fuente:
+TIPO DE FUENTE:
 En todos los controles, sea de lo que sea (texto, numérico, fecha, hora, combobox, listbox) se debe usar una fuente no proporcional, monoespaciada, de ancho fijo, para que sea fácil calcular el ancho en pixeles que ocupará ese control.
 Ejemplo: RobotoMono-Regular.ttf
 
-Botones:
+BOTONES:
 Todos los botones deben tener un icono a la izquierda
 
-Caracteres por fila:
+CARACTERES POR FILA:
 Mi monitor me permite ver 176 caracteres en cada fila de un archivo .dart entonces para los comentarios y para las asignaciones se deben usar esos 176 caracteres.
 
-Nombres de las variables, de las propiedades, de las funciones, de las clases, de los métodos:
+NOMBRES DE LAS VARIABLES, DE LAS PROPIEDADES, DE LAS FUNCIONES, DE LAS CLASES, DE LOS MÉTODOS:
 Deben estar en idioma español y la letra ñ debe reemplazarse por n. Ejemplos: iAnoMinimo, iAnoMaximo

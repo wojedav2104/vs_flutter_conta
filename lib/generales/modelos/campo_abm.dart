@@ -1,5 +1,7 @@
 import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
+
 
 /// Tipo de dato de un campo de un formulario ABM.
 enum EnumTipoCampoAbm { casillas, comentario, fecha, hora, lista, logico, numero, texto }
@@ -91,23 +93,35 @@ class ClaseCampoAbm {
   double getAnchoCampo({String? sMascaraEfectiva}) {
     final int iCaracteres =
         (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
+    // El ancho por carácter se escala con el modo texto grande: sin esto,
+    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
+    // es 1.25.
+    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter
+        * ClaseGenEstilosTexto.dFactorTexto;
     switch (oTipo) {
       case EnumTipoCampoAbm.comentario:
         return ClaseGenLayout.dAnchoCampoComentario;
       case EnumTipoCampoAbm.casillas:
       case EnumTipoCampoAbm.lista:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-               + ClaseGenLayout.dAnchoIconoFlecha;
+        // dAnchoExtraLista cubre la flecha, el padding interno y el margen.
+        return dAnchoTexto + ClaseGenLayout.dAnchoExtraLista;
       case EnumTipoCampoAbm.fecha:
       case EnumTipoCampoAbm.hora:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar
-               + ClaseGenLayout.dAnchoIconoFlecha;
+        // Fila: texto + padding + borde, icono de calendario/reloj (48 px,
+        // IconButton) y icono de borrado (48 px, aparece al editar),
+        // separados por 4 px. Antes se reservaba dAnchoIconoFlecha (32 px),
+        // que es de los combobox: faltaban 22 px y el texto se cortaba.
+        return dAnchoTexto
+               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
+               + ClaseGenLayout.dAnchoIconoBorrar * 2
+               + ClaseGenEspacios.dEspacio04;
       case EnumTipoCampoAbm.logico:
       case EnumTipoCampoAbm.numero:
       case EnumTipoCampoAbm.texto:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoIconoBorrar;
+        // El icono de borrado es suffixIcon, dentro del campo.
+        return dAnchoTexto
+               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
+               + ClaseGenLayout.dAnchoIconoBorrar;
     }
   }
 
@@ -116,7 +130,10 @@ class ClaseCampoAbm {
   /// ancho fijo, por eso usa la máscara estática del campo.
   double getAnchoColumna() {
     final int iCaracteres = sMascara?.length ?? iAnchoCaracteres;
+    // Mismo escalamiento que getAnchoCampo: el texto de las celdas también
+    // crece con el modo texto grande.
     return iCaracteres * ClaseGenLayout.dAnchoCaracter
+           * ClaseGenEstilosTexto.dFactorTexto
            + ClaseGenEspacios.dEspacio48;
   }
 

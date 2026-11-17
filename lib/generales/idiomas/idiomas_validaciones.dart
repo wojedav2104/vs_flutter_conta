@@ -10,7 +10,7 @@ abstract final class ClaseIdiomasValidaciones {
     'validEjercicioRango'   : 'El campo "{0}" debe ser un ejercicio entre {1} y {2}',                                                           // ← ajuste
     'validFechaAnterior'    : 'El campo "{0}" no puede ser anterior al {1}',
     'validFechaFinPosterior': 'La fecha de fin de vigencia debe ser posterior a la fecha de inicio de vigencia',
-    'validFechaInvalida'    : 'El campo "{0}" tiene un formato de fecha inválido',
+    'validFechaInvalida'    : 'El campo "{0}" no es una fecha válida',
     'validFechaRango'       : 'La fecha de {0} debe estar entre el {1} y el {2}',
     'validFormatoCuenta'    : 'El número de cuenta debe tener el formato 9.99.99.99 (ejemplos válidos: 1, 1.01, 1.01.04, 2.03.05.17)',
     'validHoraInvalida'     : 'El campo "{0}" tiene un formato de hora inválido. Use hh:mm',

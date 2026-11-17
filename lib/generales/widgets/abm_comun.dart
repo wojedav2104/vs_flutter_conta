@@ -865,6 +865,19 @@ class ClaseBotoneraAbm extends StatelessWidget {
     }
   }
 
+  /// Icono de cada botón, a la izquierda de la etiqueta (spec 00_00_02: todos los botones llevan icono a la izquierda).
+  IconData _getIcono(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   return Icons.add_circle_outline;
+      case EnumBotonAbm.borrar:    return Icons.delete_outline;
+      case EnumBotonAbm.cancelar:  return Icons.cancel_outlined;
+      case EnumBotonAbm.encontrar: return Icons.search;
+      case EnumBotonAbm.fin:       return Icons.exit_to_app;
+      case EnumBotonAbm.grabar:    return Icons.save_outlined;
+      case EnumBotonAbm.modificar: return Icons.edit_outlined;
+    }
+  }
+
   @override
   Widget build(BuildContext oContexto) {
     return Padding(
@@ -905,13 +918,25 @@ class ClaseBotoneraAbm extends StatelessWidget {
           ),
           padding : EdgeInsets.zero,
         ),
-        child : Text(
-          _getEtiqueta(oBoton),
-          style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
-            color : bHabilitado
-                ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-                : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-          ),
+        child : Row(
+          mainAxisAlignment : MainAxisAlignment.center,
+          mainAxisSize       : MainAxisSize.min,
+          children          : <Widget>[
+            Icon(_getIcono(oBoton), size: 20),
+            const SizedBox(width: ClaseGenEspacios.dEspacio08),
+            Flexible(
+              child : Text(
+                _getEtiqueta(oBoton),
+                style    : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
+                  color : bHabilitado
+                      ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                      : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+                ),
+                maxLines : 1,
+                overflow : TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );

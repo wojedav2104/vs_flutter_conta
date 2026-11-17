@@ -10,6 +10,7 @@ import '../utilitarios/formatos.dart';
 import '../varios/listas.dart';
 import 'ventana_mensaje.dart';
 
+
 /// Admite dígitos y, como máximo, un separador decimal (',' o '.').
 class ClaseFormateadorImporte extends TextInputFormatter {
   @override
@@ -82,7 +83,18 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   late TextEditingController oControl;
   final FocusNode oFocoInterno = FocusNode();
-  String sMascaraActual = '';
+    String sMascaraActual = '';
+
+  /// Último error de fecha/hora mostrado en la ventana de error, para no
+  /// repetir la ventana mientras el valor no cambie.
+  String _sErrorFechaHora = '';
+
+  /// Máscaras de la fecha (99/99/9999) y de la hora (99:99): el usuario
+
+
+  /// teclea solo dígitos y los separadores se insertan solos (spec 00_00_03).
+  static const String _sMascaraFecha = '99/99/9999';
+  static const String _sMascaraHora  = '99:99';
 
   /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo
   /// provee, o el propio. Se elige una sola vez en initState.
@@ -136,8 +148,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   /// (item 9). Al perderlo: los números se formatean según la máscara
   /// (item 9) y se ejecuta la transformación del campo (funcAlPerderFoco,
   /// ej: completar el guion y el dígito verificador del RUC).
-  void _alCambiarFoco() {
+    void _alCambiarFoco() {
     if (oFoco.hasFocus) {
+      // Al entrar al campo se limpia el error guardado: si vuelve a salir
+      // con el mismo error, la ventana de error se muestra de nuevo.
+      _sErrorFechaHora = '';
       if (widget.oCampo.oTipo == EnumTipoCampoAbm.numero
           && _getMascara() != null
           && oControl.text != widget.sValor) {
@@ -146,7 +161,13 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       return;
     }
     _mostrarNumeroFormateado();
+    // Completa la fecha u hora según lo que alcanzó a teclear el usuario.
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
+    // Muestra la ventana de error si la fecha u hora no es posible.
+    _validarFechaHora();
     // Transformación del campo al salir del foco (ej: completar el RUC).
+
     final String? sNuevo = widget.funcAlPerderFoco
         ?.call(widget.oCampo.sClave, widget.sValor, widget.mapValores);
     if (sNuevo != null && sNuevo != widget.sValor) {
@@ -284,6 +305,126 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     widget.funcAlCambiar(sSalida);
   }
 
+  // ── Máscara de la fecha y error de fecha/hora ────────────────────────────
+
+  /// Máscara 99/99/9999: el usuario teclea solo dígitos y las barras se
+  /// insertan solas mientras escribe (spec 00_00_03).
+  void _alCambiarFecha(String sValor) {
+    final String sDigitos    = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    final String sConMascara = funcAplicarMascara(sDigitos, _sMascaraFecha);
+    if (sConMascara != oControl.text) {
+      oControl.value = TextEditingValue(
+        text      : sConMascara,
+        selection : TextSelection.collapsed(offset: sConMascara.length),
+      );
+    }
+    widget.funcAlCambiar(sConMascara);
+    // Con los 8 dígitos escritos se valida la fecha (29022026 → error).
+    if (sDigitos.length >= 8) _validarFechaHora();
+  }
+
+  /// Muestra la ventana de error si la fecha u hora no es posible, no solo
+  /// si no tiene el formato (spec 00_00_03: la ventana error es para avisar
+  /// al usuario que se detectó un error). El campo vacío no se valida acá
+  /// (lo obligatorio se controla al grabar). No repite la ventana mientras
+  /// el valor no cambie.
+  void _validarFechaHora() {
+    if (!mounted) return;
+    final String sValor = oControl.text.trim();
+    if (sValor.isEmpty) return;
+    final bool bFecha = (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha);
+    final bool bHora  = (widget.oCampo.oTipo == EnumTipoCampoAbm.hora);
+    if (!bFecha && !bHora) return;
+    final bool bValida = bFecha
+        ? (funcParsearFecha(sValor) != null)
+        : (funcParsearHora(sValor) != null);
+    if (bValida) {
+      _sErrorFechaHora = '';
+      return;
+    }
+    final String sError = ClaseIdiomas.getTexto(
+        bFecha ? 'validFechaInvalida' : 'validHoraInvalida', widget.sIdioma)
+        .replaceAll('{0}', widget.oCampo.sEtiqueta);
+    if (sError == _sErrorFechaHora) return;
+    _sErrorFechaHora = sError;
+    funcMostrarError(
+      context,
+      widget.sIdioma,
+      ClaseIdiomas.getTexto('aplicacion', widget.sIdioma),
+      sError,
+    );
+  }
+
+  // ── Fecha y hora inteligentes ────────────────────────────────────────────
+
+  /// Completa la fecha según los dígitos que alcanzó a teclear el usuario.
+  /// Se ejecuta al salir del campo o con Enter (para poder seguir tecleando
+  /// sin que el campo se complete a mitad de camino):
+  ///   16     → 16/mm/aaaa con el mes y el año actuales
+  ///   127    → 12/07/aaaa: día de 2, mes de 1 dígito (07), año actual
+  ///   1611   → 16/11/aaaa con el año actual
+  ///   161126 → 16/11/2026: el año de 2 dígitos lleva "20" delante
+  /// El año de 1 o 3 dígitos se completa igual: 2 → 2022, 026 → 2026.
+  void _completarFecha() {
+    final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.isEmpty) return;
+    final DateTime fHoy = DateTime.now();
+    String sDia;
+    String sMes;
+    String sAno;
+    if (sDigitos.length <= 2) {
+      sDia = sDigitos.padLeft(2, '0');
+      sMes = fHoy.month.toString().padLeft(2, '0');
+      sAno = fHoy.year.toString();
+    } else if (sDigitos.length == 3) {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2).padLeft(2, '0');
+      sAno = fHoy.year.toString();
+    } else if (sDigitos.length == 4) {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2, 4);
+      sAno = fHoy.year.toString();
+    } else {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2, 4);
+      final String sAnoTecleado = (sDigitos.length > 8)
+          ? sDigitos.substring(4, 8)
+          : sDigitos.substring(4);
+      sAno = (sAnoTecleado.length >= 4)
+          ? sAnoTecleado
+          : '202'.substring(0, 4 - sAnoTecleado.length) + sAnoTecleado;
+    }
+    final String sFecha = '$sDia/$sMes/$sAno';
+    if (sFecha == oControl.text) return;
+    oControl.value = TextEditingValue(
+      text      : sFecha,
+      selection : TextSelection.collapsed(offset: sFecha.length),
+    );
+    widget.funcAlCambiar(sFecha);
+  }
+
+  /// Completa la hora al salir del campo o con Enter: los minutos que
+  /// faltan son 00 (16 → 16:00, 163 → 16:03).
+  void _completarHora() {
+    final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.isEmpty) return;
+    String sHora;
+    if (sDigitos.length <= 2) {
+      sHora = '${sDigitos.padLeft(2, '0')}:00';
+    } else {
+      final String sMinutos = (sDigitos.length > 4)
+          ? sDigitos.substring(2, 4)
+          : sDigitos.substring(2);
+      sHora = '${sDigitos.substring(0, 2)}:${sMinutos.padLeft(2, '0')}';
+    }
+    if (sHora == oControl.text) return;
+    oControl.value = TextEditingValue(
+      text      : sHora,
+      selection : TextSelection.collapsed(offset: sHora.length),
+    );
+    widget.funcAlCambiar(sHora);
+  }
+
   // ── Construcción de la interfaz ──────────────────────────────────────────
 
   @override
@@ -412,7 +553,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             focusNode    : oFoco,
             style        : ClaseGenEstilosTexto.textoCampo(oContexto),
             keyboardType : TextInputType.datetime,
-            onChanged    : (String sValor) => widget.funcAlCambiar(sValor),
+            onChanged    : _alCambiarFecha,
+            onSubmitted  : (_) { _completarFecha(); _validarFechaHora(); },
             decoration   : _getDecoracion(sHint: 'dd/mm/aaaa'),
           ),
         ),
@@ -459,7 +601,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             style        : ClaseGenEstilosTexto.textoCampo(oContexto),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarHora,
-            onSubmitted  : (_) => _normalizarHora(),
+            onSubmitted  : (_) { _completarHora(); _validarFechaHora(); },
             decoration   : _getDecoracion(sHint: 'hh:mm'),
           ),
         ),
@@ -491,30 +633,28 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   /// en formato hh:mm. El display solo se corrige cuando los minutos ya
   /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
   void _alCambiarHora(String sValor) {
-    final int? iMinutos = funcParsearHora(sValor);
-    final String sHora = (iMinutos != null)
-        ? funcFormatearHora(iMinutos ~/ 60, iMinutos % 60)
-        : sValor;
-    widget.funcAlCambiar(sHora);
-    if (sHora != oControl.text && RegExp(r':\d{2}$').hasMatch(sValor.trim())) {
+    // Máscara 99:99: el usuario teclea solo dígitos y los dos puntos se
+    // insertan solos (spec 00_00_03).
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    String sHora = funcAplicarMascara(sDigitos, _sMascaraHora);
+    // Normaliza solo con los 4 dígitos escritos: mientras tanto '16:3' se
+    // deja como está para poder seguir tecleando (1630 → 16:30). Con menos
+    // dígitos la completación ocurre al perder el foco (_completarHora).
+    if (sDigitos.length >= 4) {
+      final int? iMinutos = funcParsearHora(sHora);
+      if (iMinutos != null) {
+        sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+      }
+    }
+    if (sHora != oControl.text) {
       oControl.value = TextEditingValue(
         text      : sHora,
         selection : TextSelection.collapsed(offset: sHora.length),
       );
     }
-  }
-
-  /// Normaliza el display al confirmar (Enter): rellena con ceros.
-  /// Ej: '1:30' → '01:30', '12:5' → '12:05', '9:8' → '09:08'.
-  void _normalizarHora() {
-    final int? iMinutos = funcParsearHora(oControl.text);
-    if (iMinutos != null) {
-      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
-      if (sHora != oControl.text) {
-        oControl.text = sHora;
-        widget.funcAlCambiar(sHora);
-      }
-    }
+    widget.funcAlCambiar(sHora);
+    // Con los 4 dígitos escritos se valida la hora (1630 → 16:30 o error).
+    if (sDigitos.length >= 4) _validarFechaHora();
   }
 
   // ── Lista (dropdown) ─────────────────────────────────────────────────────

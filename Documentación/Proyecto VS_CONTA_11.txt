@@ -1,0 +1,269 @@
+================================================================================
+CONTEXTO DEL PROYECTO VS_CONTA — para continuar en una nueva sesión
+================================================================================
+
+0. CÓMO USAR ESTE ARCHIVO
+--------------------------------------------------------------------------------
+Este archivo resume TODO lo trabajado hasta ahora. Al iniciar la nueva sesión,
+entregar este archivo como primer mensaje. El asistente debe:
+  a) Leerlo completo antes de responder nada.
+  b) Verificar el estado actual leyendo lectura/00_total.txt y los índices del
+     repositorio (ver sección 3), porque puede haber cambios posteriores.
+  c) Continuar con los pendientes de la sección 9.
+
+ÚLTIMO ESTADO: el usuario hizo push de los parches "Cancelar vuelve al registro
+anterior y devuelve el foco a la grilla" (sección 8, punto 3). PENDIENTE DE
+VERIFICAR por el asistente: lib/generales/widgets/abm_comun.dart,
+lib/generales/widgets/formulario_abm.dart y
+lib/generales/widgets/formulario_cabecera_detalle.dart.
+
+================================================================================
+1. EL PROYECTO
+--------------------------------------------------------------------------------
+- VS_CONTA: aplicación contable hecha en Flutter (web + celular), pensada para
+  usuarios NOVELES con computadoras y smartphones. UI/UX de primer nivel.
+- Repositorio: https://github.com/wojedav2104/vs_flutter_conta (rama main)
+- Usuario GitHub: wojedav2104
+- Login inicial: admin / 1234
+- Idiomas: español y francés. Tema: claro u oscuro. Formato de números/fechas:
+  latinoamericano o francés. Todo grabado en el dispositivo (preferencias).
+- Primera ejecución: español, tema claro, formato Paraguay.
+- Países: PRY, PER (usuarios con edición). FRA: SOLO LECTURA (nunca puede
+  agregar/borrar/modificar). ARG y URY: posibles más adelante.
+  Países elegibles en la tabla Empresa: solo ARG, PRY, PER (Francia nunca;
+  Uruguay cuando esté vigente).
+- Base de datos futura: Firebird 2.5.9 en VPS de 500 MB (guía en
+  Documentación/09_01_01 y 09_01_02), API backend en Dart, proxy Caddy.
+  Hoy los datos son de prueba (crearRegistrosPrueba en cada pantalla).
+- Regla 00_02: en el drawer y en TODOS los AppBar se muestra el nombre de la
+  Base de Datos conectada (y el país).
+
+================================================================================
+2. REGLAS DE TRABAJO DEL USUARIO (OBLIGATORIAS)
+--------------------------------------------------------------------------------
+1) SIEMPRE escribir la ruta completa de cada archivo .dart
+   (ej: lib/generales/widgets/abm_comun.dart, lib/opciones/archivos/compras.dart).
+   El usuario no recuerda en qué carpeta están los archivos.
+2) Los archivos del repo están divididos en fragmentos de ~5.000 bytes o menos
+   porque la lectura del asistente se trunca alrededor de los 5.200 bytes.
+3) El asistente NO usa artefactos: todo código se entrega en bloques de código
+   del chat. Los parches se entregan en formato "Buscar / Reemplazar" listos
+   para aplicar, con la ruta completa del archivo.
+4) Flujo de trabajo: el asistente da los parches → el usuario los aplica,
+   corre la app para verificar, hace commit y push, y corre
+   herramienta partir_lectura.dart (genera la carpeta lectura/ en el repo) →
+   el asistente RELEE los fragmentos actualizados y verifica que los parches
+   quedaron bien aplicados. Nunca dar por aplicado un parche sin releer.
+5) El mensaje de commit es libre (el usuario lo elige).
+6) El asistente debe ser honesto: si se equivoca en una cita de la spec o en
+   un diagnóstico, corregirlo explícitamente (ya ocurrió: ver sección 7).
+
+================================================================================
+3. CÓMO SE LEE EL CÓDIGO Y LA DOCUMENTACIÓN
+--------------------------------------------------------------------------------
+URL base de fragmentos de código:
+  https://raw.githubusercontent.com/wojedav2104/vs_flutter_conta/main/lectura/<fragmento>
+Nombre de fragmentos: lib__carpeta__archivo.dart__parteXdeY.txt
+  (ej: lib__generales__widgets__abm_comun.dart__parte1de10.txt)
+
+Archivos de control en lectura/:
+  - 00_total.txt  → cantidad total de fragmentos
+  - 00_indice_1.txt, 00_indice_2.txt, ... → lista de fragmentos
+
+URL de especificaciones:
+  https://raw.githubusercontent.com/wojedav2104/vs_flutter_conta/main/Documentaci%C3%B3n/<archivo>
+
+SIEMPRE verificar 00_total.txt e índices antes de leer, porque el número de
+partes cambia cuando se edita un archivo (ej: abm_comun.dart pasó de 9 a 10
+partes; formulario_cabecera_detalle.dart de 8 a 9).
+
+================================================================================
+4. DOCUMENTACIÓN (25 archivos en Documentación/)
+--------------------------------------------------------------------------------
+00_00_01/02/03_Especificaciones de la aplicación.txt  (UI/UX, nomenclatura,
+    ventanas, mensajes, máscaras)
+00_01_Carpetas de la aplicación.txt
+00_02_Opciones drawer.txt
+00_03_01/02_ABMs.txt
+00_04_Monedas.txt
+00_05_Países.txt
+01_01_Tabla_Empresa.txt ... 01_08_Tabla_Cuentas_Asignadas.txt
+02_01_Archivo_Cuentas.txt, 02_02_Archivo_Asientos.txt,
+02_03_01/02_Archivo_Compras.txt
+09_01_01/02_Guía VPS para Firebird.txt
+09_02_01/02_Enlaces_GitHub.txt
+
+Puntos clave de las specs:
+- 00_00_02: nomenclatura (prefijos d/f/i/b/n/o/s/w, list/set/map/Enum,
+  func para funciones propias, Clase para clases, getters get/set, español
+  sin Ñ (iAnoMinimo), orden por tipo y alfabético, alineación de = y :,
+  fuente monoespaciada en controles, icono a la izquierda en botones,
+  176 caracteres por fila).
+- 00_00_03: ventanas advertencia/confirmación (Sí, No, Cancelar
+  programables)/error/información con icono; trato de tú, asexuado;
+  máscaras A=carácter, 9=dígito, !=mayúscula; numéricos con máscara se
+  justifican a la derecha y se formatean al perder el foco.
+- 00_03_ABMs: 23 items (asterisco rojo en obligatorios, contador del
+  comentario 27/500, botones mismo tamaño, foco en primer campo con error,
+  grilla lateral con pocos campos importantes, foco en la primera fila, etc.)
+- 02_02 Asientos y 02_03 Compras: cabecera/detalle con validaciones
+  (fecha en ejercicio, Debe = Haber, cuotas 1-240 solo Factura Crédito,
+  timbrado 8 dígitos solo con máscara, Resolución 90/2021 / Marangatú).
+
+================================================================================
+5. ESTRUCTURA DEL CÓDIGO
+--------------------------------------------------------------------------------
+lib/main.dart                        entrada; carga países y preferencias
+lib/rutas/generador_rutas.dart, rutas.dart
+lib/generales/idiomas/               8 archivos (idiomas.dart + 7 módulos)
+lib/generales/inicio/                login.dart, menu_lateral.dart,
+                                     pantalla_principal.dart
+lib/generales/modelos/               campo_abm.dart (ClaseCampoAbm con
+                                     bCompletarCeros, bEnGrilla, bMayusculas,
+                                     bSiempreDeshabilitado, listValores,
+                                     sValorDefecto, funcMascara...),
+                                     documentos.dart, opcion_menu.dart,
+                                     permisos.dart, sesion.dart
+lib/generales/preferencias/preferencias.dart
+lib/generales/temas/                 colores, espacios, estilos_textos,
+                                     layout, radios, temas
+lib/generales/utilitarios/           formatos.dart, menu_navegador_movil.dart,
+                                     menu_navegador_web.dart
+lib/generales/validaciones/          can_validar.dart (CON BD, stubs TODO),
+                                     cap_validar.dart (SIN BD, implementada)
+lib/generales/varios/                listas.dart, paises.dart,
+                                     pantalla_proximamente.dart,
+                                     timbrados_comun.dart
+lib/generales/widgets/               abm_comun.dart (ClaseFormularioCampos,
+                                     ClaseGrillaRegistros, ClaseAndamiajeAbm,
+                                     ClaseBotoneraAbm,
+                                     funcConstruirTituloAppBar),
+                                     campo_formulario.dart,
+                                     controles_preferencias.dart,
+                                     formulario_abm.dart,
+                                     formulario_cabecera_detalle.dart
+                                     (incluye _ClaseCeldaNumero),
+                                     ventana_configuracion.dart,
+                                     ventana_mensaje.dart
+lib/opciones/archivos/               asientos.dart, compras.dart, cuentas.dart
+lib/opciones/tablas/                 clientes, configuracion,
+                                     cuentas_asignadas, empresa, proveedores,
+                                     sucursales, timbrados_propios,
+                                     timbrados_proveedores
+assets/datos/paises.json             ARG, FRA, PER, PRY, URY
+pubspec.yaml                         fuentes Roboto y Roboto Mono
+
+================================================================================
+6. DECISIONES DE DISEÑO Y REGLAS DE NEGOCIO ADOPTADAS
+--------------------------------------------------------------------------------
+- Regla nueva: los campos de tipo Comentario NUNCA se muestran en la grilla
+  lateral izquierda (implementado en ClaseGrillaRegistros, abm_comun.dart).
+- Botones del login: Ingresar PRIMERO con color resaltante (FilledButton) y
+  Cancelar a su derecha (OutlinedButton). La spec 00_00_01 ya dice "y a su
+  derecha"; falta agregarle "con un color resaltante...".
+- Opciones de menú no implementadas: muestran la pantalla "En preparación"
+  (lib/generales/varios/pantalla_proximamente.dart) con icono de obra.
+- Base de Datos y país en el drawer y en todos los AppBar (helper
+  funcConstruirTituloAppBar en lib/generales/widgets/abm_comun.dart).
+- Grillas: se mantienen las grillas PROPIAS en los ABM (grilla lateral de
+  selección + grilla editable de detalles, pensadas para táctil y escritorio).
+  Para los INFORMES se usará un paquete de pub.dev (candidato: data_table_2).
+  Pendiente documentarlo en 00_00_01.
+- Monedas (00_04): NO se usan todavía. Se usarán en consultas e informes.
+- Tabla Empresa: un solo registro (bTablaUnSoloRegistro), Encontrar siempre
+  deshabilitado (bPermitirEncontrar: false). Grupos: 1 Generales, 2 Varios,
+  3 Impuestos (en ese orden, coincide con la spec).
+- Campo Comentarios en Asientos y Libro Compras: se muestra al PIE del
+  formulario, debajo de los totales de la grilla (propiedad sClaveCampoAlPie
+  de ClaseFormularioCabeceraDetalle).
+- Francia: solo lectura. Los botones de edición se deshabilitan por país
+  (ClaseBotoneraAbm / ClasePermisos.puedeEditar).
+
+================================================================================
+7. AUDITORÍA CÓDIGO vs SPECS — ESTADO: CERRADA
+--------------------------------------------------------------------------------
+Se hizo una auditoría completa contra las 25 specs. Hallazgos resueltos y
+verificados:
+- H1: nombreCuenta del detalle deshabilitado (asientos.dart).
+- H2: campo comentarios al pie (sClaveCampoAlPie) en asientos.dart,
+  compras.dart y formulario_cabecera_detalle.dart.
+- H4: límite de dígitos de números según la máscara (campo_formulario.dart).
+- H5: celdas numéricas de la grilla se formatean al perder el foco
+  (_ClaseCeldaNumero en formulario_cabecera_detalle.dart).
+- H6: mayúsculas automáticas en el N° de documento de compras.dart.
+- H12: claves de idioma faltantes doc*/prv*/tim* en
+  lib/generales/idiomas/idiomas_terceros.dart (mapEs y mapFr).
+- Países de Empresa limitados a ARG/PRY/PER (empresa.dart).
+
+H3 (botones del login) resuelto sin código: ya estaban lado a lado.
+CORRECCIÓN IMPORTANTE DEL ASISTENTE: había citado frases de la spec que NO
+existen ("y debajo un botón Cancelar", "Los controles de las opciones no
+implementadas no deben estar activos", "regla 7"). Fueron inventadas por
+error. Textos reales verificados en 00_00_01:
+  "5. Un botón 'Ingresar' y a su derecha: 6. Un botón 'Cancelar'"
+  Párrafos sin numerar sobre paquetes de controles y grillas.
+Tres ediciones de specs quedaron PROPUESTAS y sin confirmar:
+  a) 00_00_01, item 5: agregar "con un color resaltante porque es el botón que
+     más frecuentemente pulsarán los usuarios".
+  b) 00_00_01: agregar al final: "Las opciones del menú cuyo módulo aún no
+     está implementado muestran una pantalla que indica que la opción se
+     implementará próximamente."
+  c) 00_00_01: reemplazar el párrafo de grillas por el texto que documenta
+     grillas propias en ABM + data_table_2 en informes (ver sección 6).
+  d) 00_03_ABMs, item 21: agregar "Los campos de tipo Comentario nunca se
+     muestran en la grilla lateral izquierda."
+
+================================================================================
+8. CORRECCIONES UI/UX RECIENTES (fase actual)
+--------------------------------------------------------------------------------
+1) ERROR al elegir "Texto grande" (assert de TextStyle.apply):
+   Archivo: lib/generales/temas/temas.dart → se reemplazó
+   .apply(fontSizeFactor: ...) por el método _escalarTexto(TextTheme) que
+   escala cada uno de los 15 estilos con (fontSize ?? 14.0) * dFactorTexto.
+   VERIFICADO OK por el usuario.
+
+2) Botón "Fin" siempre habilitado en los ABM:
+   En _getBotonesHabilitados() de lib/generales/widgets/formulario_abm.dart y
+   lib/generales/widgets/formulario_cabecera_detalle.dart se cambió
+   "EnumBotonAbm.fin" por "if (!bModoEdicion) EnumBotonAbm.fin".
+   En edición quedan solo Grabar y Cancelar. VERIFICADO OK por el usuario.
+
+3) Cancelar tras Agregar/Modificar debe volver al registro que se estaba
+   viendo y devolver el foco a la grilla lateral:
+   - lib/generales/widgets/abm_comun.dart: ClaseGrillaRegistros y
+     ClaseAndamiajeAbm aceptan oFocoExterno/oFocoGrilla (FocusNode externo).
+   - lib/generales/widgets/formulario_abm.dart y
+     lib/generales/widgets/formulario_cabecera_detalle.dart: nueva propiedad
+     iRegistroAnterior; agregar() y modificar() la guardan; cancelar()
+     restaura el registro (y los detalles, en cabecera/detalle),
+     iRegistroAnterior = -1, y pide el foco a la grilla en
+     addPostFrameCallback; grabar() y borrar() reinician iRegistroAnterior.
+   ESTADO: aplicado por el usuario (commit+push). VERIFICADO OK por el
+   asistente (13+2 fragmentos releídos).
+
+================================================================================
+9. PENDIENTES INMEDIATOS (orden sugerido)
+--------------------------------------------------------------------------------
+1) VERIFICAR el último push (los 3 archivos de la sección 8, punto 3):
+   revisar que iRegistroAnterior, el FocusNode compartido y el requestFocus
+   en cancelar() quedaron aplicados en los 3 archivos.
+2) Confirmar si el usuario aplicó los 4 textos de spec de la sección 7
+   (a, b, c, d). Si no, ofrecer los textos de nuevo.
+3) Continuar la fase UI/UX: el usuario prueba la app y reporta problemas
+   (pantalla, qué esperaba, qué pasó, y si fue en celular o PC). El asistente
+   lee los fragmentos necesarios y da el parche con la ruta completa.
+
+================================================================================
+10. PENDIENTES MAYORES (a futuro, NO ahora)
+--------------------------------------------------------------------------------
+- Conexión a Firebird (can_validar.dart está preparada con stubs TODO y la
+  guía VPS lista). Reemplazar crearRegistrosPrueba por SQL.
+- Funcionalidades de la spec sin implementar: Libro Ventas, Retenciones,
+  Procesos (Marangatú, Cierre Anual), Informes (con data_table_2),
+  Utilitarios > Usuarios (permisos), Sistema > Bases de Datos.
+- Monedas (00_04) en consultas e informes.
+- Validaciones de BD en can_validar.dart (unicidad, claves foráneas,
+  vigencias) cuando haya conexión.
+================================================================================
+FIN DEL ARCHIVO DE CONTEXTO
+================================================================================

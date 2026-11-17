@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'generales/idiomas/idiomas.dart';
 import 'generales/inicio/login.dart';
@@ -45,7 +46,17 @@ class ClaseEstadoAplicacion extends State<ClaseAplicacion> {
     return MaterialApp(
       title                      : ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
       debugShowCheckedModeBanner : false,
+      // Delegados de localización: los selectores de fecha y de hora (Material) los necesitan para traducir meses, días y botones.
+      // Los idiomas de la aplicación son español y francés.
+      localizationsDelegates     : const <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales           : const <Locale>[Locale('es'), Locale('fr')],
+      locale                     : Locale(widget.oPreferencias.getIdioma()),
       theme                      : ClaseGenTemas.getTemaClaro,
+
       darkTheme                  : ClaseGenTemas.getTemaOscuro,
       themeMode                  : (widget.oPreferencias.getTema() == 'oscuro') ? ThemeMode.dark : ThemeMode.light,
       navigatorObservers         : <NavigatorObserver>[oObservadorRutas],
