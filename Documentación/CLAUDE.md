@@ -1,0 +1,213 @@
+# CLAUDE.md — Contexto del proyecto VS_CONTA
+
+Este archivo es la memoria del proyecto. Al iniciar una sesión, leerlo completo
+para continuar sin repreguntar. Actualizarlo al final de cada sesión de trabajo.
+
+---
+
+## 1. Mi rol
+
+Actúo como programador humano profesional, senior en Flutter/Dart, cotrabajo
+con el usuario (dueño del proyecto). Él decide, yo propongo; él prueba y
+reporta, yo diagnostico y entrego parches. Respondo en español, tono técnico
+sobrio, sin adornos.
+
+## 2. El proyecto
+
+VS_CONTA: aplicación de Contabilidad multi-país, multi-moneda, multi-sucursal,
+multi-usuario y multi-idioma (español/francés). Para contadores y empresas.
+Hoy opera en Paraguay (SET, DNIT, Marangatú, IVA 10%/5%, I.R.E., I.R.P.,
+Retención 30%, plan contable Paraguay), pero la arquitectura es multi-país.
+
+- Plataformas: Desktop Windows (con pantalla táctil, uso intensivo), Android,
+  web (soportada, sin programación específica).
+- Estado: FASE 1 — 8 pantallas ABM con datos de prueba (Empresa, Configuración,
+  Sucursales, Clientes, Proveedores, Timbrados Propios, Timbrados de
+  Proveedores, Cuentas Asignadas) + Login + menú drawer.
+- Base de Datos: especificada Firebird, conectada a 17/06/2026 (habilitada con
+  ClaseBaseDatos). Mientras tanto: listas de datos de prueba en cada pantalla.
+- Pendiente mayor: validaciones de unicidad (esperan la BD); usuario que graba
+  por defecto 'admin'.
+
+## 3. Especificaciones (fuente de verdad)
+
+En `Documentación/`:
+- 00_00_01_Arquitectura_general_de_la_aplicacion.txt (MVVM, división en capas)
+- 00_00_02_Especificaciones_de_la_aplicacion.txt (UI/UX: botones con icono a
+  la izquierda, grillas, colores, mensajes, ventanas)
+- 00_00_03_Especificaciones_de_la_aplicacion.txt (datos, validaciones,
+  máscaras de entrada, foco, ventana error, grabs)
+- 00_00_04_Diseno_de_datos.txt (modelo de datos)
+- 01_01..01_08: una spec por tabla (Empresa, Clientes, Proveedores, Sucursales,
+  Timbrados Propios, Timbrados de Proveedores, Cuentas Asignadas, y resoluciones)
+
+Si la spec dice algo distinto al código, la spec manda.
+
+## 4. Arquitectura y archivos clave
+
+MVVM con widgets. Formularios autocontenidos (sin ViewModel): cada pantalla
+arma `List<ClaseCampoAbm>` + `List<Map<String, dynamic>>` de prueba y entrega
+todo a `ClaseFormularioAbm`.
+
+- lib/main.dart — MaterialApp, tema claro/oscuro, rutas, delegates de
+  localización (GlobalMaterialLocalizations etc.), supportedLocales es/fr,
+  locale desde preferencias (necesario para pickers de fecha/hora de Material).
+- lib/generales/modelos/campo_abm.dart — ClaseCampoAbm (modelo de campo) y
+  EnumTipoCampoAbm (texto, numero, fecha, hora, logico, lista, casillas,
+  comentario). getAnchoCampo()/getAnchoColumna() calculan anchos:
+  · ancho texto = iCaracteres * dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto
+  · lista/casillas: + dAnchoExtraLista (72 px)
+  · fecha/hora: + dEspacio24 + dAnchoBordeCampo + 2*dAnchoIconoBorrar + dEspacio04
+  · texto/logico/numero: + dEspacio24 + dAnchoBordeCampo + dAnchoIconoBorrar
+- lib/generales/temas/layout.dart — ClaseGenLayout: constantes de layout
+  (incluye dAnchoExtraLista 72, dAnchoBordeCampo 2, dAnchoCaracter 8.6).
+- lib/generales/temas/estilos_textos.dart — ClaseGenEstilosTexto; dFactorTexto
+  (1.0 o 1.25 con "texto grande"); fuente mono para campos.
+- lib/generales/widgets/campo_formulario.dart — ClaseCampoFormulario: renderiza
+  cada campo por tipo. Estado actual:
+  · Máscaras _sMascaraFecha='99/99/9999' y _sMascaraHora='99:99'; los
+    separadores se insertan solos al teclear (solo dígitos).
+  · Completado inteligente al salir del campo o Enter (_completarFecha /
+    _completarHora): 16→16/11/2026 (mes/año actuales); 127→12/07/aaaa (año
+    actual); 1611→16/11/aaaa; 161126→16/11/2026 (año de 2 dígitos: 20XX);
+    16112026→sin cambio. Hora: 16→16:00; 163→16:03; 1630→16:30.
+  · Normalización de hora solo con 4 dígitos o al perder foco (16:3 no se
+    convierte en 16:03 mientras se teclea).
+  · Errores de fecha/hora inválida: ventana popup con funcMostrarError
+    (nunca errorText inline, se corta y no se lee). El foco vuelve al campo
+    con error tras cerrar la ventana (regla 00_00_03 foco).
+  · Validación al salir SOLO si el foco terminó en otro campo de entrada
+    (_focoEnOtroCampo()/ _esBoton()): clic en Cancelar, Fin, Grabar, picker,
+    X, ventana o espacio vacío NO valida. Enter, 4/8 dígitos y Grabar sí.
+  · _alCambiarTexto aplica mayúsculas y máscara; números se formatean al
+    perder foco (item 9).
+- lib/generales/widgets/abm_comun.dart — ClaseBotoneraAbm (botonera ABM con
+  iconos por botón: _getIcono() — agregar=add_circle_outline,
+  borrar=delete_outline, modificar=edit_outlined, grabar=save_outlined,
+  cancelar=cancel_outlined, encontrar=search, fin=exit_to_app),
+  funcValidarCampoAbm, funcMostrarEncontrar, ClaseFormularioCampos.
+- lib/generales/widgets/ventana_mensaje.dart — funcMostrarAdvertencia/
+  Confirmacion/Error/Informacion, funcConstruirBoton (siempre con icono),
+  funcMostrarSelectorFecha (showDatePicker con locale) y funcMostrarSelectorHora.
+- lib/generales/widgets/formulario_abm.dart — ClaseFormularioAbm: botonera,
+  grilla lateral, body con grupos/pestañas, nodo de foco externo (item 14:
+  Grabar con error devuelve foco al campo con error).
+- lib/generales/validaciones/cap_validar.dart — ClaseCapValidar: todas las
+  validaciones; mensajes via ClaseIdiomas.getTexto + replaceAll('{0}',...).
+  Incluye validarIdentificacion (cédula 5-8 dígitos, RUC con DV módulo 11,
+  pasaporte, etc.), fechas (validarFechaValida/EnRango/NoAnterior/EnEjercicio),
+  horas, cuentas contables, importes, listas.
+- lib/generales/idiomas/ — idiomas.dart junta 8 mapas (General, Interfaz,
+  Validaciones, Asientos, Tablas, Terceros, Cuentas, Compras) y ofrece
+  getTexto(clave, idioma): devuelve la clave si falta (así se detectan
+  textos faltantes). Claves camelCase con prefijo de módulo (com, cta, emp,
+  det, asi, valid, cli, prv, tim, doc, cfg, suc, plan, abm, menu).
+- lib/generales/utilitarios/formatos.dart — fechas/horas/numeros, máscaras,
+  funcAnchoOpcion, funcParsearFecha (acepta 2020..año+1), funcDigitoVerificador.
+- lib/generales/varios/listas.dart — ClaseSiNo, ClaseLocalExterior,
+  ClaseAfectaA, ClaseMedioGeneracion, ClaseTipoAfectacion, etc. (etiquetas
+  traducidas + valores internos).
+- lib/opciones/tablas/*.dart — las 8 pantallas ABM (solo definen campos,
+  validaciones cruzadas y datos de prueba).
+- herramienta/partir_lectura.dart — parte archivos en fragmentos de ~5k en
+  `lectura/` para lectura por sesiones.
+
+## 5. Flujo de trabajo
+
+1. El usuario prueba en Windows/táctil y reporta el problema en sus palabras
+   ("combobox" = campo tipo lista/dropdown).
+2. Yo releo los fragmentos necesarios de `lectura/` (o el .dart completo en
+   GitHub) y doy: diagnóstico + parche con bloques "Buscar:" / "Reemplazar:"
+   exactos, listos para pegar en el archivo .dart REAL.
+3. El usuario aplica, compila (`flutter run -d windows`) y reporta.
+4. Al cerrar sesión: actualizar este archivo.
+
+Reglas operativas:
+- EDITAR SIEMPRE los .dart reales de lib/, NUNCA los fragmentos de lectura/
+  (causa el error clásico: "cambié el texto y no cambia nada"; además
+  partir_lectura regenera el fragmento y pisa el cambio).
+- Si un cambio no se refleja tras recompilar: `flutter clean` y recompilar
+  (ya ocurrido con textos de idiomas).
+- Parches: texto exacto actual → texto nuevo. Si varios parches en un archivo
+  y la sección nueva contiene texto que otro parche necesita como "Buscar",
+  aplicar en orden inverso; si no, en orden directo.
+- Flutter a veces necesita `flutter clean` tras cambios de recursos/idiomas.
+
+## 6. Convenciones de código (resumen)
+
+- Dart 3.13.7+, Flutter 3.41+, Material (sin Material 3). Android minSdk 24.
+- Prefijos: Clase, Enum; s (String), d (double), i (int), f (DateTime),
+  b (bool), o (otro), list (List), map (Map), func (función), _privado.
+- `final` / `required` / `const` / `super.key`; propiedades ordenadas
+  alfabéticamente; `abstract final class` para clases estáticas.
+- Alineación estricta de `:` (parámetros) y `=>` (getters); bloques de casos
+  alineados. `const` solo en valores, nunca en widgets. `late` solo en
+  campos de estado.
+- Sin emojis. Textos SIEMPRE en Español neutro (nombres de variables,
+  funciones, clases, claves de idioma). Valores de idioma en español/francés.
+- KISS / DRY / YAGNI; "Un archivo, una responsabilidad"; composición por
+  delegación; Do not Repeat Yourself.
+- Comentarios en español, sin secciones "Historial de cambios".
+- Regla UI/UX nueva: las pestañas se muestran como fichas visibles (fondo +
+  borde + esquinas redondeadas); la activa usa primaryContainer con borde
+  primario y texto en negrita. Único punto de cambio: _construirPestana en
+  ClaseEstadoFormularioCampos (abm_comun.dart). Toda pestaña futura debe
+  reutilizarla.
+
+## 7. Historial reciente (sesiones de corrección de UI)
+
+- Anchura de campos: factor de texto aplicado a anchos; combobox ampliados
+  (dAnchoExtraLista) — país, IVA, IRE, IRP se ven completos.
+- Iconos en los 7 botones ABM (regla spec 00_00_02).
+- Claves de idioma faltantes agregadas: cli* (clientes), tim* (timbrados
+  comunes + opciones AfectaA/MedioGeneracion), valorLocal/valorExterior
+  (combos Tipo de cliente/proveedor), prv*/doc* (antes).
+- Picker de fecha: rojo "No MaterialLocalizations" resuelto con
+  localizationsDelegates + supportedLocales + locale en main.dart.
+- Fecha/hora: máscara con barras automáticas, completado inteligente,
+  validación en ventana popup, foco que vuelve al campo con error, y NO
+  validación al clickear botones.
+- El usuario corrigió validFechaInvalida a 'El campo "{0}" no es una fecha
+  válida' en idiomas_validaciones.dart (ambos mapas si hace falta).
+- Regla UI/UX colores de controles: backcolor/forecolor distintos según
+  estado. Habilitado = cian suave + texto cian con contraste (colores
+  definidos en ClaseGenColores; helpers en ClaseGenTemas). Deshabilitado =
+  gris tenue + texto normal. Aplica a todos los campos y al cuadro de
+  búsqueda de la grilla lateral. El diálogo Encontrar se dejará para una
+  mejora futura (decisión del usuario).
+
+## 8. Pendientes
+
+1. Botones OK/CANCEL internos del picker de Flutter no llevan icono (posible desvío de la regla "todos los botones con icono"): decidir si
+   reemplazarlos o aceptarlos.
+2. Barrer claves crudas restantes si aparecen (pantallas Sucursales, Cuentas, Cuentas Asignadas, Configuración).
+3. Valores de idioma de validFechaInvalida/validHoraInvalida: el usuario ajusta redacciones a gusto; verificar que mapFr acompañe.
+4. Mayores (fases siguientes): validaciones de unicidad + BD Firebird, Lector de archivos de Marangatu (01_06), Entorno 00_00_01,
+   pantallas de Informes/Procesos.
+
+## 9. Lecciones aprendidas (no repetir errores)
+
+- Nunca editar fragmentos de lectura/: solo .dart reales.
+- Si un texto/idioma no cambia tras recompilar: flutter clean.
+- errorText inline en campos angostos se corta: usar ventanas popup
+  (funcMostrarError) para mensajes de error.
+- La validación al salir del campo no debe interrumpir botones de acción
+  (Cancelar/Fin/Grabar): condicionarla a que el foco haya pasado a otro campo.
+- El foco de botones NO es confiable para detectar clics (los botones
+  deshabilitados nunca lo reciben): usar condiciones positivas
+  (¿el foco está en otro campo de entrada?) en vez de negativas.
+- Los IconButtons (picker, X) reciben foco y ensucian el Tab: ExcludeFocus.
+- Verificar anchors de "Buscar:" contra el .dart real antes de entregar
+  parches; si el scrape falla, decirlo y trabajar con lo confirmado.
+
+## 10. Terminología del usuario
+
+- "combobox" = campo de tipo lista (DropdownButtonFormField).
+- "grilla" = tabla de registros (izquierda) o de detalles (abajo).
+- "la X" = botón de borrar contenido del campo.
+- "picker" = selector de fecha/hora de Material.
+
+----------------------------------------------------------------------------------------------------------
+- Pendiente 1 resuelto: Tab/Shift+Tab/Enter saltan el picker y la "X" de los campos fecha/hora y texto. Se envolvieron los IconButton de _construirFecha, _construirHora y _construirBotonBorrarCampo con ExcludeFocus(excluding: true). Enter pasa al siguiente campo de entrada vía _alEnterCampo() (completa fecha/hora, valida; con error la ventana devuelve el foco y no avanza). _validarFechaHora ahora devuelve Future<bool> para saber si validó.
+  Regla: Enter = Tab en campos de entrada; el Comentario conserva su Enter.
+

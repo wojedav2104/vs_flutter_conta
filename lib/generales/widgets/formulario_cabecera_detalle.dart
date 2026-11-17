@@ -7,6 +7,7 @@ import '../preferencias/preferencias.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
+import '../temas/radios.dart';
 import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
@@ -33,13 +34,13 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
     this.bTablaUnSoloRegistro = false,
     this.funcActualizarCampos,
     this.funcActualizarFila,
-    this.funcAlPerderFoco,    
+    this.funcAlPerderFoco,
     this.funcValidarRegistro,
     required this.listCamposCabecera,
     required this.listCamposDetalle,
     required this.listRegistros,
     required this.oPreferencias,
-    this.sClaveCampoAlPie,    
+    this.sClaveCampoAlPie,
     this.sClaveDebe  = 'debe',
     this.sClaveHaber = 'haber',
     required this.sTitulo,
@@ -108,7 +109,8 @@ class ClaseEstadoFormularioCabeceraDetalle
   final GlobalKey<ClaseEstadoFormularioCampos> _oLlaveFormulario =
       GlobalKey<ClaseEstadoFormularioCampos>();           // ← CAMBIO item 14
 
-  /// Nodo de foco de la grilla lateral: al cancelar la edición, el foco vuelve a la grilla.
+  /// Nodo de foco de la grilla lateral: al cancelar la edición, el foco
+  /// vuelve a la grilla.
   final FocusNode _oFocoGrilla = FocusNode();
 
   /// Filas de detalle que se están editando (valores internos).
@@ -312,7 +314,12 @@ class ClaseEstadoFormularioCabeceraDetalle
       iRegistroAnterior = -1;
       bModoEdicion      = false;
     });
-    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
+    // Regla UI/UX: la ventana de "grabación exitosa" se cierra sola a los 3
+    // segundos si el usuario no la cierra antes.
+    await _mostrarInformacion(
+      ClaseIdiomas.getTexto('grabacionExitosa', sIdioma),
+      iSegundosAutoCierre : 3,
+    );
   }
 
   Future<void> encontrar() async {
@@ -558,13 +565,17 @@ class ClaseEstadoFormularioCabeceraDetalle
     );
   }
 
-  Future<void> _mostrarInformacion(String sTexto) async {
+  Future<void> _mostrarInformacion(
+    String sTexto, {
+    int iSegundosAutoCierre = 0,
+  }) async {
     if (!mounted) return;
     await funcMostrarInformacion(
       context,
       getIdioma(),
       ClaseIdiomas.getTexto('aplicacion', getIdioma()),
       sTexto,
+      iSegundosAutoCierre : iSegundosAutoCierre,
     );
   }
 
@@ -584,6 +595,22 @@ class ClaseEstadoFormularioCabeceraDetalle
       });
     }
 
+    // Regla UI/UX: sin pestañas la cabecera se ajusta a su contenido y la
+    // grilla queda justo debajo del último campo; con pestañas la cabecera
+    // necesita altura propia y se mantiene la proporción 2:3.
+    final bool bConPestanas = widget.listCamposCabecera
+        .any((ClaseCampoAbm oCampo) => oCampo.sGrupo != null);
+    final Widget oCabecera = ClaseFormularioCampos(
+      key                 : _oLlaveFormulario,       // ← CAMBIO item 14
+      bAutoFocus          : bPedirFoco,              // ← CAMBIO item 10
+      funcAlCambiarCampo  : _alCambiarCampo,
+      funcAlPerderFoco    : widget.funcAlPerderFoco,
+      funcEsHabilitado    : _getHabilitado,
+      listCampos          : listCabecera,
+      mapValores          : mapValores,
+      sIdioma             : getIdioma(),
+    );
+
     return ClaseAndamiajeAbm(
       funcAlClicar    : _alClicarBoton,
       funcSeleccionar : seleccionar,
@@ -594,19 +621,13 @@ class ClaseEstadoFormularioCabeceraDetalle
       oFormulario: Column(
         crossAxisAlignment : CrossAxisAlignment.stretch,
         children: <Widget>[
-          Expanded(
-            flex  : 2,
-            child : ClaseFormularioCampos(
-              key                 : _oLlaveFormulario,       // ← CAMBIO item 14
-              bAutoFocus          : bPedirFoco,              // ← CAMBIO item 10
-              funcAlCambiarCampo  : _alCambiarCampo,
-              funcAlPerderFoco    : widget.funcAlPerderFoco,              
-              funcEsHabilitado    : _getHabilitado,
-              listCampos          : listCabecera,
-              mapValores          : mapValores,
-              sIdioma             : getIdioma(),
-            ),
-          ),
+          if (bConPestanas)
+            Expanded(
+              flex  : 2,
+              child : oCabecera,
+            )
+          else
+            oCabecera,
           const Divider(height: ClaseGenEspacios.dEspacio01),
           Expanded(
             flex  : 3,
@@ -631,6 +652,10 @@ class ClaseEstadoFormularioCabeceraDetalle
   }
 
   Widget _construirDetalle(BuildContext oContexto) {
+    // Regla UI/UX: el encabezado, las filas y la fila de totales comparten
+    // el mismo desplazamiento horizontal: las columnas quedan siempre
+    // alineadas, el encabezado queda fijo arriba y la fila de totales no
+    // desborda el ancho de la pantalla.
     return Column(
       crossAxisAlignment : CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -638,36 +663,36 @@ class ClaseEstadoFormularioCabeceraDetalle
           child: SingleChildScrollView(
             scrollDirection : Axis.horizontal,
             child: SizedBox(
-              width  : _getAnchoDetalle(),
-              child  : ListView(
+              // El padding horizontal de las filas (dEspacio08 por lado) forma
+              // parte del ancho total de la grilla: sin estas dos columnas, la
+              // fila desborda 16 px a la derecha (rayas de OVERFLOW).
+              width : _getAnchoDetalle() + ClaseGenEspacios.dEspacio08 * 2,
+              child : Column(
+                crossAxisAlignment : CrossAxisAlignment.stretch,
                 children: <Widget>[
                   _construirFilaEncabezado(oContexto),
-                  for (int i = 0; i < listDetalles.length; i++)
-                    _construirFilaDetalle(oContexto, i),
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        for (int i = 0; i < listDetalles.length; i++)
+                          _construirFilaDetalle(oContexto, i),
+                      ],
+                    ),
+                  ),
+                  _construirFilaTotales(oContexto),
                 ],
               ),
             ),
           ),
         ),
-        _construirFilaTotales(oContexto),
         _construirCampoAlPie(oContexto),
-        Padding(
-          padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
-          child   : Align(
-            alignment : Alignment.centerLeft,
-            child     : OutlinedButton.icon(
-              onPressed : bModoEdicion ? agregarFila : null,
-              icon      : const Icon(Icons.add),
-              label     : Text(ClaseIdiomas.getTexto('detAgregarFila', getIdioma()),
-                  style: ClaseGenEstilosTexto.normalMediano(oContexto)),
-            ),
-          ),
-        ),
       ],
     );
   }
 
   /// Campo de la cabecera que se muestra al pie, debajo de la fila de totales (spec 02_02 y 02_03: el campo Comentarios).
+  /// Regla UI/UX: la etiqueta queda arriba, en la misma fila que el contador
+  /// de caracteres, y el campo ocupa el ancho de la grilla.
   Widget _construirCampoAlPie(BuildContext oContexto) {
     for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
       if (oCampo.sClave != widget.sClaveCampoAlPie) continue;
@@ -677,6 +702,7 @@ class ClaseEstadoFormularioCabeceraDetalle
           vertical   : ClaseGenEspacios.dEspacio04,
         ),
         child : ClaseCampoFormulario(
+          bEtiquetaArriba : true,
           bHabilitado   : _getHabilitado(oCampo),
           funcAlCambiar : (String sValor) => _alCambiarCampo(oCampo.sClave, sValor),
           mapValores    : mapValores,
@@ -720,7 +746,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     return Padding(
       padding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio08,
-        vertical   : ClaseGenEspacios.dEspacio04,
+        vertical   : ClaseGenEspacios.dEspacio02 / 3,   // separación entre filas: 1/3 de la actual
       ),
       child: Row(
         children: <Widget>[
@@ -743,20 +769,23 @@ class ClaseEstadoFormularioCabeceraDetalle
               mainAxisSize : MainAxisSize.min,
               children     : <Widget>[
                 IconButton(
+                  visualDensity : VisualDensity.compact,
                   tooltip   : ClaseIdiomas.getTexto('menuSubirFila', getIdioma()),
-                  icon      : const Icon(Icons.keyboard_arrow_up),
+                  icon      : const Icon(Icons.keyboard_arrow_up, size: 18),
                   onPressed : (bModoEdicion && iFila > 0) ? () => subirFila(iFila) : null,
                 ),
                 IconButton(
+                  visualDensity : VisualDensity.compact,
                   tooltip   : ClaseIdiomas.getTexto('menuBajarFila', getIdioma()),
-                  icon      : const Icon(Icons.keyboard_arrow_down),
+                  icon      : const Icon(Icons.keyboard_arrow_down, size: 18),
                   onPressed : (bModoEdicion && iFila < listDetalles.length - 1)
                       ? () => bajarFila(iFila)
                       : null,
                 ),
                 IconButton(
+                  visualDensity : VisualDensity.compact,
                   tooltip   : ClaseIdiomas.getTexto('detBorrarFila', getIdioma()),
-                  icon      : const Icon(Icons.delete_outline),
+                  icon      : const Icon(Icons.delete_outline, size: 18),
                   onPressed : bModoEdicion ? () => borrarFila(iFila) : null,
                 ),
               ],
@@ -781,15 +810,19 @@ class ClaseEstadoFormularioCabeceraDetalle
           initialValue : listValores.contains(sValor) ? sValor : null,
           isExpanded   : true,
           style        : bHabilitado
-              ? ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
                   color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
-              : ClaseGenEstilosTexto.normalChico(oContexto),
+              : ClaseGenEstilosTexto.textoCampo(oContexto),
           decoration   : InputDecoration(
             isDense   : true,
             filled    : true,
             fillColor : bHabilitado
                 ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
                 : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            contentPadding : const EdgeInsets.symmetric(
+              horizontal : ClaseGenEspacios.dEspacio08,
+              vertical   : ClaseGenEspacios.dEspacio08,
+            ),
             border    : const OutlineInputBorder(),
           ),
           items: <DropdownMenuItem<String>>[
@@ -797,7 +830,7 @@ class ClaseEstadoFormularioCabeceraDetalle
               DropdownMenuItem<String>(
                 value : listValores[i],
                 child : Text(listOpciones[i],
-                    style: ClaseGenEstilosTexto.normalChico(oContexto)),
+                    style: ClaseGenEstilosTexto.textoCampo(oContexto)),
               ),
           ],
           onChanged: bHabilitado
@@ -817,9 +850,9 @@ class ClaseEstadoFormularioCabeceraDetalle
           controller      : listControles[iFila][oCampo.sClave],
           enabled         : bHabilitado,
           style           : bHabilitado
-              ? ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
                   color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
-              : ClaseGenEstilosTexto.normalChico(oContexto),
+              : ClaseGenEstilosTexto.textoCampo(oContexto),
           inputFormatters : (oCampo.iAnchoCaracteres > 0)
               ? <TextInputFormatter>[LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres)]
               : null,
@@ -830,6 +863,10 @@ class ClaseEstadoFormularioCabeceraDetalle
             fillColor : bHabilitado
                 ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
                 : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            contentPadding : const EdgeInsets.symmetric(
+              horizontal : ClaseGenEspacios.dEspacio08,
+              vertical   : ClaseGenEspacios.dEspacio08,
+            ),
             border    : const OutlineInputBorder(),
           ),
         );
@@ -861,6 +898,14 @@ class ClaseEstadoFormularioCabeceraDetalle
         ? iPrimeraSuma - 1
         : widget.listCamposDetalle.length - 1;
 
+    // Regla UI/UX: el botón Agregar fila ocupa el ancho de las columnas
+    // previas al rótulo (quedan vacías en la fila de totales) y así se
+    // muestra a la izquierda de la grilla, en la misma fila que TOTALES.
+    double dAnchoIzquierda = ClaseGenLayout.dAnchoNumeroFila;
+    for (int i = 0; i < iRotulo; i++) {
+      dAnchoIzquierda += widget.listCamposDetalle[i].getAnchoColumna();
+    }
+
     final String sFormato = widget.oPreferencias.getFormatoNumeros();
     final TextStyle oEstilo =
         ClaseGenEstilosTexto.textoDestacado(oContexto);
@@ -873,8 +918,53 @@ class ClaseEstadoFormularioCabeceraDetalle
       ),
       child: Row(
         children: <Widget>[
-          const SizedBox(width: ClaseGenLayout.dAnchoNumeroFila),
-          for (int i = 0; i < widget.listCamposDetalle.length; i++)
+          SizedBox(
+            width : dAnchoIzquierda,
+            child : Align(
+              alignment : Alignment.centerLeft,
+              // Regla UI/UX: el botón usa el estilo de los botones ABM
+              // (fondo resaltado, texto blanco) para distinguirse del fondo
+              // de la fila de totales; gris cuando está deshabilitado y
+              // amarillo cuando tiene el foco del teclado.
+              child     : ElevatedButton.icon(
+                onPressed : bModoEdicion ? agregarFila : null,
+                icon      : const Icon(Icons.add),
+                style     : ElevatedButton.styleFrom(
+                  disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
+                  disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+                  shape  : RoundedRectangleBorder(
+                    borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+                  ),
+                ).copyWith(
+                  backgroundColor : WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> setEstados) {
+                      if (setEstados.contains(WidgetState.focused)) {
+                        return ClaseGenTemas.colorBotonConFoco(oContexto);
+                      }
+                      if (setEstados.contains(WidgetState.disabled)) {
+                        return ClaseGenTemas.colorBotonDeshabilitado(oContexto);
+                      }
+                      return ClaseGenTemas.colorBotonHabilitado(oContexto);
+                    },
+                  ),
+                  foregroundColor : WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> setEstados) {
+                      if (setEstados.contains(WidgetState.focused)) {
+                        return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
+                      }
+                      if (setEstados.contains(WidgetState.disabled)) {
+                        return ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
+                      }
+                      return ClaseGenTemas.colorTextoBotonHabilitado(oContexto);
+                    },
+                  ),
+                ),
+                label     : Text(ClaseIdiomas.getTexto('detAgregarFila', getIdioma()),
+                    style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+              ),
+            ),
+          ),
+          for (int i = iRotulo; i < widget.listCamposDetalle.length; i++)
             SizedBox(
               width : widget.listCamposDetalle[i].getAnchoColumna(),
               child : Text(
@@ -970,9 +1060,9 @@ class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
       enabled         : widget.bHabilitado,
       focusNode       : oFoco,
       style           : widget.bHabilitado
-          ? ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+          ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
               color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
-          : ClaseGenEstilosTexto.normalChico(oContexto),
+          : ClaseGenEstilosTexto.textoCampo(oContexto),
       textAlign       : TextAlign.right,
       inputFormatters : <TextInputFormatter>[
         if (widget.oCampo.bTieneDecimales)
@@ -989,6 +1079,10 @@ class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
         fillColor : widget.bHabilitado
             ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
             : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+        contentPadding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio08,
+        ),
         border    : const OutlineInputBorder(),
       ),
     );

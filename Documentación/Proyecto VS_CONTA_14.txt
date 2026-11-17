@@ -1,0 +1,176 @@
+========================================================================
+ESTADO DE SESIÓN — VS_CONTA (vs_flutter_conta)
+Generado al cierre de la sesión de trabajo. Enviar este archivo al inicio
+de la próxima sesión para continuar desde este punto.
+========================================================================
+
+1. ROL Y FLUJO
+--------------
+Programador humano profesional senior en Flutter/Dart, cotrabajo con el
+usuario (dueño del proyecto). Él decide, yo propongo; él prueba y
+reporta, yo diagnostico y entrego. Español neutro, tono técnico sobrio.
+Repositorio: https://github.com/wojedav2104/vs_flutter_conta
+Flujo: releer fragmentos de lectura/ (o el .dart en GitHub), entregar
+parches "Buscar:"/"Reemplazar:" exactos sobre los .dart REALES de lib/
+(nunca los fragmentos de lectura/), el usuario aplica, compila con
+flutter run -d windows y reporta. Tras cambios de recursos/idiomas:
+flutter clean. Verificar anchors contra el código real antes de entregar.
+
+2. PROYECTO
+-----------
+VS_CONTA: contabilidad multi-país/moneda/sucursal/usuario/idioma
+(español/francés). Hoy Paraguay (SET, DNIT, Marangatú, IVA 10%/5%, I.R.E.,
+I.R.P., Retención 30%). Plataformas: Windows táctil, Android, web.
+FASE 1: 8 pantallas ABM con datos de prueba + Login + menú drawer.
+Firebird 2.5.9 pendiente (guía VPS lista en docs 09_01_01/02).
+Especificaciones fuente de verdad en Documentación/ (25 archivos con "0"):
+00_00_01..03 (UI/UX, nomenclatura, ventanas, mensajes, máscaras), 00_01
+(carpetas), 00_02 (drawer), 00_03_01/02 (23 reglas ABM), 00_04 (monedas),
+00_05 (países), 01_01..01_08 (tablas), 02_01..02_03_02 (Cuentas, Asientos,
+Compras), 09_01/09_02 (VPS Firebird, enlaces). Si la spec y el código
+difieren, manda la spec.
+
+3. ARQUITECTURA (resumen)
+-------------------------
+MVVM con widgets. Formularios autocontenidos: List<ClaseCampoAbm> +
+datos de prueba → ClaseFormularioAbm (tablas) o
+ClaseFormularioCabeceraDetalle (Asientos/Compras). Archivos clave:
+- generales/modelos/campo_abm.dart — ClaseCampoAbm + getAnchoCampo()/
+  getAnchoColumna(); NUEVO: iAnchoVisible (caracteres visibles de la celda
+  en grilla de detalles; 0 = todos; no limita lo tecleable).
+- generales/widgets/campo_formulario.dart — ClaseCampoFormulario; máscaras
+  fecha/hora con completado inteligente; validación al salir solo si el
+  foco pasó a otro campo; NUEVO: bEtiquetaArriba (etiqueta arriba, misma
+  fila que el contador de caracteres, control a todo el ancho — usado por
+  Comentarios al pie); Enter = Tab vía _alEnterCampo() (completa
+  fecha/hora, valida; con error no avanza); _validarFechaHora() devuelve
+  Future<bool>; IconButtons de picker y "X" envueltos en ExcludeFocus
+  (fuera del orden de Tab/Enter; clic y táctil funcionan).
+- generales/widgets/abm_comun.dart — ClaseFormularioCampos (pestañas como
+  FICHAS visibles vía _construirPestana: activa primaryContainer + borde
+  primario + negrita; inactivas surfaceContainerHigh + outline; tocar una
+  ficha llama animateTo; regla: toda pestaña futura reutiliza este
+  método); ClaseGrillaRegistros (flechita de orden junto a la columna
+  activa: arrow_upward ascendente / arrow_downward descendente, color
+  primary; cuadro de búsqueda de la grilla con backcolor/forecolor de
+  controles habilitados); ClaseBotoneraAbm (colores por estados con
+  WidgetStateProperty: foco = amarillo colorAmarillo1 + texto negro).
+- generales/widgets/formulario_abm.dart — ABM simple; grabación exitosa
+  con cierre automático 3 s (iSegundosAutoCierre: 3).
+- generales/widgets/formulario_cabecera_detalle.dart — REESCRITO en esta
+  sesión (archivo completo entregado): cabecera sin pestañas ajusta su
+  contenido (la grilla queda debajo del último campo; con pestañas
+  mantiene 2:3); encabezado + filas + fila de totales comparten el mismo
+  scroll horizontal (sin OVERFLOW, sumas siempre alineadas); ancho total
+  de la grilla = _getAnchoDetalle() + dEspacio08*2 (corrige OVERFLOW de
+  16 px); filas con textoCampo (mismo FontSize que los controles) y
+  contentPadding vertical dEspacio08; separación entre filas =
+  dEspacio02/3; botón "Agregar fila" dentro de la fila de TOTALES, a la
+  izquierda (ancho de las columnas previas al rótulo), estilo de botón
+  ABM (ElevatedButton azul/blanco, gris deshabilitado, amarillo con foco);
+  campo al pie (Comentarios) con bEtiquetaArriba y ancho de la grilla;
+  celdas con colores por estado (habilitado/deshabilitado); grabación
+  exitosa con cierre automático 3 s.
+- generales/widgets/ventana_mensaje.dart — funcMostrarInformacion acepta
+  iSegundosAutoCierre (0 = manual): Timer que cierra la ventana si sigue
+  abierta (guard mounted); errores y confirmaciones nunca se cierran solas.
+- generales/temas/colores.dart — nuevos: colorCampoHabilitadoClaro
+  (#DFF3FA), colorCampoHabilitadoOscuro (#14384A),
+  colorTextoCampoHabilitadoClaro (#005F7D),
+  colorTextoCampoHabilitadoOscuro (#7FDCF2).
+- generales/temas/temas.dart — inputDecorationTheme global con filled +
+  fillColor; helpers: colorFondoCampoHabilitado (cian suave),
+  colorFondoCampoDeshabilitado (surfaceContainerHighest gris tenue),
+  colorTextoCampoHabilitado (cian con contraste),
+  colorBotonConFoco (amarillo), colorTextoBotonConFoco (negro).
+  Regla de oro: todo color vía ClaseGenTemas/Theme.of, nunca en los
+  widgets; colorTextoCampoDeshabilitado fue eliminado (ya no se usa).
+- generales/idiomas/ — 8 archivos es/fr; paridad de claves completa.
+- opciones/archivos/asientos.dart — REESCRITO (archivo completo
+  entregado): único cambio Concepto con iAnchoVisible: 15.
+
+4. REGLAS UI/UX ESTABLECIDAS EN ESTA SESIÓN (aplicar en todo lo nuevo)
+----------------------------------------------------------------------
+a) Enter = Tab en campos de entrada (el Comentario conserva su Enter);
+   los IconButtons (picker, "X) quedan fuera del orden de foco
+   (ExcludeFocus).
+b) Pestañas: siempre como fichas visibles (_construirPestana).
+c) Controles de entrada: relleno distinto al fondo del formulario;
+   habilitado = backcolor cian suave + forecolor cian con contraste (nunca
+   gris ni negro); deshabilitado = backcolor gris tenue + forecolor
+   gris/negro (texto normal). Colores exactos pendientes de definir con
+   los usuarios (ya hay notoriedad; el mecanismo está en un solo punto).
+d) Botón con foco de teclado: fondo amarillo + texto negro, bastante
+   distinto de los botones sin foco.
+e) Ventana de grabación exitosa: se cierra sola a los 3 s (el usuario
+   puede cerrarla antes).
+f) Grilla lateral: flechita de orden por columna (asc/desc).
+g) Mensajes al usuario: SIEMPRE de "tú" (nunca "vos" ni "usted"), en
+   español y en francés (tu/toi); frases impersonales ("El campo X es
+   obligatorio") son válidas.
+h) Traducciones francesas: R.U.C. no se traduce (era N.I.T., corregido);
+   "apellido materno/paterno" = "nom de famille maternel/paternel";
+   "compte" es masculino (ce compte).
+
+5. CAMBIOS DE IDIOMA APLICADOS (resumen)
+----------------------------------------
+Francés: 20 correcciones (tuteamiento Vous→Tu en validaciones/asientos/
+general/interfaz; "Nom de la mère/du père"→"Nom de famille maternel/
+paternel" en pro*/cli*; N.I.T.→R.U.C. en proRuc/cliRuc/docRuc/timPrvRuc/
+timPrvHintRuc; "cette compte"→"ce compte"; "n'a pas une valeur valide de
+la liste"→"n'a pas de valeur valide dans la liste"; concordancia
+"est incorrect") + opcionales (validFechaInvalida "n'est pas une date
+valide", validDiaRango, "Nom de marque", "Diplomatique", unificación
+T.V.A./Taxables en cta*). Español: 6 correcciones de tratamiento
+(campoObligatorio "Debes completar…", validAlMenosUno, validHoraInvalida
+"Usa hh:mm", validIdentRucDv "Revisa…", detDetalleVacio, detErrorDebeHaber
+"Debes…"). Usuario confirmó: idiomas terminados.
+
+6. PENDIENTES
+-------------
+1. [DECIDIDO] Botones OK/CANCEL de los pickers de Flutter sin icono: se
+   aceptan como widgets externos (cerrado).
+2. Decidir con los usuarios los colores exactos de controles habilitados/
+   deshabilitados (los helpers de ClaseGenTemas son el único punto de
+   cambio).
+3. Mejoras sustanciales al botón "Encontrar" (decisión del usuario: no
+   tocar hasta entonces; el diálogo conserva sus colores actuales).
+4. Aplicar iAnchoVisible: 15 al Concepto de compras.dart si se quiere la
+   misma vista que Asientos (una línea).
+5. Barrer claves crudas restantes si aparecen (Sucursales, Cuentas,
+   Cuentas Asignadas, Configuración).
+6. Ajustar redacciones es/fr de validFechaInvalida/validHoraInvalida a
+   gusto del usuario (verificar que mapFr acompañe).
+7. Mayores (fases siguientes): validaciones de unicidad + BD Firebird
+   (can_validar.dart ya tiene los esqueletos con TODO), Lector de archivos
+   de Marangatú (01_06), Entorno 00_00_01, pantallas de Informes/Procesos.
+8. Si alguna ventana informativa además de grabaciónExitosa debe cerrarse
+   sola, pasarle iSegundosAutoCierre en su llamada (una línea).
+
+7. LECCIONES / ERRORES A NO REPETIR
+-----------------------------------
+- Nunca editar fragmentos de lectura/; solo .dart reales de lib/.
+- Si un cambio no se refleja: flutter clean y recompilar.
+- Los OVERFLOW de la grilla de detalles venían del padding horizontal de
+  las filas no contemplado en el ancho del SizedBox (16 px): el ancho
+  total debe incluirlo.
+- Las ternarias de colores por estado de controles deben evaluarse en los
+  puntos de estilo (style + decoration); si se invierte la lógica de
+  habilitado/deshabilitado, revisar TODOS los puntos (formulario, celdas
+  de grilla, dropdown items) para que no quede una referencia suelta.
+- Unificar tratamientos de mensaje (tú/tu) al agregar textos nuevos.
+- Verificar anchors "Buscar:" contra el .dart real antes de entregar.
+- Al entregar archivos completos (no parches) incluir los cambios ya
+  aplicados en sesiones anteriores (colores por estado, cierre automático)
+  o el usuario pierde trabajo previo.
+
+8. CÓMO CONTINUAR EN LA PRÓXIMA SESIÓN
+---------------------------------------
+1. Leer este archivo completo.
+2. Preguntar al usuario qué sigue (nueva mejora UI/UX, pendientes de la
+   lista, o probar lo recién hecho).
+3. Si reporta un bug de lo aplicado hoy, releer los fragmentos
+   correspondientes de lectura/ (o GitHub) y entregar parches correctivos.
+4. Al cerrar la próxima sesión, actualizar este archivo y el CLAUDE.md.
+========================================================================
+

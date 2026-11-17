@@ -23,6 +23,7 @@ class ClaseCampoAbm {
     this.bTieneDecimales        = false,    
     this.bVigencia              = false,
     this.iAnchoCaracteres       = 10,
+    this.iAnchoVisible          = 0,
     this.iMaxComentario         = 500,
     this.listOpciones,
     this.listValores,
@@ -48,7 +49,9 @@ class ClaseCampoAbm {
   bool              bTieneDecimales;
   bool              bVigencia;
   int               iAnchoCaracteres;
+  int               iAnchoVisible;
   int               iMaxComentario;
+
   List<String>?     listOpciones;
 
   /// Valores internos que se guardan en el registro (códigos estables, ej:
@@ -129,7 +132,8 @@ class ClaseCampoAbm {
   /// detalles (sin iconos: el borrado es por fila completa). La columna es de
   /// ancho fijo, por eso usa la máscara estática del campo.
   double getAnchoColumna() {
-    final int iCaracteres = sMascara?.length ?? iAnchoCaracteres;
+    final int iCaracteres = sMascara?.length
+        ?? (iAnchoVisible > 0 ? iAnchoVisible : iAnchoCaracteres);
     // Mismo escalamiento que getAnchoCampo: el texto de las celdas también
     // crece con el modo texto grande.
     return iCaracteres * ClaseGenLayout.dAnchoCaracter

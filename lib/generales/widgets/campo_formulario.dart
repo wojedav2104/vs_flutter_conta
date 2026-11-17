@@ -42,10 +42,10 @@ class ClaseFormateadorImporte extends TextInputFormatter {
 /// casillas, comentario, lógico). El texto visible se traduce con ClaseIdiomas;
 /// el valor interno es el código que se guarda en el registro.
 class ClaseCampoFormulario extends StatefulWidget {
-
   const ClaseCampoFormulario({
     super.key,
     this.bAutoFocus = false,
+    this.bEtiquetaArriba = false,
     required this.bHabilitado,
     required this.funcAlCambiar,
     this.funcAlPerderFoco,
@@ -57,7 +57,12 @@ class ClaseCampoFormulario extends StatefulWidget {
   });
 
   /// true para mover el foco a este campo al entrar en modo edición.
+    /// true para mover el foco a este campo al entrar en modo edición.
   final bool                                bAutoFocus;
+  /// true para mostrar la etiqueta arriba del control, en la misma fila que
+  /// el contador de caracteres (campo Comentarios al pie de la grilla), y
+  /// dejar que el control ocupe todo el ancho disponible.
+  final bool                                bEtiquetaArriba;
   final bool                                bHabilitado;
   final void Function(String sValor)         funcAlCambiar;
 
@@ -497,9 +502,30 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   }
 
   // ── Construcción de la interfaz ──────────────────────────────────────────
-
   @override
   Widget build(BuildContext oContexto) {
+    // Etiqueta arriba (campo Comentarios al pie de la grilla): la etiqueta
+    // comparte la fila del contador de caracteres y el control ocupa todo el
+    // ancho disponible (regla UI/UX).
+    if (widget.bEtiquetaArriba) {
+      return Padding(
+        padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
+        child   : Column(
+          crossAxisAlignment : CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment : MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _construirEtiqueta(oContexto),
+                _construirContador(oContexto),
+              ],
+            ),
+            const SizedBox(height: ClaseGenEspacios.dEspacio04),
+            _construirControl(oContexto),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
       child   : Row(
@@ -815,18 +841,15 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       crossAxisAlignment : CrossAxisAlignment.stretch,
       children: <Widget>[
         // ← CAMBIO item 5: contador de caracteres a la derecha, en la misma
-        //   fila que la etiqueta.
-        if (widget.oCampo.iMaxComentario > 0)
+        //   fila que la etiqueta (con la etiqueta arriba, el contador se
+        //   muestra en esa fila y no acá).
+        if (!widget.bEtiquetaArriba && widget.oCampo.iMaxComentario > 0)
           Padding(
             padding : const EdgeInsets.only(
               top   : ClaseGenEspacios.dEspacio14,
               right : ClaseGenEspacios.dEspacio04,
             ),
-            child : Text(
-              '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
-              textAlign : TextAlign.right,
-              style     : ClaseGenEstilosTexto.normalChico(oContexto),
-            ),
+            child : _construirContador(oContexto),
           ),
         TextField(
           controller      : oControl,
@@ -841,9 +864,20 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 ]
               : null,
           onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
-          decoration      : _getDecoracion(oContexto, sHint: widget.oCampo.sHint),          
+          decoration      : _getDecoracion(oContexto, sHint: widget.oCampo.sHint),
         ),
       ],
+    );
+  }
+
+  /// Contador de caracteres del campo Comentarios ('27/500'); vacío si el
+  /// campo no tiene máximo.
+  Widget _construirContador(BuildContext oContexto) {
+    if (widget.oCampo.iMaxComentario <= 0) return const SizedBox.shrink();
+    return Text(
+      '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
+      textAlign : TextAlign.right,
+      style     : ClaseGenEstilosTexto.normalChico(oContexto),
     );
   }
 

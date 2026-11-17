@@ -175,6 +175,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 60,
+        iAnchoVisible    : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'concepto',
         sEtiqueta        : ClaseIdiomas.getTexto('detConcepto', sIdioma),
@@ -249,4 +250,3 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
   }
 
 }
-

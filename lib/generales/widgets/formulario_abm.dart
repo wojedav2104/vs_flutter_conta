@@ -218,7 +218,12 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
       iRegistroAnterior = -1;
       bModoEdicion      = false;
     });
-    await _mostrarInformacion(ClaseIdiomas.getTexto('grabacionExitosa', sIdioma));
+    // Regla UI/UX: la ventana de "grabación exitosa" se cierra sola a los 3
+    // segundos si el usuario no la cierra antes.
+    await _mostrarInformacion(
+      ClaseIdiomas.getTexto('grabacionExitosa', sIdioma),
+      iSegundosAutoCierre : 3,
+    );
 
   }
 
@@ -316,13 +321,17 @@ class ClaseEstadoFormularioAbm extends State<ClaseFormularioAbm> {
     );
   }
 
-  Future<void> _mostrarInformacion(String sTexto) async {
+  Future<void> _mostrarInformacion(
+    String sTexto, {
+    int iSegundosAutoCierre = 0,
+  }) async {
     if (!mounted) return;
     await funcMostrarInformacion(
       context,
       getIdioma(),
       ClaseIdiomas.getTexto('aplicacion', getIdioma()),
       sTexto,
+      iSegundosAutoCierre : iSegundosAutoCierre,
     );
   }
 

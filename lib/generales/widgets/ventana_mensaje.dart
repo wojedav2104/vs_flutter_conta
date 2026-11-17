@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../idiomas/idiomas.dart';
@@ -143,12 +145,17 @@ Future<void> funcMostrarInformacion(
   BuildContext oContexto,
   String        sIdioma,
   String        sTitulo,
-  String        sTexto,
-) async {
-  await showDialog<void>(
+  String        sTexto, {
+  int iSegundosAutoCierre = 0,
+}) async {
+  // Contexto de la ventana abierta: lo usa el temporizador para cerrarla y
+  // para saber si el usuario ya la cerró a mano (mounted == false).
+  BuildContext? oContextoVentanaAbierta;
+  final Future<void> oVentana = showDialog<void>(
     context            : oContexto,
     barrierDismissible : false,
     builder            : (BuildContext oContextoVentana) {
+      oContextoVentanaAbierta = oContextoVentana;
       return funcConstruirVentana(
         oContexto    : oContextoVentana,
         sIdioma      : sIdioma,
@@ -160,6 +167,19 @@ Future<void> funcMostrarInformacion(
       );
     },
   );
+  // Regla UI/UX: cierre automático de las ventanas informativas. Si el
+  // usuario no la cierra (Aceptar o "X"), se cierra sola luego de
+  // iSegundosAutoCierre. Si la cierra antes, se cancela el temporizador.
+  Timer? oTemporizador;
+  if (iSegundosAutoCierre > 0) {
+    oTemporizador = Timer(Duration(seconds: iSegundosAutoCierre), () {
+      if (oContextoVentanaAbierta?.mounted == true) {
+        Navigator.of(oContextoVentanaAbierta!).pop();
+      }
+    });
+  }
+  await oVentana;
+  oTemporizador?.cancel();
 }
 
 // ── Piezas compartidas (uso interno de este archivo) ────────────────────────
