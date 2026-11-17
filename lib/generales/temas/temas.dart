@@ -136,7 +136,19 @@ abstract final class ClaseGenTemas {
       _esModoOscuro(oContexto)
           ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
           : ClaseGenColores.colorTextoCampoHabilitadoClaro;
-          
+
+  // ── Colores de los botones con foco de teclado (regla UI/UX) ────────────
+  // El fondo del botón enfocado debe ser bastante distinto al de los botones
+  // sin foco (mismo color en claro y en oscuro, para que sea inmediato).
+
+  /// Fondo del botón con foco de teclado (amarillo de atención).
+  static Color colorBotonConFoco(BuildContext oContexto) =>
+      ClaseGenColores.colorAmarillo1;
+
+  /// Texto del botón con foco de teclado (buen contraste sobre el amarillo).
+  static Color colorTextoBotonConFoco(BuildContext oContexto) =>
+      ClaseGenColores.colorNegro;
+
   static bool _esModoOscuro(BuildContext oContexto) =>
       Theme.of(oContexto).brightness == Brightness.dark;
 

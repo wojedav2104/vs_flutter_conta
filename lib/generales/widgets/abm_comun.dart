@@ -622,11 +622,19 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                   Expanded(
                     child: TextField(
                       controller : oControlFiltro,
-                      style      : ClaseGenEstilosTexto.normalChico(oContexto),
+                      // Regla UI/UX: el cuadro de búsqueda de la grilla usa el
+                      // backcolor y el forecolor de los controles habilitados
+                      // (siempre está activo).
+                      style      : ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+                        color : ClaseGenTemas.colorTextoCampoHabilitado(oContexto),
+                      ),
                       decoration : InputDecoration(
                         isDense    : true,
                         hintText   : ClaseIdiomas.getTexto('abmBuscar', widget.sIdioma),
-                        prefixIcon : const Icon(Icons.search),
+                        prefixIcon : Icon(Icons.search,
+                            color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto)),
+                        filled     : true,
+                        fillColor  : ClaseGenTemas.colorFondoCampoHabilitado(oContexto),
                         border     : OutlineInputBorder(
                           borderRadius: BorderRadius.circular(ClaseGenRadios.dPequeno),
                         ),
@@ -671,15 +679,34 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                         }),
                         child: Tooltip(
                           message : ClaseIdiomas.getTexto('ordenarPor', widget.sIdioma),
-                          child   : Text(
-                            oCampo.sEtiqueta,
-                            // ← CAMBIO item 8: alinear números a la derecha en encabezados
-                            textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                ? TextAlign.right
-                                : TextAlign.left,
-                            style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                            maxLines : 1,
-                            overflow : TextOverflow.ellipsis,
+                          // Regla UI/UX: la flechita junto al nombre indica la
+                          // columna activa de orden y su sentido (ascendente/
+                          // descendente). Solo se muestra en esa columna.
+                          child   : Align(
+                            alignment : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child : Row(
+                              mainAxisSize : MainAxisSize.min,
+                              children     : <Widget>[
+                                Flexible(
+                                  child : Text(
+                                    oCampo.sEtiqueta,
+                                    style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                    maxLines : 1,
+                                    overflow : TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (sClaveOrden == oCampo.sClave) ...<Widget>[
+                                  const SizedBox(width: ClaseGenEspacios.dEspacio04),
+                                  Icon(
+                                    bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
+                                    size  : 14,
+                                    color : Theme.of(oContexto).colorScheme.primary,
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -971,18 +998,35 @@ class ClaseBotoneraAbm extends StatelessWidget {
       child  : ElevatedButton(
         onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
         style     : ElevatedButton.styleFrom(
-          backgroundColor         : bHabilitado
-              ? ClaseGenTemas.colorBotonHabilitado(oContexto)          // item 6
-              : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
-          foregroundColor         : bHabilitado
-              ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-              : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
           disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
           disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
           shape  : RoundedRectangleBorder(
             borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
           ),
           padding : EdgeInsets.zero,
+        ).copyWith(
+          // Regla UI/UX: el botón con foco de teclado usa un fondo bastante
+          // distinto al de los botones sin foco (amarillo de atención).
+          backgroundColor : WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> setEstados) {
+              if (setEstados.contains(WidgetState.focused)) {
+                return ClaseGenTemas.colorBotonConFoco(oContexto);
+              }
+              return bHabilitado
+                  ? ClaseGenTemas.colorBotonHabilitado(oContexto)          // item 6
+                  : ClaseGenTemas.colorBotonDeshabilitado(oContexto);
+            },
+          ),
+          foregroundColor : WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> setEstados) {
+              if (setEstados.contains(WidgetState.focused)) {
+                return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
+              }
+              return bHabilitado
+                  ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                  : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
+            },
+          ),
         ),
         child : Row(
           mainAxisAlignment : MainAxisAlignment.center,
@@ -993,11 +1037,9 @@ class ClaseBotoneraAbm extends StatelessWidget {
             Flexible(
               child : Text(
                 _getEtiqueta(oBoton),
-                style    : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
-                  color : bHabilitado
-                      ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-                      : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-                ),
+                // El color del texto lo resuelve el estilo del botón por
+                // estados (habilitado / deshabilitado / con foco).
+                style    : ClaseGenEstilosTexto.botonGrande(oContexto),
                 maxLines : 1,
                 overflow : TextOverflow.ellipsis,
               ),

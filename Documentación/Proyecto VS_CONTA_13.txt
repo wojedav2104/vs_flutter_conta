@@ -169,6 +169,12 @@ Reglas operativas:
   validación al clickear botones.
 - El usuario corrigió validFechaInvalida a 'El campo "{0}" no es una fecha
   válida' en idiomas_validaciones.dart (ambos mapas si hace falta).
+- Regla UI/UX colores de controles: backcolor/forecolor distintos según
+  estado. Habilitado = cian suave + texto cian con contraste (colores
+  definidos en ClaseGenColores; helpers en ClaseGenTemas). Deshabilitado =
+  gris tenue + texto normal. Aplica a todos los campos y al cuadro de
+  búsqueda de la grilla lateral. El diálogo Encontrar se dejará para una
+  mejora futura (decisión del usuario).
 
 ## 8. Pendientes
 
