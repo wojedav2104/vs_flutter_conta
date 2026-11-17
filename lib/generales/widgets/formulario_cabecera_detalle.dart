@@ -7,6 +7,7 @@ import '../preferencias/preferencias.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
+import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
 import 'abm_comun.dart';
@@ -779,7 +780,18 @@ class ClaseEstadoFormularioCabeceraDetalle
           key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
           initialValue : listValores.contains(sValor) ? sValor : null,
           isExpanded   : true,
-          decoration   : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+          style        : bHabilitado
+              ? ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+              : ClaseGenEstilosTexto.normalChico(oContexto),
+          decoration   : InputDecoration(
+            isDense   : true,
+            filled    : true,
+            fillColor : bHabilitado
+                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            border    : const OutlineInputBorder(),
+          ),
           items: <DropdownMenuItem<String>>[
             for (int i = 0; i < listOpciones.length; i++)
               DropdownMenuItem<String>(
@@ -804,12 +816,22 @@ class ClaseEstadoFormularioCabeceraDetalle
         return TextField(
           controller      : listControles[iFila][oCampo.sClave],
           enabled         : bHabilitado,
-          style           : ClaseGenEstilosTexto.normalChico(oContexto),
+          style           : bHabilitado
+              ? ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+              : ClaseGenEstilosTexto.normalChico(oContexto),
           inputFormatters : (oCampo.iAnchoCaracteres > 0)
               ? <TextInputFormatter>[LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres)]
               : null,
           onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
-          decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+          decoration      : InputDecoration(
+            isDense   : true,
+            filled    : true,
+            fillColor : bHabilitado
+                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            border    : const OutlineInputBorder(),
+          ),
         );
     }
   }
@@ -947,7 +969,10 @@ class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
       controller      : widget.oControl,
       enabled         : widget.bHabilitado,
       focusNode       : oFoco,
-      style           : ClaseGenEstilosTexto.normalChico(oContexto),
+      style           : widget.bHabilitado
+          ? ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+              color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+          : ClaseGenEstilosTexto.normalChico(oContexto),
       textAlign       : TextAlign.right,
       inputFormatters : <TextInputFormatter>[
         if (widget.oCampo.bTieneDecimales)
@@ -958,7 +983,14 @@ class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
           LengthLimitingTextInputFormatter(iLimite),
       ],
       onChanged       : widget.funcAlCambiar,
-      decoration      : const InputDecoration(isDense: true, border: OutlineInputBorder()),
+      decoration      : InputDecoration(
+        isDense   : true,
+        filled    : true,
+        fillColor : widget.bHabilitado
+            ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+            : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+        border    : const OutlineInputBorder(),
+      ),
     );
   }
 }

@@ -113,6 +113,30 @@ abstract final class ClaseGenTemas {
           ? ClaseGenColores.colorTextoBotonDeshabilitadoOscuro
           : ClaseGenColores.colorTextoBotonDeshabilitado;
 
+  // ── Colores de los controles de entrada (regla UI/UX) ───────────────────
+  // Relleno y forecolor del control cambian según esté habilitado o
+  // deshabilitado, para distinguirlos a simple vista (usuarios noveles).
+
+  /// Relleno del control habilitado: cian suave que llama la atención,
+  /// distinto del fondo del formulario.
+  static Color colorFondoCampoHabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorCampoHabilitadoOscuro
+          : ClaseGenColores.colorCampoHabilitadoClaro;
+
+  /// Relleno del control deshabilitado: el gris tenue (el que antes usaba
+  /// el habilitado), casi fundido con el formulario.
+  static Color colorFondoCampoDeshabilitado(BuildContext oContexto) =>
+      Theme.of(oContexto).colorScheme.surfaceContainerHighest;
+
+  /// Forecolor del control habilitado: buen contraste sobre el relleno
+  /// habilitado (nunca gris ni negro: esos quedan para el deshabilitado,
+  /// que conserva el color de texto normal).
+  static Color colorTextoCampoHabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
+          : ClaseGenColores.colorTextoCampoHabilitadoClaro;
+          
   static bool _esModoOscuro(BuildContext oContexto) =>
       Theme.of(oContexto).brightness == Brightness.dark;
 
@@ -144,6 +168,13 @@ abstract final class ClaseGenTemas {
     );
     return oTemaBase.copyWith(
       scaffoldBackgroundColor: oEsquema.surface,
+      // Regla UI/UX: los controles de entrada (texto, número, fecha, hora, lista) llevan un relleno distinto al fondo del formulario para que se distingan a simple vista 
+      //(usuarios noveles). Único punto de cambio: aplica a todos los InputDecoration de la aplicación.
+      inputDecorationTheme   : InputDecorationTheme(
+        filled    : true,
+        fillColor : oEsquema.surfaceContainerHighest,
+      ),
+
       // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
       // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
       // multiplican por su cuenta.

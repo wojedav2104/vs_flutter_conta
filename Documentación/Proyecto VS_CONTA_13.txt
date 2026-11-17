@@ -148,6 +148,11 @@ Reglas operativas:
 - KISS / DRY / YAGNI; "Un archivo, una responsabilidad"; composición por
   delegación; Do not Repeat Yourself.
 - Comentarios en español, sin secciones "Historial de cambios".
+- Regla UI/UX nueva: las pestañas se muestran como fichas visibles (fondo +
+  borde + esquinas redondeadas); la activa usa primaryContainer con borde
+  primario y texto en negrita. Único punto de cambio: _construirPestana en
+  ClaseEstadoFormularioCampos (abm_comun.dart). Toda pestaña futura debe
+  reutilizarla.
 
 ## 7. Historial reciente (sesiones de corrección de UI)
 

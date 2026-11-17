@@ -208,6 +208,52 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
     return listSalida;
   }
 
+  /// Ficha de pestaña (regla UI/UX "fácil visualización"): las pestañas se
+  /// distinguen a simple vista como fichas con fondo y borde propios. La
+  /// pestaña activa usa el color primario del contenedor, borde marcado y
+  /// texto en negrita; las inactivas, un fondo neutro con borde suave.
+  /// Toda pestaña futura de la aplicación debe seguir esta misma regla.
+  Widget _construirPestana(
+    BuildContext oContexto, {
+    required String sTexto,
+    required bool  bActiva,
+    required int   iIndice,
+  }) {
+    final ColorScheme oEsquema = Theme.of(oContexto).colorScheme;
+    return Material(
+      type : MaterialType.transparency,
+      child: InkWell(
+        borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+        onTap        : () => oControladorPestanas.animateTo(iIndice),
+        child : Container(
+          alignment : Alignment.center,
+          padding   : const EdgeInsets.symmetric(
+            vertical : ClaseGenEspacios.dEspacio08,
+          ),
+          decoration : BoxDecoration(
+            color        : bActiva
+                ? oEsquema.primaryContainer
+                : oEsquema.surfaceContainerHigh,
+            borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+            border       : Border.all(
+              color : bActiva ? oEsquema.primary : oEsquema.outline,
+            ),
+          ),
+          child : Text(
+            sTexto,
+            maxLines  : 1,
+            overflow  : TextOverflow.ellipsis,
+            textAlign : TextAlign.center,
+            style     : ClaseGenEstilosTexto.normalMediano(oContexto).copyWith(
+              color      : bActiva ? oEsquema.onPrimaryContainer : oEsquema.onSurfaceVariant,
+              fontWeight : bActiva ? FontWeight.w700 : FontWeight.w400,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext oContexto) {
 
@@ -254,13 +300,33 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
               ],
             ),
           ),
-        TabBar(
-          controller : oControladorPestanas,                // ← CAMBIO item 14
-          tabs: <Widget>[
-            for (final String sGrupo in listGrupos)
-              Tab(text: widget.funcEtiquetaGrupo?.call(sGrupo)   // ← CAMBIO etiqueta de grupo
-                  ?? ClaseIdiomas.getTexto(sGrupo, widget.sIdioma)),
-          ],
+        // Regla UI/UX (fácil visualización): cada pestaña es una ficha
+        // visible con fondo y borde propios; la activa se resalta con el
+        // color primario y texto en negrita.
+        Padding(
+          padding : const EdgeInsets.symmetric(
+            horizontal : ClaseGenEspacios.dEspacio16,
+            vertical   : ClaseGenEspacios.dEspacio04,
+          ),
+          child : AnimatedBuilder(
+            animation : oControladorPestanas,
+            builder   : (_, __) => Row(
+              children: <Widget>[
+                for (int i = 0; i < listGrupos.length; i++) ...<Widget>[
+                  if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio08),
+                  Expanded(
+                    child : _construirPestana(
+                      oContexto,
+                      sTexto  : widget.funcEtiquetaGrupo?.call(listGrupos[i])   // ← CAMBIO etiqueta de grupo
+                          ?? ClaseIdiomas.getTexto(listGrupos[i], widget.sIdioma),
+                      bActiva : oControladorPestanas.index == i,
+                      iIndice : i,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
         Expanded(
           child: TabBarView(

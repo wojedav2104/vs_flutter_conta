@@ -6,6 +6,7 @@ import '../modelos/campo_abm.dart';
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
+import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
 import '../varios/listas.dart';
 import 'ventana_mensaje.dart';
@@ -215,20 +216,37 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   /// Borde, padding interior generoso (objetivos táctiles cómodos para
   /// usuarios noveles) e hint. Un solo punto de cambio para todos los
   /// controles del campo.
-  InputDecoration _getDecoracion({
+  InputDecoration _getDecoracion(
+    BuildContext oContexto, {
     String? sHint,
     Widget? oIconoDerecha,
   }) {
+    // Regla UI/UX: el relleno del control cambia según esté habilitado o
+    // deshabilitado (distinto en ambos casos al fondo del formulario).
     return InputDecoration(
       isDense        : true,
       hintText       : sHint,
       suffixIcon     : oIconoDerecha,
+      filled         : true,
+      fillColor      : widget.bHabilitado
+          ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+          : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
       border         : const OutlineInputBorder(),
       contentPadding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio12,
         vertical   : ClaseGenEspacios.dEspacio12,
       ),
     );
+  }
+
+  /// Estilo del texto del control: el habilitado usa el forecolor destacado
+  /// de la regla UI/UX (nunca gris ni negro); el deshabilitado conserva el
+  /// color de texto normal (gris/negro).
+  TextStyle _estiloTexto(BuildContext oContexto, TextStyle oEstilo) {
+    return widget.bHabilitado
+        ? oEstilo.copyWith(
+            color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+        : oEstilo;
   }
 
   // ── Etiqueta del campo ──────────────────────────────────────────────────
@@ -553,7 +571,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       controller      : oControl,
       enabled         : widget.bHabilitado,
       focusNode       : oFoco,
-      style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+      style           : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
       textAlign       : bNumero ? TextAlign.right : TextAlign.left,
       keyboardType    : bNumero
           ? (widget.oCampo.bTieneDecimales
@@ -565,7 +583,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           _alCambiarTexto(sValor, bConMascara: !bNumero),    // ← CAMBIO item 9
       onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
       decoration      : _getDecoracion(
-
+        oContexto,
         sHint        : widget.oCampo.sHint,
         oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
       ),
@@ -605,11 +623,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             controller   : oControl,
             enabled      : widget.bHabilitado,
             focusNode    : oFoco,
-            style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarFecha,
             onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
-            decoration   : _getDecoracion(sHint: 'dd/mm/aaaa'),
+            decoration   : _getDecoracion(oContexto, sHint: 'dd/mm/aaaa'),            
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
@@ -657,11 +675,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             controller   : oControl,
             enabled      : widget.bHabilitado,
             focusNode    : oFoco,
-            style        : ClaseGenEstilosTexto.textoCampo(oContexto),
+            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarHora,
             onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
-            decoration   : _getDecoracion(sHint: 'hh:mm'),
+            decoration   : _getDecoracion(oContexto, sHint: 'hh:mm'),            
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
@@ -731,14 +749,14 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
       isExpanded   : true,
       // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
-      style        : ClaseGenEstilosTexto.textoCampo(oContexto),
-      decoration   : _getDecoracion(),
+      style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+      decoration   : _getDecoracion(oContexto),      
       items: <DropdownMenuItem<String>>[
         for (int i = 0; i < listOpciones.length; i++)
           DropdownMenuItem<String>(
             value : listValores[i],
             child : Text(listOpciones[i],
-                style: ClaseGenEstilosTexto.textoCampo(oContexto)),
+                style: _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto))),
           ),
       ],
       onChanged: widget.bHabilitado
@@ -815,7 +833,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           enabled         : widget.bHabilitado,
           focusNode       : oFoco,
           maxLines        : 3,
-          style           : ClaseGenEstilosTexto.textoCampo(oContexto),
+          style           : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),          
           // El comentario respeta iMaxComentario (antes solo lo mostraba).
           inputFormatters : (widget.oCampo.iMaxComentario > 0)
               ? <TextInputFormatter>[
@@ -823,7 +841,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                 ]
               : null,
           onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
-          decoration      : _getDecoracion(sHint: widget.oCampo.sHint),
+          decoration      : _getDecoracion(oContexto, sHint: widget.oCampo.sHint),          
         ),
       ],
     );

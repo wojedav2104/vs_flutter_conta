@@ -33,6 +33,15 @@ abstract final class ClaseGenColores {
   static const colorError = Color(0xFFD32F2F);
   static const colorOk    = Color(0xFF3FB950);
 
+  // ── Controles de entrada (regla UI/UX) ──────────────────────────────────
+  // Habilitado: relleno suave que llama la atención + texto con buen
+  // contraste (nunca gris ni negro). Deshabilitado: gris tenue + el color de
+  // texto normal (gris/negro), que es el que usaba antes el habilitado.
+  static const colorCampoHabilitadoClaro       = Color(0xFFDFF3FA); // cian suave
+  static const colorCampoHabilitadoOscuro      = Color(0xFF14384A); // cian profundo suave
+  static const colorTextoCampoHabilitadoClaro  = Color(0xFF005F7D); // cian oscuro
+  static const colorTextoCampoHabilitadoOscuro = Color(0xFF7FDCF2); // cian claro
+
   // ── Superficies por tema ────────────────────────────────────────────────
   static const colorSuperficieClara         = Color(0xFFFFFFFF);
   static const colorSuperficieOscura        = Color(0xFF1E1F22);
