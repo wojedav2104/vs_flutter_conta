@@ -1,17 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 4 DE 7
+PARTE 6 DE 9
 ---
-turn _construirLista(oContexto);
-      case EnumTipoCampoAbm.logico:
-        return _construirLogico(oContexto);
-      case EnumTipoCampoAbm.numero:
-        return _construirTexto(oContexto, bNumero: true);
-      case EnumTipoCampoAbm.texto:
-        return _construirTexto(oContexto);
-    }
-  }
-
-  // ── Texto y número ──────────────────────────────────────────────────────
+───────────────────────────────────
 
   Widget _construirTexto(BuildContext oContexto, {bool bNumero = false}) {
 
@@ -90,7 +80,8 @@ turn _construirLista(oContexto);
             focusNode    : oFoco,
             style        : ClaseGenEstilosTexto.textoCampo(oContexto),
             keyboardType : TextInputType.datetime,
-            onChanged    : (String sValor) => widget.funcAlCambiar(sValor),
+            onChanged    : _alCambiarFecha,
+            onSubmitted  : (_) { _completarFecha(); _validarFechaHora(); },
             decoration   : _getDecoracion(sHint: 'dd/mm/aaaa'),
           ),
         ),
@@ -102,4 +93,9 @@ turn _construirLista(oContexto);
               ? () async {
                   final DateTime? fElegida = await funcMostrarSelectorFecha(
                     oContexto,
-       
+                    widget.sIdioma,
+                    funcParsearFecha(widget.sValor) ?? DateTime.now(),
+                    DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+                    DateTime(
+                      widget.oCampo.bVigencia
+                          ? ClaseFechas.getAnoMaximoVigencia()

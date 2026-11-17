@@ -1,7 +1,37 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 3 DE 7
+PARTE 3 DE 9
 ---
-──────────────────────────
+scara o cantidad de caracteres ──────────────
+
+  // ── Ancho del campo ──────────────────────────────────────────────────────
+
+  /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
+  /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
+  double _getAnchoCampo() =>
+      widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
+
+  // ── Decoración común de los controles ───────────────────────────────────
+
+  /// Borde, padding interior generoso (objetivos táctiles cómodos para
+  /// usuarios noveles) e hint. Un solo punto de cambio para todos los
+  /// controles del campo.
+  InputDecoration _getDecoracion({
+    String? sHint,
+    Widget? oIconoDerecha,
+  }) {
+    return InputDecoration(
+      isDense        : true,
+      hintText       : sHint,
+      suffixIcon     : oIconoDerecha,
+      border         : const OutlineInputBorder(),
+      contentPadding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio12,
+        vertical   : ClaseGenEspacios.dEspacio12,
+      ),
+    );
+  }
+
+  // ── Etiqueta del campo ──────────────────────────────────────────────────
 
   /// Etiqueta a la derecha, con asterisco rojo si el campo es obligatorio
   /// (item 4).
@@ -75,43 +105,8 @@ PARTE 3 DE 7
     widget.funcAlCambiar(sSalida);
   }
 
-  // ── Construcción de la interfaz ──────────────────────────────────────────
+  // ── Máscara de la fecha y error de fecha/hora ────────────────────────────
 
-  @override
-  Widget build(BuildContext oContexto) {
-    return Padding(
-      padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
-      child   : Row(
-        crossAxisAlignment : CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            width : ClaseGenLayout.dAnchoEtiquetaCampo,
-            child : Padding(
-              padding : const EdgeInsets.only(
-                top   : ClaseGenEspacios.dEspacio14,
-                right : ClaseGenEspacios.dEspacio04,
-              ),
-              child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
-            ),
-          ),
-          SizedBox(
-            width : _getAnchoCampo(),
-            child : _construirControl(oContexto),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _construirControl(BuildContext oContexto) {
-    switch (widget.oCampo.oTipo) {
-      case EnumTipoCampoAbm.casillas:
-        return _construirCasillas(oContexto);
-      case EnumTipoCampoAbm.comentario:
-        return _construirComentario(oContexto);
-      case EnumTipoCampoAbm.fecha:
-        return _construirFecha(oContexto);
-      case EnumTipoCampoAbm.hora:
-        return _construirHora(oContexto);
-      case EnumTipoCampoAbm.lista:
-        re
+  /// Máscara 99/99/9999: el usuario teclea solo dígitos y las barras se
+  /// insertan solas mientras escribe (spec 00_00_03).
+  void _alCambia

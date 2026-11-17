@@ -1,0 +1,75 @@
+RUTA ORIGINAL: lib/generales/idiomas/idiomas_terceros.dart
+PARTE 3 DE 3
+---
+'           : 'Portable',
+    'cliLocalidad'         : 'Localité',
+    'cliEmail'             : 'Adresse e-mail',
+    'cliTipoIdentificacion': "Type d'identification",
+    'cliIdentificacion'    : 'Identification N°',
+    'cliTipoCliente'       : 'Type de client',
+    'cliHintNombre'        : 'Nom du client',
+    'cliHintDireccion'     : 'Adresse du client',
+    'cliHintTelefono'      : 'N° de téléphone',
+    'cliHintCelular'       : 'N° de portable',
+    'cliHintLocalidad'     : 'Nom de la localité',
+    'cliHintEmail'         : 'Adresse électronique',
+    'cliHintIdentificacion': "Numéro de pièce d'identité",
+
+    // ── Tipos de documento de identidad (compartido) ─────────────────
+    'docRuc'               : 'N.I.T.',
+    'docCedulaIdentidad'   : "Carte d'identité",
+    'docPasaporte'         : 'Passeport',
+    'docCedulaExtranjera'  : "Carte d'identité étrangère",
+    'docSinNombre'         : 'Sans nom',
+    'docDiplomatico'       : 'Diplomate',
+
+    // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
+    'prvCodigo'            : 'Code',
+    'prvNombre'            : 'Nom',
+    'prvDireccion'         : 'Adresse',
+    'prvTelefono'          : 'Téléphone',
+    'prvCelular'           : 'Portable',
+    'prvLocalidad'         : 'Localité',
+    'prvEmail'             : 'Adresse e-mail',
+    'prvTipoIdentificacion': "Type d'identification",
+    'prvIdentificacion'    : 'Identification N°',
+    'prvTipoProveedor'     : 'Type de fournisseur',
+    'prvEsServicioPublico' : 'Est un service public',
+    'prvHintNombre'        : 'Nom du fournisseur',
+    'prvHintTelefono'      : 'N° de téléphone',
+    'prvHintCelular'       : 'N° de portable',
+    'prvHintLocalidad'     : 'Nom de la localité',
+    'prvHintEmail'         : 'Adresse électronique',
+    'prvHintIdentificacion': "Numéro de pièce d'identité",
+
+    // ── Timbrados (claves usadas en las dos pantallas) ───────────────
+    'timUltimoDocumento'   : 'Numéro du dernier document',
+    'timPrvNombre'         : 'Nom du fournisseur',
+    'timPrvRuc'            : 'N.I.T.',
+    'timPrvHintNombre'     : 'Nom du fournisseur',
+    'timPrvHintRuc'        : 'Numéro de N.I.T. du fournisseur',
+
+    // ── Timbrados (campos comunes, ClaseTimbradosComun) ──────────────
+    'timTimbrado'          : 'Numéro de timbrado',
+    'timFechaInicio'       : 'Date de début',
+    'timFechaFin'          : 'Date de fin',
+    'timAfectaA'           : "S'applique à",
+    'timMedioGeneracion'   : 'Mode de génération',
+
+    // ── Timbrados (opciones de Afecta a y Medio de generación) ───────
+    'timFactura'           : 'Facture',
+    'timNotaCredito'       : 'Note de crédit',
+    'timNotaDebito'        : 'Note de débit',
+    'timNotaRemision'      : "Note d'expédition",
+    'timAutoImpresores'    : 'Auto-impression',
+    'timPreImpresos'       : 'Pré-imprimés',
+    'timComprobantesVirtuales'  : 'Justificatifs virtuels',
+    'timDocumentosElectronicos' : 'Documents électroniques',
+
+    // ── Opciones compartidas de terceros ─────────────────────────────
+    'valorLocal'           : 'Local',
+    'valorExterior'        : 'Étranger',
+
+  };  
+
+}

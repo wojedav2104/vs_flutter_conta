@@ -2,7 +2,9 @@ RUTA ORIGINAL: lib/generales/modelos/campo_abm.dart
 PARTE 1 DE 2
 ---
 import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
+
 
 /// Tipo de dato de un campo de un formulario ABM.
 enum EnumTipoCampoAbm { casillas, comentario, fecha, hora, lista, logico, numero, texto }
@@ -94,11 +96,8 @@ class ClaseCampoAbm {
   double getAnchoCampo({String? sMascaraEfectiva}) {
     final int iCaracteres =
         (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
-    switch (oTipo) {
-      case EnumTipoCampoAbm.comentario:
-        return ClaseGenLayout.dAnchoCampoComentario;
-      case EnumTipoCampoAbm.casillas:
-      case EnumTipoCampoAbm.lista:
-        return iCaracteres * ClaseGenLayout.dAnchoCaracter
-               + ClaseGenLayout.dAnchoIconoFlecha;
-      case EnumTipoCampoAbm.f
+    // El ancho por carácter se escala con el modo texto grande: sin esto,
+    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
+    // es 1.25.
+    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter
+        * ClaseGenEstilosTexto.dFactorTexto;

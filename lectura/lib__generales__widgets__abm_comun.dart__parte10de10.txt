@@ -1,7 +1,23 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 10 DE 10
 ---
-          // item 6
+(_listOrden[i], oContexto),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
+    final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
+    return SizedBox(
+      width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
+      height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
+      child  : ElevatedButton(
+        onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
+        style     : ElevatedButton.styleFrom(
+          backgroundColor         : bHabilitado
+              ? ClaseGenTemas.colorBotonHabilitado(oContexto)          // item 6
               : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
           foregroundColor         : bHabilitado
               ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
@@ -13,13 +29,25 @@ PARTE 10 DE 10
           ),
           padding : EdgeInsets.zero,
         ),
-        child : Text(
-          _getEtiqueta(oBoton),
-          style : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
-            color : bHabilitado
-                ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-                : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-          ),
+        child : Row(
+          mainAxisAlignment : MainAxisAlignment.center,
+          mainAxisSize       : MainAxisSize.min,
+          children          : <Widget>[
+            Icon(_getIcono(oBoton), size: 20),
+            const SizedBox(width: ClaseGenEspacios.dEspacio08),
+            Flexible(
+              child : Text(
+                _getEtiqueta(oBoton),
+                style    : ClaseGenEstilosTexto.botonGrande(oContexto).copyWith(
+                  color : bHabilitado
+                      ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                      : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+                ),
+                maxLines : 1,
+                overflow : TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );

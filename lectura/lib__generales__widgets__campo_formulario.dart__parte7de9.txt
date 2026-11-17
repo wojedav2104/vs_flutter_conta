@@ -1,12 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 5 DE 7
+PARTE 7 DE 9
 ---
-             widget.sIdioma,
-                    funcParsearFecha(widget.sValor) ?? DateTime.now(),
-                    DateTime(ClaseFechas.iAnoMinimo, 1, 1),
-                    DateTime(
-                      widget.oCampo.bVigencia
-                          ? ClaseFechas.getAnoMaximoVigencia()
+
                           : ClaseFechas.getAnoMaximo(),
                       12, 31),
                   );
@@ -36,7 +31,7 @@ PARTE 5 DE 7
             style        : ClaseGenEstilosTexto.textoCampo(oContexto),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarHora,
-            onSubmitted  : (_) => _normalizarHora(),
+            onSubmitted  : (_) { _completarHora(); _validarFechaHora(); },
             decoration   : _getDecoracion(sHint: 'hh:mm'),
           ),
         ),
@@ -68,30 +63,28 @@ PARTE 5 DE 7
   /// en formato hh:mm. El display solo se corrige cuando los minutos ya
   /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
   void _alCambiarHora(String sValor) {
-    final int? iMinutos = funcParsearHora(sValor);
-    final String sHora = (iMinutos != null)
-        ? funcFormatearHora(iMinutos ~/ 60, iMinutos % 60)
-        : sValor;
-    widget.funcAlCambiar(sHora);
-    if (sHora != oControl.text && RegExp(r':\d{2}$').hasMatch(sValor.trim())) {
+    // Máscara 99:99: el usuario teclea solo dígitos y los dos puntos se
+    // insertan solos (spec 00_00_03).
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    String sHora = funcAplicarMascara(sDigitos, _sMascaraHora);
+    // Normaliza solo con los 4 dígitos escritos: mientras tanto '16:3' se
+    // deja como está para poder seguir tecleando (1630 → 16:30). Con menos
+    // dígitos la completación ocurre al perder el foco (_completarHora).
+    if (sDigitos.length >= 4) {
+      final int? iMinutos = funcParsearHora(sHora);
+      if (iMinutos != null) {
+        sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+      }
+    }
+    if (sHora != oControl.text) {
       oControl.value = TextEditingValue(
         text      : sHora,
         selection : TextSelection.collapsed(offset: sHora.length),
       );
     }
-  }
-
-  /// Normaliza el display al confirmar (Enter): rellena con ceros.
-  /// Ej: '1:30' → '01:30', '12:5' → '12:05', '9:8' → '09:08'.
-  void _normalizarHora() {
-    final int? iMinutos = funcParsearHora(oControl.text);
-    if (iMinutos != null) {
-      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
-      if (sHora != oControl.text) {
-        oControl.text = sHora;
-        widget.funcAlCambiar(sHora);
-      }
-    }
+    widget.funcAlCambiar(sHora);
+    // Con los 4 dígitos escritos se valida la hora (1630 → 16:30 o error).
+    if (sDigitos.length >= 4) _validarFechaHora();
   }
 
   // ── Lista (dropdown) ─────────────────────────────────────────────────────
@@ -101,4 +94,7 @@ PARTE 5 DE 7
     final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
     return DropdownButtonFormField<String>(
       key          : ValueKey<String>('${widget.oCampo.sClave}_${widget.sValor}'),
-      initialValue : listValores.contains(widget.sValor) ? widget.sV
+      initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
+      isExpanded   : true,
+      // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
+      style        : ClaseGenEstilos

@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 2 DE 7
+PARTE 2 DE 9
 ---
-t.sValor) {
+f (mounted) oFoco.requestFocus();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ClaseCampoFormulario oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.sValor != widget.sValor && oControl.text != widget.sValor) {
       oControl.text = widget.sValor;
       if (!oFoco.hasFocus) _mostrarNumeroFormateado();       // ← CAMBIO item 9
     }
@@ -43,7 +51,24 @@ t.sValor) {
       return;
     }
     _mostrarNumeroFormateado();
+    // Completa la fecha u hora según lo que alcanzó a teclear el usuario.
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
+    // Muestra la ventana de error si la fecha u hora no es posible, pero
+    // SOLO si el usuario se movió a otro campo de entrada. Si hizo clic en
+    // un botón (Cancelar, Fin, Grabar, selector de fecha, borrar) — con o
+    // sin foco, habilitado o deshabilitado — no se valida: termina o
+    // descarta la edición, o corrige con un botón, y Grabar valida todo al
+    // grabar. Se espera al próximo frame para saber dónde quedó el foco.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted)            return;
+      if (oFoco.hasFocus)      return;
+      if (!_focoEnOtroCampo()) return;
+      _validarFechaHora();
+    });
+
     // Transformación del campo al salir del foco (ej: completar el RUC).
+
     final String? sNuevo = widget.funcAlPerderFoco
         ?.call(widget.oCampo.sClave, widget.sValor, widget.mapValores);
     if (sNuevo != null && sNuevo != widget.sValor) {
@@ -77,34 +102,4 @@ t.sValor) {
     return funcFormatearNumero(sValor.replaceAll('.', ','), sMascara, sSeparadorMiles);
   }
 
-  // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
-
-  // ── Ancho del campo ──────────────────────────────────────────────────────
-
-  /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
-  /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
-  double _getAnchoCampo() =>
-      widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
-
-  // ── Decoración común de los controles ───────────────────────────────────
-
-  /// Borde, padding interior generoso (objetivos táctiles cómodos para
-  /// usuarios noveles) e hint. Un solo punto de cambio para todos los
-  /// controles del campo.
-  InputDecoration _getDecoracion({
-    String? sHint,
-    Widget? oIconoDerecha,
-  }) {
-    return InputDecoration(
-      isDense        : true,
-      hintText       : sHint,
-      suffixIcon     : oIconoDerecha,
-      border         : const OutlineInputBorder(),
-      contentPadding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio12,
-        vertical   : ClaseGenEspacios.dEspacio12,
-      ),
-    );
-  }
-
-  // ── Etiqueta del campo ────────────────────────
+  // ── Ancho del campo según má

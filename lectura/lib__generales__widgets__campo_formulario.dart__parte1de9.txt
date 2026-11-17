@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 1 DE 7
+PARTE 1 DE 9
 ---
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +12,7 @@ import '../temas/layout.dart';
 import '../utilitarios/formatos.dart';
 import '../varios/listas.dart';
 import 'ventana_mensaje.dart';
+
 
 /// Admite dígitos y, como máximo, un separador decimal (',' o '.').
 class ClaseFormateadorImporte extends TextInputFormatter {
@@ -87,8 +88,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   final FocusNode oFocoInterno = FocusNode();
   String sMascaraActual = '';
 
-  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo
-  /// provee, o el propio. Se elige una sola vez en initState.
+  /// Máscaras de la fecha (99/99/9999) y de la hora (99:99): el usuario teclea solo dígitos y los separadores se insertan solos (spec 00_00_03).
+  static const String _sMascaraFecha = '99/99/9999';
+  static const String _sMascaraHora  = '99:99';
+
+  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo provee, o el propio. Se elige una sola vez en initState.
   late final FocusNode oFoco;
 
   @override
@@ -99,12 +103,4 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     oFoco.addListener(_alCambiarFoco);                       // ← CAMBIO item 9
     if (widget.bAutoFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) oFoco.requestFocus();
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant ClaseCampoFormulario oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.sValor != widget.sValor && oControl.text != widge
+        i

@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_validaciones.dart
 PARTE 2 DE 2
 ---
-         : 'Le champ "{0}" doit être un jour entre {1} et {2} pour le mois indiqué',                                           // ← nueva
+Le champ "{0}" doit être un jour entre {1} et {2} pour le mois indiqué',                                           // ← nueva
     'validDigitosExactos'   : 'Le champ "{0}" doit avoir exactement {1} chiffres',
     'validEjercicioRango'   : 'Le champ "{0}" doit être un exercice entre {1} et {2}',                                                            // ← ajuste
     'validFechaAnterior'    : 'Le champ "{0}" ne peut pas être antérieur au {1}',

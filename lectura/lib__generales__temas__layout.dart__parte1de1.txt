@@ -11,12 +11,14 @@ abstract final class ClaseGenLayout {
   static const double dAltoFilaDetalleCompacta        =   48.0;
   static const double dAltoFilaGrillaAbm              =   26.0;
   static const double dAnchoAccionesFila              =  144.0;
+  static const double dAnchoBordeCampo                =    2.0;   // borde total de un campo (1 px por lado)
   static const double dAnchoBotonAbm                  =  150.0;
   static const double dAnchoCampoComentario           =  400.0;
   static const double dAnchoCampoFecha                =  180.0;
   static const double dAnchoCampoHora                 =  120.0;
   static const double dAnchoCaracter                  =    8.6;   // ancho de 1 carácter en Roboto Mono
   static const double dAnchoEtiquetaCampo             =  220.0;
+  static const double dAnchoExtraLista                =   72.0;   // flecha, padding interno y margen de una lista
   static const double dAnchoGrillaAbm                 =  280.0;
   static const double dAnchoGrillaRegistros           =  500.0;
   static const double dAnchoIconoBorrar               =   48.0;   // espacio que ocupa el icono "X" de borrado

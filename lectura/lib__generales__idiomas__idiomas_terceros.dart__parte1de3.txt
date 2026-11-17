@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_terceros.dart
-PARTE 1 DE 2
+PARTE 1 DE 3
 ---
 /// Textos del idioma: Clientes, Proveedores y terceros.
 ///
@@ -56,6 +56,23 @@ abstract final class ClaseIdiomasTerceros {
     'cliRuc'                : 'R.U.C.',
     'cliTelefono'           : 'Teléfono',
 
+    // ── Pantalla Clientes (claves que usa clientes.dart) ─────────────
+    'cliCodigo'            : 'Código',
+    'cliNombre'            : 'Nombre',
+    'cliCelular'           : 'Celular',
+    'cliLocalidad'         : 'Localidad',
+    'cliEmail'             : 'Correo electrónico',
+    'cliTipoIdentificacion': 'Tipo de identificación',
+    'cliIdentificacion'    : 'Identificación N°',
+    'cliTipoCliente'       : 'Tipo de cliente',
+    'cliHintNombre'        : 'Nombre del cliente',
+    'cliHintDireccion'     : 'Dirección del cliente',
+    'cliHintTelefono'      : 'Nro teléfono',
+    'cliHintCelular'       : 'Nro celular',
+    'cliHintLocalidad'     : 'Nombre de la localidad',
+    'cliHintEmail'         : 'Correo electrónico',
+    'cliHintIdentificacion': 'Número de identidad',
+
     // ── Tipos de documento de identidad (compartido) ─────────────────
     'docRuc'               : 'R.U.C.',
     'docCedulaIdentidad'   : 'Cédula de Identidad',
@@ -73,26 +90,4 @@ abstract final class ClaseIdiomasTerceros {
     'prvLocalidad'         : 'Localidad',
     'prvEmail'             : 'Correo electrónico',
     'prvTipoIdentificacion': 'Tipo de identificación',
-    'prvIdentificacion'    : 'Identificación N°',
-    'prvTipoProveedor'     : 'Tipo de proveedor',
-    'prvEsServicioPublico' : 'Es servicio público',
-    'prvHintNombre'        : 'Nombre del proveedor',
-    'prvHintTelefono'      : 'Nro teléfono',
-    'prvHintCelular'       : 'Nro celular',
-    'prvHintLocalidad'     : 'Nombre de la localidad',
-    'prvHintEmail'         : 'Correo electrónico',
-    'prvHintIdentificacion': 'Número de identidad',
-
-    // ── Timbrados (claves usadas en las dos pantallas) ───────────────
-    'timUltimoDocumento'   : 'Número del último documento',
-    'timPrvNombre'         : 'Nombre del proveedor',
-    'timPrvRuc'            : 'R.U.C.',
-    'timPrvHintNombre'     : 'Nombre del proveedor',
-    'timPrvHintRuc'        : 'Número de RUC del proveedor',
-
-  };
-
-
-
-
-  stati
+    'prvIdentificacion'

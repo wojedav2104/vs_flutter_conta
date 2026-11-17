@@ -81,6 +81,19 @@ class ClaseBotoneraAbm extends StatelessWidget {
     }
   }
 
+  /// Icono de cada botón, a la izquierda de la etiqueta (spec 00_00_02: todos los botones llevan icono a la izquierda).
+  IconData _getIcono(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   return Icons.add_circle_outline;
+      case EnumBotonAbm.borrar:    return Icons.delete_outline;
+      case EnumBotonAbm.cancelar:  return Icons.cancel_outlined;
+      case EnumBotonAbm.encontrar: return Icons.search;
+      case EnumBotonAbm.fin:       return Icons.exit_to_app;
+      case EnumBotonAbm.grabar:    return Icons.save_outlined;
+      case EnumBotonAbm.modificar: return Icons.edit_outlined;
+    }
+  }
+
   @override
   Widget build(BuildContext oContexto) {
     return Padding(
@@ -93,20 +106,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
         children : <Widget>[
           for (int i = 0; i < _listOrden.length; i++) ...<Widget>[
             if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio08),
-            _construirBoton(_listOrden[i], oContexto),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
-    final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
-    return SizedBox(
-      width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
-      height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
-      child  : ElevatedButton(
-        onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
-        style     : ElevatedButton.styleFrom(
-          backgroundColor         : bHabilitado
-              ? ClaseGenTemas.colorBotonHabilitado(oContexto)
+            _construirBoton
