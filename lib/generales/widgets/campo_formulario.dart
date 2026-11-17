@@ -153,16 +153,16 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     // Completa la fecha u hora según lo que alcanzó a teclear el usuario.
     if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
     if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
-    // Muestra la ventana de error si la fecha u hora no es posible.
     // Muestra la ventana de error si la fecha u hora no es posible, pero
-    // no cuando el foco se fue a un botón (Cancelar, Fin, Grabar, selector
-    // de fecha...): el usuario termina o descarta la edición, o corrige
-    // con un botón, y Grabar valida todo al grabar. Se espera al próximo
-    // frame para saber dónde quedó el foco después del clic.
+    // SOLO si el usuario se movió a otro campo de entrada. Si hizo clic en
+    // un botón (Cancelar, Fin, Grabar, selector de fecha, borrar) — con o
+    // sin foco, habilitado o deshabilitado — no se valida: termina o
+    // descarta la edición, o corrige con un botón, y Grabar valida todo al
+    // grabar. Se espera al próximo frame para saber dónde quedó el foco.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted)       return;
-      if (oFoco.hasFocus) return;
-      if (_focoEnBoton()) return;
+      if (!mounted)            return;
+      if (oFoco.hasFocus)      return;
+      if (!_focoEnOtroCampo()) return;
       _validarFechaHora();
     });
 
@@ -323,14 +323,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     if (sDigitos.length >= 8) _validarFechaHora();
   }
 
-  /// true si el foco está en un botón (botonera ABM, iconos de los campos,
-  /// botones de las ventanas). Se consulta al salir del campo para no
-  /// validar cuando el usuario termina la edición (Cancelar, Fin) o
-  /// corrige con un botón (selector de fecha, borrar).
-  static bool _focoEnBoton() {
-    final BuildContext? oContexto =
-        FocusManager.instance.primaryFocus?.context;
-    if (oContexto == null) return false;
+  /// true si el widget del contexto es un botón (botonera ABM, iconos de
+  /// los campos, botones de las ventanas), directa o indirectamente.
+  static bool _esBoton(BuildContext oContexto) {
     if (oContexto.widget is ButtonStyleButton
         || oContexto.widget is IconButton) return true;
     bool bBoton = false;
@@ -343,6 +338,25 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       return true;
     });
     return bBoton;
+  }
+
+  /// true si el foco terminó en otro campo de entrada (otro campo del
+  /// formulario o una celda de la grilla de detalles). Es la condición
+  /// POSITIVA para validar al salir del campo: si el foco está en un
+  /// botón, en una ventana o en ningún lugar, se devuelve false y no se
+  /// valida (regla 00_00_03 y el criterio de que Cancelar/Fin/Grabar no
+  /// deben interrumpirse con ventanas de validación).
+  bool _focoEnOtroCampo() {
+    final BuildContext? oContexto =
+        FocusManager.instance.primaryFocus?.context;
+    if (oContexto == null) return false;
+    if (_esBoton(oContexto)) return false;
+    final ClaseCampoFormulario? oCampo =
+        oContexto.findAncestorWidgetOfExactType<ClaseCampoFormulario>();
+    if (oCampo != null) return !identical(oCampo, widget);
+    // Celda de la grilla de detalles u otra entrada de texto.
+    return (oContexto.widget is EditableText)
+        || (oContexto.findAncestorWidgetOfExactType<EditableText>() != null);
   }
 
   /// Muestra la ventana de error si la fecha u hora no es posible, no solo
