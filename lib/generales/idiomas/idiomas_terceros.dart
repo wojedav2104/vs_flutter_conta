@@ -135,8 +135,8 @@ abstract final class ClaseIdiomasTerceros {
     // ── Pantalla Proveedores (ABM) ──────────────────────────────────
 
     'proAlta'               : 'Création',
-    'proApellidoMaterno'    : 'Nom de la mère',
-    'proApellidoPaterno'    : 'Nom du père',
+    'proApellidoMaterno'    : 'Nom de famille maternel',
+    'proApellidoPaterno'    : 'Nom de famille paternel',
     'proAutonomo'           : 'Travailleur indépendant',
     'proCiudad'             : 'Ville',
     'proContacto'           : 'Personne de contact',
@@ -148,9 +148,9 @@ abstract final class ClaseIdiomasTerceros {
     'proExterior'           : 'Étranger',
     'proLocal'              : 'Local',
     'proNombreComercial'    : 'Nom commercial',
-    'proNombreFantasia'     : 'Nom de fantaisie',
+    'proNombreFantasia'     : 'Nom de marque',
     'proRazonSocial'        : 'Raison sociale',
-    'proRuc'                : 'N.I.T.',
+    'proRuc'                : 'R.U.C.',
     'proTelefono'           : 'Téléphone',
     'proTerceroPorDefecto'  : 'Fournisseur par défaut',
 
@@ -159,8 +159,8 @@ abstract final class ClaseIdiomasTerceros {
     'terTerceros'           : 'Tiers',
 
     'cliAlta'               : 'Création',
-    'cliApellidoMaterno'    : 'Nom de la mère',
-    'cliApellidoPaterno'    : 'Nom du père',
+    'cliApellidoMaterno'    : 'Nom de famille maternel',
+    'cliApellidoPaterno'    : 'Nom de famille paternel',
     'cliAutonomo'           : 'Travailleur indépendant',
     'cliCiudad'             : 'Ville',
     'cliClientePorDefecto'  : 'Client par défaut',
@@ -173,9 +173,9 @@ abstract final class ClaseIdiomasTerceros {
     'cliExterior'           : 'Étranger',
     'cliLocal'              : 'Local',
     'cliNombreComercial'    : 'Nom commercial',
-    'cliNombreFantasia'     : 'Nom de fantaisie',
+    'cliNombreFantasia'     : 'Nom de marque',    
     'cliRazonSocial'        : 'Raison sociale',
-    'cliRuc'                : 'N.I.T.',
+    'cliRuc'                : 'R.U.C.',
     'cliTelefono'           : 'Téléphone',
 
     // ── Pantalla Clientes (claves que usa clientes.dart) ─────────────
@@ -196,13 +196,13 @@ abstract final class ClaseIdiomasTerceros {
     'cliHintIdentificacion': "Numéro de pièce d'identité",
 
     // ── Tipos de documento de identidad (compartido) ─────────────────
-    'docRuc'               : 'N.I.T.',
+    'docRuc'               : 'R.U.C.',
     'docCedulaIdentidad'   : "Carte d'identité",
     'docPasaporte'         : 'Passeport',
     'docCedulaExtranjera'  : "Carte d'identité étrangère",
     'docSinNombre'         : 'Sans nom',
-    'docDiplomatico'       : 'Diplomate',
-
+    'docDiplomatico'       : 'Diplomatique',
+    
     // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
     'prvCodigo'            : 'Code',
     'prvNombre'            : 'Nom',
@@ -225,9 +225,9 @@ abstract final class ClaseIdiomasTerceros {
     // ── Timbrados (claves usadas en las dos pantallas) ───────────────
     'timUltimoDocumento'   : 'Numéro du dernier document',
     'timPrvNombre'         : 'Nom du fournisseur',
-    'timPrvRuc'            : 'N.I.T.',
+    'timPrvRuc'            : 'R.U.C.',
     'timPrvHintNombre'     : 'Nom du fournisseur',
-    'timPrvHintRuc'        : 'Numéro de N.I.T. du fournisseur',
+    'timPrvHintRuc'        : 'Numéro de R.U.C. du fournisseur',
 
     // ── Timbrados (campos comunes, ClaseTimbradosComun) ──────────────
     'timTimbrado'          : 'Numéro de timbrado',

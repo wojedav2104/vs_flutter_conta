@@ -141,7 +141,7 @@ abstract final class ClaseIdiomasInterfaz {
     'abmNoEncontrado'       : 'Aucun enregistrement trouvé',
     'campoElegirFecha'      : 'Choisir la date',
     'campoElegirHora'       : 'Choisir l\'heure',  
-    'confirmarBorrar'       : 'Voulez-vous supprimer cet enregistrement ? Cette action est irréversible.',
+    'confirmarBorrar'       : 'Veux-tu supprimer cet enregistrement ? Cette action est irréversible.',
     'mensajeBorrado'        : "L'enregistrement a été supprimé.",
     'textoNormal'           : 'Normal',
     'textoGrande'           : 'Texte agrandi',

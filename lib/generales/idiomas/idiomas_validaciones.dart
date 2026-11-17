@@ -3,7 +3,7 @@
 abstract final class ClaseIdiomasValidaciones {
 
   static const Map<String, String> mapEs = <String, String>{
-    'validAlMenosUno'       : 'Debe seleccionar al menos una opción en "{0}"',
+    'validAlMenosUno'       : 'Debes seleccionar al menos una opción en "{0}"',
     'validCuentaSuperior'   : 'La cuenta de nivel superior es obligatoria cuando el número de cuenta tiene más de un grupo (por ejemplo: 1.01)',   // ← ajuste
     'validDiaRango'         : 'El campo "{0}" debe ser un día entre {1} y {2} para el mes indicado',                                            // ← nueva
     'validDigitosExactos'   : 'El campo "{0}" debe tener exactamente {1} dígitos',
@@ -13,13 +13,13 @@ abstract final class ClaseIdiomasValidaciones {
     'validFechaInvalida'    : 'El campo "{0}" no es una fecha válida',
     'validFechaRango'       : 'La fecha de {0} debe estar entre el {1} y el {2}',
     'validFormatoCuenta'    : 'El número de cuenta debe tener el formato 9.99.99.99 (ejemplos válidos: 1, 1.01, 1.01.04, 2.03.05.17)',
-    'validHoraInvalida'     : 'El campo "{0}" tiene un formato de hora inválido. Use hh:mm',
+    'validHoraInvalida'     : 'El campo "{0}" tiene un formato de hora inválido. Usa hh:mm',
     'validHoraRango'        : 'El campo "{0}" debe estar entre las horas {1} y {2}',                                                             // ← nueva
     'validIdentCedula'      : 'El campo "{0}" debe ser un número de cédula de 5 a 8 dígitos (se permiten puntos como separadores)',
     'validIdentOtros'       : 'El campo "{0}" debe tener entre 5 y 15 caracteres (letras, dígitos, puntos o guiones)',                           // ← nueva
     'validIdentPasaporte'   : 'El campo "{0}" debe contener solo letras mayúsculas, dígitos y guiones',
     'validIdentRuc'         : 'El campo "{0}" debe ser un RUC con el formato 9999999-9 (número y dígito verificador)',
-    'validIdentRucDv'       : 'El dígito verificador del campo "{0}" no es correcto. Revise el número de RUC.',
+    'validIdentRucDv'       : 'El dígito verificador del campo "{0}" no es correcto. Revisa el número de RUC.',
     'validLongMaxima'       : 'El campo "{0}" admite un máximo de {1} caracteres',
     'validLongMinima'       : 'El campo "{0}" debe tener al menos {1} caracteres',
     'validNivelCuenta'      : 'El campo "{0}" debe ser un número entre 1 y 5',                                                                   // ← ajuste
@@ -36,23 +36,23 @@ abstract final class ClaseIdiomasValidaciones {
   };
 
   static const Map<String, String> mapFr = <String, String>{
-    'validAlMenosUno'       : 'Vous devez sélectionner au moins une option dans "{0}"',
+    'validAlMenosUno'       : 'Tu dois sélectionner au moins une option dans "{0}"',    
     'validCuentaSuperior'   : 'Le compte de niveau supérieur est obligatoire lorsque le numéro de compte a plus d\'un groupe (par exemple : 1.01)',  // ← ajuste
-    'validDiaRango'         : 'Le champ "{0}" doit être un jour entre {1} et {2} pour le mois indiqué',                                           // ← nueva
+    'validDiaRango'         : 'Le champ "{0}" doit correspondre à un jour entre {1} et {2} pour le mois indiqué',                                          // ← nueva
     'validDigitosExactos'   : 'Le champ "{0}" doit avoir exactement {1} chiffres',
     'validEjercicioRango'   : 'Le champ "{0}" doit être un exercice entre {1} et {2}',                                                            // ← ajuste
     'validFechaAnterior'    : 'Le champ "{0}" ne peut pas être antérieur au {1}',
     'validFechaFinPosterior': 'La date de fin de validité doit être postérieure à la date de début de validité',
-    'validFechaInvalida'    : 'Le champ "{0}" a un format de date invalide',
+    'validFechaInvalida'    : 'Le champ "{0}" n\'est pas une date valide',
     'validFechaRango'       : 'La date de {0} doit être entre le {1} et le {2}',
     'validFormatoCuenta'    : 'Le numéro de compte doit avoir le format 9.99.99.99 (exemples valides : 1, 1.01, 1.01.04, 2.03.05.17)',
-    'validHoraInvalida'     : 'Le champ "{0}" a un format d\'heure invalide. Utilisez hh:mm',
+    'validHoraInvalida'     : 'Le champ "{0}" a un format d\'heure invalide. Utilise le format hh:mm',    
     'validHoraRango'        : 'Le champ "{0}" doit être compris entre les heures {1} et {2}',                                                     // ← nueva
     'validIdentCedula'      : 'Le champ "{0}" doit être un numéro de carte d\'identité de 5 à 8 chiffres (les points sont acceptés comme séparateurs)',
     'validIdentOtros'       : 'Le champ "{0}" doit avoir entre 5 et 15 caractères (lettres, chiffres, points ou traits d\'union)',                 // ← nueva
     'validIdentPasaporte'   : 'Le champ "{0}" doit contenir uniquement des lettres majuscules, des chiffres et des traits d\'union',
     'validIdentRuc'         : 'Le champ "{0}" doit être un RUC au format 9999999-9 (numéro et chiffre de contrôle)',
-    'validIdentRucDv'       : 'Le chiffre de contrôle du champ "{0}" n\'est pas correct. Vérifiez le numéro de RUC.',
+    'validIdentRucDv'       : 'Le chiffre de contrôle du champ "{0}" n\'est pas correct. Vérifie le numéro de RUC.',    
     'validLongMaxima'       : 'Le champ "{0}" accepte un maximum de {1} caractères',
     'validLongMinima'       : 'Le champ "{0}" doit avoir au moins {1} caractères',
     'validNivelCuenta'      : 'Le champ "{0}" doit être un nombre entre 1 et 5',                                                                  // ← ajuste
@@ -65,7 +65,7 @@ abstract final class ClaseIdiomasValidaciones {
     'validSoloEntero'       : 'Le champ "{0}" doit être un nombre entier',
     'validSubcuentaRango'   : 'Le champ "{0}" doit avoir 5 chiffres entre 00001 et 99999',
     'validSumaDebeHaber'    : 'La somme du Doit doit être exactement égale à la somme de l\'Avoir',
-    'validValorLista'       : 'Le champ "{0}" n\'a pas une valeur valide de la liste',                                                            // ← nueva
+    'validValorLista'       : 'Le champ "{0}" n\'a pas de valeur valide dans la liste',                                                         // ← nueva
   };
 
 }

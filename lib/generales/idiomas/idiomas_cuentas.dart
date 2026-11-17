@@ -100,7 +100,7 @@ abstract final class ClaseIdiomasCuentas {
     'planCuentaSuperior'     : 'Compte de niveau supérieur',
     'planEjercicio'          : 'Exercice comptable',
     'planHintCuenta'         : 'Compte N°',
-    'planHintCuentaSuperior' : 'Le compte parent de cette compte',
+    'planHintCuentaSuperior' : 'Le compte parent de ce compte',
     'planHintNombreCuenta'   : 'Nom du compte comptable',
     'planHintNombreSubcuenta': 'Nom du sous-compte comptable',
     'planHintSucursal'       : 'Code et nom de la succursale',

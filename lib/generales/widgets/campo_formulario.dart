@@ -261,13 +261,18 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       widget.bHabilitado && widget.sValor.isNotEmpty;
 
   Widget _construirBotonBorrarCampo() {
-    return IconButton(
-      tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
-      icon      : const Icon(Icons.close, size: 18),
-      onPressed : () {
-        oControl.text = '';
-        widget.funcAlCambiar('');
-      },
+    // ExcludeFocus: la "X" queda fuera del orden de Tab/Enter (el foco pasa
+    // directamente al siguiente campo); el clic y el táctil siguen igual.
+    return ExcludeFocus(
+      excluding : true,
+      child     : IconButton(
+        tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
+        icon      : const Icon(Icons.close, size: 18),
+        onPressed : () {
+          oControl.text = '';
+          widget.funcAlCambiar('');
+        },
+      ),
     );
   }
 
@@ -368,17 +373,19 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   /// Regla 00_00_03 (Input focus): si se detectó un error, el foco se
   /// mantiene en el campo donde se detectó. La ventana de error se roba el
   /// foco, así que al cerrarla se vuelve a pedir el foco para este campo.
-  Future<void> _validarFechaHora() async {
-    if (!mounted) return;
+  /// Devuelve true si el valor pasó la validación (o no había nada que
+  /// validar); false si se mostró la ventana de error.
+  Future<bool> _validarFechaHora() async {
+    if (!mounted) return true;
     final String sValor = oControl.text.trim();
-    if (sValor.isEmpty) return;
+    if (sValor.isEmpty) return true;
     final bool bFecha = (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha);
     final bool bHora  = (widget.oCampo.oTipo == EnumTipoCampoAbm.hora);
-    if (!bFecha && !bHora) return;
+    if (!bFecha && !bHora) return true;
     final bool bValida = bFecha
         ? (funcParsearFecha(sValor) != null)
         : (funcParsearHora(sValor) != null);
-    if (bValida) return;
+    if (bValida) return true;
     await funcMostrarError(
       context,
       widget.sIdioma,
@@ -388,10 +395,21 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           .replaceAll('{0}', widget.oCampo.sEtiqueta),
     );
     if (mounted) oFoco.requestFocus();
+    return false;
+  }
+
+  /// Enter completa el campo (fecha u hora) y pasa el foco al siguiente
+  /// campo de entrada. Los iconos (picker y "X") están excluidos del orden
+  /// de foco, así que el foco nunca cae en ellos (regla UI/UX).
+  /// Si la fecha u hora no es válida, la ventana de error devuelve el foco
+  /// a este campo y no se avanza al siguiente.
+  Future<void> _alEnterCampo() async {
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
+    if (await _validarFechaHora() && mounted) oFoco.nextFocus();
   }
 
   // ── Fecha y hora inteligentes ────────────────────────────────────────────
-
   /// Completa la fecha según los dígitos que alcanzó a teclear el usuario.
   /// Se ejecuta al salir del campo o con Enter (para poder seguir tecleando
   /// sin que el campo se complete a mitad de camino):
@@ -545,13 +563,14 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       inputFormatters : _getFormateadores(bNumero),
       onChanged       : (String sValor) =>
           _alCambiarTexto(sValor, bConMascara: !bNumero),    // ← CAMBIO item 9
+      onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
       decoration      : _getDecoracion(
+
         sHint        : widget.oCampo.sHint,
         oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
       ),
     );
   }
-
   List<TextInputFormatter>? _getFormateadores(bool bNumero) {
     if (!bNumero) {
       return widget.oCampo.iAnchoCaracteres > 0
@@ -589,12 +608,16 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             style        : ClaseGenEstilosTexto.textoCampo(oContexto),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarFecha,
-            onSubmitted  : (_) { _completarFecha(); _validarFechaHora(); },
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
             decoration   : _getDecoracion(sHint: 'dd/mm/aaaa'),
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
-        IconButton(
+        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
+        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
+        ExcludeFocus(
+          excluding : true,
+          child     : IconButton(
           tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
           icon      : const Icon(Icons.calendar_month),
           onPressed : widget.bHabilitado
@@ -617,6 +640,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
                   }
                 }
               : null,
+          ),
         ),
         if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
       ],
@@ -636,28 +660,33 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             style        : ClaseGenEstilosTexto.textoCampo(oContexto),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarHora,
-            onSubmitted  : (_) { _completarHora(); _validarFechaHora(); },
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
             decoration   : _getDecoracion(sHint: 'hh:mm'),
           ),
         ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
-        IconButton(
-          tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
-          icon      : const Icon(Icons.schedule),
-          onPressed : widget.bHabilitado
-              ? () async {
-                  final int? iMinutos = await funcMostrarSelectorHora(
-                    oContexto,
-                    widget.sIdioma,
-                    widget.sValor,
-                  );
-                  if (iMinutos != null) {
-                    final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
-                    oControl.text = sHora;
-                    widget.funcAlCambiar(sHora);
+        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
+        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
+        ExcludeFocus(
+          excluding : true,
+          child     : IconButton(
+            tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
+            icon      : const Icon(Icons.schedule),
+            onPressed : widget.bHabilitado
+                ? () async {
+                    final int? iMinutos = await funcMostrarSelectorHora(
+                      oContexto,
+                      widget.sIdioma,
+                      widget.sValor,
+                    );
+                    if (iMinutos != null) {
+                      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+                      oControl.text = sHora;
+                      widget.funcAlCambiar(sHora);
+                    }
                   }
-                }
-              : null,
+                : null,
+          ),
         ),
         if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
       ],
