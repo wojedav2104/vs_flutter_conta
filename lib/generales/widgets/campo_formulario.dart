@@ -83,21 +83,13 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   late TextEditingController oControl;
   final FocusNode oFocoInterno = FocusNode();
-    String sMascaraActual = '';
+  String sMascaraActual = '';
 
-  /// Último error de fecha/hora mostrado en la ventana de error, para no
-  /// repetir la ventana mientras el valor no cambie.
-  String _sErrorFechaHora = '';
-
-  /// Máscaras de la fecha (99/99/9999) y de la hora (99:99): el usuario
-
-
-  /// teclea solo dígitos y los separadores se insertan solos (spec 00_00_03).
+  /// Máscaras de la fecha (99/99/9999) y de la hora (99:99): el usuario teclea solo dígitos y los separadores se insertan solos (spec 00_00_03).
   static const String _sMascaraFecha = '99/99/9999';
   static const String _sMascaraHora  = '99:99';
 
-  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo
-  /// provee, o el propio. Se elige una sola vez en initState.
+  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo provee, o el propio. Se elige una sola vez en initState.
   late final FocusNode oFoco;
 
   @override
@@ -148,11 +140,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   /// (item 9). Al perderlo: los números se formatean según la máscara
   /// (item 9) y se ejecuta la transformación del campo (funcAlPerderFoco,
   /// ej: completar el guion y el dígito verificador del RUC).
-    void _alCambiarFoco() {
+  void _alCambiarFoco() {
     if (oFoco.hasFocus) {
-      // Al entrar al campo se limpia el error guardado: si vuelve a salir
-      // con el mismo error, la ventana de error se muestra de nuevo.
-      _sErrorFechaHora = '';
       if (widget.oCampo.oTipo == EnumTipoCampoAbm.numero
           && _getMascara() != null
           && oControl.text != widget.sValor) {
@@ -165,7 +154,18 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
     if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
     // Muestra la ventana de error si la fecha u hora no es posible.
-    _validarFechaHora();
+    // Muestra la ventana de error si la fecha u hora no es posible, pero
+    // no cuando el foco se fue a un botón (Cancelar, Fin, Grabar, selector
+    // de fecha...): el usuario termina o descarta la edición, o corrige
+    // con un botón, y Grabar valida todo al grabar. Se espera al próximo
+    // frame para saber dónde quedó el foco después del clic.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted)       return;
+      if (oFoco.hasFocus) return;
+      if (_focoEnBoton()) return;
+      _validarFechaHora();
+    });
+
     // Transformación del campo al salir del foco (ej: completar el RUC).
 
     final String? sNuevo = widget.funcAlPerderFoco
@@ -323,12 +323,38 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     if (sDigitos.length >= 8) _validarFechaHora();
   }
 
+  /// true si el foco está en un botón (botonera ABM, iconos de los campos,
+  /// botones de las ventanas). Se consulta al salir del campo para no
+  /// validar cuando el usuario termina la edición (Cancelar, Fin) o
+  /// corrige con un botón (selector de fecha, borrar).
+  static bool _focoEnBoton() {
+    final BuildContext? oContexto =
+        FocusManager.instance.primaryFocus?.context;
+    if (oContexto == null) return false;
+    if (oContexto.widget is ButtonStyleButton
+        || oContexto.widget is IconButton) return true;
+    bool bBoton = false;
+    oContexto.visitAncestorElements((Element oElement) {
+      if (oElement.widget is ButtonStyleButton
+          || oElement.widget is IconButton) {
+        bBoton = true;
+        return false;
+      }
+      return true;
+    });
+    return bBoton;
+  }
+
   /// Muestra la ventana de error si la fecha u hora no es posible, no solo
   /// si no tiene el formato (spec 00_00_03: la ventana error es para avisar
+
   /// al usuario que se detectó un error). El campo vacío no se valida acá
-  /// (lo obligatorio se controla al grabar). No repite la ventana mientras
-  /// el valor no cambie.
-  void _validarFechaHora() {
+  /// (lo obligatorio se controla al grabar).
+  ///
+  /// Regla 00_00_03 (Input focus): si se detectó un error, el foco se
+  /// mantiene en el campo donde se detectó. La ventana de error se roba el
+  /// foco, así que al cerrarla se vuelve a pedir el foco para este campo.
+  Future<void> _validarFechaHora() async {
     if (!mounted) return;
     final String sValor = oControl.text.trim();
     if (sValor.isEmpty) return;
@@ -338,21 +364,16 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     final bool bValida = bFecha
         ? (funcParsearFecha(sValor) != null)
         : (funcParsearHora(sValor) != null);
-    if (bValida) {
-      _sErrorFechaHora = '';
-      return;
-    }
-    final String sError = ClaseIdiomas.getTexto(
-        bFecha ? 'validFechaInvalida' : 'validHoraInvalida', widget.sIdioma)
-        .replaceAll('{0}', widget.oCampo.sEtiqueta);
-    if (sError == _sErrorFechaHora) return;
-    _sErrorFechaHora = sError;
-    funcMostrarError(
+    if (bValida) return;
+    await funcMostrarError(
       context,
       widget.sIdioma,
       ClaseIdiomas.getTexto('aplicacion', widget.sIdioma),
-      sError,
+      ClaseIdiomas.getTexto(
+          bFecha ? 'validFechaInvalida' : 'validHoraInvalida', widget.sIdioma)
+          .replaceAll('{0}', widget.oCampo.sEtiqueta),
     );
+    if (mounted) oFoco.requestFocus();
   }
 
   // ── Fecha y hora inteligentes ────────────────────────────────────────────
