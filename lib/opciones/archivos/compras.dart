@@ -484,6 +484,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
+        bEsTotal              : true,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         iFila                 : 12,
@@ -563,6 +564,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
       ClaseCampoAbm(
         bEnGrilla             : false,
+        bEsTotal              : true,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         iFila                 : 12,
@@ -636,6 +638,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
+        bEsTotal              : true,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         oTipo                 : EnumTipoCampoAbm.numero,

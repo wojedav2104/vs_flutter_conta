@@ -18,6 +18,7 @@ class ClaseCampoAbm {
     required this.sEtiqueta,
     this.bCompletarCeros        = false,
     this.bEnGrilla              = true,
+    this.bEsTotal               = false,
     this.bMayusculas            = false,
     this.bObligatorio           = false,
     this.bSiempreDeshabilitado  = false,
@@ -46,6 +47,7 @@ class ClaseCampoAbm {
   /// iAnchoCaracteres (ej: códigos de cliente: '123' → '000123').
   bool              bCompletarCeros;
   bool              bEnGrilla;
+  bool              bEsTotal;
   bool              bMayusculas;
   bool              bObligatorio;
   bool              bSiempreDeshabilitado;

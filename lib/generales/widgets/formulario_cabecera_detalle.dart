@@ -732,6 +732,33 @@ class ClaseEstadoFormularioCabeceraDetalle
     return const SizedBox.shrink();
   }
 
+  /// Alineación del texto de una columna (encabezado y fila de totales):
+  /// la misma que la de sus celdas, resuelta por getAlineacion (números a
+  /// la derecha, resto a la izquierda; regla 24 de 00_03_02_ABMs.txt).
+  TextAlign _getTextAlignColumna(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:
+        return TextAlign.center;
+      case EnumAlineacion.derecha:
+        return TextAlign.right;
+      case EnumAlineacion.izquierda:
+        return TextAlign.left;
+    }
+  }
+
+  /// Padding del texto dentro de una columna (encabezado y fila de totales):
+  /// el mismo que el de los valores de sus celdas (el padding de la fila más
+  /// el borde y el padding interior del control), para que el valor quede
+  /// alineado con su encabezado y los nombres de las columnas vecinas nunca
+  /// se peguen (regla 24).
+  EdgeInsets _getPaddingColumna() {
+    return EdgeInsets.only(
+      left  : ClaseGenLayout.dAnchoBordeCampo + ClaseGenEspacios.dEspacio08,
+      right : ClaseGenEspacios.dEspacio04 + ClaseGenLayout.dAnchoBordeCampo
+              + ClaseGenEspacios.dEspacio08,
+    );
+  }
+
   Widget _construirFilaEncabezado(BuildContext oContexto) {
     return Padding(
       padding : const EdgeInsets.symmetric(
@@ -748,10 +775,14 @@ class ClaseEstadoFormularioCabeceraDetalle
           for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
             SizedBox(
               width : oCampo.getAnchoColumna(),
-              child : Text(oCampo.sEtiqueta,
-                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
-                  maxLines : 1,
-                  overflow : TextOverflow.ellipsis),
+              child : Padding(
+                padding : _getPaddingColumna(),
+                child   : Text(oCampo.sEtiqueta,
+                    style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+                    textAlign: _getTextAlignColumna(oCampo),
+                    maxLines : 1,
+                    overflow : TextOverflow.ellipsis),
+              ),
             ),
           const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
         ],
@@ -924,11 +955,15 @@ class ClaseEstadoFormularioCabeceraDetalle
     }
 
     final String sFormato = widget.oPreferencias.getFormatoNumeros();
+    // Regla UI/UX: la suma de las columnas numéricas (Debe, Haber) es un
+    // resultado de suma: se muestra en negritas y con un relleno distinto
+    // al de los datos sumados.
     final TextStyle oEstilo =
-        ClaseGenEstilosTexto.textoDestacado(oContexto);
+        ClaseGenEstilosTexto.textoDestacado(oContexto).copyWith(
+            fontWeight: FontWeight.bold);
 
     return Container(
-      color : Theme.of(oContexto).colorScheme.surfaceContainerLow,
+      color   : ClaseGenTemas.colorFondoCampoTotal(oContexto),
       padding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio08,
         vertical   : ClaseGenEspacios.dEspacio04,
@@ -984,16 +1019,19 @@ class ClaseEstadoFormularioCabeceraDetalle
           for (int i = iRotulo; i < widget.listCamposDetalle.length; i++)
             SizedBox(
               width : widget.listCamposDetalle[i].getAnchoColumna(),
-              child : Text(
-                (i == iRotulo)
-                    ? ClaseIdiomas.getTexto('detTotales', getIdioma())
-                    : ((i == iPrimeraSuma || mapSumas
-                            .containsKey(widget.listCamposDetalle[i].sClave))
-                        ? funcFormatearImporte(
-                            mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
-                        : ''),
-                style     : oEstilo,
-                textAlign : TextAlign.right,
+              child : Padding(
+                padding : _getPaddingColumna(),
+                child   : Text(
+                  (i == iRotulo)
+                      ? ClaseIdiomas.getTexto('detTotales', getIdioma())
+                      : ((i == iPrimeraSuma || mapSumas
+                              .containsKey(widget.listCamposDetalle[i].sClave))
+                          ? funcFormatearImporte(
+                              mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
+                          : ''),
+                  style     : oEstilo,
+                  textAlign : TextAlign.right,
+                ),
               ),
             ),
           const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),

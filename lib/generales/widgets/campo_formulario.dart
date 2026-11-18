@@ -248,9 +248,13 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
       suffixIcon     : oIconoDerecha,
       filled         : true,
-      fillColor      : widget.bHabilitado
-          ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
-          : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+      // Regla UI/UX: el resultado de una suma (campo Total) lleva un relleno
+      // distinto al de los campos sumados, para resaltarlo.
+      fillColor      : widget.oCampo.bEsTotal
+          ? ClaseGenTemas.colorFondoCampoTotal(oContexto)
+          : (widget.bHabilitado
+              ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+              : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto)),
       border         : const OutlineInputBorder(),
       contentPadding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio12,
@@ -261,12 +265,16 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   /// Estilo del texto del control: el habilitado usa el forecolor destacado
   /// de la regla UI/UX (nunca gris ni negro); el deshabilitado conserva el
-  /// color de texto normal (gris/negro).
+  /// color de texto normal (gris/negro). El resultado de una suma (campo
+  /// Total) va siempre en negritas (regla UI/UX).
   TextStyle _estiloTexto(BuildContext oContexto, TextStyle oEstilo) {
-    return widget.bHabilitado
+    final TextStyle oSalida = widget.bHabilitado
         ? oEstilo.copyWith(
             color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
         : oEstilo;
+    return widget.oCampo.bEsTotal
+        ? oSalida.copyWith(fontWeight: FontWeight.bold)
+        : oSalida;
   }
 
   // ── Etiqueta del campo ──────────────────────────────────────────────────

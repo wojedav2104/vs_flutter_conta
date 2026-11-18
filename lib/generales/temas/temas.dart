@@ -129,6 +129,12 @@ abstract final class ClaseGenTemas {
   static Color colorFondoCampoDeshabilitado(BuildContext oContexto) =>
       Theme.of(oContexto).colorScheme.surfaceContainerHighest;
 
+  /// Relleno de los resultados de una suma (campos Total y fila de totales
+  /// de la grilla de detalles): distinto del relleno de los datos sumados,
+  /// para resaltarlos. Color exacto pendiente de decidir con los usuarios.
+  static Color colorFondoCampoTotal(BuildContext oContexto) =>
+      Theme.of(oContexto).colorScheme.secondaryContainer;
+
   /// Forecolor del control habilitado: buen contraste sobre el relleno
   /// habilitado (nunca gris ni negro: esos quedan para el deshabilitado,
   /// que conserva el color de texto normal).
