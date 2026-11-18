@@ -101,8 +101,7 @@ class ClaseCampoAbm {
     // El ancho por carácter se escala con el modo texto grande: sin esto,
     // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
     // es 1.25.
-    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter
-        * ClaseGenEstilosTexto.dFactorTexto;
+    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
     switch (oTipo) {
       case EnumTipoCampoAbm.comentario:
         return ClaseGenLayout.dAnchoCampoComentario;
@@ -140,6 +139,7 @@ class ClaseCampoAbm {
     // crece con el modo texto grande.
     return iCaracteres * ClaseGenLayout.dAnchoCaracter
            * ClaseGenEstilosTexto.dFactorTexto
+           * ClaseGenLayout.dEscala
            + ClaseGenEspacios.dEspacio48;
   }
 

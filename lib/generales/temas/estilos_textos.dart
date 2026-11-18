@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'layout.dart';
+
 
 /// Estilos de texto y `TextTheme` central de la aplicación.
 ///
@@ -41,7 +43,7 @@ abstract final class ClaseGenEstilosTexto {
     final ThemeData oTema   = Theme.of(oContexto);
     final TextStyle oEstilo = oBase ?? oTema.textTheme.bodyMedium ?? const TextStyle();
     return oEstilo.copyWith(
-      fontSize   : (oEstilo.fontSize ?? 14.0) * dFactorTexto,
+      fontSize   : (oEstilo.fontSize ?? 14.0) * dFactorTexto * ClaseGenLayout.dEscala,
       color      : color ?? oTema.colorScheme.onSurface,
       fontFamily : sFamilia,
       fontWeight : oPeso,

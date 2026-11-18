@@ -380,11 +380,11 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
           Flexible(
             fit  : FlexFit.loose,
             flex : math.max(1, (listFila[i].getAnchoCampo()
-                   + ClaseGenLayout.dAnchoEtiquetaCampo).round()),
+                   + ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala).round()),
             child : ConstrainedBox(
               constraints : BoxConstraints(
                 maxWidth : listFila[i].getAnchoCampo()
-                    + ClaseGenLayout.dAnchoEtiquetaCampo,
+                    + ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
               ),
               child : _construirCampo(listFila[i],
                   bAnchoFlexible : true,
@@ -655,7 +655,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   Widget build(BuildContext oContexto) {
     if (!bVisible) {
       return SizedBox(
-        width : ClaseGenLayout.dAnchoTiraGrilla,
+        width : ClaseGenLayout.dAnchoTiraGrilla * ClaseGenLayout.dEscala,
         child : Column(
           children: <Widget>[
             const SizedBox(height: ClaseGenEspacios.dEspacio08),
@@ -695,7 +695,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
         if (mounted) setState(() {});
       },
       child: SizedBox(
-        width : ClaseGenLayout.dAnchoGrillaRegistros,
+        width : ClaseGenLayout.dAnchoGrillaRegistros * ClaseGenLayout.dEscala,
         child : Column(
           children: <Widget>[
             Padding(
@@ -1076,8 +1076,8 @@ class ClaseBotoneraAbm extends StatelessWidget {
   Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
     final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
     return SizedBox(
-      width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
-      height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
+      width  : ClaseGenLayout.dAnchoBotonAbm * ClaseGenLayout.dEscala,  // item 2: mismo ancho
+      height : ClaseGenLayout.dAltoBotonAbm,   // item 2: mismo alto (48 px táctiles, no se escalan)
       child  : ElevatedButton(
         onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
         style     : ElevatedButton.styleFrom(

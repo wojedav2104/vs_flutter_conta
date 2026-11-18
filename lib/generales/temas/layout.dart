@@ -29,15 +29,28 @@ abstract final class ClaseGenLayout {
   static const double dAnchoTarjetaLogin              =  420.0;
   static const double dAnchoTiraGrilla                =   48.0;
   static const double dElevacionTarjeta               =    4.0;
+  static       double dEscala                         =    1.0;
+  static const double dEscalaMinima                   =    0.55;
   static const double dFactorEscalaMax                =    1.3;
   static const double dFactorEscalaMin                =    0.8;
   static const double dGrosorSpinner                  =    2.0;
+  static const double dSeparacionCampo                =    8.0;
   static const double dTamanoIconoVentana             =   28.0;
 
   static const int    iAnchoColumnasMensaje     =   40;
   static const int    iCaracteresGrillaAbierta  =   75;
   static const int    iCaracteresGrillaCerrada  =   25;
   static const int    iFilasPorPagina           =   25;
+
   static const int    iMaxCaracteresCampoGrilla =   20;
+
+  /// Recalcula dEscala para una ventana de dAncho x dAlto píxeles lógicos. Toma la menor de las dos proporciones frente al diseño de referencia (1920x1080), nunca agranda por 
+  /// encima de 1.0 y usa dEscalaMinima como piso. La llama main.dart al abrir y al redimensionar la ventana.
+  static void calcularEscala(double dAncho) {
+    double dFactor = dAncho / 1920.0;
+    if (dFactor > 1.0)           dFactor = 1.0;
+    if (dFactor < dEscalaMinima) dFactor = dEscalaMinima;
+    dEscala = dFactor;
+  }
 
 }

@@ -241,6 +241,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     return InputDecoration(
       isDense        : true,
       hintText       : sHint,
+      // El texto de ejemplo usa el mismo estilo escalado que el texto del
+      // campo: si tomara el estilo del tema (sin escalar), en ventanas menores
+      // a 1920 se vería más grande que el texto y se cortaría por abajo.
+      hintStyle      : _estiloTexto(
+          oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
       suffixIcon     : oIconoDerecha,
       filled         : true,
       fillColor      : widget.bHabilitado
@@ -301,6 +306,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       child     : IconButton(
         tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
         icon      : const Icon(Icons.close, size: 18),
+        // Sin área táctil forzada de 48 px: la fila queda del alto del campo
+        // y la separación con el campo de arriba se ve igual en todos.
+        style     : IconButton.styleFrom(
+          tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+        ),
         onPressed : () {
           oControl.text = '';
           widget.funcAlCambiar('');
@@ -519,7 +529,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     // ancho disponible (regla UI/UX).
     if (widget.bEtiquetaArriba) {
       return Padding(
-        padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
+        padding : EdgeInsets.only(
+            bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
         child   : Column(
           crossAxisAlignment : CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -537,12 +548,13 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       );
     }
     return Padding(
-      padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
+      padding : EdgeInsets.only(
+          bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
       child   : Row(
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : ClaseGenLayout.dAnchoEtiquetaCampo,
+            width : ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
@@ -677,6 +689,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           child     : IconButton(
           tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
           icon      : const Icon(Icons.calendar_month),
+          style     : IconButton.styleFrom(
+            tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+          ),
           onPressed : widget.bHabilitado
               ? () async {
                   final DateTime? fElegida = await funcMostrarSelectorFecha(
@@ -729,6 +744,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
           child     : IconButton(
             tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
             icon      : const Icon(Icons.schedule),
+            style     : IconButton.styleFrom(
+              tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+            ),
             onPressed : widget.bHabilitado
                 ? () async {
                     final int? iMinutos = await funcMostrarSelectorHora(
@@ -826,6 +844,9 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
             children     : <Widget>[
               Checkbox(
                 value    : listMarcados.contains(listValores[i]),
+                // Sin área táctil forzada de 48 px: la fila de casillas queda
+                // del alto de su texto y la separación visible es la misma.
+                materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
                 onChanged: widget.bHabilitado
                     ? (bool? bMarcado) {
                         final Set<String> setNuevos = listMarcados.toSet();
@@ -902,6 +923,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       children: <Widget>[
         Switch(
           value    : bActivo,
+          materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
           onChanged: widget.bHabilitado
               ? (bool bNuevo) => widget.funcAlCambiar(bNuevo ? ClaseSiNo.si : ClaseSiNo.no)
               : null,

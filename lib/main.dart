@@ -5,6 +5,7 @@ import 'generales/idiomas/idiomas.dart';
 import 'generales/inicio/login.dart';
 import 'generales/preferencias/preferencias.dart';
 import 'generales/temas/estilos_textos.dart';
+import 'generales/temas/layout.dart';
 import 'generales/temas/temas.dart';
 import 'generales/varios/paises.dart';
 
@@ -35,14 +36,38 @@ class ClaseAplicacion extends StatefulWidget {
   State<ClaseAplicacion> createState() => ClaseEstadoAplicacion();
 }
 
-class ClaseEstadoAplicacion extends State<ClaseAplicacion> {
+class ClaseEstadoAplicacion extends State<ClaseAplicacion>
+    with WidgetsBindingObserver {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);   // cambios de tamaño de la ventana
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Al redimensionar la ventana se recalcula la escala responsive
+  /// (ClaseGenLayout.dEscala) y se redibuja toda la aplicación.
+  @override
+  void didChangeMetrics() {
+    setState(() {});
+  }
 
   void alCambiar() {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext oContexto) {
+    @override
+    Widget build(BuildContext oContexto) {
+    // Escala responsive (regla UI/UX): recalculada en cada dibujado para que
+    // los tamaños sigan el tamaño real de la ventana.
+    final double dAncho = MediaQueryData.fromView(View.of(oContexto)).size.width;
+    ClaseGenLayout.calcularEscala(dAncho);
     return MaterialApp(
       title                      : ClaseIdiomas.getTexto('aplicacion', widget.oPreferencias.getIdioma()),
       debugShowCheckedModeBanner : false,
