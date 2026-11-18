@@ -1,0 +1,102 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 4 DE 10
+---
+struirBotonBorrarCampo() {
+    // ExcludeFocus: la "X" queda fuera del orden de Tab/Enter (el foco pasa
+    // directamente al siguiente campo); el clic y el táctil siguen igual.
+    return ExcludeFocus(
+      excluding : true,
+      child     : IconButton(
+        tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
+        icon      : const Icon(Icons.close, size: 18),
+        onPressed : () {
+          oControl.text = '';
+          widget.funcAlCambiar('');
+        },
+      ),
+    );
+  }
+
+  // ── Mayúsculas y máscara al cambiar el valor ───────────────────────────
+
+  /// Conversión a mayúsculas y aplicación de la máscara (si existe);
+  /// actualiza el display solo si el valor cambió.
+  /// bConMascara=false para el comentario (sin máscara) y para los números
+  /// (la máscara de números se aplica al salir del campo, item 9).
+  void _alCambiarTexto(String sValor, {bool bConMascara = true}) {
+    String sSalida = sValor;
+    if (widget.oCampo.bMayusculas) {
+      sSalida = sValor.toUpperCase();
+      if (sSalida != oControl.text) {
+        oControl.value = TextEditingValue(
+          text      : sSalida,
+          selection : TextSelection.collapsed(offset: sSalida.length),
+        );
+      }
+    }
+    if (bConMascara) {
+      final String? sMascaraNueva = _getMascara();
+      if (sMascaraNueva != null) {
+        final String sDigitos = sSalida.replaceAll(RegExp(r'[^0-9]'), '');
+        final String sConMascara = funcAplicarMascara(sDigitos, sMascaraNueva);
+        if (sConMascara != sSalida) {
+          sSalida = sConMascara;
+          oControl.value = TextEditingValue(
+            text      : sSalida,
+            selection : TextSelection.collapsed(offset: sSalida.length),
+          );
+        }
+      }
+    }
+    widget.funcAlCambiar(sSalida);
+  }
+
+  // ── Máscara de la fecha y error de fecha/hora ────────────────────────────
+
+  /// Máscara 99/99/9999: el usuario teclea solo dígitos y las barras se
+  /// insertan solas mientras escribe (spec 00_00_03).
+  void _alCambiarFecha(String sValor) {
+    final String sDigitos    = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    final String sConMascara = funcAplicarMascara(sDigitos, _sMascaraFecha);
+    if (sConMascara != oControl.text) {
+      oControl.value = TextEditingValue(
+        text      : sConMascara,
+        selection : TextSelection.collapsed(offset: sConMascara.length),
+      );
+    }
+    widget.funcAlCambiar(sConMascara);
+    // Con los 8 dígitos escritos se valida la fecha (29022026 → error).
+    if (sDigitos.length >= 8) _validarFechaHora();
+  }
+
+  /// true si el widget del contexto es un botón (botonera ABM, iconos de
+  /// los campos, botones de las ventanas), directa o indirectamente.
+  static bool _esBoton(BuildContext oContexto) {
+    if (oContexto.widget is ButtonStyleButton
+        || oContexto.widget is IconButton) return true;
+    bool bBoton = false;
+    oContexto.visitAncestorElements((Element oElement) {
+      if (oElement.widget is ButtonStyleButton
+          || oElement.widget is IconButton) {
+        bBoton = true;
+        return false;
+      }
+      return true;
+    });
+    return bBoton;
+  }
+
+  /// true si el foco terminó en otro campo de entrada (otro campo del
+  /// formulario o una celda de la grilla de detalles). Es la condición
+  /// POSITIVA para validar al salir del campo: si el foco está en un
+  /// botón, en una ventana o en ningún lugar, se devuelve false y no se
+  /// valida (regla 00_00_03 y el criterio de que Cancelar/Fin/Grabar no
+  /// deben interrumpirse con ventanas de validación).
+  bool _focoEnOtroCampo() {
+    final BuildContext? oContexto =
+        FocusManager.instance.primaryFocus?.context;
+    if (oContexto == null) return false;
+    if (_esBoton(oContexto)) return false;
+    final ClaseCampoFormulario? oCampo =
+        oContexto.findAncestorWidgetOfExactType<ClaseCampoFormulario>();
+    if (oCampo != null) return !ide

@@ -1,0 +1,100 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 8 DE 10
+---
+echa(widget.sValor) ?? DateTime.now(),
+                    DateTime(ClaseFechas.iAnoMinimo, 1, 1),
+                    DateTime(
+                      widget.oCampo.bVigencia
+                          ? ClaseFechas.getAnoMaximoVigencia()
+                          : ClaseFechas.getAnoMaximo(),
+                      12, 31),
+                  );
+                  if (fElegida != null) {
+                    final String sFecha = funcFormatearFecha(fElegida);
+                    oControl.text = sFecha;
+                    widget.funcAlCambiar(sFecha);
+                  }
+                }
+              : null,
+          ),
+        ),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
+      ],
+    );
+  }
+
+  // ── Hora ─────────────────────────────────────────────────────────────────
+
+  Widget _construirHora(BuildContext oContexto) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+            keyboardType : TextInputType.datetime,
+            onChanged    : _alCambiarHora,
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
+            decoration   : _getDecoracion(oContexto, sHint: 'hh:mm'),            
+          ),
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio04),
+        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
+        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
+        ExcludeFocus(
+          excluding : true,
+          child     : IconButton(
+            tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
+            icon      : const Icon(Icons.schedule),
+            onPressed : widget.bHabilitado
+                ? () async {
+                    final int? iMinutos = await funcMostrarSelectorHora(
+                      oContexto,
+                      widget.sIdioma,
+                      widget.sValor,
+                    );
+                    if (iMinutos != null) {
+                      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+                      oControl.text = sHora;
+                      widget.funcAlCambiar(sHora);
+                    }
+                  }
+                : null,
+          ),
+        ),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
+      ],
+    );
+  }
+
+  /// Normaliza la hora mientras se teclea: el valor interno siempre queda
+  /// en formato hh:mm. El display solo se corrige cuando los minutos ya
+  /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
+  void _alCambiarHora(String sValor) {
+    // Máscara 99:99: el usuario teclea solo dígitos y los dos puntos se
+    // insertan solos (spec 00_00_03).
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    String sHora = funcAplicarMascara(sDigitos, _sMascaraHora);
+    // Normaliza solo con los 4 dígitos escritos: mientras tanto '16:3' se
+    // deja como está para poder seguir tecleando (1630 → 16:30). Con menos
+    // dígitos la completación ocurre al perder el foco (_completarHora).
+    if (sDigitos.length >= 4) {
+      final int? iMinutos = funcParsearHora(sHora);
+      if (iMinutos != null) {
+        sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+      }
+    }
+    if (sHora != oControl.text) {
+      oControl.value = TextEditingValue(
+        text      : sHora,
+        selection : TextSelection.collapsed(offset: sHora.length),
+      );
+    }
+    widget.funcAlCambiar(sHora);
+    // Con los 4 dígitos escritos se valida la hora (1630 → 16:30 o error).
+    if (sDigitos.length >= 4) _validarFechaHora();
+  }
+
+  // ── Lista (dropdown) ──────────────────────────────

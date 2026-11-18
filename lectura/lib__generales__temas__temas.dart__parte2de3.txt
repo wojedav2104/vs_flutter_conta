@@ -47,38 +47,36 @@ rficieOscura,
           ? ClaseGenColores.colorTextoBotonDeshabilitadoOscuro
           : ClaseGenColores.colorTextoBotonDeshabilitado;
 
-  static bool _esModoOscuro(BuildContext oContexto) =>
-      Theme.of(oContexto).brightness == Brightness.dark;
+  // ── Colores de los controles de entrada (regla UI/UX) ───────────────────
+  // Relleno y forecolor del control cambian según esté habilitado o
+  // deshabilitado, para distinguirlos a simple vista (usuarios noveles).
 
-  // ── Temas cacheados (se reconstruyen si cambia el factor de texto) ────────
-  static double    _dFactorCache = -1.0;
-  static ThemeData? _temaClaroCache;
-  static ThemeData? _temaOscuroCache;
+  /// Relleno del control habilitado: cian suave que llama la atención,
+  /// distinto del fondo del formulario.
+  static Color colorFondoCampoHabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorCampoHabilitadoOscuro
+          : ClaseGenColores.colorCampoHabilitadoClaro;
 
-  static ThemeData get getTemaClaro  { _actualizarTemas(); return _temaClaroCache!; }
-  static ThemeData get getTemaOscuro { _actualizarTemas(); return _temaOscuroCache!; }
+  /// Relleno del control deshabilitado: el gris tenue (el que antes usaba
+  /// el habilitado), casi fundido con el formulario.
+  static Color colorFondoCampoDeshabilitado(BuildContext oContexto) =>
+      Theme.of(oContexto).colorScheme.surfaceContainerHighest;
 
-  static void _actualizarTemas() {
-    if (_dFactorCache != ClaseGenEstilosTexto.dFactorTexto) {
-      _dFactorCache    = ClaseGenEstilosTexto.dFactorTexto;
-      _temaClaroCache  = _construir(_oEsquemaClaro);
-      _temaOscuroCache = _construir(_oEsquemaOscuro);
-    }
-  }
+  /// Forecolor del control habilitado: buen contraste sobre el relleno
+  /// habilitado (nunca gris ni negro: esos quedan para el deshabilitado,
+  /// que conserva el color de texto normal).
+  static Color colorTextoCampoHabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
+          : ClaseGenColores.colorTextoCampoHabilitadoClaro;
 
-  static ThemeData _construir(ColorScheme oEsquema) {
-    // Base M3 completa: provee `headlineSmall`, `titleSmall`, `labelLarge`,
-    // `displaySmall`, `headlineMedium`, `headlineLarge` (que
-    // `ClaseGenEstilosTexto.oTextTheme` no define). Sin este merge, esos
-    // estilos quedan `null` y widgets como `AppBar`, `Dialog`, `ListTile`
-    // los heredan de `DefaultTextStyle`, rompiendo la consistencia.
-    final ThemeData oTemaBase = ThemeData(
-      colorScheme : oEsquema,
-      useMaterial3: true,
-    );
-    return oTemaBase.copyWith(
-      scaffoldBackgroundColor: oEsquema.surface,
-      // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
-      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
-      // multiplican por su cuenta.
-      textTheme : _escalarTexto(oTemaBase.text
+  // ── Colores de los botones con foco de teclado (regla UI/UX) ────────────
+  // El fondo del botón enfocado debe ser bastante distinto al de los botones
+  // sin foco (mismo color en claro y en oscuro, para que sea inmediato).
+
+  /// Fondo del botón con foco de teclado (amarillo de atención).
+  static Color colorBotonConFoco(BuildContext oContexto) =>
+      ClaseGenColores.colorAmarillo1;
+
+  /// Texto del botón con foco de teclado (buen contraste sobre el a

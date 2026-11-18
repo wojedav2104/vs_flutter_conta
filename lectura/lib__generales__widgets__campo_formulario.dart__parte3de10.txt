@@ -1,0 +1,105 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 3 DE 10
+---
+ia el texto
+  /// visible: el valor interno queda plano.
+  void _mostrarNumeroFormateado() {
+    if (widget.oCampo.oTipo != EnumTipoCampoAbm.numero) return;
+    final String? sMascara = _getMascara();
+    if (sMascara == null) return;
+    final String sFormato = _formatearNumeroParaMostrar(widget.sValor, sMascara);
+    if (sFormato != oControl.text) oControl.text = sFormato;
+  }
+
+  /// Formatea un valor plano según la máscara del campo. funcFormatearNumero
+  /// espera la coma como separador decimal y el separador de miles sale de la
+  /// propia máscara ('999.999.999' → '.').
+  String _formatearNumeroParaMostrar(String sValor, String sMascara) {
+    if (sValor.trim().isEmpty) return '';
+    String sSeparadorMiles = '.';
+    for (int i = 0; i < sMascara.length; i++) {
+      if (sMascara[i] != '9') {
+        sSeparadorMiles = sMascara[i];
+        break;
+      }
+    }
+    return funcFormatearNumero(sValor.replaceAll('.', ','), sMascara, sSeparadorMiles);
+  }
+
+  // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
+
+  // ── Ancho del campo ──────────────────────────────────────────────────────
+
+  /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
+  /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
+  double _getAnchoCampo() =>
+      widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
+
+  // ── Decoración común de los controles ───────────────────────────────────
+
+  /// Borde, padding interior generoso (objetivos táctiles cómodos para
+  /// usuarios noveles) e hint. Un solo punto de cambio para todos los
+  /// controles del campo.
+  InputDecoration _getDecoracion(
+    BuildContext oContexto, {
+    String? sHint,
+    Widget? oIconoDerecha,
+  }) {
+    // Regla UI/UX: el relleno del control cambia según esté habilitado o
+    // deshabilitado (distinto en ambos casos al fondo del formulario).
+    return InputDecoration(
+      isDense        : true,
+      hintText       : sHint,
+      suffixIcon     : oIconoDerecha,
+      filled         : true,
+      fillColor      : widget.bHabilitado
+          ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+          : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+      border         : const OutlineInputBorder(),
+      contentPadding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio12,
+        vertical   : ClaseGenEspacios.dEspacio12,
+      ),
+    );
+  }
+
+  /// Estilo del texto del control: el habilitado usa el forecolor destacado
+  /// de la regla UI/UX (nunca gris ni negro); el deshabilitado conserva el
+  /// color de texto normal (gris/negro).
+  TextStyle _estiloTexto(BuildContext oContexto, TextStyle oEstilo) {
+    return widget.bHabilitado
+        ? oEstilo.copyWith(
+            color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+        : oEstilo;
+  }
+
+  // ── Etiqueta del campo ──────────────────────────────────────────────────
+
+  /// Etiqueta a la derecha, con asterisco rojo si el campo es obligatorio
+  /// (item 4).
+  Widget _construirEtiqueta(BuildContext oContexto) {
+    return Text.rich(
+      TextSpan(
+        style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+        children: <InlineSpan>[
+          TextSpan(text: widget.oCampo.sEtiqueta),
+          if (widget.oCampo.bObligatorio)
+            TextSpan(
+              text  : ' *',
+              style : ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error),
+            ),
+        ],
+      ),
+      textAlign : TextAlign.right,
+    );
+  }
+
+  // ── Botón de borrar el contenido del campo ─────────────────────────────
+
+  /// Muestra el botón de borrar solo si el campo está habilitado y tiene
+  /// contenido (compartido por texto, fecha y hora).
+  bool _getMostrarBorrarCampo() =>
+      widget.bHabilitado && widget.sValor.isNotEmpty;
+
+  Widget _con

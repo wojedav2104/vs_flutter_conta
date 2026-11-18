@@ -69,11 +69,11 @@ PARTE 2 DE 3
     'abmNoEncontrado'       : 'Aucun enregistrement trouvé',
     'campoElegirFecha'      : 'Choisir la date',
     'campoElegirHora'       : 'Choisir l\'heure',  
-    'confirmarBorrar'       : 'Voulez-vous supprimer cet enregistrement ? Cette action est irréversible.',
+    'confirmarBorrar'       : 'Veux-tu supprimer cet enregistrement ? Cette action est irréversible.',
     'mensajeBorrado'        : "L'enregistrement a été supprimé.",
     'textoNormal'           : 'Normal',
     'textoGrande'           : 'Texte agrandi',
     'correoElectronico'     : 'Adresse e-mail',
     'correoInvalido'        : 'Saisis une adresse e-mail valide.',
     'confirmarSalir'        : 'Veux-tu quitter l\'application ?',
-    'olvidasteMensaje'      : 'Saisis ton e-mail. S\'il est enregistré dans l\'application, tu recevras un message pour créer
+    'olvidasteMensaje'      : 'Saisis ton e-mail. S\'il est enregistré dans l\'application, tu recevras un message pour créer un 

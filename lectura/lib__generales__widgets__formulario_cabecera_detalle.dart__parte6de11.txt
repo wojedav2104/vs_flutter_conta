@@ -1,0 +1,110 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 6 DE 11
+---
+ _alClicarBoton(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   agregar();
+      case EnumBotonAbm.borrar:    borrar();
+      case EnumBotonAbm.cancelar:  cancelar();
+      case EnumBotonAbm.encontrar: encontrar();
+      case EnumBotonAbm.fin:       Navigator.of(context).pop();
+      case EnumBotonAbm.grabar:    grabar();
+      case EnumBotonAbm.modificar: modificar();
+    }
+  }
+
+  // ── Ventanas de mensajes ─────────────────────────────────────────────────
+
+  Future<void> _mostrarError(String sTexto) async {
+    if (!mounted) return;
+    await funcMostrarError(
+      context,
+      getIdioma(),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
+      sTexto,
+    );
+  }
+
+  Future<void> _mostrarInformacion(
+    String sTexto, {
+    int iSegundosAutoCierre = 0,
+  }) async {
+    if (!mounted) return;
+    await funcMostrarInformacion(
+      context,
+      getIdioma(),
+      ClaseIdiomas.getTexto('aplicacion', getIdioma()),
+      sTexto,
+      iSegundosAutoCierre : iSegundosAutoCierre,
+    );
+  }
+
+  // ── Construcción de la interfaz ──────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext oContexto) {
+    final List<ClaseCampoAbm> listCabecera = (widget.sClaveCampoAlPie == null)
+        ? widget.listCamposCabecera
+        : widget.listCamposCabecera
+            .where((ClaseCampoAbm oCampo) => oCampo.sClave != widget.sClaveCampoAlPie)
+            .toList();
+    // Resetear el pedido de foco después de este frame.
+    if (bPedirFoco) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bPedirFoco = false;
+      });
+    }
+
+    // Regla UI/UX: sin pestañas la cabecera se ajusta a su contenido y la
+    // grilla queda justo debajo del último campo; con pestañas la cabecera
+    // necesita altura propia y se mantiene la proporción 2:3.
+    final bool bConPestanas = widget.listCamposCabecera
+        .any((ClaseCampoAbm oCampo) => oCampo.sGrupo != null);
+    final Widget oCabecera = ClaseFormularioCampos(
+      key                 : _oLlaveFormulario,       // ← CAMBIO item 14
+      bAutoFocus          : bPedirFoco,              // ← CAMBIO item 10
+      funcAlCambiarCampo  : _alCambiarCampo,
+      funcAlPerderFoco    : widget.funcAlPerderFoco,
+      funcEsHabilitado    : _getHabilitado,
+      // Regla UI/UX (Compras): la grilla de detalles se muestra dentro de su
+      // pestaña, debajo de los campos del grupo.
+      funcExtraGrupo      : (widget.sGrupoConDetalles == null)
+          ? null
+          : (String sGrupo) => (sGrupo == widget.sGrupoConDetalles)
+              ? _construirDetalle(oContexto)
+              : null,
+      listCampos          : listCabecera,
+      mapValores          : mapValores,
+      sIdioma             : getIdioma(),
+    );
+
+    return ClaseAndamiajeAbm(
+      funcAlClicar    : _alClicarBoton,
+      funcSeleccionar : seleccionar,
+      iRegistro       : iRegistro,
+      listCampos      : widget.listCamposCabecera,
+      listRegistros   : widget.listRegistros,
+      oFocoGrilla     : _oFocoGrilla,
+      // Regla UI/UX: con sGrupoConDetalles la grilla de detalles vive dentro
+      // de su pestaña (ej: Compras, pestaña Detalles); sin él, la grilla
+      // queda al pie del formulario (ej: Asientos).
+      oFormulario: (widget.sGrupoConDetalles != null)
+          ? oCabecera
+          : Column(
+              crossAxisAlignment : CrossAxisAlignment.stretch,
+              children: <Widget>[
+                if (bConPestanas)
+                  Expanded(
+                    flex  : 2,
+                    child : oCabecera,
+                  )
+                else
+                  oCabecera,
+                const Divider(height: ClaseGenEspacios.dEspacio01),
+                Expanded(
+                  flex  : 3,
+                  child : _construirDetalle(oContexto),
+                ),
+              ],
+            ),
+      setHabilitados

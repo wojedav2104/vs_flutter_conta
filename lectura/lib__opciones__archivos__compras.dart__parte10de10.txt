@@ -1,0 +1,21 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras.dart
+PARTE 10 DE 10
+---
+Libro'      : ClaseSiNo.si,
+        'numero'              : '001-001-0000456',
+        'numeroAsiento'       : '5',
+        'proveedor'           : 'Importadora Brasil Ltda.',
+        'sucursal'            : '0001 - Sucursal Central',
+        'timbrado'            : '55667788',
+        'tipoAfectacion'      : ClaseTipoAfectacion.indistinto,
+        'tipoDocumento'       : '01',
+        'tipoIdentificacion'  : ClaseTipoIdentificacion.cedulaExtranjera,
+        'total'               : '520000',
+        'totalComprobante'    : '520000',
+        'vigenteDesde'        : '',
+        'vigenteHasta'        : '',
+      },
+    ];
+  }
+
+}

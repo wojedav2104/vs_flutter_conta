@@ -6,6 +6,7 @@ abstract final class ClaseIdiomasCompras {
 
   static const Map<String, String> mapEs = <String, String>{
     // ── Grupos y campos de cabecera ──────────────────────────────────────
+    'comDetalles'             : 'Detalles',
     'comGenerales'            : 'Generales',
     'comResolucion'           : 'Resolución 90/2021',
     'comFecha'                : 'Fecha de la compra',
@@ -71,4 +72,4 @@ abstract final class ClaseIdiomasCompras {
     'comTipoDoc16'            : 'Boleto de Loterías, juegos de azar',
     'comTipoDoc17'            : 'Boleto o Ticket de Transporte Aéreo',
     'comTipoDoc18'            : 'Entrada a espectáculos públicos',
-    // ── Validaciones cruzadas ──────────────────────
+    // ──

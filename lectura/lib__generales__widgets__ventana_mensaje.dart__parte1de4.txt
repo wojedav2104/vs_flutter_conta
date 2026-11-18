@@ -1,6 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
 PARTE 1 DE 4
 ---
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../idiomas/idiomas.dart';
@@ -103,5 +105,4 @@ Future<EnumRespuestaConfirmacion> funcMostrarConfirmacion(
           if (bMostrarSi)
             funcConstruirBoton(
               oContexto : oContextoVentana,
-              sTexto    : ClaseIdiomas.getTexto('si', sIdioma),
-        
+              sTexto    : ClaseIdiomas.getTexto('

@@ -1,0 +1,98 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 4 DE 12
+---
+
+            animation : oControladorPestanas,
+            builder   : (_, __) => Row(
+              children: <Widget>[
+                for (int i = 0; i < listGrupos.length; i++) ...<Widget>[
+                  if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio08),
+                  Expanded(
+                    child : _construirPestana(
+                      oContexto,
+                      sTexto  : widget.funcEtiquetaGrupo?.call(listGrupos[i])   // ← CAMBIO etiqueta de grupo
+                          ?? ClaseIdiomas.getTexto(listGrupos[i], widget.sIdioma),
+                      bActiva : oControladorPestanas.index == i,
+                      iIndice : i,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller : oControladorPestanas,              // ← CAMBIO item 14
+            children: <Widget>[
+              for (final String sGrupo in listGrupos)
+                _construirContenidoPestana(oContexto, sGrupo, oPrimeroHabilitado),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Regla UI/UX: los campos con el mismo iFila (> 0) comparten fila; los
+  // demás van uno por fila. Los campos de una fila compartida reparten el
+  // ancho disponible en proporción a su ancho mínimo (bAnchoFlexible).
+  List<Widget> _construirCampos(
+      List<ClaseCampoAbm> listCampos, ClaseCampoAbm? oPrimeroHabilitado) {
+    final Map<int, List<ClaseCampoAbm>> mapFilas = <int, List<ClaseCampoAbm>>{};
+    int iFilaPropia = -1;
+    for (final ClaseCampoAbm oCampo in listCampos) {
+      final int iFila = (oCampo.iFila > 0) ? oCampo.iFila : iFilaPropia--;
+      (mapFilas[iFila] ??= <ClaseCampoAbm>[]).add(oCampo);
+    }
+    return <Widget>[
+      for (final List<ClaseCampoAbm> listFila in mapFilas.values)
+        _construirFila(listFila, oPrimeroHabilitado),
+    ];
+  }
+
+  Widget _construirFila(
+      List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
+    if (listFila.length == 1) {
+      return _construirCampo(listFila.first,
+          bAutoFocus: widget.bAutoFocus && listFila.first == oPrimeroHabilitado);
+    }
+    // Regla UI/UX (spec 00_03_01, ancho mínimo): cada campo de la fila ocupa
+    // su ancho natural (etiqueta + control) y nunca se estira más de él. Si
+    // la fila no cabe en el ancho del formulario, los campos se angostan
+    // proporcionalmente a su ancho natural (FlexFit.loose + tope máximo).
+    return Row(
+      crossAxisAlignment : CrossAxisAlignment.start,
+      children: <Widget>[
+        for (int i = 0; i < listFila.length; i++) ...<Widget>[
+          if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio16),
+          Flexible(
+            fit  : FlexFit.loose,
+            flex : math.max(1, (listFila[i].getAnchoCampo()
+                   + ClaseGenLayout.dAnchoEtiquetaCampo).round()),
+            child : ConstrainedBox(
+              constraints : BoxConstraints(
+                maxWidth : listFila[i].getAnchoCampo()
+                    + ClaseGenLayout.dAnchoEtiquetaCampo,
+              ),
+              child : _construirCampo(listFila[i],
+                  bAnchoFlexible : true,
+                  bAutoFocus: widget.bAutoFocus && listFila[i] == oPrimeroHabilitado),
+            ),
+          ),
+        ],
+      ],
+    );
+
+  }
+
+  /// Contenido de una pestaña: los campos del grupo y, si el grupo tiene
+  /// contenido extra, ese contenido debajo de los campos ocupando el alto que
+  /// sobra (los campos se desplazan solos si no caben).
+  Widget _construirContenidoPestana(
+      BuildContext oContexto, String sGrupo, ClaseCampoAbm? oPrimeroHabilitado) {
+    final List<ClaseCampoAbm> listCamposGrupo = widget.listCampos
+        .where((ClaseCampoAbm o) => o.sGrupo == sGrupo)
+        .toList();
+    final Widget? oExtra = widget.funcExtraGrupo?.call(sGrupo);
+    if (oE

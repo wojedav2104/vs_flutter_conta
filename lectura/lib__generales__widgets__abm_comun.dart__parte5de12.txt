@@ -1,0 +1,116 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 5 DE 12
+---
+xtra == null) {
+      return SingleChildScrollView(
+        padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+        child   : Column(
+          crossAxisAlignment : CrossAxisAlignment.start,
+          children: _construirCampos(listCamposGrupo, oPrimeroHabilitado),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Flexible(
+          child: SingleChildScrollView(
+            padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+            child   : Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
+              children: _construirCampos(listCamposGrupo, oPrimeroHabilitado),
+            ),
+          ),
+        ),
+        Expanded(child: oExtra),
+      ],
+    );
+  }
+
+  // ← CAMBIO item 10: aceptar y propagar bAutoFocus
+  // ← CAMBIO item 14: inyectar el nodo de foco del campo.
+
+  Widget _construirCampo(ClaseCampoAbm oCampo,
+      {bool bAnchoFlexible = false, bool bAutoFocus = false}) {
+    return ClaseCampoFormulario(
+      bAnchoFlexible   : bAnchoFlexible,
+      bAutoFocus       : bAutoFocus,
+      bHabilitado      : widget.funcEsHabilitado(oCampo),
+      funcAlCambiar    : (String sValor) => widget.funcAlCambiarCampo(oCampo.sClave, sValor),
+      funcAlPerderFoco : widget.funcAlPerderFoco,
+      mapValores       : widget.mapValores,
+      oCampo           : oCampo,
+      oFocoExterno     : mapFocos[oCampo],
+      sIdioma          : widget.sIdioma,
+      sValor           : widget.mapValores[oCampo.sClave] ?? '',
+    );
+  }
+
+}
+
+
+/// Grilla lateral de registros: filtro, orden por columna, paginación, menú
+/// contextual por celda y contraer/expandir. Lleva su propio estado; solo la
+/// selección (iRegistro) vive en el padre.
+///
+/// El foco del teclado vive en la grilla (item 23): al ingresar recibe el
+/// foco y las flechas arriba/abajo mueven la selección entre las filas.
+class ClaseGrillaRegistros extends StatefulWidget {
+
+  const ClaseGrillaRegistros({
+    super.key,
+    required this.funcSeleccionar,
+    required this.iRegistro,
+    required this.listCampos,
+    required this.listRegistros,
+    this.oFocoExterno,
+    required this.sIdioma,
+  });
+
+  /// Selecciona el registro por su índice en listRegistros.
+  final void Function(int iIndice) funcSeleccionar;
+
+  /// Índice en listRegistros del registro seleccionado (-1 si ninguno).
+  final int                        iRegistro;
+  final List<ClaseCampoAbm>        listCampos;
+  final List<Map<String, dynamic>> listRegistros;
+
+  /// Nodo de foco externo (opcional): el formulario lo usa para devolverle el foco a la grilla, ej: al cancelar la edición.
+  final FocusNode?                 oFocoExterno;
+  final String                     sIdioma;
+
+  @override
+  State<ClaseGrillaRegistros> createState() => ClaseEstadoGrillaRegistros();
+}
+
+class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
+
+  bool   bOrdenDesc  = false;
+  bool   bVisible    = true;
+  int    iPagina     = 0;
+  String sClaveOrden = '';
+  String sFiltro     = '';
+
+  final TextEditingController oControlFiltro = TextEditingController();
+
+  /// Nodo de foco interno de la grilla (item 23).
+  final FocusNode _oFocoInterno = FocusNode();
+
+  /// Nodo de foco que usa la grilla: el externo si el formulario lo provee, o el propio. Se elige una sola vez en initState.
+  late final FocusNode oFocoGrilla = widget.oFocoExterno ?? _oFocoInterno;
+
+  @override
+  void initState() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar al formulario, el foco del teclado queda
+    //   en la grilla (sobre la primera fila seleccionada) si hay registros.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && bVisible && widget.listRegistros.isNotEmpty) {
+        oFocoGrilla.requestFocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    oControlFiltro.dispose

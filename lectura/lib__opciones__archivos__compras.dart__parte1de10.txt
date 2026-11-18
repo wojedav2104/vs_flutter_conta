@@ -1,0 +1,98 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras.dart
+PARTE 1 DE 10
+---
+import 'package:flutter/material.dart';
+
+import '../../generales/idiomas/idiomas.dart';
+import '../../generales/modelos/campo_abm.dart';
+import '../../generales/modelos/documentos.dart';
+import '../../generales/preferencias/preferencias.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+import '../../generales/widgets/formulario_cabecera_detalle.dart';
+
+/// Pantalla de la tabla Libro Compras (cabecera + grilla editable de detalles).
+///
+/// Cabecera con tres grupos (Generales, Detalles y Resolución 90/2021): la
+/// grilla editable de detalles se muestra en la pestaña Detalles, debajo de
+/// los importes de solo lectura, y las filas del asiento generado quedan en
+/// la clave 'detalles'.
+///
+/// Validaciones cruzadas (validarRegistro):
+///   · La Fecha de la compra debe estar dentro del Ejercicio contable.
+///   · Cantidad de cuotas: solo se escribe en Factura Crédito (1 a 240); en
+///     los demás tipos está deshabilitada y vale 0.
+///   · Timbrado: obligatorio de 8 dígitos solo cuando el Tipo de documento
+///     lleva la máscara 999-999-9999999; en blanco y deshabilitado en los
+///     demás casos.
+///   · Formato del N° de documento según el Tipo de documento.
+///   · Formato de la identificación según el Tipo de identificación.
+///   · La Fecha de fin de vigencia debe ser posterior al inicio.
+///   · Total del comprobante = suma del Debe si se envía a Marangatú.
+class ClaseCompras extends StatefulWidget {
+
+  const ClaseCompras({
+    super.key,
+    required this.oPreferencias,
+  });
+
+  final ClasePreferencias oPreferencias;
+
+  @override
+  State<ClaseCompras> createState() => ClaseEstadoCompras();
+}
+
+class ClaseEstadoCompras extends State<ClaseCompras> {
+
+  late final List<ClaseCampoAbm>        listCamposCabecera;
+  late final List<ClaseCampoAbm>        listCamposDetalle;
+  late final List<Map<String, dynamic>> listRegistros;
+
+  @override
+  void initState() {
+    super.initState();
+    listCamposCabecera = crearCamposCabecera();
+    listCamposDetalle  = crearCamposDetalle();
+    listRegistros      = crearRegistrosPrueba();
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return ClaseFormularioCabeceraDetalle(
+      funcActualizarCampos : actualizarCampos,
+      funcValidarRegistro  : validarRegistro,
+      listCamposCabecera   : listCamposCabecera,
+      listCamposDetalle    : listCamposDetalle,
+      listRegistros        : listRegistros,
+      oPreferencias        : widget.oPreferencias,
+      sClaveCampoAlPie     : 'comentarios',
+      sGrupoConDetalles    : 'comDetalles',
+      sTitulo              : ClaseIdiomas.getTexto('menuLibroCompras', getIdioma()),
+    );
+  }
+
+  String getIdioma() => widget.oPreferencias.getIdioma();
+
+  // ── Auto-cálculos de la cabecera ────────────────────────────────────────
+
+  /// Auto-cálculos según la spec 02_03:
+  ///   · Total (Grupo 1) = gravadas 10% + IVA 10% + gravadas 5% + IVA 5%
+  ///     + exentas.
+  ///   · Importe gravado 10%/5% y exento (Grupo 2): se sugieren solo si
+  ///     están vacíos. I.R.E. Simple, I.R.P. Simple y no imputable son
+  ///     manuales (inicialmente 0).
+  ///   · Total del comprobante = suma de los 6 importes del Grupo 2.
+  ///   · Cantidad de cuotas según el Tipo de documento: en Factura Crédito,
+  ///     si está vacía o en 0 se coloca 1 (cualquier otro valor se respeta);
+  ///     en los demás tipos vale 0.
+  ///   · Timbrado en blanco cuando el Tipo de documento no lleva máscara.
+  Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
+
+    final String sTipoDocumento = mapValores['tipoDocumento'] ?? '';
+
+    final Map<String, String> mapActualizaciones = <String, String>{};
+
+    // Cantidad de cuotas según el Tipo de documento.
+    if (ClaseTipoDocumento.esFacturaCredito(sTipoDocumento)) {
+      final String sCuotas = (mapValo

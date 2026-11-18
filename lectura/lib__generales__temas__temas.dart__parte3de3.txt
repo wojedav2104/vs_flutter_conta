@@ -1,7 +1,52 @@
 RUTA ORIGINAL: lib/generales/temas/temas.dart
 PARTE 3 DE 3
 ---
-Theme.merge(ClaseGenEstilosTexto.oTextTheme)),
+marillo).
+  static Color colorTextoBotonConFoco(BuildContext oContexto) =>
+      ClaseGenColores.colorNegro;
+
+  static bool _esModoOscuro(BuildContext oContexto) =>
+      Theme.of(oContexto).brightness == Brightness.dark;
+
+  // ── Temas cacheados (se reconstruyen si cambia el factor de texto) ────────
+  static double    _dFactorCache = -1.0;
+  static ThemeData? _temaClaroCache;
+  static ThemeData? _temaOscuroCache;
+
+  static ThemeData get getTemaClaro  { _actualizarTemas(); return _temaClaroCache!; }
+  static ThemeData get getTemaOscuro { _actualizarTemas(); return _temaOscuroCache!; }
+
+  static void _actualizarTemas() {
+    if (_dFactorCache != ClaseGenEstilosTexto.dFactorTexto) {
+      _dFactorCache    = ClaseGenEstilosTexto.dFactorTexto;
+      _temaClaroCache  = _construir(_oEsquemaClaro);
+      _temaOscuroCache = _construir(_oEsquemaOscuro);
+    }
+  }
+
+  static ThemeData _construir(ColorScheme oEsquema) {
+    // Base M3 completa: provee `headlineSmall`, `titleSmall`, `labelLarge`,
+    // `displaySmall`, `headlineMedium`, `headlineLarge` (que
+    // `ClaseGenEstilosTexto.oTextTheme` no define). Sin este merge, esos
+    // estilos quedan `null` y widgets como `AppBar`, `Dialog`, `ListTile`
+    // los heredan de `DefaultTextStyle`, rompiendo la consistencia.
+    final ThemeData oTemaBase = ThemeData(
+      colorScheme : oEsquema,
+      useMaterial3: true,
+    );
+    return oTemaBase.copyWith(
+      scaffoldBackgroundColor: oEsquema.surface,
+      // Regla UI/UX: los controles de entrada (texto, número, fecha, hora, lista) llevan un relleno distinto al fondo del formulario para que se distingan a simple vista 
+      //(usuarios noveles). Único punto de cambio: aplica a todos los InputDecoration de la aplicación.
+      inputDecorationTheme   : InputDecorationTheme(
+        filled    : true,
+        fillColor : oEsquema.surfaceContainerHighest,
+      ),
+
+      // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
+      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
+      // multiplican por su cuenta.
+      textTheme : _escalarTexto(oTemaBase.textTheme.merge(ClaseGenEstilosTexto.oTextTheme)),
     );
   }
 

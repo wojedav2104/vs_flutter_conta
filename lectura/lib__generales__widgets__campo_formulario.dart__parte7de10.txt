@@ -1,0 +1,96 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 7 DE 10
+---
+ara y cambió, re-aplicarla al valor actual. Solo texto:
+    // el número se formatea al salir del campo (item 9).
+    if (!bNumero && sMascara != null && sMascara != sMascaraActual) {
+      sMascaraActual = sMascara;
+      final String sDigitos = widget.sValor.replaceAll(RegExp(r'[^0-9]'), '');
+      final String sConMascara = funcAplicarMascara(sDigitos, sMascara);
+      if (sConMascara != widget.sValor) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            oControl.text = sConMascara;
+            widget.funcAlCambiar(sConMascara);
+          }
+        });
+      }
+    }
+
+    return TextField(
+      controller      : oControl,
+      enabled         : widget.bHabilitado,
+      focusNode       : oFoco,
+      style           : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+      textAlign       : bNumero ? TextAlign.right : TextAlign.left,
+      keyboardType    : bNumero
+          ? (widget.oCampo.bTieneDecimales
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : TextInputType.number)
+          : null,
+      inputFormatters : _getFormateadores(bNumero),
+      onChanged       : (String sValor) =>
+          _alCambiarTexto(sValor, bConMascara: !bNumero),    // ← CAMBIO item 9
+      onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
+      decoration      : _getDecoracion(
+        oContexto,
+        sHint        : widget.oCampo.sHint,
+        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
+      ),
+    );
+  }
+  List<TextInputFormatter>? _getFormateadores(bool bNumero) {
+    if (!bNumero) {
+      return widget.oCampo.iAnchoCaracteres > 0
+          ? <TextInputFormatter>[
+              LengthLimitingTextInputFormatter(widget.oCampo.iAnchoCaracteres),
+            ]
+          : null;
+    }
+    // Número: decimales o enteros. El límite de dígitos es el de la máscara
+    // (el ancho visual incluye los separadores de miles).
+    final String? sMascara = _getMascara();
+    final int    iLimite   = (sMascara != null && !widget.oCampo.bTieneDecimales)
+        ? sMascara.split('').where((String s) => s == '9').length
+        : widget.oCampo.iAnchoCaracteres;
+    return <TextInputFormatter>[
+      if (widget.oCampo.bTieneDecimales)
+        ClaseFormateadorImporte()
+      else
+        FilteringTextInputFormatter.digitsOnly,
+      if (iLimite > 0)
+        LengthLimitingTextInputFormatter(iLimite),
+    ];
+  }
+
+  // ── Fecha ────────────────────────────────────────────────────────────────
+
+  Widget _construirFecha(BuildContext oContexto) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+            keyboardType : TextInputType.datetime,
+            onChanged    : _alCambiarFecha,
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
+            decoration   : _getDecoracion(oContexto, sHint: 'dd/mm/aaaa'),            
+          ),
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio04),
+        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
+        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
+        ExcludeFocus(
+          excluding : true,
+          child     : IconButton(
+          tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
+          icon      : const Icon(Icons.calendar_month),
+          onPressed : widget.bHabilitado
+              ? () async {
+                  final DateTime? fElegida = await funcMostrarSelectorFecha(
+                    oContexto,
+                    widget.sIdioma,
+                    funcParsearF

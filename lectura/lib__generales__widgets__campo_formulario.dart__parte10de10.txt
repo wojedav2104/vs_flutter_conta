@@ -1,0 +1,52 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 10 DE 10
+---
+xto.textoCampo(oContexto)),          
+          // El comentario respeta iMaxComentario (antes solo lo mostraba).
+          inputFormatters : (widget.oCampo.iMaxComentario > 0)
+              ? <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(widget.oCampo.iMaxComentario),
+                ]
+              : null,
+          onChanged       : (String sValor) => _alCambiarTexto(sValor, bConMascara: false),
+          decoration      : _getDecoracion(oContexto, sHint: widget.oCampo.sHint),
+        ),
+      ],
+    );
+  }
+
+  /// Contador de caracteres del campo Comentarios ('27/500'); vacío si el
+  /// campo no tiene máximo.
+  Widget _construirContador(BuildContext oContexto) {
+    if (widget.oCampo.iMaxComentario <= 0) return const SizedBox.shrink();
+    return Text(
+      '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
+      textAlign : TextAlign.right,
+      style     : ClaseGenEstilosTexto.normalChico(oContexto),
+    );
+  }
+
+  // ── Lógico (switch Sí/No) ────────────────────────────────────────────────
+
+  Widget _construirLogico(BuildContext oContexto) {
+    final bool bActivo = widget.sValor == ClaseSiNo.si;
+    return Row(
+      children: <Widget>[
+        Switch(
+          value    : bActivo,
+          onChanged: widget.bHabilitado
+              ? (bool bNuevo) => widget.funcAlCambiar(bNuevo ? ClaseSiNo.si : ClaseSiNo.no)
+              : null,
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio08),
+        Text(
+          bActivo
+              ? ClaseIdiomas.getTexto('si', widget.sIdioma)
+              : ClaseIdiomas.getTexto('no', widget.sIdioma),
+          style : ClaseGenEstilosTexto.normalMediano(oContexto),
+        ),
+      ],
+    );
+  }
+
+}

@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_compras.dart
 PARTE 2 DE 3
 ---
-──────────────────────
+ Validaciones cruzadas ────────────────────────────────────────────
     'comErrorNumeroFormato'   : 'El formato del N° de documento no es válido para el Tipo de documento seleccionado',
     'comErrorMarangatu'       : 'El Total del comprobante debe ser igual a la suma del Debe para enviar a Marangatú',
   };
@@ -9,6 +9,7 @@ PARTE 2 DE 3
   static const Map<String, String> mapFr = <String, String>{
     // ── Grupos y campos de cabecera ──────────────────────────────────────
     'comGenerales'            : 'Généraux',
+    'comDetalles'             : 'Détails',    
     'comResolucion'           : 'Résolution 90/2021',
     'comEjercicio'            : 'Exercice comptable',
     'comFecha'                : 'Date de l\'achat',
@@ -70,5 +71,4 @@ PARTE 2 DE 3
     'comTipoDoc13'            : 'Contrôle interne',
     'comTipoDoc14'            : 'Billet de transport public de passagers',
     'comTipoDoc15'            : 'Bulletin ReSimple',
-    'comTipoDoc16'            : 'Billet de loterie, jeux de hasard',
-    'comTipoDoc17'         
+    

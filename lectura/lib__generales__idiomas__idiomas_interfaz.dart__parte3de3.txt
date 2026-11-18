@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_interfaz.dart
 PARTE 3 DE 3
 ---
- un nouveau mot de passe.',
+nouveau mot de passe.',
     'olvidasteConfirmacion' : 'Si l\'e-mail saisi est enregistré dans l\'application, tu recevras un message pour créer un nouveau mot de passe.',
 
   };

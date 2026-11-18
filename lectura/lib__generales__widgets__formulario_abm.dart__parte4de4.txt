@@ -1,7 +1,17 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_abm.dart
 PARTE 4 DE 4
 ---
-stro       : iRegistro,
+     ← CAMBIO item 10
+    if (bPedirFoco) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bPedirFoco = false;
+      });
+    }
+
+    return ClaseAndamiajeAbm(
+      funcAlClicar    : _alClicarBoton,
+      funcSeleccionar : seleccionar,
+      iRegistro       : iRegistro,
       listCampos      : widget.listCampos,
       listRegistros   : widget.listRegistros,
       oFocoGrilla     : _oFocoGrilla,

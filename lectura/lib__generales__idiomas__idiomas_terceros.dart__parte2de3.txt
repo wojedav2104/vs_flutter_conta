@@ -49,8 +49,8 @@ PARTE 2 DE 3
     // ── Pantalla Proveedores (ABM) ──────────────────────────────────
 
     'proAlta'               : 'Création',
-    'proApellidoMaterno'    : 'Nom de la mère',
-    'proApellidoPaterno'    : 'Nom du père',
+    'proApellidoMaterno'    : 'Nom de famille maternel',
+    'proApellidoPaterno'    : 'Nom de famille paternel',
     'proAutonomo'           : 'Travailleur indépendant',
     'proCiudad'             : 'Ville',
     'proContacto'           : 'Personne de contact',
@@ -62,9 +62,9 @@ PARTE 2 DE 3
     'proExterior'           : 'Étranger',
     'proLocal'              : 'Local',
     'proNombreComercial'    : 'Nom commercial',
-    'proNombreFantasia'     : 'Nom de fantaisie',
+    'proNombreFantasia'     : 'Nom de marque',
     'proRazonSocial'        : 'Raison sociale',
-    'proRuc'                : 'N.I.T.',
+    'proRuc'                : 'R.U.C.',
     'proTelefono'           : 'Téléphone',
     'proTerceroPorDefecto'  : 'Fournisseur par défaut',
 
@@ -73,8 +73,8 @@ PARTE 2 DE 3
     'terTerceros'           : 'Tiers',
 
     'cliAlta'               : 'Création',
-    'cliApellidoMaterno'    : 'Nom de la mère',
-    'cliApellidoPaterno'    : 'Nom du père',
+    'cliApellidoMaterno'    : 'Nom de famille maternel',
+    'cliApellidoPaterno'    : 'Nom de famille paternel',
     'cliAutonomo'           : 'Travailleur indépendant',
     'cliCiudad'             : 'Ville',
     'cliClientePorDefecto'  : 'Client par défaut',
@@ -87,12 +87,11 @@ PARTE 2 DE 3
     'cliExterior'           : 'Étranger',
     'cliLocal'              : 'Local',
     'cliNombreComercial'    : 'Nom commercial',
-    'cliNombreFantasia'     : 'Nom de fantaisie',
+    'cliNombreFantasia'     : 'Nom de marque',    
     'cliRazonSocial'        : 'Raison sociale',
-    'cliRuc'                : 'N.I.T.',
+    'cliRuc'                : 'R.U.C.',
     'cliTelefono'           : 'Téléphone',
 
     // ── Pantalla Clientes (claves que usa clientes.dart) ─────────────
     'cliCodigo'            : 'Code',
-    'cliNombre'            : 'Nom',
-    'cliCelular
+    'cliNomb

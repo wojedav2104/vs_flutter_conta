@@ -1,0 +1,103 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 7 DE 11
+---
+ : _getBotonesHabilitados(),
+      sIdioma        : getIdioma(),
+      sTitulo        : widget.sTitulo,
+    );
+  }
+
+  // ── Grilla editable de detalles ──────────────────────────────────────────
+
+  double _getAnchoDetalle() {
+    double dAncho = ClaseGenLayout.dAnchoNumeroFila + ClaseGenLayout.dAnchoAccionesFila;
+    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+      dAncho += oCampo.getAnchoColumna();
+    }
+    return dAncho;
+  }
+
+  Widget _construirDetalle(BuildContext oContexto) {
+    // Regla UI/UX: el encabezado, las filas y la fila de totales comparten
+    // el mismo desplazamiento horizontal: las columnas quedan siempre
+    // alineadas, el encabezado queda fijo arriba y la fila de totales no
+    // desborda el ancho de la pantalla.
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection : Axis.horizontal,
+            child: SizedBox(
+              // El padding horizontal de las filas (dEspacio08 por lado) forma
+              // parte del ancho total de la grilla: sin estas dos columnas, la
+              // fila desborda 16 px a la derecha (rayas de OVERFLOW).
+              width : _getAnchoDetalle() + ClaseGenEspacios.dEspacio08 * 2,
+              child : Column(
+                crossAxisAlignment : CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _construirFilaEncabezado(oContexto),
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        for (int i = 0; i < listDetalles.length; i++)
+                          _construirFilaDetalle(oContexto, i),
+                      ],
+                    ),
+                  ),
+                  _construirFilaTotales(oContexto),
+                ],
+              ),
+            ),
+          ),
+        ),
+        _construirCampoAlPie(oContexto),
+      ],
+    );
+  }
+
+  /// Campo de la cabecera que se muestra al pie, debajo de la fila de totales (spec 02_02 y 02_03: el campo Comentarios).
+  /// Regla UI/UX: la etiqueta queda arriba, en la misma fila que el contador
+  /// de caracteres, y el campo ocupa el ancho de la grilla.
+  Widget _construirCampoAlPie(BuildContext oContexto) {
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.sClave != widget.sClaveCampoAlPie) continue;
+      return Padding(
+        padding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio04,
+        ),
+        child : ClaseCampoFormulario(
+          bEtiquetaArriba : true,
+          bHabilitado   : _getHabilitado(oCampo),
+          funcAlCambiar : (String sValor) => _alCambiarCampo(oCampo.sClave, sValor),
+          mapValores    : mapValores,
+          oCampo        : oCampo,
+          sIdioma       : getIdioma(),
+          sValor        : mapValores[oCampo.sClave] ?? '',
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _construirFilaEncabezado(BuildContext oContexto) {
+    return Padding(
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width : ClaseGenLayout.dAnchoNumeroFila,
+            child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
+                style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+          ),
+          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+            SizedBox(
+              width : oCampo.getAnchoColumna(),
+              child : Text(oCampo.sEtiqueta,
+                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+                  maxLines : 1,
+                  overflow : T

@@ -1,0 +1,64 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 12 DE 12
+---
+   final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
+    return SizedBox(
+      width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
+      height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
+      child  : ElevatedButton(
+        onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
+        style     : ElevatedButton.styleFrom(
+          disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
+          disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+          shape  : RoundedRectangleBorder(
+            borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+          ),
+          padding : EdgeInsets.zero,
+        ).copyWith(
+          // Regla UI/UX: el botón con foco de teclado usa un fondo bastante
+          // distinto al de los botones sin foco (amarillo de atención).
+          backgroundColor : WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> setEstados) {
+              if (setEstados.contains(WidgetState.focused)) {
+                return ClaseGenTemas.colorBotonConFoco(oContexto);
+              }
+              return bHabilitado
+                  ? ClaseGenTemas.colorBotonHabilitado(oContexto)          // item 6
+                  : ClaseGenTemas.colorBotonDeshabilitado(oContexto);
+            },
+          ),
+          foregroundColor : WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> setEstados) {
+              if (setEstados.contains(WidgetState.focused)) {
+                return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
+              }
+              return bHabilitado
+                  ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                  : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
+            },
+          ),
+        ),
+        child : Row(
+          mainAxisAlignment : MainAxisAlignment.center,
+          mainAxisSize       : MainAxisSize.min,
+          children          : <Widget>[
+            Icon(_getIcono(oBoton), size: 20),
+            const SizedBox(width: ClaseGenEspacios.dEspacio08),
+            Flexible(
+              child : Text(
+                _getEtiqueta(oBoton),
+                // El color del texto lo resuelve el estilo del botón por
+                // estados (habilitado / deshabilitado / con foco).
+                style    : ClaseGenEstilosTexto.botonGrande(oContexto),
+                maxLines : 1,
+                overflow : TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}
+

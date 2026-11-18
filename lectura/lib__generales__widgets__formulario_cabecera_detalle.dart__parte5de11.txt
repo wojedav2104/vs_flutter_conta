@@ -1,0 +1,117 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 5 DE 11
+---
+ll) {
+          return _traducirFila(sIdioma, iFila, sError);
+        }
+      }
+
+      // Debe o Haber: uno solo de los dos.
+      final String sDebe  = (mapFila[widget.sClaveDebe]  ?? '').trim();
+      final String sHaber = (mapFila[widget.sClaveHaber] ?? '').trim();
+      if (sDebe.isNotEmpty == sHaber.isNotEmpty) {
+        return _traducirFila(
+            sIdioma, iFila, ClaseIdiomas.getTexto('detErrorDebeHaber', sIdioma));
+      }
+    }
+
+    // La suma del Debe debe ser igual a la suma del Haber.
+    double dDebe  = 0;
+    double dHaber = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      dDebe  += funcParsearNumero(mapFila[widget.sClaveDebe]  ?? '') ?? 0;
+      dHaber += funcParsearNumero(mapFila[widget.sClaveHaber] ?? '') ?? 0;
+    }
+    return ClaseCapValidar.validarSumaDebeHaber(dDebe, dHaber, sIdioma);
+  }
+
+  String _traducirFila(String sIdioma, int iFila, String sError) {
+    return ClaseIdiomas.getTexto('detErrorFila', sIdioma)
+        .replaceAll('{0}', '$iFila')
+        .replaceAll('{1}', sError);
+  }
+
+  List<Map<String, String>> _listDetallesLimpias() {
+    return _clonarDetalles(listDetalles
+        .where((Map<String, String> mapFila) =>
+            mapFila.values.any((String s) => s.trim().isNotEmpty))
+        .toList());
+  }
+
+  List<Map<String, String>> _clonarDetalles(List<Map<String, String>> listOrigen) {
+    return <Map<String, String>>[
+      for (final Map<String, String> mapFila in listOrigen)
+        Map<String, String>.from(mapFila),
+    ];
+  }
+
+  // ── Selección y auto-cálculos de la cabecera ─────────────────────────────
+
+  void seleccionar(int iIndice) {
+    final Map<String, dynamic> oRegistro = widget.listRegistros[iIndice];
+    setState(() {
+      iRegistro    = iIndice;
+      mapValores   = _desdeRegistro(oRegistro);
+      _reemplazarDetalles(_desdeDetalles(oRegistro));
+      bModoEdicion = false;
+    });
+  }
+
+  Map<String, String> _desdeRegistro(Map<String, dynamic> oRegistro) {
+    return <String, String>{
+      for (final ClaseCampoAbm oCampo in widget.listCamposCabecera)
+        oCampo.sClave: (oRegistro[oCampo.sClave] ?? '').toString(),
+    };
+  }
+
+  List<Map<String, String>> _desdeDetalles(Map<String, dynamic> oRegistro) {
+    final dynamic oValor =
+        oRegistro[ClaseFormularioCabeceraDetalle.sClaveDetalles];
+    if (oValor is! List) return <Map<String, String>>[];
+    return <Map<String, String>>[
+      for (final dynamic oFila in oValor)
+        <String, String>{
+          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+            oCampo.sClave: ((oFila as Map)[oCampo.sClave] ?? '').toString(),
+        },
+    ];
+  }
+
+  void _alCambiarCampo(String sClave, String sValor) {
+    setState(() {
+      mapValores[sClave] = sValor;
+      final Map<String, String>? mapActualizaciones =
+          widget.funcActualizarCampos?.call(mapValores);
+      if (mapActualizaciones != null) mapValores.addAll(mapActualizaciones);
+    });
+  }
+
+  bool _getHabilitado(ClaseCampoAbm oCampo) {
+    return bModoEdicion
+        && !oCampo.bSiempreDeshabilitado
+        && !oCampo.bSoloLecturaPorRol
+        && (oCampo.funcActualizarEstado?.call(mapValores) ?? true);
+  }
+
+  // ── Botonera ─────────────────────────────────────────────────────────────
+
+  Set<EnumBotonAbm> _getBotonesHabilitados() {
+    return <EnumBotonAbm>{
+      if (!bModoEdicion
+          && !(widget.bTablaUnSoloRegistro && widget.listRegistros.isNotEmpty))
+        EnumBotonAbm.agregar,
+      if (iRegistro >= 0 && !bModoEdicion) ...<EnumBotonAbm>[
+        EnumBotonAbm.modificar,
+        EnumBotonAbm.borrar,
+      ],
+      if (widget.bPermitirEncontrar && !widget.bTablaUnSoloRegistro && !bModoEdicion)
+        EnumBotonAbm.encontrar,
+      if (bModoEdicion) ...<EnumBotonAbm>[
+        EnumBotonAbm.grabar,
+        EnumBotonAbm.cancelar,
+      ],
+      if (!bModoEdicion) EnumBotonAbm.fin,
+    };
+  }
+
+  void

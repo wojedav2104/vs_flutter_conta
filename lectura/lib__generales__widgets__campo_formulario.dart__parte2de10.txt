@@ -1,0 +1,100 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 2 DE 10
+---
+ solo dígitos y los separadores se insertan solos (spec 00_00_03).
+  static const String _sMascaraFecha = '99/99/9999';
+  static const String _sMascaraHora  = '99:99';
+
+  /// Nodo de foco que usa el campo: el externo (item 14) si el formulario lo provee, o el propio. Se elige una sola vez en initState.
+  late final FocusNode oFoco;
+
+  @override
+  void initState() {
+    super.initState();
+    oFoco = widget.oFocoExterno ?? oFocoInterno;
+    oControl = TextEditingController(text: widget.sValor);
+    oFoco.addListener(_alCambiarFoco);                       // ← CAMBIO item 9
+    // Regla UI/UX: los números con máscara se muestran formateados desde el
+    // primer momento (2.200.000 y no 2200000), no solo al salir del campo.
+    // Especial para los campos deshabilitados, que nunca reciben foco (ej:
+    // Total). Al recibir el foco se muestra el valor plano para teclear.
+    _mostrarNumeroFormateado();
+    if (widget.bAutoFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) oFoco.requestFocus();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ClaseCampoFormulario oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.sValor != widget.sValor && oControl.text != widget.sValor) {
+      oControl.text = widget.sValor;
+      if (!oFoco.hasFocus) _mostrarNumeroFormateado();       // ← CAMBIO item 9
+    }
+    if (widget.bAutoFocus && !oldWidget.bAutoFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) oFoco.requestFocus();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    oFoco.removeListener(_alCambiarFoco);                    // ← CAMBIO item 9
+    oControl.dispose();
+    oFocoInterno.dispose();
+    super.dispose();
+  }
+
+  // ── Máscara dinámica ─────────────────────────────────────────────────────
+
+  String? _getMascara() {
+    final String? sMascara = widget.oCampo.funcMascara?.call(widget.mapValores);
+    return sMascara ?? widget.oCampo.sMascara;
+  }
+
+  // ── Entrada y salida del foco ────────────────────────────────────────────
+
+  /// Al recibir el foco, los números con máscara muestran el valor plano
+  /// (item 9). Al perderlo: los números se formatean según la máscara
+  /// (item 9) y se ejecuta la transformación del campo (funcAlPerderFoco,
+  /// ej: completar el guion y el dígito verificador del RUC).
+  void _alCambiarFoco() {
+    if (oFoco.hasFocus) {
+      if (widget.oCampo.oTipo == EnumTipoCampoAbm.numero
+          && _getMascara() != null
+          && oControl.text != widget.sValor) {
+        oControl.text = widget.sValor;
+      }
+      return;
+    }
+    _mostrarNumeroFormateado();
+    // Completa la fecha u hora según lo que alcanzó a teclear el usuario.
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
+    // Muestra la ventana de error si la fecha u hora no es posible, pero
+    // SOLO si el usuario se movió a otro campo de entrada. Si hizo clic en
+    // un botón (Cancelar, Fin, Grabar, selector de fecha, borrar) — con o
+    // sin foco, habilitado o deshabilitado — no se valida: termina o
+    // descarta la edición, o corrige con un botón, y Grabar valida todo al
+    // grabar. Se espera al próximo frame para saber dónde quedó el foco.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted)            return;
+      if (oFoco.hasFocus)      return;
+      if (!_focoEnOtroCampo()) return;
+      _validarFechaHora();
+    });
+
+    // Transformación del campo al salir del foco (ej: completar el RUC).
+
+    final String? sNuevo = widget.funcAlPerderFoco
+        ?.call(widget.oCampo.sClave, widget.sValor, widget.mapValores);
+    if (sNuevo != null && sNuevo != widget.sValor) {
+      oControl.text = sNuevo;
+      widget.funcAlCambiar(sNuevo);
+    }
+  }
+
+  /// Muestra el número formateado según la máscara. Solo camb

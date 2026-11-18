@@ -76,6 +76,7 @@ nterior(
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 60,
+        iAnchoVisible    : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'concepto',
         sEtiqueta        : ClaseIdiomas.getTexto('detConcepto', sIdioma),
@@ -100,4 +101,4 @@ nterior(
             'subcuenta'    : '',
           },
           <String, String>{
-            'concepto'     : 'Apo
+ 

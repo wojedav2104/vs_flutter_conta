@@ -1,21 +1,21 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_validaciones.dart
 PARTE 2 DE 2
 ---
-Le champ "{0}" doit être un jour entre {1} et {2} pour le mois indiqué',                                           // ← nueva
+ 'Le champ "{0}" doit correspondre à un jour entre {1} et {2} pour le mois indiqué',                                          // ← nueva
     'validDigitosExactos'   : 'Le champ "{0}" doit avoir exactement {1} chiffres',
     'validEjercicioRango'   : 'Le champ "{0}" doit être un exercice entre {1} et {2}',                                                            // ← ajuste
     'validFechaAnterior'    : 'Le champ "{0}" ne peut pas être antérieur au {1}',
     'validFechaFinPosterior': 'La date de fin de validité doit être postérieure à la date de début de validité',
-    'validFechaInvalida'    : 'Le champ "{0}" a un format de date invalide',
+    'validFechaInvalida'    : 'Le champ "{0}" n\'est pas une date valide',
     'validFechaRango'       : 'La date de {0} doit être entre le {1} et le {2}',
     'validFormatoCuenta'    : 'Le numéro de compte doit avoir le format 9.99.99.99 (exemples valides : 1, 1.01, 1.01.04, 2.03.05.17)',
-    'validHoraInvalida'     : 'Le champ "{0}" a un format d\'heure invalide. Utilisez hh:mm',
+    'validHoraInvalida'     : 'Le champ "{0}" a un format d\'heure invalide. Utilise le format hh:mm',    
     'validHoraRango'        : 'Le champ "{0}" doit être compris entre les heures {1} et {2}',                                                     // ← nueva
     'validIdentCedula'      : 'Le champ "{0}" doit être un numéro de carte d\'identité de 5 à 8 chiffres (les points sont acceptés comme séparateurs)',
     'validIdentOtros'       : 'Le champ "{0}" doit avoir entre 5 et 15 caractères (lettres, chiffres, points ou traits d\'union)',                 // ← nueva
     'validIdentPasaporte'   : 'Le champ "{0}" doit contenir uniquement des lettres majuscules, des chiffres et des traits d\'union',
     'validIdentRuc'         : 'Le champ "{0}" doit être un RUC au format 9999999-9 (numéro et chiffre de contrôle)',
-    'validIdentRucDv'       : 'Le chiffre de contrôle du champ "{0}" n\'est pas correct. Vérifiez le numéro de RUC.',
+    'validIdentRucDv'       : 'Le chiffre de contrôle du champ "{0}" n\'est pas correct. Vérifie le numéro de RUC.',    
     'validLongMaxima'       : 'Le champ "{0}" accepte un maximum de {1} caractères',
     'validLongMinima'       : 'Le champ "{0}" doit avoir au moins {1} caractères',
     'validNivelCuenta'      : 'Le champ "{0}" doit être un nombre entre 1 et 5',                                                                  // ← ajuste
@@ -28,7 +28,7 @@ Le champ "{0}" doit être un jour entre {1} et {2} pour le mois indiqué',      
     'validSoloEntero'       : 'Le champ "{0}" doit être un nombre entier',
     'validSubcuentaRango'   : 'Le champ "{0}" doit avoir 5 chiffres entre 00001 et 99999',
     'validSumaDebeHaber'    : 'La somme du Doit doit être exactement égale à la somme de l\'Avoir',
-    'validValorLista'       : 'Le champ "{0}" n\'a pas une valeur valide de la liste',                                                            // ← nueva
+    'validValorLista'       : 'Le champ "{0}" n\'a pas de valeur valide dans la liste',                                                         // ← nueva
   };
 
 }

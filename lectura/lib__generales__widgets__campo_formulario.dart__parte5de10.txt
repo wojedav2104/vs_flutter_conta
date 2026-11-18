@@ -1,0 +1,91 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 5 DE 10
+---
+ntical(oCampo, widget);
+    // Celda de la grilla de detalles u otra entrada de texto.
+    return (oContexto.widget is EditableText)
+        || (oContexto.findAncestorWidgetOfExactType<EditableText>() != null);
+  }
+
+  /// Muestra la ventana de error si la fecha u hora no es posible, no solo
+  /// si no tiene el formato (spec 00_00_03: la ventana error es para avisar
+
+  /// al usuario que se detectó un error). El campo vacío no se valida acá
+  /// (lo obligatorio se controla al grabar).
+  ///
+  /// Regla 00_00_03 (Input focus): si se detectó un error, el foco se
+  /// mantiene en el campo donde se detectó. La ventana de error se roba el
+  /// foco, así que al cerrarla se vuelve a pedir el foco para este campo.
+  /// Devuelve true si el valor pasó la validación (o no había nada que
+  /// validar); false si se mostró la ventana de error.
+  Future<bool> _validarFechaHora() async {
+    if (!mounted) return true;
+    final String sValor = oControl.text.trim();
+    if (sValor.isEmpty) return true;
+    final bool bFecha = (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha);
+    final bool bHora  = (widget.oCampo.oTipo == EnumTipoCampoAbm.hora);
+    if (!bFecha && !bHora) return true;
+    final bool bValida = bFecha
+        ? (funcParsearFecha(sValor) != null)
+        : (funcParsearHora(sValor) != null);
+    if (bValida) return true;
+    await funcMostrarError(
+      context,
+      widget.sIdioma,
+      ClaseIdiomas.getTexto('aplicacion', widget.sIdioma),
+      ClaseIdiomas.getTexto(
+          bFecha ? 'validFechaInvalida' : 'validHoraInvalida', widget.sIdioma)
+          .replaceAll('{0}', widget.oCampo.sEtiqueta),
+    );
+    if (mounted) oFoco.requestFocus();
+    return false;
+  }
+
+  /// Enter completa el campo (fecha u hora) y pasa el foco al siguiente
+  /// campo de entrada. Los iconos (picker y "X") están excluidos del orden
+  /// de foco, así que el foco nunca cae en ellos (regla UI/UX).
+  /// Si la fecha u hora no es válida, la ventana de error devuelve el foco
+  /// a este campo y no se avanza al siguiente.
+  Future<void> _alEnterCampo() async {
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
+    if (await _validarFechaHora() && mounted) oFoco.nextFocus();
+  }
+
+  // ── Fecha y hora inteligentes ────────────────────────────────────────────
+  /// Completa la fecha según los dígitos que alcanzó a teclear el usuario.
+  /// Se ejecuta al salir del campo o con Enter (para poder seguir tecleando
+  /// sin que el campo se complete a mitad de camino):
+  ///   16     → 16/mm/aaaa con el mes y el año actuales
+  ///   127    → 12/07/aaaa: día de 2, mes de 1 dígito (07), año actual
+  ///   1611   → 16/11/aaaa con el año actual
+  ///   161126 → 16/11/2026: el año de 2 dígitos lleva "20" delante
+  /// El año de 1 o 3 dígitos se completa igual: 2 → 2022, 026 → 2026.
+  void _completarFecha() {
+    final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.isEmpty) return;
+    final DateTime fHoy = DateTime.now();
+    String sDia;
+    String sMes;
+    String sAno;
+    if (sDigitos.length <= 2) {
+      sDia = sDigitos.padLeft(2, '0');
+      sMes = fHoy.month.toString().padLeft(2, '0');
+      sAno = fHoy.year.toString();
+    } else if (sDigitos.length == 3) {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2).padLeft(2, '0');
+      sAno = fHoy.year.toString();
+    } else if (sDigitos.length == 4) {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2, 4);
+      sAno = fHoy.year.toString();
+    } else {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2, 4);
+      final String sAnoTecleado = (sDigitos.length > 8)
+          ? sDigitos.substring(4, 8)
+          : sDigitos.substring(4);
+      sAno = (sAnoTecleado.length >= 4)
+          ? sAnoTecleado
+          : '202'.substring(0

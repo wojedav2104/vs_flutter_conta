@@ -1,0 +1,95 @@
+RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
+PARTE 9 DE 10
+---
+───────────────────────
+
+  Widget _construirLista(BuildContext oContexto) {
+    final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
+    final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
+    return DropdownButtonFormField<String>(
+      key          : ValueKey<String>('${widget.oCampo.sClave}_${widget.sValor}'),
+      initialValue : listValores.contains(widget.sValor) ? widget.sValor : null,
+      isExpanded   : true,
+      // ← CAMBIO item 7: tipografía monoespaciada también en las listas.
+      style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+      decoration   : _getDecoracion(oContexto),      
+      items: <DropdownMenuItem<String>>[
+        for (int i = 0; i < listOpciones.length; i++)
+          DropdownMenuItem<String>(
+            value : listValores[i],
+            child : Text(listOpciones[i],
+                style: _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto))),
+          ),
+      ],
+      onChanged: widget.bHabilitado
+          ? (String? sNuevo) {
+              if (sNuevo != null) widget.funcAlCambiar(sNuevo);
+            }
+          : null,
+    );
+  }
+
+  // ── Casillas (checkboxes múltiples) ──────────────────────────────────────
+  // Varios valores seleccionados se guardan separados por comas, en el orden
+  // de listValores (ej: 'FAC,NCR'). Un valor vacío = ninguna casilla marcada.
+
+  Widget _construirCasillas(BuildContext oContexto) {
+    final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
+    final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
+    final List<String> listMarcados = widget.sValor.trim().isEmpty
+        ? <String>[]
+        : widget.sValor.trim().split(',');
+    return Wrap(
+      spacing    : ClaseGenEspacios.dEspacio16,
+      runSpacing : ClaseGenEspacios.dEspacio04,
+      children: <Widget>[
+        for (int i = 0; i < listOpciones.length; i++)
+          Row(
+            mainAxisSize : MainAxisSize.min,
+            children     : <Widget>[
+              Checkbox(
+                value    : listMarcados.contains(listValores[i]),
+                onChanged: widget.bHabilitado
+                    ? (bool? bMarcado) {
+                        final Set<String> setNuevos = listMarcados.toSet();
+                        if (bMarcado == true) {
+                          setNuevos.add(listValores[i]);
+                        } else {
+                          setNuevos.remove(listValores[i]);
+                        }
+                        widget.funcAlCambiar(listValores
+                            .where((String s) => setNuevos.contains(s))
+                            .join(','));
+                      }
+                    : null,
+              ),
+              Text(listOpciones[i], style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+            ],
+          ),
+      ],
+    );
+  }
+
+  // ── Comentario (textarea) ────────────────────────────────────────────────
+
+  Widget _construirComentario(BuildContext oContexto) {
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        // ← CAMBIO item 5: contador de caracteres a la derecha, en la misma
+        //   fila que la etiqueta (con la etiqueta arriba, el contador se
+        //   muestra en esa fila y no acá).
+        if (!widget.bEtiquetaArriba && widget.oCampo.iMaxComentario > 0)
+          Padding(
+            padding : const EdgeInsets.only(
+              top   : ClaseGenEspacios.dEspacio14,
+              right : ClaseGenEspacios.dEspacio04,
+            ),
+            child : _construirContador(oContexto),
+          ),
+        TextField(
+          controller      : oControl,
+          enabled         : widget.bHabilitado,
+          focusNode       : oFoco,
+          maxLines        : 3,
+          style           : _estiloTexto(oContexto, ClaseGenEstilosTe

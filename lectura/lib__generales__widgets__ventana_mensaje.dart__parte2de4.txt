@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
 PARTE 2 DE 4
 ---
-      oIcono    : Icons.check,
+si', sIdioma),
+              oIcono    : Icons.check,
               oAlClicar : () => Navigator.of(oContextoVentana)
                   .pop(EnumRespuestaConfirmacion.si),
             ),
@@ -43,12 +44,17 @@ Future<void> funcMostrarInformacion(
   BuildContext oContexto,
   String        sIdioma,
   String        sTitulo,
-  String        sTexto,
-) async {
-  await showDialog<void>(
+  String        sTexto, {
+  int iSegundosAutoCierre = 0,
+}) async {
+  // Contexto de la ventana abierta: lo usa el temporizador para cerrarla y
+  // para saber si el usuario ya la cerró a mano (mounted == false).
+  BuildContext? oContextoVentanaAbierta;
+  final Future<void> oVentana = showDialog<void>(
     context            : oContexto,
     barrierDismissible : false,
     builder            : (BuildContext oContextoVentana) {
+      oContextoVentanaAbierta = oContextoVentana;
       return funcConstruirVentana(
         oContexto    : oContextoVentana,
         sIdioma      : sIdioma,
@@ -60,6 +66,19 @@ Future<void> funcMostrarInformacion(
       );
     },
   );
+  // Regla UI/UX: cierre automático de las ventanas informativas. Si el
+  // usuario no la cierra (Aceptar o "X"), se cierra sola luego de
+  // iSegundosAutoCierre. Si la cierra antes, se cancela el temporizador.
+  Timer? oTemporizador;
+  if (iSegundosAutoCierre > 0) {
+    oTemporizador = Timer(Duration(seconds: iSegundosAutoCierre), () {
+      if (oContextoVentanaAbierta?.mounted == true) {
+        Navigator.of(oContextoVentanaAbierta!).pop();
+      }
+    });
+  }
+  await oVentana;
+  oTemporizador?.cancel();
 }
 
 // ── Piezas compartidas (uso interno de este archivo) ────────────────────────
@@ -98,28 +117,4 @@ Widget funcConstruirVentana({
   );
 }
 
-/// Botón con icono a la izquierda (regla 00-00). bRelleno=false para los
-/// botones secundarios (No, Cancelar).
-Widget funcConstruirBoton({
-  required BuildContext oContexto,
-  required String       sTexto,
-  required IconData     oIcono,
-  required VoidCallback oAlClicar,
-  bool                  bRelleno = true,
-}) {
-  final TextStyle oEstilo = ClaseGenEstilosTexto.normalMediano(oContexto);
-  return bRelleno
-      ? FilledButton.icon(
-          onPressed : oAlClicar,
-          icon      : Icon(oIcono),
-          label     : Text(sTexto, style: oEstilo),
-        )
-      : OutlinedButton.icon(
-          onPressed : oAlClicar,
-          icon      : Icon(oIcono),
-          label     : Text(sTexto, style: oEstilo),
-        );
-}
-
-/// Botón Aceptar estándar de las ventanas advertencia, error e información.
-Widget funcConstruir
+/// Botó

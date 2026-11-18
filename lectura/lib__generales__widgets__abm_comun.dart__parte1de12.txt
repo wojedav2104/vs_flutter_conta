@@ -1,0 +1,111 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 1 DE 12
+---
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../idiomas/idiomas.dart';
+import '../modelos/campo_abm.dart';
+import '../modelos/permisos.dart';
+import '../modelos/sesion.dart';
+import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
+import '../temas/layout.dart';
+import '../temas/radios.dart';
+import '../temas/temas.dart';
+import '../utilitarios/formatos.dart';
+import '../validaciones/cap_validar.dart';
+import 'campo_formulario.dart';
+import 'ventana_mensaje.dart';
+
+/// Botones de la botonera ABM.
+enum EnumBotonAbm { agregar, borrar, cancelar, encontrar, fin, grabar, modificar }
+
+
+/// Valida el valor de un campo: obligatorio, longitud máxima (según
+/// iAnchoCaracteres) y la validación específica del campo.
+String? funcValidarCampoAbm(ClaseCampoAbm oCampo, String sValor, String sIdioma) {
+  String? sError;
+  if (oCampo.bObligatorio) {
+    sError = ClaseCapValidar.validarObligatorio(sValor, oCampo.sEtiqueta, sIdioma);
+  }
+  if (sError == null
+      && (oCampo.oTipo == EnumTipoCampoAbm.texto || oCampo.oTipo == EnumTipoCampoAbm.numero)) {
+    sError = ClaseCapValidar.validarLongitudMaxima(
+        sValor, oCampo.sEtiqueta, oCampo.iAnchoCaracteres, sIdioma);
+  }
+  return sError ?? oCampo.funcValidarCampo?.call(sValor, sIdioma);
+}
+
+
+/// Diálogo de Encontrar: devuelve el texto buscado (o null si se cancela o
+/// queda vacío).
+Future<String?> funcMostrarEncontrar(
+  BuildContext  oContexto,
+  String        sIdioma,
+  ClaseCampoAbm oCampo,
+) async {
+  final TextEditingController oControl = TextEditingController();
+  await showDialog<void>(
+    context : oContexto,
+    builder : (oContextoDialogo) => AlertDialog(
+      title: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(ClaseIdiomas.getTexto('abmEncontrar', sIdioma),
+                style: ClaseGenEstilosTexto.subtituloMediano(oContextoDialogo)),
+          ),
+          IconButton(
+            tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
+            icon      : const Icon(Icons.close),
+            onPressed : () => Navigator.of(oContextoDialogo).pop(),
+          ),
+        ],
+      ),
+      content: TextField(
+        controller  : oControl,
+        autofocus   : true,
+        style       : ClaseGenEstilosTexto.textoCampo(oContextoDialogo),
+        decoration  : InputDecoration(
+          labelText : oCampo.sEtiqueta,
+          hintText  : oCampo.sHint,
+          border    : const OutlineInputBorder(),
+        ),
+        onSubmitted : (String sValor) => Navigator.of(oContextoDialogo).pop(),
+      ),
+      actions: <Widget>[
+        FilledButton.icon(
+          onPressed : () => Navigator.of(oContextoDialogo).pop(),
+          icon      : const Icon(Icons.search),
+          label     : Text(ClaseIdiomas.getTexto('abmBuscar', sIdioma),
+              style: ClaseGenEstilosTexto.normalMediano(oContextoDialogo)),
+        ),
+      ],
+    ),
+  );
+  final String sTexto = oControl.text.trim();
+  oControl.dispose();
+  return sTexto.isEmpty ? null : sTexto;
+}
+
+/// Título de los AppBar: el nombre de la pantalla y, debajo, la Base de
+/// Datos conectada y el país (regla: la Base de Datos se muestra en el
+/// drawer y en todos los AppBar de la aplicación).
+Widget funcConstruirTituloAppBar(BuildContext oContexto, String sIdioma, String sTitulo) {
+  return Column(
+    crossAxisAlignment : CrossAxisAlignment.start,
+    mainAxisAlignment  : MainAxisAlignment.center,
+    children: <Widget>[
+      Text(sTitulo,
+           style: ClaseGenEstilosTexto.tituloMediano(oContexto)
+                    .copyWith(fontWeight: FontWeight.w600)),
+      Text('${ClaseSesion.getBaseDatos()} · ${ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma)}',
+           style: ClaseGenEstilosTexto.normalChico(oContexto)),
+    ],
+  );
+}
+
+
+/// Formulario de campos de cabecera: sin grupo, una sola c

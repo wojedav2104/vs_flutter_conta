@@ -26,6 +26,8 @@ class ClaseCampoAbm {
     this.bTieneDecimales        = false,    
     this.bVigencia              = false,
     this.iAnchoCaracteres       = 10,
+    this.iAnchoVisible          = 0,
+    this.iFila                  = 0,
     this.iMaxComentario         = 500,
     this.listOpciones,
     this.listValores,
@@ -51,7 +53,10 @@ class ClaseCampoAbm {
   bool              bTieneDecimales;
   bool              bVigencia;
   int               iAnchoCaracteres;
+  int               iAnchoVisible;
+  int               iFila;
   int               iMaxComentario;
+
   List<String>?     listOpciones;
 
   /// Valores internos que se guardan en el registro (códigos estables, ej:
@@ -97,7 +102,4 @@ class ClaseCampoAbm {
     final int iCaracteres =
         (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
     // El ancho por carácter se escala con el modo texto grande: sin esto,
-    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
-    // es 1.25.
-    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter
-        * ClaseGenEstilosTexto.dFactorTexto;
+    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorText

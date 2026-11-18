@@ -1,7 +1,27 @@
 RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
 PARTE 4 DE 4
 ---
-      autofocus    : true,
+ubtituloMediano(oContextoVentana)),
+            ),
+            IconButton(
+              tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
+              icon      : const Icon(Icons.close),
+              onPressed : () => Navigator.of(oContextoVentana).pop(),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width : ClaseGenLayout.iAnchoColumnasMensaje * ClaseGenLayout.dAnchoCaracter,
+          child : Column(
+            mainAxisSize : MainAxisSize.min,
+            crossAxisAlignment : CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(sTexto,
+                  style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
+              const SizedBox(height: ClaseGenEspacios.dEspacio16),
+              TextField(
+                controller   : oControl,
+                autofocus    : true,
                 keyboardType : TextInputType.emailAddress,
                 style        : ClaseGenEstilosTexto.textoCampo(oContextoVentana),
                 decoration   : InputDecoration(

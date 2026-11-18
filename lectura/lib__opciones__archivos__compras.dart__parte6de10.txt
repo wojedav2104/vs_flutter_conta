@@ -1,0 +1,94 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras.dart
+PARTE 6 DE 10
+---
+.getTexto('comGravadas10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iFila            : 8,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'gravadas10',
+        sEtiqueta        : ClaseIdiomas.getTexto('comGravadas10', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comIva10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iFila            : 9,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'iva10',
+        sEtiqueta        : ClaseIdiomas.getTexto('comIva10', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comGravadas5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iFila            : 10,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'gravadas5',
+        sEtiqueta        : ClaseIdiomas.getTexto('comGravadas5', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comIva5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iFila            : 11,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'iva5',
+        sEtiqueta        : ClaseIdiomas.getTexto('comIva5', sIdioma),
+        sGrupo           : 'comGenerales',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 12,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'total',
+        sEtiqueta             : ClaseIdiomas.getTexto('comTotal', sIdioma),
+        sGrupo                : 'comGenerales',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        iMaxComentario   : 500,
+        oTipo            : EnumTipoCampoAbm.comentario,
+        sClave           : 'comentarios',
+        sEtiqueta        : ClaseIdiomas.getTexto('comComentarios', sIdioma),
+        sGrupo           : 'comGenerales',
+        sHint            : ClaseIdiomas.getTexto('comHintComentarios', sIdioma),
+      ),
+
+      // ── Detalles: los importes de las filas 7 a 12, solo de lectura ────
+      // Mismas claves que en Generales (mismo valor); siempre deshabilitados
+      // y fuera de la grilla lateral.
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 7,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'exentas',
+        sEtiqueta             : ClaseIdiomas.getTexto('comExentas', sIdioma),
+        sGrupo                : 'comDetalles',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 8,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'gravadas10',
+        sEtiqueta             : ClaseIdiomas.getTexto('comGravadas10', sIdioma),
+        sGrupo                : 'comDetalles',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+   

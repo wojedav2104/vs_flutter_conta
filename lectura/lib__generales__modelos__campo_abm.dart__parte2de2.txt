@@ -1,6 +1,10 @@
 RUTA ORIGINAL: lib/generales/modelos/campo_abm.dart
 PARTE 2 DE 2
 ---
+o
+    // es 1.25.
+    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter
+        * ClaseGenEstilosTexto.dFactorTexto;
     switch (oTipo) {
       case EnumTipoCampoAbm.comentario:
         return ClaseGenLayout.dAnchoCampoComentario;
@@ -32,7 +36,8 @@ PARTE 2 DE 2
   /// detalles (sin iconos: el borrado es por fila completa). La columna es de
   /// ancho fijo, por eso usa la máscara estática del campo.
   double getAnchoColumna() {
-    final int iCaracteres = sMascara?.length ?? iAnchoCaracteres;
+    final int iCaracteres = sMascara?.length
+        ?? (iAnchoVisible > 0 ? iAnchoVisible : iAnchoCaracteres);
     // Mismo escalamiento que getAnchoCampo: el texto de las celdas también
     // crece con el modo texto grande.
     return iCaracteres * ClaseGenLayout.dAnchoCaracter

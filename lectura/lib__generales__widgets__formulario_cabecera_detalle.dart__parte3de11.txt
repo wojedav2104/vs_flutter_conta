@@ -1,0 +1,109 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 3 DE 11
+---
+estaConfirmacion oRespuesta = await funcMostrarConfirmacion(
+      context,
+      getIdioma(),
+      widget.sTitulo,
+      ClaseIdiomas.getTexto('confirmarBorrar', getIdioma()),
+      bMostrarCancelar : false,
+    );
+    if (oRespuesta != EnumRespuestaConfirmacion.si || !mounted) return;
+    setState(() {
+      widget.listRegistros.removeAt(iRegistro);
+      mapValores   = <String, String>{};
+      _reemplazarDetalles(<Map<String, String>>[]);
+      iRegistro         = -1;
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    await _mostrarInformacion(ClaseIdiomas.getTexto('mensajeBorrado', getIdioma()));
+  }
+
+  void cancelar() {
+    setState(() {
+      // Si se estaba agregando, volver al registro que se estaba viendo.
+      if (iRegistro < 0 && iRegistroAnterior >= 0) {
+        iRegistro = iRegistroAnterior;
+      }
+      if (iRegistro >= 0) {
+        final Map<String, dynamic> oRegistro = widget.listRegistros[iRegistro];
+        mapValores = _desdeRegistro(oRegistro);
+        _reemplazarDetalles(_desdeDetalles(oRegistro));
+      } else {
+        mapValores = <String, String>{};
+        _reemplazarDetalles(<Map<String, String>>[]);
+      }
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+    });
+    // El foco vuelve a la grilla lateral: el usuario sigue viendo el registro.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _oFocoGrilla.requestFocus();
+    });
+  }
+
+  Future<void> grabar() async {
+    final String sIdioma = getIdioma();
+
+    // 0) Ceros a la izquierda en cabecera y detalles ANTES de validar
+    //    (regla de la subcuenta: '1' → '00001').
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.bCompletarCeros) {
+        mapValores[oCampo.sClave] =
+            funcCompletarCeros(mapValores[oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
+      }
+    }
+    for (int i = 0; i < listDetalles.length; i++) {
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+        if (oCampo.bCompletarCeros) {
+          listDetalles[i][oCampo.sClave] = funcCompletarCeros(
+              listDetalles[i][oCampo.sClave] ?? '', oCampo.iAnchoCaracteres);
+        }
+      }
+      _sincronizarControles(i, listDetalles[i]);
+    }
+
+    // 1) Campos de cabecera.
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      final String? sError =
+          funcValidarCampoAbm(oCampo, mapValores[oCampo.sClave] ?? '', sIdioma);
+      if (sError != null) {
+        await _mostrarError(sError);
+        // ← CAMBIO item 14: el foco se coloca en el primer campo con error.
+        _oLlaveFormulario.currentState?.enfocarCampo(oCampo.sClave);
+        return;
+      }
+    }
+
+    // 2) Filas de detalle.
+    final String? sErrorDetalle = _validarDetalles(sIdioma);
+    if (sErrorDetalle != null) {
+      await _mostrarError(sErrorDetalle);
+      return;
+    }
+
+    // 3) Validación cruzada del registro completo.
+    final List<Map<String, String>> listLimpias = _listDetallesLimpias();
+    final Map<String, dynamic> oRegistro = Map<String, dynamic>.from(mapValores)
+      ..[ClaseFormularioCabeceraDetalle.sClaveDetalles] = listLimpias;
+    final String? sError = widget.funcValidarRegistro?.call(oRegistro);
+    if (sError != null) {
+      await _mostrarError(sError);
+      return;
+    }
+
+    // 4) Grabación (los ceros ya se aplicaron en el paso 0).
+    setState(() {
+      _reemplazarDetalles(_clonarDetalles(listLimpias));
+      final Map<String, dynamic> oNuevo = Map<String, dynamic>.from(mapValores)
+        ..[ClaseFormularioCabeceraDetalle.sClaveDetalles] = _clonarDetalles(listLimpias);
+      if (iRegistro < 0) {
+        widget.listRegistros.add(oNuevo);
+        iRegistro = widget.listRegistros.length - 1;
+      } else {
+        widget.listRegistros[iRegistro] = oNuevo;
+      }
+      iRegistroAnterior = -1;
+      bModoEdicion      = false;
+   

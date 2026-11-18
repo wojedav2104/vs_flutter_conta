@@ -1,0 +1,85 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 9 DE 12
+---
+size  : 14,
+                                    color : Theme.of(oContexto).colorScheme.primary,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const Divider(height: ClaseGenEspacios.dEspacio01),
+            Expanded(
+              child: ListView.builder(
+                itemCount : listPagina.length,
+                itemBuilder: (oContextoFila, i) {
+                  final Map<String, dynamic> oRegistro = listPagina[i];
+                  final int  iIndice      = widget.listRegistros.indexOf(oRegistro);
+                  final bool bSeleccionado = (iIndice == widget.iRegistro);
+                  return InkWell(
+                    canRequestFocus : false,                 // ← CAMBIO item 23
+                    onTap: () {                              // ← CAMBIO item 23
+                      oFocoGrilla.requestFocus();
+                      widget.funcSeleccionar(iIndice);
+                    },
+                    child : Container(
+                      decoration : BoxDecoration(
+                        color  : bSeleccionado
+                            ? Theme.of(oContexto).colorScheme.primaryContainer
+                            : null,
+                        // ← CAMBIO item 23: aro visible del foco del teclado
+                        //   en la fila seleccionada.
+                        border : (bSeleccionado && oFocoGrilla.hasFocus)
+                            ? Border.all(
+                                color : Theme.of(oContexto).colorScheme.primary,
+                              )
+                            : null,
+                      ),
+                      padding : const EdgeInsets.symmetric(
+                        horizontal : ClaseGenEspacios.dEspacio08,
+                        vertical   : ClaseGenEspacios.dEspacio04,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          for (final ClaseCampoAbm oCampo in listColumnas)
+                            Expanded(
+                              child: GestureDetector(
+                                onLongPressStart: (oDetalle) => _mostrarMenuCelda(
+                                    oContexto, oRegistro, oCampo, oDetalle.globalPosition),
+                                child: Text(
+                                  (oRegistro[oCampo.sClave] ?? '').toString(),
+                                  // ← CAMBIO item 8: alinear números a la derecha en celdas
+                                  textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
+                                      ? TextAlign.right
+                                      : TextAlign.left,
+                                  style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                  maxLines : 1,
+                                  overflow : TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const Divider(height: ClaseGenEspacios.dEspacio01),
+            Padding(
+              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
+              child   : Row(
+                children: <Widget>[
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('menuPrimeraFila', widget.sIdioma),
+                    icon      : const Icon(Icons.first_page),
+                    onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
+                  ),
+                  IconButton(
+  

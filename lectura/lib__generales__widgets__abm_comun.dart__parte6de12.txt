@@ -1,0 +1,95 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 6 DE 12
+---
+();
+    _oFocoInterno.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant ClaseGrillaRegistros oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Al seleccionar un registro (ej: con Encontrar) se salta a su página.
+    if (oldWidget.iRegistro != widget.iRegistro
+        && widget.iRegistro >= 0
+        && widget.iRegistro < widget.listRegistros.length) {
+      final int iPosicion = _listFiltrados().indexOf(widget.listRegistros[widget.iRegistro]);
+      if (iPosicion >= 0) iPagina = iPosicion ~/ ClaseGenLayout.iFilasPorPagina;
+    }
+  }
+
+  // ── Navegación con el teclado ────────────────────────────────────────────
+
+  /// Flechas arriba/abajo: mueven la selección a la fila anterior o
+  /// siguiente (item 23). La navegación respeta el filtro y el orden
+  /// actuales de la grilla.
+  KeyEventResult _alPulsarTecla(FocusNode oNodo, KeyEvent oEvento) {
+    if (oEvento is! KeyDownEvent) return KeyEventResult.ignored;
+    if (oEvento.logicalKey != LogicalKeyboardKey.arrowDown
+        && oEvento.logicalKey != LogicalKeyboardKey.arrowUp) {
+      return KeyEventResult.ignored;
+    }
+    final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
+    if (listFiltrados.isEmpty) return KeyEventResult.ignored;
+
+    int iPosicion = (widget.iRegistro >= 0 && widget.iRegistro < widget.listRegistros.length)
+        ? listFiltrados.indexOf(widget.listRegistros[widget.iRegistro])
+        : -1;
+
+    final int iNueva = (oEvento.logicalKey == LogicalKeyboardKey.arrowDown)
+        ? math.min(iPosicion + 1, listFiltrados.length - 1)
+        : math.max(iPosicion - 1, 0);
+    if (iNueva < 0 || iNueva == iPosicion) return KeyEventResult.handled;
+
+    final int iIndice = widget.listRegistros.indexOf(listFiltrados[iNueva]);
+    if (iIndice >= 0) widget.funcSeleccionar(iIndice);
+    return KeyEventResult.handled;
+  }
+
+  // ── Registros filtrados, ordenados y paginados ───────────────────────────
+
+  List<Map<String, dynamic>> _listFiltrados() {
+    Iterable<Map<String, dynamic>> list = widget.listRegistros;
+    final String sTexto = sFiltro.trim().toLowerCase();
+    if (sTexto.isNotEmpty) {
+      list = list.where((Map<String, dynamic> o) => o.entries.any(
+          (MapEntry<String, dynamic> e) =>
+              e.value is! List && e.value.toString().toLowerCase().contains(sTexto)));
+    }
+    final List<Map<String, dynamic>> listSalida = list.toList();
+    if (sClaveOrden.isNotEmpty) {
+      // ← CAMBIO: orden real según el tipo de campo (los importes se ordenan
+      //   como números y las fechas como fechas, no como texto).
+      final EnumTipoCampoAbm oTipo = widget.listCampos
+          .firstWhere((ClaseCampoAbm o) => o.sClave == sClaveOrden,
+              orElse: () => widget.listCampos.first)
+          .oTipo;
+      listSalida.sort((Map<String, dynamic> a, Map<String, dynamic> b) {
+        final String sA = (a[sClaveOrden] ?? '').toString();
+        final String sB = (b[sClaveOrden] ?? '').toString();
+        if (oTipo == EnumTipoCampoAbm.numero) {
+          return (funcNumeroOrden(sA) ?? 0).compareTo(funcNumeroOrden(sB) ?? 0);
+        }
+        if (oTipo == EnumTipoCampoAbm.fecha) {
+          return (funcFechaOrden(sA) ?? DateTime(0))
+              .compareTo(funcFechaOrden(sB) ?? DateTime(0));
+        }
+        return sA.compareTo(sB);
+      });
+      if (bOrdenDesc) return listSalida.reversed.toList();
+    }
+    return listSalida;
+  }
+
+  // ── Menú contextual por celda ────────────────────────────────────────────
+
+  Future<void> _mostrarMenuCelda(
+    BuildContext         oContexto,
+    Map<String, dynamic> oRegistro,
+    ClaseCampoAbm        oCampo,
+    Offset               oPosicion,
+  ) async {
+    final String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
+    final String? sAccion = await showMenu<String>(
+      context  : oContexto,
+      position : RelativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPo

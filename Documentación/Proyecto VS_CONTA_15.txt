@@ -1,0 +1,204 @@
+========================================================================
+ESTADO DE SESIÓN — VS_CONTA (vs_flutter_conta)
+Para continuar en una nueva sesión: entregar este archivo completo.
+Última actualización: al cierre de la sesión de trabajo actual.
+========================================================================
+
+1. ROL Y FLUJO
+--------------
+Programador humano profesional senior en Flutter/Dart, cotrabajo con el
+usuario (dueño del proyecto). Él decide, yo propongo; él prueba y
+reporta, yo diagnostico y entrego. Español neutro, tono técnico sobrio.
+Repositorio: https://github.com/wojedav2104/vs_flutter_conta
+Flujo: releer fragmentos de lectura/ (o el .dart en GitHub) antes de
+entregar; parches "Buscar:"/"Reemplazar:" exactos sobre los .dart REALES
+de lib/ (nunca sobre lectura/); archivos completos cuando hay muchos
+cambios. El usuario aplica, compila con flutter run -d windows, prueba y
+reporta. Tras cambios de recursos/idiomas o de clases de Estado:
+flutter clean (el hot reload NO sirve ahí; causa errores de "Assertion
+failed: framework.dart" por estado obsoleto). Verificar anchors contra el
+código real antes de entregar.
+
+2. PROYECTO
+-----------
+VS_CONTA: contabilidad multi-país/moneda/sucursal/usuario/idioma
+(español/francés). Hoy Paraguay (SET, DNIT, Marangatú, IVA 10%/5%, I.R.E.,
+I.R.P., Retención 30%). Plataformas: Windows táctil, Android, web.
+FASE 1: 8 pantallas ABM con datos de prueba + Login + menú drawer.
+DEMO PÚBLICA en VPS Ubuntu 22.04 (Nginx) con dominio e IP; se actualiza
+con flutter build web --release + subir build/web a /var/www/vsconta.
+Firebird 2.5.9 pendiente (guía VPS lista en docs 09_01_01/02).
+Especificaciones fuente de verdad en Documentación/ (25 archivos "0"):
+00_00_01..03 (UI/UX, nomenclatura, ventanas, mensajes, máscaras), 00_01
+(carpetas), 00_02 (drawer), 00_03_01/02 (23 reglas ABM), 00_04 (monedas),
+00_05 (países), 01_01..01_08 (tablas), 02_01..02_03_02 (Cuentas, Asientos,
+Compras), 09_01/09_02 (VPS Firebird, enlaces). Si la spec y el código
+difieren, manda la spec.
+
+3. ARQUITECTURA (resumen)
+-------------------------
+MVVM con widgets. Formularios autocontenidos: List<ClaseCampoAbm> +
+datos de prueba → ClaseFormularioAbm (tablas simples) o
+ClaseFormularioCabeceraDetalle (Asientos/Compras). Archivos clave:
+- generales/modelos/campo_abm.dart — ClaseCampoAbm: getAnchoCampo()/
+  getAnchoColumna(); iAnchoVisible (caracteres visibles de celda en
+  grilla de detalles, 0 = todos, no limita lo tecleable); iFila (campos
+  con el mismo número > 0 comparten fila visual, 0 = fila propia; la fila
+  se coloca donde aparece su primer campo y el orden de Tab = orden
+  visual).
+- generales/widgets/campo_formulario.dart — ClaseCampoFormulario:
+  bAnchoFlexible (ancho flexible en filas compartidas); bEtiquetaArriba
+  (etiqueta + contador en la primera fila, control a todo el ancho —
+  usado por Comentarios al pie); Enter = Tab vía _alEnterCampo() (con
+  error no avanza); IconButtons de picker y "X" envueltos en ExcludeFocus
+  (fuera del orden de Tab/Enter); números con máscara: valor interno
+  plano, mostrado formateado (2.200.000) incluso al cargar y en campos
+  deshabilitados (_mostrarNumeroFormateado en initState/didUpdateWidget/
+  _alCambiarFoco); fechas/horas con completado inteligente y validación
+  al salir solo si el foco pasó a otro campo de entrada.
+- generales/widgets/abm_comun.dart — ClaseFormularioCampos: pestañas
+  como FICHAS visibles (_construirPestana, activa primaryContainer +
+  borde primario + negrita; inactivas surfaceContainerHigh + outline;
+  animateTo al tocar; toda pestaña futura reutiliza este método);
+  _construirCampos/_construirFila para filas multi-campo (ancho natural
+  por campo con tope: nunca se estiran; si no caben se angostan
+  proporcionalmente); funcExtraGrupo (contenido extra debajo de los
+  campos de un grupo dentro de su pestaña — la grilla de detalles de
+  Compras); mapFocos: 1 nodo de FocusNode POR CAMPO (Map<ClaseCampoAbm,
+  FocusNode>, porque una clave puede repetirse en dos pestañas);
+  ClaseGrillaRegistros (flechita de orden junto a la columna activa,
+  arrow_upward/arrow_downward, color primary; cuadro de búsqueda con
+  backcolor/forecolor de controles habilitados); ClaseBotoneraAbm
+  (colores por estados con WidgetStateProperty: foco = amarillo
+  colorAmarillo1 + texto negro).
+- generales/widgets/formulario_abm.dart — ABM simple; grabación exitosa
+  con cierre automático 3 s (iSegundosAutoCierre: 3).
+- generales/widgets/formulario_cabecera_detalle.dart — Cabecera con o
+  sin pestañas; sGrupoConDetalles (si != null, la grilla de detalles
+  vive dentro de esa pestaña — Compras; si es null, al pie — Asientos);
+  encabezado + filas + fila de totales comparten el mismo scroll
+  horizontal (sin OVERFLOW, sumas alineadas); ancho total de la grilla
+  incluye el padding horizontal de las filas (corrige OVERFLOW 16 px);
+  filas con textoCampo (mismo FontSize que controles) y contentPadding
+  vertical dEspacio08; separación entre filas dEspacio02/3; botón
+  "Agregar fila" dentro de la fila de TOTALES a la izquierda (ancho de
+  las columnas previas al rótulo) con estilo de botón ABM (azul/blanco,
+  gris deshabilitado, amarillo con foco); campo al pie con
+  bEtiquetaArriba y ancho de la grilla; celdas numéricas
+  (_ClaseCeldaNumero) formatean al cargar y al cambiar el valor externo
+  (didUpdateWidget); grabación exitosa con cierre automático 3 s.
+- generales/widgets/ventana_mensaje.dart — funcMostrarInformacion acepta
+  iSegundosAutoCierre (0 = manual; Timer con guard mounted); errores y
+  confirmaciones nunca se cierran solas.
+- generales/temas/colores.dart + temas.dart — colorCampoHabilitadoClaro
+  (#DFF3FA)/Oscuro (#14384A), colorTextoCampoHabilitadoClaro (#005F7D)/
+  Oscuro (#7FDCF2); helpers: colorFondoCampoHabilitado (cian suave),
+  colorFondoCampoDeshabilitado (gris tenue surfaceContainerHighest),
+  colorTextoCampoHabilitado (cian con contraste), colorBotonConFoco
+  (amarillo), colorTextoBotonConFoco (negro). Regla de oro: todo color
+  vía ClaseGenTemas/Theme.of, nunca en los widgets.
+- generales/idiomas/ — 8 archivos es/fr; paridad de claves completa;
+  'comDetalles' = 'Detalles'/'Détails' agregado.
+- opciones/archivos/asientos.dart — Concepto con iAnchoVisible: 15.
+- opciones/archivos/compras.dart — 3 grupos: Generales (filas 1-12),
+  Detalles (los 6 importes solo lectura, mismas claves que Generales,
+  + grilla editable debajo + Comentarios al pie), Resolución 90/2021
+  (sin cambios, una fila por campo); sGrupoConDetalles: 'comDetalles';
+  cantidadCuotas en fila propia después de la fila 3; Asiento N° con
+  bEnGrilla: false (la grilla lateral muestra Ejercicio·Sucursal·
+  Fecha); auto-cálculos de actualarCampos intactos.
+
+4. REGLAS UI/UX ESTABLECIDAS (aplicar en todo lo nuevo)
+-------------------------------------------------------
+a) Enter = Tab en campos de entrada (Comentario conserva su Enter);
+   IconButtons (picker, "X") fuera del orden de foco (ExcludeFocus).
+b) Pestañas: siempre como fichas visibles (_construirPestana).
+c) Controles: relleno distinto al fondo del formulario; habilitado =
+   cian suave + texto cian con contraste (nunca gris ni negro);
+   deshabilitado = gris tenue + texto gris/negro. Colores exactos
+   pendientes de decidir con los usuarios (mecanismo en un solo punto).
+d) Botón con foco de teclado: fondo amarillo + texto negro, bastante
+   distinto de los sin foco (misma regla para todos los botones).
+e) Ventana de grabación exitosa: se cierra sola a los 3 s.
+f) Grilla lateral: flechita de orden por columna (asc/desc).
+g) Formularios con muchos campos: varios campos por fila (iFila), cada
+   uno a su ancho mínimo (nunca se estira); filas de pocos campos: uno
+   debajo del otro (Asientos).
+h) Números: valor interno plano; SIEMPRE mostrados con su máscara
+   (2.200.000) salvo que se estén editando (entonces plano para teclear).
+i) Mensajes al usuario: SIEMPRE de "tú" (nunca "vos" ni "usted"), es y
+   fr (tu/toi); frases impersonales válidas.
+j) Traducciones francesas: R.U.C. no se traduce; "apellido materno/
+   paterno" = "nom de famille maternel/paternel"; "compte" masculino
+   (ce compte).
+
+5. DESPLIEGUE (VPS)
+-------------------
+VPS Ubuntu 22.04 (vps3832812) con Nginx. Carpeta pública:
+/var/www/vsconta (www-data:www-data, permisos 755). Configuración en
+/etc/nginx/sites-available/vsconta (try_files → index.html para rutas
+de la app; gzip; caché 7d para assets). El código fuente NUNCA se sube
+al VPS: solo el contenido de build\web (compilado). Actualización:
+flutter build web --release en Windows → WinSCP reemplaza contenido de
+/var/www/vsconta → Ctrl+F5. Acceso por IP; el dominio pendiente de
+propagación DNS (registro A en el registrador; se resuelve con
+nslookup/dnschecker). HTTPS pendiente (certbot --nginx cuando el DNS
+resuelva). WinSCP y PuTTY instalados en la PC.
+
+6. PENDIENTES
+-------------
+1. [APLICADO PENDIENTE DE PRUEBA] Ajustes recientes: ancho mínimo de
+   campos en filas (abm_comun _construirFila con ConstrainedBox) y
+   números formateados al cargar (campo_formulario initState +
+   formulario_cabecera_detalle didUpdateWidget). El usuario aún no
+   confirma resultado final.
+2. [DECIDIDO] Botones OK/CANCEL de los pickers de Flutter sin icono:
+   se aceptan como widgets externos (cerrado).
+3. Decidir con los usuarios: colores exactos de controles
+   habilitados/deshabilitados y el tamaño del texto (dFactorTexto hoy
+   1.25, se baja a 1.0 si lo piden; vive en ClaseGenEstilosTexto).
+4. Mejoras sustanciales al botón "Encontrar" (no tocar hasta entonces).
+5. Ajustes pendientes de Compras/Ventas que el usuario pueda pedir (la
+   lógica de filas y pestañas ya está lista para reutilizar en Ventas).
+6. Barrer claves crudas restantes si aparecen (Sucursales, Cuentas,
+   Cuentas Asignadas, Configuración).
+7. Ajustar redacciones es/fr de validFechaInvalida/validHoraInvalida a
+   gusto (verificar que mapFr acompañe).
+8. Mayores: DDL de la BD de las 8 tablas (specs 01_01..01_08, incluye
+   validaciones de unicidad), instalación de Firebird 2.5.9 en el VPS,
+   API en el VPS (la app web no puede hablar directo con Firebird),
+   Lector de archivos de Marangatú (01_06), Entorno 00_00_01, pantallas
+   de Informes/Procesos.
+9. HTTPS + dominio del VPS cuando el DNS se propague.
+
+7. LECCIONES / ERRORES A NO REPETIR
+-----------------------------------
+- Nunca editar fragmentos de lectura/; solo .dart reales de lib/.
+- Si un cambio no se refleja: flutter clean y recompilar. El hot reload
+  causa "Assertion failed: framework.dart" cuando cambiaron clases de
+  Estado (initState/mapFocos/etc.). Si el usuario reporta ese error,
+  primero pedir flutter clean antes de diagnosticar.
+- OVERFLOW de la grilla: el ancho total debe incluir el padding
+  horizontal de las filas (16 px).
+- Ternarias de colores por estado: revisar TODOS los puntos (formulario,
+  celdas, dropdown items) al invertir la lógica.
+- Verificar anchors "Buscar:" contra el .dart real (con los parches ya
+  aplicados) antes de entregar; si se entrega un archivo completo,
+  incluir los cambios de sesiones anteriores.
+- Unificar tratamientos de mensaje (tú/tu) al agregar textos nuevos.
+- Los archivos completos entregados hasta ahora: asientos.dart,
+  formulario_cabecera_detalle.dart, compras.dart (el último). Si se
+  vuelve a entregar uno completo, reconstruirlo sobre el estado actual
+  del usuario (GitHub + parches aplicados), no sobre el original.
+
+8. CÓMO CONTINUAR EN LA PRÓXIMA SESIÓN
+---------------------------------------
+1. Leer este archivo completo.
+2. Preguntar/proponer según la sección 6 (lo primero probable: confirmar
+   los ajustes de ancho mínimo y números formateados; luego DDL de BD o
+   lo que el usuario pida).
+3. Si reporta un bug de lo aplicado, releer los fragmentos
+   correspondientes de lectura/ (o GitHub) y entregar parches
+   correctivos.
+4. Al cerrar la próxima sesión, actualizar este archivo y el CLAUDE.md.
+========================================================================

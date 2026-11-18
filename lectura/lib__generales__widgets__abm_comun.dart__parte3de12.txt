@@ -1,0 +1,109 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 3 DE 12
+---
+if (mounted && oCampo != null) mapFocos[oCampo]?.requestFocus();
+  }
+
+  List<String> _getListGrupos() {
+    final List<String> listSalida = <String>[];
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      final String? sGrupo = oCampo.sGrupo;
+      if (sGrupo != null && !listSalida.contains(sGrupo)) listSalida.add(sGrupo);
+    }
+    return listSalida;
+  }
+
+  /// Ficha de pestaña (regla UI/UX "fácil visualización"): las pestañas se
+  /// distinguen a simple vista como fichas con fondo y borde propios. La
+  /// pestaña activa usa el color primario del contenedor, borde marcado y
+  /// texto en negrita; las inactivas, un fondo neutro con borde suave.
+  /// Toda pestaña futura de la aplicación debe seguir esta misma regla.
+  Widget _construirPestana(
+    BuildContext oContexto, {
+    required String sTexto,
+    required bool  bActiva,
+    required int   iIndice,
+  }) {
+    final ColorScheme oEsquema = Theme.of(oContexto).colorScheme;
+    return Material(
+      type : MaterialType.transparency,
+      child: InkWell(
+        borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+        onTap        : () => oControladorPestanas.animateTo(iIndice),
+        child : Container(
+          alignment : Alignment.center,
+          padding   : const EdgeInsets.symmetric(
+            vertical : ClaseGenEspacios.dEspacio08,
+          ),
+          decoration : BoxDecoration(
+            color        : bActiva
+                ? oEsquema.primaryContainer
+                : oEsquema.surfaceContainerHigh,
+            borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+            border       : Border.all(
+              color : bActiva ? oEsquema.primary : oEsquema.outline,
+            ),
+          ),
+          child : Text(
+            sTexto,
+            maxLines  : 1,
+            overflow  : TextOverflow.ellipsis,
+            textAlign : TextAlign.center,
+            style     : ClaseGenEstilosTexto.normalMediano(oContexto).copyWith(
+              color      : bActiva ? oEsquema.onPrimaryContainer : oEsquema.onSurfaceVariant,
+              fontWeight : bActiva ? FontWeight.w700 : FontWeight.w400,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext oContexto) {
+
+    // Primer campo habilitado → recibir foco al entrar en edición.
+    ClaseCampoAbm? oPrimeroHabilitado;
+    for (final ClaseCampoAbm oCampo in widget.listCampos) {
+      if (widget.funcEsHabilitado(oCampo)) {
+        oPrimeroHabilitado = oCampo;
+        break;
+      }
+    }
+
+    final List<String> listGrupos = _getListGrupos();
+
+    if (listGrupos.isEmpty) {
+      return SingleChildScrollView(
+        padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+        child   : Column(
+          crossAxisAlignment : CrossAxisAlignment.start,
+          children: _construirCampos(widget.listCampos, oPrimeroHabilitado),
+        ),
+
+      );
+    }
+
+    final List<ClaseCampoAbm> listComunes =
+        widget.listCampos.where((ClaseCampoAbm o) => o.sGrupo == null).toList();
+
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (listComunes.isNotEmpty)
+          Padding(
+            padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio16),
+            child   : Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
+              children: _construirCampos(listComunes, oPrimeroHabilitado),
+            ),
+          ),
+        // Regla UI/UX (fácil visualización): cada pestaña es una ficha
+        // visible con fondo y borde propios; la activa se resalta con el
+        // color primario y texto en negrita.
+        Padding(
+          padding : const EdgeInsets.symmetric(
+            horizontal : ClaseGenEspacios.dEspacio16,
+            vertical   : ClaseGenEspacios.dEspacio04,
+          ),
+          child : AnimatedBuilder(

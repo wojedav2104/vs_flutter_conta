@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_terceros.dart
 PARTE 3 DE 3
 ---
-'           : 'Portable',
+re'            : 'Nom',
+    'cliCelular'           : 'Portable',
     'cliLocalidad'         : 'Localité',
     'cliEmail'             : 'Adresse e-mail',
     'cliTipoIdentificacion': "Type d'identification",
@@ -16,13 +17,13 @@ PARTE 3 DE 3
     'cliHintIdentificacion': "Numéro de pièce d'identité",
 
     // ── Tipos de documento de identidad (compartido) ─────────────────
-    'docRuc'               : 'N.I.T.',
+    'docRuc'               : 'R.U.C.',
     'docCedulaIdentidad'   : "Carte d'identité",
     'docPasaporte'         : 'Passeport',
     'docCedulaExtranjera'  : "Carte d'identité étrangère",
     'docSinNombre'         : 'Sans nom',
-    'docDiplomatico'       : 'Diplomate',
-
+    'docDiplomatico'       : 'Diplomatique',
+    
     // ── Pantalla Proveedores (claves que usa proveedores.dart) ───────
     'prvCodigo'            : 'Code',
     'prvNombre'            : 'Nom',
@@ -45,9 +46,9 @@ PARTE 3 DE 3
     // ── Timbrados (claves usadas en las dos pantallas) ───────────────
     'timUltimoDocumento'   : 'Numéro du dernier document',
     'timPrvNombre'         : 'Nom du fournisseur',
-    'timPrvRuc'            : 'N.I.T.',
+    'timPrvRuc'            : 'R.U.C.',
     'timPrvHintNombre'     : 'Nom du fournisseur',
-    'timPrvHintRuc'        : 'Numéro de N.I.T. du fournisseur',
+    'timPrvHintRuc'        : 'Numéro de R.U.C. du fournisseur',
 
     // ── Timbrados (campos comunes, ClaseTimbradosComun) ──────────────
     'timTimbrado'          : 'Numéro de timbrado',

@@ -1,7 +1,31 @@
 RUTA ORIGINAL: lib/generales/widgets/ventana_mensaje.dart
 PARTE 3 DE 4
 ---
-BotonAceptar(BuildContext oContexto, String sIdioma) {
+n con icono a la izquierda (regla 00-00). bRelleno=false para los
+/// botones secundarios (No, Cancelar).
+Widget funcConstruirBoton({
+  required BuildContext oContexto,
+  required String       sTexto,
+  required IconData     oIcono,
+  required VoidCallback oAlClicar,
+  bool                  bRelleno = true,
+}) {
+  final TextStyle oEstilo = ClaseGenEstilosTexto.normalMediano(oContexto);
+  return bRelleno
+      ? FilledButton.icon(
+          onPressed : oAlClicar,
+          icon      : Icon(oIcono),
+          label     : Text(sTexto, style: oEstilo),
+        )
+      : OutlinedButton.icon(
+          onPressed : oAlClicar,
+          icon      : Icon(oIcono),
+          label     : Text(sTexto, style: oEstilo),
+        );
+}
+
+/// Botón Aceptar estándar de las ventanas advertencia, error e información.
+Widget funcConstruirBotonAceptar(BuildContext oContexto, String sIdioma) {
   return funcConstruirBoton(
     oContexto : oContexto,
     sTexto    : ClaseIdiomas.getTexto('aceptar', sIdioma),
@@ -84,24 +108,4 @@ Future<String?> funcMostrarPedirTexto(
             const SizedBox(width: ClaseGenEspacios.dEspacio08),
             Expanded(
               child: Text(sTitulo,
-                  style: ClaseGenEstilosTexto.subtituloMediano(oContextoVentana)),
-            ),
-            IconButton(
-              tooltip   : ClaseIdiomas.getTexto('cerrar', sIdioma),
-              icon      : const Icon(Icons.close),
-              onPressed : () => Navigator.of(oContextoVentana).pop(),
-            ),
-          ],
-        ),
-        content: SizedBox(
-          width : ClaseGenLayout.iAnchoColumnasMensaje * ClaseGenLayout.dAnchoCaracter,
-          child : Column(
-            mainAxisSize : MainAxisSize.min,
-            crossAxisAlignment : CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(sTexto,
-                  style: ClaseGenEstilosTexto.normalMediano(oContextoVentana)),
-              const SizedBox(height: ClaseGenEspacios.dEspacio16),
-              TextField(
-                controller   : oControl,
-          
+                  style: ClaseGenEstilosTexto.s

@@ -1,0 +1,119 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 4 DE 11
+---
+ });
+    // Regla UI/UX: la ventana de "grabación exitosa" se cierra sola a los 3
+    // segundos si el usuario no la cierra antes.
+    await _mostrarInformacion(
+      ClaseIdiomas.getTexto('grabacionExitosa', sIdioma),
+      iSegundosAutoCierre : 3,
+    );
+  }
+
+  Future<void> encontrar() async {
+    final String sIdioma = getIdioma();
+    final String? sTexto = await funcMostrarEncontrar(
+        context, sIdioma, widget.listCamposCabecera.first);
+    if (sTexto == null) return;
+    final String sBusqueda = sTexto.toLowerCase();
+    for (int i = 0; i < widget.listRegistros.length; i++) {
+      if ((widget.listRegistros[i][widget.listCamposCabecera.first.sClave] ?? '')
+          .toString().toLowerCase().contains(sBusqueda)) {
+        seleccionar(i);
+        return;
+      }
+    }
+    await _mostrarInformacion(ClaseIdiomas.getTexto('abmNoEncontrado', sIdioma));
+  }
+
+  // ── Filas de detalle ─────────────────────────────────────────────────────
+
+  Map<String, String> _crearFilaVacia() {
+    return <String, String>{
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+        oCampo.sClave: oCampo.sValorDefecto ?? '',
+    };
+  }
+
+  void agregarFila() {
+    setState(() {
+      listDetalles.add(_crearFilaVacia());
+      listControles.add(_crearControles(listDetalles.last));
+    });
+  }
+
+  void borrarFila(int iFila) {
+    setState(() {
+      for (final TextEditingController oCtrl in listControles[iFila].values) {
+        oCtrl.dispose();
+      }
+      listControles.removeAt(iFila);
+      listDetalles.removeAt(iFila);
+    });
+  }
+
+  void subirFila(int iFila) {
+    if (iFila <= 0) return;
+    setState(() {
+      listDetalles.insert(iFila - 1, listDetalles.removeAt(iFila));
+      listControles.insert(iFila - 1, listControles.removeAt(iFila));
+    });
+  }
+
+  void bajarFila(int iFila) {
+    if (iFila >= listDetalles.length - 1) return;
+    setState(() {
+      listDetalles.insert(iFila + 1, listDetalles.removeAt(iFila));
+      listControles.insert(iFila + 1, listControles.removeAt(iFila));
+    });
+  }
+
+  void _alCambiarFila(int iFila, String sClave, String sValor) {
+    String sSalida = sValor;
+    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+      if (oCampo.sClave == sClave && oCampo.bMayusculas) {
+        sSalida = sValor.toUpperCase();
+        final TextEditingController? oCtrl = listControles[iFila][sClave];
+        if (oCtrl != null && oCtrl.text != sSalida) {
+          oCtrl.value = TextEditingValue(
+            text      : sSalida,
+            selection : TextSelection.collapsed(offset: sSalida.length),
+          );
+        }
+        break;
+      }
+    }
+    setState(() {
+      listDetalles[iFila][sClave] = sSalida;
+      final Map<String, String>? mapActualizaciones =
+          widget.funcActualizarFila?.call(listDetalles[iFila]);
+      if (mapActualizaciones != null) {
+        listDetalles[iFila].addAll(mapActualizaciones);
+        _sincronizarControles(iFila, listDetalles[iFila]);
+      }
+    });
+  }
+
+  // ── Validación de las filas de detalle ───────────────────────────────────
+
+  String? _validarDetalles(String sIdioma) {
+
+    // Al menos una fila de detalle.
+    final bool bAlgunaConContenido = listDetalles.any((Map<String, String> mapFila) =>
+        mapFila.values.any((String s) => s.trim().isNotEmpty));
+    if (!bAlgunaConContenido) {
+      return ClaseIdiomas.getTexto('detDetalleVacio', sIdioma);
+    }
+
+    int iFila = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      iFila++;
+      final bool bConContenido =
+          mapFila.values.any((String s) => s.trim().isNotEmpty);
+      if (!bConContenido) continue;
+
+      // Validación de cada campo de la fila.
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+        final String? sError =
+            funcValidarCampoAbm(oCampo, mapFila[oCampo.sClave] ?? '', sIdioma);
+        if (sError != nu

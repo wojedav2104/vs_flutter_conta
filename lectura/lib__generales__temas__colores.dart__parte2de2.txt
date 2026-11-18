@@ -1,0 +1,10 @@
+RUTA ORIGINAL: lib/generales/temas/colores.dart
+PARTE 2 DE 2
+---
+: 7.6:1 sobre #E0E0E0 (antes #9E9E9E: solo 2.0:1)
+  static const Color colorTextoBotonDeshabilitadoOscuro = Color(0xFFBDBDBD);
+  static const Color colorTextoBotonGrabar              = Color(0xFFFFFFFF); // blanco
+  static const Color colorTextoBotonHabilitado          = Color(0xFFFFFFFF); // blanco
+  static const Color colorTextoSecundarioClaro          = Color(0xFF4B5563);
+  
+}
