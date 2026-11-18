@@ -1,0 +1,250 @@
+========================================================================
+ESTADO DE SESIÓN — VS_CONTA (vs_flutter_conta)
+Para continuar en una nueva sesión: entregar este archivo completo.
+Jornada: 18/11/2026 (segunda jornada del día; la anterior cerró a las
+02:25 a.m. con el archivo Proyecto VS_CONTA_16.txt).
+Este archivo REEMPLAZA a Proyecto VS_CONTA_16.txt.
+========================================================================
+
+1. ROL Y FLUJO
+--------------
+Programador súper experto en Dart/Flutter, en SOLID/DRY/KISS/YAGNI, en
+UI/UX, en instalación de aplicaciones en Linux, en configuración de VPS
+y en Firebird 2.5.9. Cotrabajo con el usuario (dueño del proyecto):
+él decide, yo propongo; él prueba y reporta, yo diagnostico y entrego.
+Español neutro, tono técnico sobrio.
+Repositorio: https://github.com/wojedav2104/vs_flutter_conta
+Flujo: releer fragmentos de lectura/ (o el .dart en GitHub) ANTES de
+entregar; parches "Buscar:"/"Reemplazar:" exactos sobre los .dart REALES
+de lib/ (nunca sobre lectura/). El usuario aplica, compila/prueba y
+reporta. Tras cambios de recursos/idiomas o de clases de Estado:
+flutter clean (el hot reload NO sirve ahí). Verificar anchors contra el
+código real antes de entregar.
+
+2. PROYECTO
+-----------
+VS_CONTA: contabilidad multi-país/moneda/sucursal/usuario/idioma
+(español/francés). Hoy Paraguay (SET, DNIT, Marangatú, IVA 10%/5%, I.R.E.,
+I.R.P., Retención 30%). LA APLICACIÓN ES PRINCIPALMENTE WEB (navegador);
+también Windows táctil y Android. Diseño base 1920x1080; responsive para
+1366x768 y 1024x768 (escala por ancho, ver sección 3).
+FASE 1: 8 pantallas ABM con datos de prueba + Login + menú drawer +
+Asientos, Compras y Cuentas (Plan de Cuentas) con datos de prueba.
+DEMO PÚBLICA en VPS Ubuntu 22.04 (Nginx); actualización con
+flutter build web --release + subir build/web a /var/www/vsconta (WinSCP).
+Especificaciones en Documentación/ (25 archivos "0"); si spec y código
+difieren, manda la spec. REGLA 24 ya agregada por el usuario a
+Documentación/00_03_02_ABMs.txt (alineación de columnas de la grilla).
+LECTURA COMPLETA DEL CÓDIGO hecha: 25 docs "0" + 145 fragmentos de
+lectura/ (índices canónicos 00_indice_1/2/3; 00_total = 145). Releer solo
+lo necesario por tarea.
+
+ESTADO DE CAMBIOS DE ESTA JORNADA (todos probados por el usuario y OK):
+a) Drawer: barra de desplazamiento SIEMPRE visible (Scrollbar con
+   thumbVisibility + trackVisibility envolviendo ListView(primary: true)
+   en menu_lateral.dart).
+b) Menú Archivos: 1.3 "Compras" y 1.4 "Ventas" (antes "Libro Compras" y
+   "Libro Ventas"). Claves nuevas 'menuCompras' (es 'Compras'/fr 'Achats')
+   y 'menuVentas' (es 'Ventas'/fr 'Ventes') en idiomas_interfaz.dart;
+   _listArchivos usa las claves nuevas; _listInformes CONSERVA
+   'menuLibroCompras'/'menuLibroVentas' (informes 4.8/4.9 intactos).
+   VERIFICAR en la próxima sesión: parche D (título de la ventana de
+   compras.dart → 'menuCompras') y cambio en spec 00_02_Opciones drawer.txt
+   (1.3 Compras / 1.4 Ventas) — preguntar si los aplicó.
+c) Grilla lateral de los ABM: alineación de columnas configurable por
+   campo (izquierda/centro/derecha) + separación visual entre columnas.
+   Detalle en sección 3. Aplicado: 'ejercicio' y 'fecha' centrados en
+   asientos.dart y compras.dart; 'ejercicio' centrado en cuentas.dart.
+
+3. ARQUITECTURA (resumen de lo vigente)
+---------------------------------------
+MVVM con widgets. Formularios autocontenidos: List<ClaseCampoAbm> +
+datos de prueba → ClaseFormularioAbm (tablas simples) o
+ClaseFormularioCabeceraDetalle (Asientos/Compras). Archivos clave:
+- generales/modelos/campo_abm.dart — getAnchoCampo()/getAnchoColumna()
+  ESCALADOS (parte de texto × ClaseGenLayout.dEscala; iconos/paddings no).
+  NUEVO: enum EnumAlineacion { centro, derecha, izquierda }; propiedad
+  oAlineacion (nullable, orden alfabético junto a oTipo); getAlineacion()
+  devuelve oAlineacion o el default por tipo (numero→derecha, resto→
+  izquierda, regla 00_03_01). Enum corto a propósito para no romper la
+  alineación de nombres de propiedades del modelo.
+- generales/widgets/abm_comun.dart — ClaseEstadoGrillaRegistros NUEVO:
+  _getAlineacionCelda() (Alignment), _getTextAlignCelda() (TextAlign),
+  _getPaddingCelda() (gutter horizontal dEspacio08 * dEscala). El
+  encabezado (Align) usa _getAlineacionCelda; cada celda (Text) usa
+  _getTextAlignCelda; encabezado y celda van envueltos en
+  Padding(_getPaddingCelda()) para que los nombres de columnas vecinas
+  nunca se peguen y el valor quede alineado con su encabezado.
+  El resto sigue igual: ClaseFormularioCampos (pestañas ficha,
+  _construirFila, funcExtraGrupo, mapFocos), ClaseGrillaRegistros
+  (anchos escalados, flechita de orden, foco item 23),
+  ClaseBotoneraAbm (ancho escalado, alto 48 fijo).
+- generales/inicio/menu_lateral.dart — Drawer con:
+  Scrollbar(thumbVisibility: true, trackVisibility: true,
+  child: ListView(primary: true, ...)). primary: true liga el ListView al
+  PrimaryScrollController y el Scrollbar (sin controlador propio) toma ese
+  mismo controlador. Verificado: pantalla_principal body es
+  SizedBox.shrink() (no hay otro scrollable primary en esa pantalla).
+- generales/idiomas/idiomas_interfaz.dart — claves nuevas 'menuCompras'
+  (Compras/Achats) y 'menuVentas' (Ventas/Ventes) en posición alfabética,
+  ':' alineado. 'menuLibroCompras'/'menuLibroVentas' sin cambios.
+- generales/temas/layout.dart — ClaseGenLayout: dEscala (recalculada por
+  calcularEscala(dAncho): dAncho/1920, piso dEscalaMinima 0.55, techo
+  1.0; SOLO el ancho participa), dSeparacionCampo 8.0.
+- generales/temas/estilos_textos.dart — _estilo() multiplica fontSize por
+  dFactorTexto (1.0/1.25) * ClaseGenLayout.dEscala.
+- main.dart — ClaseEstadoAplicacion con WidgetsBindingObserver
+  (didChangeMetrics → setState); build() llama
+  ClaseGenLayout.calcularEscala(ancho de MediaQueryData.fromView).
+- generales/widgets/campo_formulario.dart — separación uniforme
+  dSeparacionCampo * dEscala; hintStyle con el mismo estilo escalado que
+  el texto del campo; IconButtons/Checkbox/Switch con
+  MaterialTapTargetSize.shrinkWrap; Enter = Tab (_alEnterCampo).
+- generales/widgets/formulario_abm.dart — ABM simple; cierre automático 3 s.
+- generales/widgets/formulario_cabecera_detalle.dart — sGrupoConDetalles;
+  scroll horizontal compartido; fila de totales; cierre automático 3 s.
+  PENDIENTE revisión responsive (etapa 2).
+- generales/widgets/ventana_mensaje.dart — 4 ventanas + selectores de
+  fecha/hora. PENDIENTE revisión responsive (etapa 2).
+- generales/validaciones/ — cap_validar.dart (sin BD) y can_validar.dart
+  (con BD, fase de conexión).
+- idiomas: 8 archivos es/fr con paridad de claves.
+
+4. REGLAS UI/UX ESTABLECIDAS (aplicar en todo lo nuevo)
+-------------------------------------------------------
+a) Enter = Tab en campos de entrada (Comentario conserva su Enter);
+   IconButtons (picker, "X") fuera del orden de foco (ExcludeFocus).
+b) Pestañas: siempre como fichas visibles (_construirPestana).
+c) Controles: habilitado = cian suave + texto cian con contraste;
+   deshabilitado = gris tenue + texto gris/negro. Colores exactos
+   pendientes de decidir con los usuarios (ClaseGenTemas).
+d) Botón con foco de teclado: fondo amarillo + texto negro.
+e) Ventana de grabación exitosa: se cierra sola a los 3 s.
+f) Grilla lateral: flechita de orden por columna (asc/desc).
+g) Formularios con muchos campos: varios campos por fila (iFila), cada
+   uno a su ancho mínimo (nunca se estira).
+h) Números: valor interno plano; SIEMPRE con su máscara al mostrar, salvo
+   al editar (plano para teclear).
+i) Mensajes al usuario: SIEMPRE de "tú" (es y fr; tu/toi).
+j) Traducciones francesas: R.U.C. no se traduce; "apellido materno/paterno"
+   = "nom de famille maternel/paternel"; "compte" masculino (ce compte).
+k) ESCALA RESPONSIVE: todo tamaño visible pasa por
+   ClaseGenLayout.dEscala. Textos en _estilo(); anchos de campo en
+   getAnchoCampo()/getAnchoColumna() (solo la parte de texto); etiqueta,
+   grilla y botonera en su punto de uso. Iconos, paddings internos y alto
+   de los botones ABM (48) NO escalan. Fórmula: SOLO ancho (dAncho/1920),
+   piso dEscalaMinima 0.55, techo 1.0. En 1920 de ancho dEscala = 1.0.
+l) SEPARACIÓN VERTICAL ENTRE CONTROLES: siempre la misma visible =
+   dSeparacionCampo (8.0) * dEscala, con MaterialTapTargetSize.shrinkWrap
+   en IconButtons/Checkbox/Switch.
+m) Hint del campo: mismo estilo escalado que el texto del campo.
+n) Nombres de menú: Archivos 1.3 "Compras" y 1.4 "Ventas" (claves
+   'menuCompras'/'menuVentas'); Informes 4.8/4.9 conservan "Libro
+   Compras"/"Libro Ventas" (claves 'menuLibroCompras'/'menuLibroVentas').
+   Si cambia un nombre de menú, verificar si se comparte la clave con
+   otra sección antes de cambiar valores.
+o) Barra de desplazamiento del drawer SIEMPRE visible (Scrollbar con
+   thumbVisibility + trackVisibility).
+p) ALINEACIÓN DE COLUMNAS de la grilla lateral (regla 24 de
+   00_03_02_ABMs.txt, agregada por el usuario): configurable por campo
+   (oAlineacion: izquierda/centro/derecha). Default por tipo: números a la
+   derecha, resto a la izquierda. El encabezado usa la misma alineación
+   que sus celdas. Siempre debe separarse visualmente el nombre de una
+   columna del de la columna vecina (gutter interno de celda,
+   dEspacio08 * dEscala, mismo padding en encabezado y en valores).
+
+5. DESPLIEGUE (VPS)
+-------------------
+VPS Ubuntu 22.04 (vps3832812) con Nginx. Carpeta pública:
+/var/www/vsconta (www-data:www-data, 755). Configuración en
+/etc/nginx/sites-available/vsconta (try_files → index.html; gzip; caché
+7d para assets). El código fuente NUNCA se sube al VPS: solo build\web.
+Actualización: flutter build web --release → WinSCP reemplaza contenido
+de /var/www/vsconta → Ctrl+F5. Acceso por IP; dominio pendiente de
+propagación DNS (registro A; nslookup/dnschecker). HTTPS pendiente
+(certbot --nginx cuando el DNS resuelva). WinSCP y PuTTY instalados.
+
+6. PENDIENTES
+-------------
+1. [PREGUNTAR AL INICIAR] Detalles puntuales de UI/UX restantes de la
+   lista del usuario al abrir la jornada: ya se hicieron 3 (barra del
+   drawer siempre visible, nombres "Compras"/"Ventas", alineación de la
+   grilla). Confirmar si la lista tenía más puntos.
+2. [PREGUNTAR AL INICIAR] Estado del parche D (título de la ventana de
+   compras.dart con clave 'menuCompras') y del cambio en spec
+   00_02_Opciones drawer.txt (1.3 Compras / 1.4 Ventas). Si no los
+   aplicó, entregarlos de nuevo.
+3. Etapa 2 responsive: login.dart (tarjeta 420 px), ventana_mensaje.dart
+   (iAnchoColumnasMensaje), formulario_cabecera_detalle.dart (grilla de
+   detalles: mínimos 700, altos de fila fijos), menu_lateral.dart;
+   decidir piso mínimo de legibilidad si el texto queda muy chico con
+   Windows 125%.
+4. Decidir con los usuarios: colores exactos de controles habilitados/
+   deshabilitados y tamaño del texto (dFactorTexto hoy 1.25; baja a 1.0
+   si lo piden; vive en ClaseGenEstilosTexto).
+5. Mejoras sustanciales al botón "Encontrar" (no tocar hasta entonces).
+6. Barrer claves crudas restantes si aparecen (Sucursales, Cuentas,
+   Cuentas Asignadas, Configuración).
+7. Ajustar redacciones es/fr de validFechaInvalida/validHoraInvalida.
+8. Solo si el usuario lo quiere: renombrar informes 4.8/4.9 (requeriría
+   claves nuevas para los informes; hoy quedan "Libro Compras"/"Libro
+   Ventas").
+9. Mayores (fases siguientes): DDL de la BD de las 8 tablas (specs
+   01_01..01_08, con validaciones de unicidad), Firebird 2.5.9 en el VPS,
+   API en el VPS (la app web no puede hablar directo con Firebird),
+   Lector de archivos de Marangatú (01_06), Entorno 00_00_01, pantallas
+   de Informes/Procesos.
+10. HTTPS + dominio del VPS cuando el DNS se propague.
+
+7. LECCIONES / ERRORES A NO REPETIR
+-----------------------------------
+- Nunca editar fragmentos de lectura/; solo .dart reales de lib/.
+- Si un cambio no se refleja: flutter clean y recompilar. Hot reload no
+  sirve con cambios de clases de Estado ni de recursos/idiomas.
+- Verificar anchors "Buscar:" contra el .dart real (con los parches ya
+  aplicados) antes de entregar.
+- Hint de los campos: SIEMPRE con el mismo estilo escalado que el texto
+  del campo (si toma el estilo del tema, se ve más grande y se corta).
+- MaterialTapTargetSize.shrinkWrap en IconButtons/Checkbox/Switch de
+  formularios: el área táctil de 48 px ensancha filas y desiguala
+  separaciones.
+- Web = píxeles CSS: con Windows al 125% una notebook 1366x768 muestra
+  ~1093 px lógicos. Pensar la escala contra el ancho lógico real.
+- Escalar SOLO por ancho (no min(ancho, alto)): 1366x768 es 16:9 y
+  acompaña solo; así 1920 de ancho se ve igual con o sin barra del
+  navegador (regla del usuario: en 1920x1080 se ve todo muy bien).
+- Columnas de grilla: sin gutter interno, los nombres de columnas
+  vecinas se leen como una palabra ("contable" + "Sucursal"). Padding
+  horizontal simétrico y del MISMO tamaño en encabezado y en celdas,
+  así el valor queda alineado con su encabezado.
+- Alineación de columnas: un solo resolutor (getAlineacion) + dos mapeos
+  finos (Alignment para el encabezado, TextAlign para la celda). Nunca
+  duplicar la lógica de alineación en dos puntos.
+- Claves de idioma compartidas entre secciones (menú Archivos vs
+  Informes): no cambiar el valor compartido; crear clave nueva para la
+  sección que cambia ('menuCompras'/'menuVentas' nuevas;
+  'menuLibroCompras'/'menuLibroVentas' intactas).
+- Drawer con scroll siempre visible: Scrollbar(thumbVisibility,
+  trackVisibility) + ListView(primary: true); antes verificar que no
+  haya otro scrollable con primary en la misma pantalla
+  (pantalla_principal body es SizedBox.shrink() → seguro).
+- Tipos de enum largos rompen la alineación de nombres de propiedades
+  del modelo: por eso el enum es EnumAlineacion (corto) y no
+  EnumAlineacionCampo.
+- Si varios parches tocan el mismo archivo, revisar que los anchors no
+  se solapen; si el texto nuevo contiene el "Buscar:" de otro parche,
+  aplicar en orden inverso.
+
+8. CÓMO CONTINUAR EN LA PRÓXIMA SESIÓN
+---------------------------------------
+1. Leer este archivo completo y el CLAUDE.md.
+2. Preguntar primero los dos puntos de las secciones 6.1 y 6.2 (restos
+   de la lista de UI/UX y estado del parche D / spec 00_02).
+3. Atender lo que el usuario pida (etapa 2 responsive, DDL de la BD,
+   etc.). Si reporta un bug de lo aplicado (alineación, gutter,
+   scrollbar del drawer), releer los fragmentos correspondientes de
+   lectura/ y entregar parches correctivos.
+4. Recordar: si un cambio no se refleja, flutter clean.
+5. Al cerrar la próxima sesión, actualizar CLAUDE.md y generar el
+   archivo de estado siguiente (Proyecto VS_CONTA_18.txt).
+========================================================================
