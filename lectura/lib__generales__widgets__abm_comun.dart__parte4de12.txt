@@ -69,11 +69,11 @@ PARTE 4 DE 12
           Flexible(
             fit  : FlexFit.loose,
             flex : math.max(1, (listFila[i].getAnchoCampo()
-                   + ClaseGenLayout.dAnchoEtiquetaCampo).round()),
+                   + ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala).round()),
             child : ConstrainedBox(
               constraints : BoxConstraints(
                 maxWidth : listFila[i].getAnchoCampo()
-                    + ClaseGenLayout.dAnchoEtiquetaCampo,
+                    + ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
               ),
               child : _construirCampo(listFila[i],
                   bAnchoFlexible : true,
@@ -94,5 +94,4 @@ PARTE 4 DE 12
     final List<ClaseCampoAbm> listCamposGrupo = widget.listCampos
         .where((ClaseCampoAbm o) => o.sGrupo == sGrupo)
         .toList();
-    final Widget? oExtra = widget.funcExtraGrupo?.call(sGrupo);
-    if (oE
+    final Widget? oExtra 

@@ -1,7 +1,38 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 10 DE 10
 ---
-xto.textoCampo(oContexto)),          
+: null,
+              ),
+              Text(listOpciones[i], style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+            ],
+          ),
+      ],
+    );
+  }
+
+  // ── Comentario (textarea) ────────────────────────────────────────────────
+
+  Widget _construirComentario(BuildContext oContexto) {
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        // ← CAMBIO item 5: contador de caracteres a la derecha, en la misma
+        //   fila que la etiqueta (con la etiqueta arriba, el contador se
+        //   muestra en esa fila y no acá).
+        if (!widget.bEtiquetaArriba && widget.oCampo.iMaxComentario > 0)
+          Padding(
+            padding : const EdgeInsets.only(
+              top   : ClaseGenEspacios.dEspacio14,
+              right : ClaseGenEspacios.dEspacio04,
+            ),
+            child : _construirContador(oContexto),
+          ),
+        TextField(
+          controller      : oControl,
+          enabled         : widget.bHabilitado,
+          focusNode       : oFoco,
+          maxLines        : 3,
+          style           : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),          
           // El comentario respeta iMaxComentario (antes solo lo mostraba).
           inputFormatters : (widget.oCampo.iMaxComentario > 0)
               ? <TextInputFormatter>[
@@ -34,6 +65,7 @@ xto.textoCampo(oContexto)),
       children: <Widget>[
         Switch(
           value    : bActivo,
+          materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
           onChanged: widget.bHabilitado
               ? (bool bNuevo) => widget.funcAlCambiar(bNuevo ? ClaseSiNo.si : ClaseSiNo.no)
               : null,

@@ -3,6 +3,8 @@ PARTE 1 DE 2
 ---
 import 'package:flutter/material.dart';
 
+import 'layout.dart';
+
 
 /// Estilos de texto y `TextTheme` central de la aplicación.
 ///
@@ -44,7 +46,7 @@ abstract final class ClaseGenEstilosTexto {
     final ThemeData oTema   = Theme.of(oContexto);
     final TextStyle oEstilo = oBase ?? oTema.textTheme.bodyMedium ?? const TextStyle();
     return oEstilo.copyWith(
-      fontSize   : (oEstilo.fontSize ?? 14.0) * dFactorTexto,
+      fontSize   : (oEstilo.fontSize ?? 14.0) * dFactorTexto * ClaseGenLayout.dEscala,
       color      : color ?? oTema.colorScheme.onSurface,
       fontFamily : sFamilia,
       fontWeight : oPeso,
@@ -66,5 +68,4 @@ abstract final class ClaseGenEstilosTexto {
   /// Etiqueta flotante de los campos de texto (16 px, semibold).
   static TextStyle etiquetaCampo   (BuildContext oContexto) => _estilo(oContexto, oTextTheme.bodyLarge    , sFamilia: _sFamiliaBase, oPeso: FontWeight.w600);
 
-  /// Texto de los botones grandes (ABM, Ingresar, Cancelar).
-  /// 20 px en ne
+  /// Texto de los botones gra

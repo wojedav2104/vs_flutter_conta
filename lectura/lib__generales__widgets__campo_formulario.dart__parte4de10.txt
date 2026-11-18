@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 4 DE 10
 ---
-struirBotonBorrarCampo() {
+ght,
+    );
+  }
+
+  // ── Botón de borrar el contenido del campo ─────────────────────────────
+
+  /// Muestra el botón de borrar solo si el campo está habilitado y tiene
+  /// contenido (compartido por texto, fecha y hora).
+  bool _getMostrarBorrarCampo() =>
+      widget.bHabilitado && widget.sValor.isNotEmpty;
+
+  Widget _construirBotonBorrarCampo() {
     // ExcludeFocus: la "X" queda fuera del orden de Tab/Enter (el foco pasa
     // directamente al siguiente campo); el clic y el táctil siguen igual.
     return ExcludeFocus(
@@ -9,6 +20,11 @@ struirBotonBorrarCampo() {
       child     : IconButton(
         tooltip   : ClaseIdiomas.getTexto('borrarCampo', widget.sIdioma),
         icon      : const Icon(Icons.close, size: 18),
+        // Sin área táctil forzada de 48 px: la fila queda del alto del campo
+        // y la separación con el campo de arriba se ve igual en todos.
+        style     : IconButton.styleFrom(
+          tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+        ),
         onPressed : () {
           oControl.text = '';
           widget.funcAlCambiar('');
@@ -88,15 +104,4 @@ struirBotonBorrarCampo() {
 
   /// true si el foco terminó en otro campo de entrada (otro campo del
   /// formulario o una celda de la grilla de detalles). Es la condición
-  /// POSITIVA para validar al salir del campo: si el foco está en un
-  /// botón, en una ventana o en ningún lugar, se devuelve false y no se
-  /// valida (regla 00_00_03 y el criterio de que Cancelar/Fin/Grabar no
-  /// deben interrumpirse con ventanas de validación).
-  bool _focoEnOtroCampo() {
-    final BuildContext? oContexto =
-        FocusManager.instance.primaryFocus?.context;
-    if (oContexto == null) return false;
-    if (_esBoton(oContexto)) return false;
-    final ClaseCampoFormulario? oCampo =
-        oContexto.findAncestorWidgetOfExactType<ClaseCampoFormulario>();
-    if (oCampo != null) return !ide
+  /// POSITIVA para validar

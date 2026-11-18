@@ -50,6 +50,11 @@ ia el texto
     return InputDecoration(
       isDense        : true,
       hintText       : sHint,
+      // El texto de ejemplo usa el mismo estilo escalado que el texto del
+      // campo: si tomara el estilo del tema (sin escalar), en ventanas menores
+      // a 1920 se vería más grande que el texto y se cortaría por abajo.
+      hintStyle      : _estiloTexto(
+          oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
       suffixIcon     : oIconoDerecha,
       filled         : true,
       fillColor      : widget.bHabilitado
@@ -91,15 +96,4 @@ ia el texto
             ),
         ],
       ),
-      textAlign : TextAlign.right,
-    );
-  }
-
-  // ── Botón de borrar el contenido del campo ─────────────────────────────
-
-  /// Muestra el botón de borrar solo si el campo está habilitado y tiene
-  /// contenido (compartido por texto, fecha y hora).
-  bool _getMostrarBorrarCampo() =>
-      widget.bHabilitado && widget.sValor.isNotEmpty;
-
-  Widget _con
+      textAlign : TextAlign.ri

@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 5 DE 12
 ---
-xtra == null) {
+= widget.funcExtraGrupo?.call(sGrupo);
+    if (oExtra == null) {
       return SingleChildScrollView(
         padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
         child   : Column(
@@ -111,6 +112,4 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
     });
   }
 
-  @override
-  void dispose() {
-    oControlFiltro.dispose
+  @overri

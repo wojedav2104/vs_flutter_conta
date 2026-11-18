@@ -1,10 +1,16 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 12 DE 12
 ---
-   final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
+
+      ),
+    );
+  }
+
+  Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
+    final bool bHabilitado = esHabilitado(oBoton) && _puedeOperar(oBoton);
     return SizedBox(
-      width  : ClaseGenLayout.dAnchoBotonAbm,   // item 2: mismo ancho
-      height : ClaseGenLayout.dAltoBotonAbm,    // item 2: mismo alto
+      width  : ClaseGenLayout.dAnchoBotonAbm * ClaseGenLayout.dEscala,  // item 2: mismo ancho
+      height : ClaseGenLayout.dAltoBotonAbm,   // item 2: mismo alto (48 px táctiles, no se escalan)
       child  : ElevatedButton(
         onPressed : bHabilitado ? () => funcAccion(oBoton) : null,
         style     : ElevatedButton.styleFrom(

@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 5 DE 10
 ---
-ntical(oCampo, widget);
+ al salir del campo: si el foco está en un
+  /// botón, en una ventana o en ningún lugar, se devuelve false y no se
+  /// valida (regla 00_00_03 y el criterio de que Cancelar/Fin/Grabar no
+  /// deben interrumpirse con ventanas de validación).
+  bool _focoEnOtroCampo() {
+    final BuildContext? oContexto =
+        FocusManager.instance.primaryFocus?.context;
+    if (oContexto == null) return false;
+    if (_esBoton(oContexto)) return false;
+    final ClaseCampoFormulario? oCampo =
+        oContexto.findAncestorWidgetOfExactType<ClaseCampoFormulario>();
+    if (oCampo != null) return !identical(oCampo, widget);
     // Celda de la grilla de detalles u otra entrada de texto.
     return (oContexto.widget is EditableText)
         || (oContexto.findAncestorWidgetOfExactType<EditableText>() != null);
@@ -73,19 +84,4 @@ ntical(oCampo, widget);
       sMes = fHoy.month.toString().padLeft(2, '0');
       sAno = fHoy.year.toString();
     } else if (sDigitos.length == 3) {
-      sDia = sDigitos.substring(0, 2);
-      sMes = sDigitos.substring(2).padLeft(2, '0');
-      sAno = fHoy.year.toString();
-    } else if (sDigitos.length == 4) {
-      sDia = sDigitos.substring(0, 2);
-      sMes = sDigitos.substring(2, 4);
-      sAno = fHoy.year.toString();
-    } else {
-      sDia = sDigitos.substring(0, 2);
-      sMes = sDigitos.substring(2, 4);
-      final String sAnoTecleado = (sDigitos.length > 8)
-          ? sDigitos.substring(4, 8)
-          : sDigitos.substring(4);
-      sAno = (sAnoTecleado.length >= 4)
-          ? sAnoTecleado
-          : '202'.substring(0
+ 

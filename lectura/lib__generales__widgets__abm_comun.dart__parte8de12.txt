@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 8 DE 12
 ---
-                     color : ClaseGenTemas.colorTextoCampoHabilitado(oContexto),
+ivo).
+                      style      : ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
+                        color : ClaseGenTemas.colorTextoCampoHabilitado(oContexto),
                       ),
                       decoration : InputDecoration(
                         isDense    : true,
@@ -75,5 +77,4 @@ PARTE 8 DE 12
                                 if (sClaveOrden == oCampo.sClave) ...<Widget>[
                                   const SizedBox(width: ClaseGenEspacios.dEspacio04),
                                   Icon(
-                                    bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
-                                    
+                             

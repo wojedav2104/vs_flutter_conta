@@ -1,7 +1,22 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 6 DE 10
 ---
-, 4 - sAnoTecleado.length) + sAnoTecleado;
+     sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2).padLeft(2, '0');
+      sAno = fHoy.year.toString();
+    } else if (sDigitos.length == 4) {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2, 4);
+      sAno = fHoy.year.toString();
+    } else {
+      sDia = sDigitos.substring(0, 2);
+      sMes = sDigitos.substring(2, 4);
+      final String sAnoTecleado = (sDigitos.length > 8)
+          ? sDigitos.substring(4, 8)
+          : sDigitos.substring(4);
+      sAno = (sAnoTecleado.length >= 4)
+          ? sAnoTecleado
+          : '202'.substring(0, 4 - sAnoTecleado.length) + sAnoTecleado;
     }
     final String sFecha = '$sDia/$sMes/$sAno';
     if (sFecha == oControl.text) return;
@@ -42,7 +57,8 @@ PARTE 6 DE 10
     // ancho disponible (regla UI/UX).
     if (widget.bEtiquetaArriba) {
       return Padding(
-        padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
+        padding : EdgeInsets.only(
+            bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
         child   : Column(
           crossAxisAlignment : CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -60,12 +76,13 @@ PARTE 6 DE 10
       );
     }
     return Padding(
-      padding : const EdgeInsets.only(bottom: ClaseGenEspacios.dEspacio12),
+      padding : EdgeInsets.only(
+          bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
       child   : Row(
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : ClaseGenLayout.dAnchoEtiquetaCampo,
+            width : ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
@@ -92,25 +109,4 @@ PARTE 6 DE 10
         return _construirCasillas(oContexto);
       case EnumTipoCampoAbm.comentario:
         return _construirComentario(oContexto);
-      case EnumTipoCampoAbm.fecha:
-        return _construirFecha(oContexto);
-      case EnumTipoCampoAbm.hora:
-        return _construirHora(oContexto);
-      case EnumTipoCampoAbm.lista:
-        return _construirLista(oContexto);
-      case EnumTipoCampoAbm.logico:
-        return _construirLogico(oContexto);
-      case EnumTipoCampoAbm.numero:
-        return _construirTexto(oContexto, bNumero: true);
-      case EnumTipoCampoAbm.texto:
-        return _construirTexto(oContexto);
-    }
-  }
-
-  // ── Texto y número ──────────────────────────────────────────────────────
-
-  Widget _construirTexto(BuildContext oContexto, {bool bNumero = false}) {
-
-    final String? sMascara = _getMascara();
-
-    // Si hay másc
+      case EnumTipoCampoAbm.fech

@@ -3,8 +3,7 @@ PARTE 2 DE 2
 ---
 o
     // es 1.25.
-    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter
-        * ClaseGenEstilosTexto.dFactorTexto;
+    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
     switch (oTipo) {
       case EnumTipoCampoAbm.comentario:
         return ClaseGenLayout.dAnchoCampoComentario;
@@ -42,6 +41,7 @@ o
     // crece con el modo texto grande.
     return iCaracteres * ClaseGenLayout.dAnchoCaracter
            * ClaseGenEstilosTexto.dFactorTexto
+           * ClaseGenLayout.dEscala
            + ClaseGenEspacios.dEspacio48;
   }
 

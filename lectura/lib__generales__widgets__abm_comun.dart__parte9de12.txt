@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 12
 ---
-size  : 14,
+       bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
+                                    size  : 14,
                                     color : Theme.of(oContexto).colorScheme.primary,
                                   ),
                                 ],
@@ -79,7 +80,4 @@ size  : 14,
                   IconButton(
                     tooltip   : ClaseIdiomas.getTexto('menuPrimeraFila', widget.sIdioma),
                     icon      : const Icon(Icons.first_page),
-                    onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
-                  ),
-                  IconButton(
-  
+                    onPressed : (iPaginaActual > 0) 

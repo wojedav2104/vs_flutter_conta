@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 11 DE 12
 ---
-     esHabilitado : (EnumBotonAbm oBoton) => setHabilitados.contains(oBoton),
+IO items 1,2,3,6: botonera al pie, delegada a ClaseBotoneraAbm
+          ClaseBotoneraAbm(
+            esHabilitado : (EnumBotonAbm oBoton) => setHabilitados.contains(oBoton),
             funcAccion   : funcAlClicar,
             sIdioma      : sIdioma,
           ),
@@ -103,10 +105,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
             if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio08),
             _construirBoton(_listOrden[i], oContexto),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _construirBoton(EnumBotonAbm oBoton, BuildContext oContexto) {
- 
+        ],

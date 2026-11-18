@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 7 DE 10
 ---
-ara y cambió, re-aplicarla al valor actual. Solo texto:
+a:
+        return _construirFecha(oContexto);
+      case EnumTipoCampoAbm.hora:
+        return _construirHora(oContexto);
+      case EnumTipoCampoAbm.lista:
+        return _construirLista(oContexto);
+      case EnumTipoCampoAbm.logico:
+        return _construirLogico(oContexto);
+      case EnumTipoCampoAbm.numero:
+        return _construirTexto(oContexto, bNumero: true);
+      case EnumTipoCampoAbm.texto:
+        return _construirTexto(oContexto);
+    }
+  }
+
+  // ── Texto y número ──────────────────────────────────────────────────────
+
+  Widget _construirTexto(BuildContext oContexto, {bool bNumero = false}) {
+
+    final String? sMascara = _getMascara();
+
+    // Si hay máscara y cambió, re-aplicarla al valor actual. Solo texto:
     // el número se formatea al salir del campo (item 9).
     if (!bNumero && sMascara != null && sMascara != sMascaraActual) {
       sMascaraActual = sMascara;
@@ -79,18 +100,4 @@ ara y cambió, re-aplicarla al valor actual. Solo texto:
             onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
             decoration   : _getDecoracion(oContexto, sHint: 'dd/mm/aaaa'),            
           ),
-        ),
-        const SizedBox(width: ClaseGenEspacios.dEspacio04),
-        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
-        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
-        ExcludeFocus(
-          excluding : true,
-          child     : IconButton(
-          tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
-          icon      : const Icon(Icons.calendar_month),
-          onPressed : widget.bHabilitado
-              ? () async {
-                  final DateTime? fElegida = await funcMostrarSelectorFecha(
-                    oContexto,
-                    widget.sIdioma,
-                    funcParsearF
+    

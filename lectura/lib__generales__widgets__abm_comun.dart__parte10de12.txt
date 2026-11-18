@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 10 DE 12
 ---
-                  tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
+? () => setState(() => iPagina = 0) : null,
+                  ),
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
                     icon      : const Icon(Icons.chevron_left),
                     onPressed : (iPaginaActual > 0)
                         ? () => setState(() => iPagina = iPaginaActual - 1)
@@ -100,6 +103,4 @@ class ClaseAndamiajeAbm extends StatelessWidget {
               ],
             ),
           ),
-          // ← CAMBIO items 1,2,3,6: botonera al pie, delegada a ClaseBotoneraAbm
-          ClaseBotoneraAbm(
-       
+          // ← CAMB

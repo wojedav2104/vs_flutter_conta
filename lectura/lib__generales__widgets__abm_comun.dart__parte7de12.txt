@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 7 DE 12
 ---
-sicion.dx, oPosicion.dy),
+ativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
       items    : <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
           value : 'copiarValor',
@@ -47,7 +47,7 @@ sicion.dx, oPosicion.dy),
   Widget build(BuildContext oContexto) {
     if (!bVisible) {
       return SizedBox(
-        width : ClaseGenLayout.dAnchoTiraGrilla,
+        width : ClaseGenLayout.dAnchoTiraGrilla * ClaseGenLayout.dEscala,
         child : Column(
           children: <Widget>[
             const SizedBox(height: ClaseGenEspacios.dEspacio08),
@@ -87,7 +87,7 @@ sicion.dx, oPosicion.dy),
         if (mounted) setState(() {});
       },
       child: SizedBox(
-        width : ClaseGenLayout.dAnchoGrillaRegistros,
+        width : ClaseGenLayout.dAnchoGrillaRegistros * ClaseGenLayout.dEscala,
         child : Column(
           children: <Widget>[
             Padding(
@@ -99,6 +99,4 @@ sicion.dx, oPosicion.dy),
                       controller : oControlFiltro,
                       // Regla UI/UX: el cuadro de búsqueda de la grilla usa el
                       // backcolor y el forecolor de los controles habilitados
-                      // (siempre está activo).
-                      style      : ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
-   
+                      // (siempre está act

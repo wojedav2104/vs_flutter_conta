@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 6 DE 12
 ---
-();
+de
+  void dispose() {
+    oControlFiltro.dispose();
     _oFocoInterno.dispose();
     super.dispose();
   }
@@ -92,4 +94,4 @@ PARTE 6 DE 12
     final String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
     final String? sAccion = await showMenu<String>(
       context  : oContexto,
-      position : RelativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPo
+      position : Rel

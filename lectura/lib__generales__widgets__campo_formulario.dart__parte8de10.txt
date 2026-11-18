@@ -1,7 +1,24 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 8 DE 10
 ---
-echa(widget.sValor) ?? DateTime.now(),
+    ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio04),
+        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
+        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
+        ExcludeFocus(
+          excluding : true,
+          child     : IconButton(
+          tooltip   : ClaseIdiomas.getTexto('campoElegirFecha', widget.sIdioma),
+          icon      : const Icon(Icons.calendar_month),
+          style     : IconButton.styleFrom(
+            tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+          ),
+          onPressed : widget.bHabilitado
+              ? () async {
+                  final DateTime? fElegida = await funcMostrarSelectorFecha(
+                    oContexto,
+                    widget.sIdioma,
+                    funcParsearFecha(widget.sValor) ?? DateTime.now(),
                     DateTime(ClaseFechas.iAnoMinimo, 1, 1),
                     DateTime(
                       widget.oCampo.bVigencia
@@ -48,6 +65,9 @@ echa(widget.sValor) ?? DateTime.now(),
           child     : IconButton(
             tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
             icon      : const Icon(Icons.schedule),
+            style     : IconButton.styleFrom(
+              tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+            ),
             onPressed : widget.bHabilitado
                 ? () async {
                     final int? iMinutos = await funcMostrarSelectorHora(
@@ -75,26 +95,4 @@ echa(widget.sValor) ?? DateTime.now(),
   void _alCambiarHora(String sValor) {
     // Máscara 99:99: el usuario teclea solo dígitos y los dos puntos se
     // insertan solos (spec 00_00_03).
-    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
-    String sHora = funcAplicarMascara(sDigitos, _sMascaraHora);
-    // Normaliza solo con los 4 dígitos escritos: mientras tanto '16:3' se
-    // deja como está para poder seguir tecleando (1630 → 16:30). Con menos
-    // dígitos la completación ocurre al perder el foco (_completarHora).
-    if (sDigitos.length >= 4) {
-      final int? iMinutos = funcParsearHora(sHora);
-      if (iMinutos != null) {
-        sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
-      }
-    }
-    if (sHora != oControl.text) {
-      oControl.value = TextEditingValue(
-        text      : sHora,
-        selection : TextSelection.collapsed(offset: sHora.length),
-      );
-    }
-    widget.funcAlCambiar(sHora);
-    // Con los 4 dígitos escritos se valida la hora (1630 → 16:30 o error).
-    if (sDigitos.length >= 4) _validarFechaHora();
-  }
-
-  // ── Lista (dropdown) ──────────────────────────────
+    final String sDigitos =
