@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 5 DE 10
 ---
- sValorDefecto    : ClaseTipoIdentificacion.ruc,
+.getTexto('comTipoIdentificacion', sIdioma),
+        sGrupo           : 'comGenerales',
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
       ),
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
@@ -86,5 +88,4 @@ PARTE 5 DE 10
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas
+        funcValidarCampo :

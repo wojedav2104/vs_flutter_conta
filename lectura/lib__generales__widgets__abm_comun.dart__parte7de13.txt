@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 7 DE 12
+PARTE 7 DE 13
 ---
 ativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
       items    : <PopupMenuEntry<String>>[
@@ -43,6 +43,30 @@ ativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
 
   // ── Construcción de la interfaz ──────────────────────────────────────────
 
+  // ── Alineación y separación de las columnas ─────────────────────────────
+
+  /// Alineación horizontal del contenido de una columna de la grilla.
+  Alignment _getAlineacionCelda(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:    return Alignment.center;
+      case EnumAlineacion.derecha:   return Alignment.centerRight;
+      case EnumAlineacion.izquierda: return Alignment.centerLeft;
+    }
+  }
+
+  /// Alineación del texto dentro de la celda de la grilla.
+  TextAlign _getTextAlignCelda(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:    return TextAlign.center;
+      case EnumAlineacion.derecha:   return TextAlign.right;
+      case EnumAlineacion.izquierda: return TextAlign.left;
+    }
+  }
+
+  /// Separación horizontal entre columnas de la grilla (regla UI/UX): los nombres y los valores de las columnas vecinas nunca se tocan.
+  EdgeInsets _getPaddingCelda() => EdgeInsets.symmetric(
+      horizontal: ClaseGenEspacios.dEspacio08 * ClaseGenLayout.dEscala);
+
   @override
   Widget build(BuildContext oContexto) {
     if (!bVisible) {
@@ -74,29 +98,4 @@ ativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
     final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
     final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
     final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
-    final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
-        ? listFiltrados.sublist(iInicio, iFin)
-        : <Map<String, dynamic>>[];
-
-    // ← CAMBIO item 23: el foco del teclado queda en la grilla y las
-    //   flechas arriba/abajo mueven la selección.
-    return Focus(
-      focusNode     : oFocoGrilla,
-      onKeyEvent    : _alPulsarTecla,
-      onFocusChange : (bool bTieneFoco) {
-        if (mounted) setState(() {});
-      },
-      child: SizedBox(
-        width : ClaseGenLayout.dAnchoGrillaRegistros * ClaseGenLayout.dEscala,
-        child : Column(
-          children: <Widget>[
-            Padding(
-              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
-              child   : Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller : oControlFiltro,
-                      // Regla UI/UX: el cuadro de búsqueda de la grilla usa el
-                      // backcolor y el forecolor de los controles habilitados
-                      // (siempre está act
+    final List<Map<String, dynamic>> li

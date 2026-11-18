@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 9 DE 10
 ---
-ompra de mercadería',
+ 'subcuenta'    : '',
+          },
+          <String, String>{
+            'concepto'     : 'Compra de mercadería',
             'cuenta'       : '1.03.01',
             'debe'         : '200000',
             'haber'        : '',
@@ -100,6 +103,4 @@ ompra de mercadería',
         'importeIreSimple'    : '0',
         'importeIrpSimple'    : '0',
         'importeNoImputable'  : '0',
-        'iva10'               : '0',
-        'iva5'                : '20000',
-        'mostrarEn
+ 

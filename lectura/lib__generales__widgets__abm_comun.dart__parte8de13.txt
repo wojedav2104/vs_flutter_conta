@@ -1,7 +1,32 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 8 DE 12
+PARTE 8 DE 13
 ---
-ivo).
+stPagina = (iInicio < listFiltrados.length)
+        ? listFiltrados.sublist(iInicio, iFin)
+        : <Map<String, dynamic>>[];
+
+    // ← CAMBIO item 23: el foco del teclado queda en la grilla y las
+    //   flechas arriba/abajo mueven la selección.
+    return Focus(
+      focusNode     : oFocoGrilla,
+      onKeyEvent    : _alPulsarTecla,
+      onFocusChange : (bool bTieneFoco) {
+        if (mounted) setState(() {});
+      },
+      child: SizedBox(
+        width : ClaseGenLayout.dAnchoGrillaRegistros * ClaseGenLayout.dEscala,
+        child : Column(
+          children: <Widget>[
+            Padding(
+              padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio08),
+              child   : Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller : oControlFiltro,
+                      // Regla UI/UX: el cuadro de búsqueda de la grilla usa el
+                      // backcolor y el forecolor de los controles habilitados
+                      // (siempre está activo).
                       style      : ClaseGenEstilosTexto.normalChico(oContexto).copyWith(
                         color : ClaseGenTemas.colorTextoCampoHabilitado(oContexto),
                       ),
@@ -58,23 +83,4 @@ ivo).
                           message : ClaseIdiomas.getTexto('ordenarPor', widget.sIdioma),
                           // Regla UI/UX: la flechita junto al nombre indica la
                           // columna activa de orden y su sentido (ascendente/
-                          // descendente). Solo se muestra en esa columna.
-                          child   : Align(
-                            alignment : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child : Row(
-                              mainAxisSize : MainAxisSize.min,
-                              children     : <Widget>[
-                                Flexible(
-                                  child : Text(
-                                    oCampo.sEtiqueta,
-                                    style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                                    maxLines : 1,
-                                    overflow : TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                if (sClaveOrden == oCampo.sClave) ...<Widget>[
-                                  const SizedBox(width: ClaseGenEspacios.dEspacio04),
-                                  Icon(
-                             
+                          // descendente). Solo se muestra en e

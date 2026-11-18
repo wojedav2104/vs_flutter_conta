@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 9 DE 12
+PARTE 9 DE 13
 ---
-       bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
+sa columna.
+                          child   : Align(
+                            alignment : _getAlineacionCelda(oCampo),
+                            child : Row(
+                              mainAxisSize : MainAxisSize.min,
+                              children     : <Widget>[
+                                Flexible(
+                                  // Separación entre columnas (regla UI/UX).
+                                  child : Padding(
+                                    padding : _getPaddingCelda(),
+                                    child   : Text(
+                                      oCampo.sEtiqueta,
+                                      style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                      maxLines : 1,
+                                      overflow : TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                if (sClaveOrden == oCampo.sClave) ...<Widget>[
+                                  const SizedBox(width: ClaseGenEspacios.dEspacio04),
+                                  Icon(
+                                    bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
                                     size  : 14,
                                     color : Theme.of(oContexto).colorScheme.primary,
                                   ),
@@ -53,31 +74,6 @@ PARTE 9 DE 12
                               child: GestureDetector(
                                 onLongPressStart: (oDetalle) => _mostrarMenuCelda(
                                     oContexto, oRegistro, oCampo, oDetalle.globalPosition),
-                                child: Text(
-                                  (oRegistro[oCampo.sClave] ?? '').toString(),
-                                  // ← CAMBIO item 8: alinear números a la derecha en celdas
-                                  textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                      ? TextAlign.right
-                                      : TextAlign.left,
-                                  style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                                  maxLines : 1,
-                                  overflow : TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const Divider(height: ClaseGenEspacios.dEspacio01),
-            Padding(
-              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
-              child   : Row(
-                children: <Widget>[
-                  IconButton(
-                    tooltip   : ClaseIdiomas.getTexto('menuPrimeraFila', widget.sIdioma),
-                    icon      : const Icon(Icons.first_page),
-                    onPressed : (iPaginaActual > 0) 
+                                child: Padding(
+                                  // Separación entre columnas (regla UI/UX).
+                                 

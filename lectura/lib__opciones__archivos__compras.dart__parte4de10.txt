@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 4 DE 10
 ---
-               : EnumTipoCampoAbm.numero,
+   iFila                 : 1,
+        oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'numeroAsiento',
         sEtiqueta             : ClaseIdiomas.getTexto('comNumeroAsiento', sIdioma),
         sGrupo                : 'comGenerales',
@@ -13,6 +14,7 @@ PARTE 4 DE 10
             DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         iFila            : 2,
+        oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fecha',
         sEtiqueta        : ClaseIdiomas.getTexto('comFecha', sIdioma),
@@ -82,6 +84,4 @@ PARTE 4 DE 10
         listValores      : ClaseTipoIdentificacion.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
         sClave           : 'tipoIdentificacion',
-        sEtiqueta        : ClaseIdiomas.getTexto('comTipoIdentificacion', sIdioma),
-        sGrupo           : 'comGenerales',
-       
+        sEtiqueta        : ClaseIdiomas

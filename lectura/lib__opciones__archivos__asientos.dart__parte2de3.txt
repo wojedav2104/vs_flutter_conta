@@ -1,10 +1,11 @@
 RUTA ORIGINAL: lib/opciones/archivos/asientos.dart
 PARTE 2 DE 3
 ---
-nterior(
+sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
             sValor, ClaseIdiomas.getTexto('asiFecha', sIdioma),
             DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
+        oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fecha',
         sEtiqueta        : ClaseIdiomas.getTexto('asiFecha', sIdioma),
@@ -97,8 +98,4 @@ nterior(
             'cuenta'       : '1.01.01',
             'debe'         : '5000000',
             'haber'        : '',
-            'nombreCuenta' : 'Caja',
-            'subcuenta'    : '',
-          },
-          <String, String>{
- 
+            'n

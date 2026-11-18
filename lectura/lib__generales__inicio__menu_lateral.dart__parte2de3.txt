@@ -33,20 +33,29 @@ PARTE 2 DE 3
     final String sIdioma = oPreferencias.getIdioma();
     final String sPais   = ClaseSesion.getPais();
     return Drawer(
-      child: ListView(
-        padding : EdgeInsets.zero,
-        children: <Widget>[
-          construirCabecera(oContexto, sIdioma),
-          construirSeccion(oContexto, sPais, 'menuArchivos',    _listArchivos),
-          construirSeccion(oContexto, sPais, 'menuTablas',      _listTablas),
-          construirSeccion(oContexto, sPais, 'menuProcesos',    _listProcesos),
-          construirSeccion(oContexto, sPais, 'menuInformes',    _listInformes),
-          construirSeccion(oContexto, sPais, 'menuUtilitarios', _listUtilitarios),
-          construirSeccion(oContexto, sPais, 'menuSistema',     _listSistema),
-          const Divider(),
-          construirFin(oContexto, sIdioma),
-          const SizedBox(height: ClaseGenEspacios.dEspacio16),
-        ],
+      // Regla UI/UX: la barra de desplazamiento del menú se muestra SIEMPRE
+      // visible, porque los usuarios noveles no saben que existe si no la ven.
+      // primary: true liga el ListView al PrimaryScrollController, y el
+      // Scrollbar (sin controlador propio) toma ese mismo controlador.
+      child           : Scrollbar(
+        thumbVisibility : true,
+        trackVisibility : true,
+        child           : ListView(
+          primary : true,
+          padding : EdgeInsets.zero,
+          children: <Widget>[
+            construirCabecera(oContexto, sIdioma),
+            construirSeccion(oContexto, sPais, 'menuArchivos',    _listArchivos),
+            construirSeccion(oContexto, sPais, 'menuTablas',      _listTablas),
+            construirSeccion(oContexto, sPais, 'menuProcesos',    _listProcesos),
+            construirSeccion(oContexto, sPais, 'menuInformes',    _listInformes),
+            construirSeccion(oContexto, sPais, 'menuUtilitarios', _listUtilitarios),
+            construirSeccion(oContexto, sPais, 'menuSistema',     _listSistema),
+            const Divider(),
+            construirFin(oContexto, sIdioma),
+            const SizedBox(height: ClaseGenEspacios.dEspacio16),
+          ],
+        ),
       ),
     );
   }
@@ -63,12 +72,4 @@ PARTE 2 DE 3
                style: ClaseGenEstilosTexto.tituloMediano(oContexto)
                         .copyWith(color: oTema.colorScheme.onPrimaryContainer)),
           const SizedBox(height: ClaseGenEspacios.dEspacio04),
-          Text(ClaseIdiomas.getTexto('baseConectada', sIdioma),
-               style: ClaseGenEstilosTexto.normalChico(oContexto)),
-          Text(ClaseSesion.getBaseDatos(),
-               style: ClaseGenEstilosTexto.textoCampo(oContexto)
-                        .copyWith(color: oTema.colorScheme.onPrimaryContainer,
-                                  fontWeight: FontWeight.w600)),
-          Text(ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma),
-               style: ClaseGenEstilosTexto.normalChico(oContexto)),
-        ],
+          Text(ClaseIdiomas.getTexto('baseConectada', sIdioma

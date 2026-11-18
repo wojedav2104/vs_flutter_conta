@@ -1,0 +1,14 @@
+RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
+PARTE 13 DE 13
+---
+low : TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}
+

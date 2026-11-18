@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 7 DE 10
 ---
-     iAnchoCaracteres      : 15,
+laseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
         iFila                 : 9,
         oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'iva10',
@@ -91,6 +94,4 @@ PARTE 7 DE 10
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeIrpSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto('comImporteIrpSimple', sIdioma),
-        sGrupo           : 'comResolucion',
-       
+        sEtiqueta        : ClaseIdioma

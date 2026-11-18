@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 2 DE 12
+PARTE 2 DE 13
 ---
 olumna; con grupos,
 /// los campos comunes arriba y una pestaña por grupo.

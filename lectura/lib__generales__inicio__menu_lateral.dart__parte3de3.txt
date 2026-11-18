@@ -1,6 +1,15 @@
 RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
 PARTE 3 DE 3
 ---
+),
+               style: ClaseGenEstilosTexto.normalChico(oContexto)),
+          Text(ClaseSesion.getBaseDatos(),
+               style: ClaseGenEstilosTexto.textoCampo(oContexto)
+                        .copyWith(color: oTema.colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.w600)),
+          Text(ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma),
+               style: ClaseGenEstilosTexto.normalChico(oContexto)),
+        ],
       ),
     );
   }

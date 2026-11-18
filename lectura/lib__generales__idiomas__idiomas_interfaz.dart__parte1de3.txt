@@ -13,6 +13,7 @@ abstract final class ClaseIdiomasInterfaz {
     'menuBasesDatos'          : 'Bases de Datos',
     'menuCierreAnual'         : 'Cierre Anual del Ejercicio',
     'menuClientes'            : 'Clientes',
+    'menuCompras'             : 'Compras',
     'menuConfiguracion'       : 'Configuración',
     'menuCuentasAsignadas'    : 'Cuentas asignadas',
     'menuEmpresa'             : 'Empresa',
@@ -38,7 +39,9 @@ abstract final class ClaseIdiomasInterfaz {
     'menuTimbradosProveedores': 'Timbrados Proveedores',
     'menuUtilitarios'         : 'Utilitarios',
     'menuUsuarios'            : 'Usuarios',
+    'menuVentas'              : 'Ventas',
     'menuVerificacionDatos'   : 'Verificación de datos',
+
     // ── Botones ABM ─────────────────────────────────────────────────────
     'abmAgregar'  : 'Agregar',
     'abmBorrar'   : 'Borrar',
@@ -75,5 +78,4 @@ abstract final class ClaseIdiomasInterfaz {
     'correoElectronico'     : 'Correo electrónico',
     'correoInvalido'        : 'Escribe un e-mail válido.',
     'confirmarSalir'        : '¿Deseas salir de la aplicación?',
-    'olvidasteMensaje'      : 'Escribe tu e-mail. Si está registrado en la aplicación, recibirás un mensaje para crear una nueva contraseña.',
-    'olvidasteConfirmacion' : 'Si el e-mail ingresado
+    'olvidasteMensaje'      : 'Escribe tu e-mail. Si está registrado en la aplicación, recibirás un mensaje 

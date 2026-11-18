@@ -1,7 +1,34 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
-PARTE 10 DE 12
+PARTE 10 DE 13
 ---
-? () => setState(() => iPagina = 0) : null,
+ padding : _getPaddingCelda(),
+                                  child   : Text(
+                                    (oRegistro[oCampo.sClave] ?? '').toString(),
+                                    // Alineación de la celda según la columna.
+                                    textAlign : _getTextAlignCelda(oCampo),
+                                    style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                    maxLines : 1,
+                                    overflow : TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const Divider(height: ClaseGenEspacios.dEspacio01),
+            Padding(
+              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio04),
+              child   : Row(
+                children: <Widget>[
+                  IconButton(
+                    tooltip   : ClaseIdiomas.getTexto('menuPrimeraFila', widget.sIdioma),
+                    icon      : const Icon(Icons.first_page),
+                    onPressed : (iPaginaActual > 0) ? () => setState(() => iPagina = 0) : null,
                   ),
                   IconButton(
                     tooltip   : ClaseIdiomas.getTexto('paginaAnterior', widget.sIdioma),
@@ -68,39 +95,4 @@ class ClaseAndamiajeAbm extends StatelessWidget {
   final List<ClaseCampoAbm>                listCampos;
   final List<Map<String, dynamic>>         listRegistros;
   /// Nodo de foco de la grilla lateral (opcional): para devolverle el foco desde el formulario, ej: al cancelar la edición.
-  final FocusNode?                         oFocoGrilla;
-  
-  /// Área derecha: el formulario (campos, o cabecera + detalles).
-  final Widget                             oFormulario;
-
-  final Set<EnumBotonAbm>                  setHabilitados;
-  final String                             sIdioma;
-  final String                             sTitulo;
-
-  @override
-  Widget build(BuildContext oContexto) {
-    return Scaffold(
-      appBar : AppBar(
-        title: funcConstruirTituloAppBar(oContexto, sIdioma, sTitulo),
-      ),
-      body: Column(
-        children: <Widget>[
-          // ← CAMBIO item 3: contenido arriba, botonera abajo
-          Expanded(
-            child: Row(
-              crossAxisAlignment : CrossAxisAlignment.stretch,
-              children: <Widget>[
-                ClaseGrillaRegistros(
-                  funcSeleccionar : funcSeleccionar,
-                  iRegistro       : iRegistro,
-                  listCampos      : listCampos,
-                  listRegistros   : listRegistros,
-                  oFocoExterno    : oFocoGrilla,
-                  sIdioma         : sIdioma,
-                ),
-                const VerticalDivider(width: ClaseGenEspacios.dEspacio01),
-                Expanded(child: oFormulario),
-              ],
-            ),
-          ),
-          // ← CAMB
+  final FocusNode?           

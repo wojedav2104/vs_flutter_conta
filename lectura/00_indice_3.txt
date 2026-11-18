@@ -1,3 +1,4 @@
+lib__opciones__archivos__compras.dart__parte7de10.txt
 lib__opciones__archivos__compras.dart__parte8de10.txt
 lib__opciones__archivos__compras.dart__parte9de10.txt
 lib__opciones__archivos__compras.dart__parte10de10.txt

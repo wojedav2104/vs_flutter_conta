@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_interfaz.dart
 PARTE 2 DE 3
 ---
- está registrado en la aplicación, recibirás un mensaje para crear una nueva contraseña.',
+para crear una nueva contraseña.',
+    'olvidasteConfirmacion' : 'Si el e-mail ingresado está registrado en la aplicación, recibirás un mensaje para crear una nueva contraseña.',
 
   };
 
@@ -14,6 +15,7 @@ PARTE 2 DE 3
     'menuBasesDatos'          : 'Bases de données',
     'menuCierreAnual'         : 'Clôture annuelle de l\'exercice',
     'menuClientes'            : 'Clients',
+    'menuCompras'             : 'Achats',
     'menuConfiguracion'       : 'Configuration',
     'menuCuentasAsignadas'    : 'Comptes assignés',
     'menuEmpresa'             : 'Entreprise',
@@ -39,7 +41,9 @@ PARTE 2 DE 3
     'menuTimbradosProveedores': 'Timbrados fournisseurs',
     'menuUtilitarios'         : 'Utilitaires',
     'menuUsuarios'            : 'Utilisateurs',
+    'menuVentas'              : 'Ventes',
     'menuVerificacionDatos'   : 'Vérification des données',
+
     // ── Botones ABM ─────────────────────────────────────────────────────
     'abmAgregar'  : 'Ajouter',
     'abmBorrar'   : 'Supprimer',
@@ -75,5 +79,4 @@ PARTE 2 DE 3
     'textoGrande'           : 'Texte agrandi',
     'correoElectronico'     : 'Adresse e-mail',
     'correoInvalido'        : 'Saisis une adresse e-mail valide.',
-    'confirmarSalir'        : 'Veux-tu quitter l\'application ?',
-    'olvidasteMensaje'      : 'Saisis ton e-mail. S\'il est enregistré dans l\'application, tu recevras un message pour créer un 
+    'confirmarSalir

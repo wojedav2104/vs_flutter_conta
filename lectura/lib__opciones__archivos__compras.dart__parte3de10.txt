@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 3 DE 10
 ---
-atorio de 8 dígitos solo si el Tipo de documento lleva
+o de 8 dígitos solo si el Tipo de documento lleva
     // la máscara 999-999-9999999; en blanco y deshabilitado en los demás casos.
     final String sTimbrado = (oRegistro['timbrado'] ?? '').toString();
     if (ClaseTipoDocumento.esConMascara(sTipoDoc)) {
@@ -77,6 +77,7 @@ atorio de 8 dígitos solo si el Tipo de documento lleva
             sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         iFila            : 1,
+        oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('comEjercicio', sIdioma),
@@ -96,5 +97,4 @@ atorio de 8 dígitos solo si el Tipo de documento lleva
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 6,
-        iFila                 : 1,
-        oTipo  
+     

@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 6 DE 10
 ---
-.getTexto('comGravadas10', sIdioma), sIdioma),
+ (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
+            sValor, ClaseIdiomas.getTexto('comGravadas10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
         iFila            : 8,
         oTipo            : EnumTipoCampoAbm.numero,
@@ -88,7 +89,4 @@ PARTE 6 DE 10
         sGrupo                : 'comDetalles',
         sMascara              : '999.999.999.999',
       ),
-      ClaseCampoAbm(
-        bEnGrilla             : false,
-        bSiempreDeshabilitado : true,
-   
+      C

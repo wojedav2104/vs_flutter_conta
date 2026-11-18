@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 2 DE 10
 ---
-res['cantidadCuotas'] ?? '').trim();
+cantidadCuotas'] ?? '').trim();
       if (sCuotas.isEmpty || sCuotas == '0') {
         mapActualizaciones['cantidadCuotas'] = '1';
       }
@@ -83,4 +83,4 @@ res['cantidadCuotas'] ?? '').trim();
       if (sErrorCuotas != null) return sErrorCuotas;
     }
 
-    // Timbrado: oblig
+    // Timbrado: obligatori

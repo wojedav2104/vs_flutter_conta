@@ -68,7 +68,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       oPreferencias        : widget.oPreferencias,
       sClaveCampoAlPie     : 'comentarios',
       sGrupoConDetalles    : 'comDetalles',
-      sTitulo              : ClaseIdiomas.getTexto('menuLibroCompras', getIdioma()),
+      sTitulo              : ClaseIdiomas.getTexto('menuCompras', getIdioma()),
     );
   }
 
@@ -95,4 +95,4 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
     // Cantidad de cuotas según el Tipo de documento.
     if (ClaseTipoDocumento.esFacturaCredito(sTipoDocumento)) {
-      final String sCuotas = (mapValo
+      final String sCuotas = (mapValores['

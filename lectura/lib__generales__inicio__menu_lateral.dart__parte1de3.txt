@@ -30,8 +30,8 @@ class ClaseMenuLateral extends StatelessWidget {
   static final List<ClaseOpcionMenu> _listArchivos = <ClaseOpcionMenu>[
     ClaseOpcionMenu(oIcono: Icons.account_tree_outlined,        sClave: 'menuPlanCuentas',         sRuta: ClaseRutas.rutaCuentas),
     ClaseOpcionMenu(oIcono: Icons.edit_note,                    sClave: 'menuAsientos',            sRuta: ClaseRutas.rutaAsientos),
-    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined,       sClave: 'menuLibroCompras',        sRuta: ClaseRutas.rutaCompras),
-    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined,       sClave: 'menuLibroVentas',         sRuta: ClaseRutas.rutaVentas),
+    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined,       sClave: 'menuCompras',             sRuta: ClaseRutas.rutaCompras),
+    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined,       sClave: 'menuVentas',              sRuta: ClaseRutas.rutaVentas),
     ClaseOpcionMenu(oIcono: Icons.people_outline,               sClave: 'menuRetencionesClientes', sRuta: ClaseRutas.rutaRetencionesClientes),
     ClaseOpcionMenu(oIcono: Icons.business_outlined,            sClave: 'menuRetencionesProveedores', sRuta: ClaseRutas.rutaRetencionesProveedores),
   ];

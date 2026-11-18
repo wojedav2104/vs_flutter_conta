@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 8 DE 10
 ---
- sMascara         : '999.999.999.999',
+s.getTexto('comImporteIrpSimple', sIdioma),
+        sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
         sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
@@ -97,7 +99,4 @@ PARTE 8 DE 10
             'debe'         : '2000000',
             'haber'        : '',
             'nombreCuenta' : 'Mercaderías Gravadas 10%',
-            'subcuenta'    : '',
-          },
-          <String, String>{
-            'concepto'     : 'C
+           
