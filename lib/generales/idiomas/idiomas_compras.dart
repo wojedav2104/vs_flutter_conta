@@ -3,6 +3,7 @@ abstract final class ClaseIdiomasCompras {
 
   static const Map<String, String> mapEs = <String, String>{
     // ── Grupos y campos de cabecera ──────────────────────────────────────
+    'comDetalles'             : 'Detalles',
     'comGenerales'            : 'Generales',
     'comResolucion'           : 'Resolución 90/2021',
     'comFecha'                : 'Fecha de la compra',
@@ -76,6 +77,7 @@ abstract final class ClaseIdiomasCompras {
   static const Map<String, String> mapFr = <String, String>{
     // ── Grupos y campos de cabecera ──────────────────────────────────────
     'comGenerales'            : 'Généraux',
+    'comDetalles'             : 'Détails',    
     'comResolucion'           : 'Résolution 90/2021',
     'comEjercicio'            : 'Exercice comptable',
     'comFecha'                : 'Date de l\'achat',

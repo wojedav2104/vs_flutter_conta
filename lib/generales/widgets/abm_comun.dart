@@ -116,6 +116,7 @@ class ClaseFormularioCampos extends StatefulWidget {
     this.funcAlPerderFoco,
     required this.funcEsHabilitado,
     this.funcEtiquetaGrupo,
+    this.funcExtraGrupo,
     required this.listCampos,
     required this.mapValores,
     required this.sIdioma,
@@ -136,6 +137,11 @@ class ClaseFormularioCampos extends StatefulWidget {
   /// clave del grupo; si no se provee, se usa el texto traducido de la clave.
   final String Function(String sClaveGrupo)?       funcEtiquetaGrupo;
 
+  /// Contenido extra que se muestra debajo de los campos de un grupo, dentro
+  /// de su pestaña (ej: la grilla de detalles de Compras, en la pestaña
+  /// Detalles, debajo de los importes). Recibe la clave del grupo y devuelve
+  /// null si el grupo no tiene contenido extra.
+  final Widget? Function(String sGrupo)?           funcExtraGrupo;
   final List<ClaseCampoAbm>                        listCampos;
   final Map<String, String>                        mapValores;
   final String                                     sIdioma;
@@ -151,8 +157,11 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
   late final TabController oControladorPestanas;
 
   /// Un nodo de foco por campo: lo usa el campo y también el formulario
-  /// para colocar el foco en el primer campo con error (item 14).
-  late final Map<String, FocusNode> mapFocos;
+  /// para colocar el foco en el primer campo con error (item 14). La llave
+  /// es el campo mismo: una clave puede repetirse en varios grupos (ej: los
+  /// importes de solo lectura de la pestaña Detalles de Compras) y cada campo
+  /// necesita su propio nodo.
+  late final Map<ClaseCampoAbm, FocusNode> mapFocos;
 
   @override
   void initState() {
@@ -162,9 +171,9 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
       length : listGrupos.isEmpty ? 1 : listGrupos.length,
       vsync  : this,
     );
-    mapFocos = <String, FocusNode>{
+    mapFocos = <ClaseCampoAbm, FocusNode>{
       for (final ClaseCampoAbm oCampo in widget.listCampos)
-        oCampo.sClave: FocusNode(),
+        oCampo: FocusNode(),
     };
   }
 
@@ -182,21 +191,23 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
   void enfocarCampo(String sClave) {
     final List<String> listGrupos = _getListGrupos();
     int iGrupo = -1;
+    ClaseCampoAbm? oCampoFoco;
     for (final ClaseCampoAbm oCampo in widget.listCampos) {
       if (oCampo.sClave != sClave) continue;
+      oCampoFoco = oCampo;
       if (oCampo.sGrupo != null) iGrupo = listGrupos.indexOf(oCampo.sGrupo!);
       break;
     }
     if (iGrupo >= 0 && iGrupo != oControladorPestanas.index) {
       oControladorPestanas.animateTo(iGrupo);
-      WidgetsBinding.instance.addPostFrameCallback((_) => _pedirFoco(sClave));
+      WidgetsBinding.instance.addPostFrameCallback((_) => _pedirFoco(oCampoFoco));
     } else {
-      _pedirFoco(sClave);
+      _pedirFoco(oCampoFoco);
     }
   }
 
-  void _pedirFoco(String sClave) {
-    if (mounted) mapFocos[sClave]?.requestFocus();
+  void _pedirFoco(ClaseCampoAbm? oCampo) {
+    if (mounted && oCampo != null) mapFocos[oCampo]?.requestFocus();
   }
 
   List<String> _getListGrupos() {
@@ -273,12 +284,9 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
         padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
         child   : Column(
           crossAxisAlignment : CrossAxisAlignment.start,
-          children: <Widget>[
-            for (final ClaseCampoAbm oCampo in widget.listCampos)
-              _construirCampo(oCampo,
-                  bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
-          ],
+          children: _construirCampos(widget.listCampos, oPrimeroHabilitado),
         ),
+
       );
     }
 
@@ -293,11 +301,7 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
             padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio16),
             child   : Column(
               crossAxisAlignment : CrossAxisAlignment.start,
-              children: <Widget>[
-                for (final ClaseCampoAbm oCampo in listComunes)
-                  _construirCampo(oCampo,
-                      bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
-              ],
+              children: _construirCampos(listComunes, oPrimeroHabilitado),
             ),
           ),
         // Regla UI/UX (fácil visualización): cada pestaña es una ficha
@@ -333,18 +337,7 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
             controller : oControladorPestanas,              // ← CAMBIO item 14
             children: <Widget>[
               for (final String sGrupo in listGrupos)
-                SingleChildScrollView(
-                  padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
-                  child   : Column(
-                    crossAxisAlignment : CrossAxisAlignment.start,
-                    children: <Widget>[
-                      for (final ClaseCampoAbm oCampo in widget.listCampos
-                          .where((ClaseCampoAbm o) => o.sGrupo == sGrupo))
-                        _construirCampo(oCampo,
-                            bAutoFocus: widget.bAutoFocus && oCampo == oPrimeroHabilitado), // ← CAMBIO item 10
-                    ],
-                  ),
-                ),
+                _construirContenidoPestana(oContexto, sGrupo, oPrimeroHabilitado),
             ],
           ),
         ),
@@ -352,17 +345,107 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
     );
   }
 
+  // Regla UI/UX: los campos con el mismo iFila (> 0) comparten fila; los
+  // demás van uno por fila. Los campos de una fila compartida reparten el
+  // ancho disponible en proporción a su ancho mínimo (bAnchoFlexible).
+  List<Widget> _construirCampos(
+      List<ClaseCampoAbm> listCampos, ClaseCampoAbm? oPrimeroHabilitado) {
+    final Map<int, List<ClaseCampoAbm>> mapFilas = <int, List<ClaseCampoAbm>>{};
+    int iFilaPropia = -1;
+    for (final ClaseCampoAbm oCampo in listCampos) {
+      final int iFila = (oCampo.iFila > 0) ? oCampo.iFila : iFilaPropia--;
+      (mapFilas[iFila] ??= <ClaseCampoAbm>[]).add(oCampo);
+    }
+    return <Widget>[
+      for (final List<ClaseCampoAbm> listFila in mapFilas.values)
+        _construirFila(listFila, oPrimeroHabilitado),
+    ];
+  }
+
+  Widget _construirFila(
+      List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
+    if (listFila.length == 1) {
+      return _construirCampo(listFila.first,
+          bAutoFocus: widget.bAutoFocus && listFila.first == oPrimeroHabilitado);
+    }
+    // Regla UI/UX (spec 00_03_01, ancho mínimo): cada campo de la fila ocupa
+    // su ancho natural (etiqueta + control) y nunca se estira más de él. Si
+    // la fila no cabe en el ancho del formulario, los campos se angostan
+    // proporcionalmente a su ancho natural (FlexFit.loose + tope máximo).
+    return Row(
+      crossAxisAlignment : CrossAxisAlignment.start,
+      children: <Widget>[
+        for (int i = 0; i < listFila.length; i++) ...<Widget>[
+          if (i > 0) const SizedBox(width: ClaseGenEspacios.dEspacio16),
+          Flexible(
+            fit  : FlexFit.loose,
+            flex : math.max(1, (listFila[i].getAnchoCampo()
+                   + ClaseGenLayout.dAnchoEtiquetaCampo).round()),
+            child : ConstrainedBox(
+              constraints : BoxConstraints(
+                maxWidth : listFila[i].getAnchoCampo()
+                    + ClaseGenLayout.dAnchoEtiquetaCampo,
+              ),
+              child : _construirCampo(listFila[i],
+                  bAnchoFlexible : true,
+                  bAutoFocus: widget.bAutoFocus && listFila[i] == oPrimeroHabilitado),
+            ),
+          ),
+        ],
+      ],
+    );
+
+  }
+
+  /// Contenido de una pestaña: los campos del grupo y, si el grupo tiene
+  /// contenido extra, ese contenido debajo de los campos ocupando el alto que
+  /// sobra (los campos se desplazan solos si no caben).
+  Widget _construirContenidoPestana(
+      BuildContext oContexto, String sGrupo, ClaseCampoAbm? oPrimeroHabilitado) {
+    final List<ClaseCampoAbm> listCamposGrupo = widget.listCampos
+        .where((ClaseCampoAbm o) => o.sGrupo == sGrupo)
+        .toList();
+    final Widget? oExtra = widget.funcExtraGrupo?.call(sGrupo);
+    if (oExtra == null) {
+      return SingleChildScrollView(
+        padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+        child   : Column(
+          crossAxisAlignment : CrossAxisAlignment.start,
+          children: _construirCampos(listCamposGrupo, oPrimeroHabilitado),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment : CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Flexible(
+          child: SingleChildScrollView(
+            padding : const EdgeInsets.all(ClaseGenEspacios.dEspacio16),
+            child   : Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
+              children: _construirCampos(listCamposGrupo, oPrimeroHabilitado),
+            ),
+          ),
+        ),
+        Expanded(child: oExtra),
+      ],
+    );
+  }
+
   // ← CAMBIO item 10: aceptar y propagar bAutoFocus
   // ← CAMBIO item 14: inyectar el nodo de foco del campo.
-  Widget _construirCampo(ClaseCampoAbm oCampo, {bool bAutoFocus = false}) {
+
+  Widget _construirCampo(ClaseCampoAbm oCampo,
+      {bool bAnchoFlexible = false, bool bAutoFocus = false}) {
     return ClaseCampoFormulario(
+      bAnchoFlexible   : bAnchoFlexible,
       bAutoFocus       : bAutoFocus,
       bHabilitado      : widget.funcEsHabilitado(oCampo),
       funcAlCambiar    : (String sValor) => widget.funcAlCambiarCampo(oCampo.sClave, sValor),
       funcAlPerderFoco : widget.funcAlPerderFoco,
       mapValores       : widget.mapValores,
       oCampo           : oCampo,
-      oFocoExterno     : mapFocos[oCampo.sClave],
+      oFocoExterno     : mapFocos[oCampo],
       sIdioma          : widget.sIdioma,
       sValor           : widget.mapValores[oCampo.sClave] ?? '',
     );

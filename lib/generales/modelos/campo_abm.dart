@@ -24,6 +24,7 @@ class ClaseCampoAbm {
     this.bVigencia              = false,
     this.iAnchoCaracteres       = 10,
     this.iAnchoVisible          = 0,
+    this.iFila                  = 0,
     this.iMaxComentario         = 500,
     this.listOpciones,
     this.listValores,
@@ -50,6 +51,7 @@ class ClaseCampoAbm {
   bool              bVigencia;
   int               iAnchoCaracteres;
   int               iAnchoVisible;
+  int               iFila;
   int               iMaxComentario;
 
   List<String>?     listOpciones;

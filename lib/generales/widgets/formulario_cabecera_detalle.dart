@@ -43,6 +43,7 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
     this.sClaveCampoAlPie,
     this.sClaveDebe  = 'debe',
     this.sClaveHaber = 'haber',
+    this.sGrupoConDetalles,
     required this.sTitulo,
   });
 
@@ -81,6 +82,10 @@ class ClaseFormularioCabeceraDetalle extends StatefulWidget {
   final String? sClaveCampoAlPie;
   final String sClaveDebe;
   final String sClaveHaber;
+  /// Grupo cuya pestaña contiene la grilla de detalles (ej: Compras,
+  /// 'comDetalles'). Si es null, la grilla se muestra al pie del formulario
+  /// (ej: Asientos).
+  final String? sGrupoConDetalles;
   final String sTitulo;
 
   final String? Function(String sClave, String sValor, Map<String, String> mapValores)? funcAlPerderFoco;
@@ -606,6 +611,13 @@ class ClaseEstadoFormularioCabeceraDetalle
       funcAlCambiarCampo  : _alCambiarCampo,
       funcAlPerderFoco    : widget.funcAlPerderFoco,
       funcEsHabilitado    : _getHabilitado,
+      // Regla UI/UX (Compras): la grilla de detalles se muestra dentro de su
+      // pestaña, debajo de los campos del grupo.
+      funcExtraGrupo      : (widget.sGrupoConDetalles == null)
+          ? null
+          : (String sGrupo) => (sGrupo == widget.sGrupoConDetalles)
+              ? _construirDetalle(oContexto)
+              : null,
       listCampos          : listCabecera,
       mapValores          : mapValores,
       sIdioma             : getIdioma(),
@@ -618,23 +630,28 @@ class ClaseEstadoFormularioCabeceraDetalle
       listCampos      : widget.listCamposCabecera,
       listRegistros   : widget.listRegistros,
       oFocoGrilla     : _oFocoGrilla,
-      oFormulario: Column(
-        crossAxisAlignment : CrossAxisAlignment.stretch,
-        children: <Widget>[
-          if (bConPestanas)
-            Expanded(
-              flex  : 2,
-              child : oCabecera,
-            )
-          else
-            oCabecera,
-          const Divider(height: ClaseGenEspacios.dEspacio01),
-          Expanded(
-            flex  : 3,
-            child : _construirDetalle(oContexto),
-          ),
-        ],
-      ),
+      // Regla UI/UX: con sGrupoConDetalles la grilla de detalles vive dentro
+      // de su pestaña (ej: Compras, pestaña Detalles); sin él, la grilla
+      // queda al pie del formulario (ej: Asientos).
+      oFormulario: (widget.sGrupoConDetalles != null)
+          ? oCabecera
+          : Column(
+              crossAxisAlignment : CrossAxisAlignment.stretch,
+              children: <Widget>[
+                if (bConPestanas)
+                  Expanded(
+                    flex  : 2,
+                    child : oCabecera,
+                  )
+                else
+                  oCabecera,
+                const Divider(height: ClaseGenEspacios.dEspacio01),
+                Expanded(
+                  flex  : 3,
+                  child : _construirDetalle(oContexto),
+                ),
+              ],
+            ),
       setHabilitados : _getBotonesHabilitados(),
       sIdioma        : getIdioma(),
       sTitulo        : widget.sTitulo,
@@ -1016,6 +1033,19 @@ class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
   void initState() {
     super.initState();
     oFoco.addListener(_alCambiarFoco);
+    // Regla UI/UX: la celda muestra el número formateado desde el primer
+    // momento; el valor plano solo se ve mientras se edita.
+    _mostrarFormateado();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ClaseCeldaNumero oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Al cambiar el valor desde afuera (selección de otro registro), volver a
+    // mostrar el número formateado si la celda no está en edición.
+    if (oldWidget.sValor != widget.sValor && !oFoco.hasFocus) {
+      _mostrarFormateado();
+    }
   }
 
   @override

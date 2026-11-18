@@ -44,6 +44,7 @@ class ClaseFormateadorImporte extends TextInputFormatter {
 class ClaseCampoFormulario extends StatefulWidget {
   const ClaseCampoFormulario({
     super.key,
+    this.bAnchoFlexible = false,
     this.bAutoFocus = false,
     this.bEtiquetaArriba = false,
     required this.bHabilitado,
@@ -57,7 +58,11 @@ class ClaseCampoFormulario extends StatefulWidget {
   });
 
   /// true para mover el foco a este campo al entrar en modo edición.
-    /// true para mover el foco a este campo al entrar en modo edición.
+  /// true para repartir el ancho disponible entre los campos de una misma
+  /// fila (el control queda en un Expanded); false = ancho fijo mínimo del
+  /// campo solo en su fila.
+  final bool                                bAnchoFlexible;
+  /// true para mover el foco a este campo al entrar en modo edición.
   final bool                                bAutoFocus;
   /// true para mostrar la etiqueta arriba del control, en la misma fila que
   /// el contador de caracteres (campo Comentarios al pie de la grilla), y
@@ -104,6 +109,11 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
     oFoco = widget.oFocoExterno ?? oFocoInterno;
     oControl = TextEditingController(text: widget.sValor);
     oFoco.addListener(_alCambiarFoco);                       // ← CAMBIO item 9
+    // Regla UI/UX: los números con máscara se muestran formateados desde el
+    // primer momento (2.200.000 y no 2200000), no solo al salir del campo.
+    // Especial para los campos deshabilitados, que nunca reciben foco (ej:
+    // Total). Al recibir el foco se muestra el valor plano para teclear.
+    _mostrarNumeroFormateado();
     if (widget.bAutoFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) oFoco.requestFocus();
@@ -541,10 +551,13 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
               child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
             ),
           ),
-          SizedBox(
-            width : _getAnchoCampo(),
-            child : _construirControl(oContexto),
-          ),
+          if (widget.bAnchoFlexible)
+            Expanded(child: _construirControl(oContexto))
+          else
+            SizedBox(
+              width : _getAnchoCampo(),
+              child : _construirControl(oContexto),
+            ),
         ],
       ),
     );
