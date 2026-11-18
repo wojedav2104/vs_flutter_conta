@@ -65,7 +65,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       oPreferencias        : widget.oPreferencias,
       sClaveCampoAlPie     : 'comentarios',
       sGrupoConDetalles    : 'comDetalles',
-      sTitulo              : ClaseIdiomas.getTexto('menuLibroCompras', getIdioma()),
+      sTitulo              : ClaseIdiomas.getTexto('menuCompras', getIdioma()),
     );
   }
 
@@ -250,6 +250,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
             sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         iFila            : 1,
+        oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('comEjercicio', sIdioma),
@@ -282,6 +283,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
             DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         iFila            : 2,
+        oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.fecha,
         sClave           : 'fecha',
         sEtiqueta        : ClaseIdiomas.getTexto('comFecha', sIdioma),

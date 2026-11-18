@@ -27,8 +27,8 @@ class ClaseMenuLateral extends StatelessWidget {
   static final List<ClaseOpcionMenu> _listArchivos = <ClaseOpcionMenu>[
     ClaseOpcionMenu(oIcono: Icons.account_tree_outlined,        sClave: 'menuPlanCuentas',         sRuta: ClaseRutas.rutaCuentas),
     ClaseOpcionMenu(oIcono: Icons.edit_note,                    sClave: 'menuAsientos',            sRuta: ClaseRutas.rutaAsientos),
-    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined,       sClave: 'menuLibroCompras',        sRuta: ClaseRutas.rutaCompras),
-    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined,       sClave: 'menuLibroVentas',         sRuta: ClaseRutas.rutaVentas),
+    ClaseOpcionMenu(oIcono: Icons.shopping_cart_outlined,       sClave: 'menuCompras',             sRuta: ClaseRutas.rutaCompras),
+    ClaseOpcionMenu(oIcono: Icons.point_of_sale_outlined,       sClave: 'menuVentas',              sRuta: ClaseRutas.rutaVentas),
     ClaseOpcionMenu(oIcono: Icons.people_outline,               sClave: 'menuRetencionesClientes', sRuta: ClaseRutas.rutaRetencionesClientes),
     ClaseOpcionMenu(oIcono: Icons.business_outlined,            sClave: 'menuRetencionesProveedores', sRuta: ClaseRutas.rutaRetencionesProveedores),
   ];
@@ -90,20 +90,29 @@ class ClaseMenuLateral extends StatelessWidget {
     final String sIdioma = oPreferencias.getIdioma();
     final String sPais   = ClaseSesion.getPais();
     return Drawer(
-      child: ListView(
-        padding : EdgeInsets.zero,
-        children: <Widget>[
-          construirCabecera(oContexto, sIdioma),
-          construirSeccion(oContexto, sPais, 'menuArchivos',    _listArchivos),
-          construirSeccion(oContexto, sPais, 'menuTablas',      _listTablas),
-          construirSeccion(oContexto, sPais, 'menuProcesos',    _listProcesos),
-          construirSeccion(oContexto, sPais, 'menuInformes',    _listInformes),
-          construirSeccion(oContexto, sPais, 'menuUtilitarios', _listUtilitarios),
-          construirSeccion(oContexto, sPais, 'menuSistema',     _listSistema),
-          const Divider(),
-          construirFin(oContexto, sIdioma),
-          const SizedBox(height: ClaseGenEspacios.dEspacio16),
-        ],
+      // Regla UI/UX: la barra de desplazamiento del menú se muestra SIEMPRE
+      // visible, porque los usuarios noveles no saben que existe si no la ven.
+      // primary: true liga el ListView al PrimaryScrollController, y el
+      // Scrollbar (sin controlador propio) toma ese mismo controlador.
+      child           : Scrollbar(
+        thumbVisibility : true,
+        trackVisibility : true,
+        child           : ListView(
+          primary : true,
+          padding : EdgeInsets.zero,
+          children: <Widget>[
+            construirCabecera(oContexto, sIdioma),
+            construirSeccion(oContexto, sPais, 'menuArchivos',    _listArchivos),
+            construirSeccion(oContexto, sPais, 'menuTablas',      _listTablas),
+            construirSeccion(oContexto, sPais, 'menuProcesos',    _listProcesos),
+            construirSeccion(oContexto, sPais, 'menuInformes',    _listInformes),
+            construirSeccion(oContexto, sPais, 'menuUtilitarios', _listUtilitarios),
+            construirSeccion(oContexto, sPais, 'menuSistema',     _listSistema),
+            const Divider(),
+            construirFin(oContexto, sIdioma),
+            const SizedBox(height: ClaseGenEspacios.dEspacio16),
+          ],
+        ),
       ),
     );
   }

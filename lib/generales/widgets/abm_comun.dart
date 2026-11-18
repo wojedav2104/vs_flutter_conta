@@ -651,6 +651,30 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
 
   // ── Construcción de la interfaz ──────────────────────────────────────────
 
+  // ── Alineación y separación de las columnas ─────────────────────────────
+
+  /// Alineación horizontal del contenido de una columna de la grilla.
+  Alignment _getAlineacionCelda(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:    return Alignment.center;
+      case EnumAlineacion.derecha:   return Alignment.centerRight;
+      case EnumAlineacion.izquierda: return Alignment.centerLeft;
+    }
+  }
+
+  /// Alineación del texto dentro de la celda de la grilla.
+  TextAlign _getTextAlignCelda(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:    return TextAlign.center;
+      case EnumAlineacion.derecha:   return TextAlign.right;
+      case EnumAlineacion.izquierda: return TextAlign.left;
+    }
+  }
+
+  /// Separación horizontal entre columnas de la grilla (regla UI/UX): los nombres y los valores de las columnas vecinas nunca se tocan.
+  EdgeInsets _getPaddingCelda() => EdgeInsets.symmetric(
+      horizontal: ClaseGenEspacios.dEspacio08 * ClaseGenLayout.dEscala);
+
   @override
   Widget build(BuildContext oContexto) {
     if (!bVisible) {
@@ -766,18 +790,20 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                           // columna activa de orden y su sentido (ascendente/
                           // descendente). Solo se muestra en esa columna.
                           child   : Align(
-                            alignment : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
+                            alignment : _getAlineacionCelda(oCampo),
                             child : Row(
                               mainAxisSize : MainAxisSize.min,
                               children     : <Widget>[
                                 Flexible(
-                                  child : Text(
-                                    oCampo.sEtiqueta,
-                                    style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                                    maxLines : 1,
-                                    overflow : TextOverflow.ellipsis,
+                                  // Separación entre columnas (regla UI/UX).
+                                  child : Padding(
+                                    padding : _getPaddingCelda(),
+                                    child   : Text(
+                                      oCampo.sEtiqueta,
+                                      style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                      maxLines : 1,
+                                      overflow : TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                                 if (sClaveOrden == oCampo.sClave) ...<Widget>[
@@ -835,15 +861,17 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                               child: GestureDetector(
                                 onLongPressStart: (oDetalle) => _mostrarMenuCelda(
                                     oContexto, oRegistro, oCampo, oDetalle.globalPosition),
-                                child: Text(
-                                  (oRegistro[oCampo.sClave] ?? '').toString(),
-                                  // ← CAMBIO item 8: alinear números a la derecha en celdas
-                                  textAlign : (oCampo.oTipo == EnumTipoCampoAbm.numero)
-                                      ? TextAlign.right
-                                      : TextAlign.left,
-                                  style    : ClaseGenEstilosTexto.normalChico(oContexto),
-                                  maxLines : 1,
-                                  overflow : TextOverflow.ellipsis,
+                                child: Padding(
+                                  // Separación entre columnas (regla UI/UX).
+                                  padding : _getPaddingCelda(),
+                                  child   : Text(
+                                    (oRegistro[oCampo.sClave] ?? '').toString(),
+                                    // Alineación de la celda según la columna.
+                                    textAlign : _getTextAlignCelda(oCampo),
+                                    style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                    maxLines : 1,
+                                    overflow : TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                             ),

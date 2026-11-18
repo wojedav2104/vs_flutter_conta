@@ -10,6 +10,7 @@ abstract final class ClaseIdiomasInterfaz {
     'menuBasesDatos'          : 'Bases de Datos',
     'menuCierreAnual'         : 'Cierre Anual del Ejercicio',
     'menuClientes'            : 'Clientes',
+    'menuCompras'             : 'Compras',
     'menuConfiguracion'       : 'Configuración',
     'menuCuentasAsignadas'    : 'Cuentas asignadas',
     'menuEmpresa'             : 'Empresa',
@@ -35,7 +36,9 @@ abstract final class ClaseIdiomasInterfaz {
     'menuTimbradosProveedores': 'Timbrados Proveedores',
     'menuUtilitarios'         : 'Utilitarios',
     'menuUsuarios'            : 'Usuarios',
+    'menuVentas'              : 'Ventas',
     'menuVerificacionDatos'   : 'Verificación de datos',
+
     // ── Botones ABM ─────────────────────────────────────────────────────
     'abmAgregar'  : 'Agregar',
     'abmBorrar'   : 'Borrar',
@@ -86,6 +89,7 @@ abstract final class ClaseIdiomasInterfaz {
     'menuBasesDatos'          : 'Bases de données',
     'menuCierreAnual'         : 'Clôture annuelle de l\'exercice',
     'menuClientes'            : 'Clients',
+    'menuCompras'             : 'Achats',
     'menuConfiguracion'       : 'Configuration',
     'menuCuentasAsignadas'    : 'Comptes assignés',
     'menuEmpresa'             : 'Entreprise',
@@ -111,7 +115,9 @@ abstract final class ClaseIdiomasInterfaz {
     'menuTimbradosProveedores': 'Timbrados fournisseurs',
     'menuUtilitarios'         : 'Utilitaires',
     'menuUsuarios'            : 'Utilisateurs',
+    'menuVentas'              : 'Ventes',
     'menuVerificacionDatos'   : 'Vérification des données',
+
     // ── Botones ABM ─────────────────────────────────────────────────────
     'abmAgregar'  : 'Ajouter',
     'abmBorrar'   : 'Supprimer',

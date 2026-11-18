@@ -3,9 +3,11 @@ import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
 
 
+/// Alineación del contenido de la columna de un campo en la grilla lateral de registros de los formularios ABM.
+enum EnumAlineacion { centro, derecha, izquierda }
+
 /// Tipo de dato de un campo de un formulario ABM.
 enum EnumTipoCampoAbm { casillas, comentario, fecha, hora, lista, logico, numero, texto }
-
 
 /// Especificación de un campo de un formulario ABM.
 class ClaseCampoAbm {
@@ -28,6 +30,7 @@ class ClaseCampoAbm {
     this.iMaxComentario         = 500,
     this.listOpciones,
     this.listValores,
+    this.oAlineacion,
     this.sGrupo,
     this.sHint,
     this.sMascara,
@@ -55,12 +58,11 @@ class ClaseCampoAbm {
   int               iMaxComentario;
 
   List<String>?     listOpciones;
-
-  /// Valores internos que se guardan en el registro (códigos estables, ej:
-  /// '01' para Factura Contado, 'S'/'N' para Sí/No). Si es null se guardan
-  /// los textos de listOpciones. Debe tener la misma cantidad de elementos.
   List<String>?     listValores;
+
+  EnumAlineacion?   oAlineacion;
   EnumTipoCampoAbm  oTipo;
+
   String            sClave;
   String            sEtiqueta;
   String?           sGrupo;
@@ -143,4 +145,17 @@ class ClaseCampoAbm {
            + ClaseGenEspacios.dEspacio48;
   }
 
+  // ── Alineación ───────────────────────────────────────────────────────────
+
+  /// Alineación de la columna de este campo en la grilla lateral de registros.
+  /// Si no se indicó oAlineacion se usa la alineación por tipo de dato:
+  /// números a la derecha y el resto a la izquierda (regla 00_03_01).
+  EnumAlineacion getAlineacion() {
+    return oAlineacion
+        ?? ((oTipo == EnumTipoCampoAbm.numero)
+            ? EnumAlineacion.derecha
+            : EnumAlineacion.izquierda);
+  }
+
 }
+

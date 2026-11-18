@@ -3,8 +3,8 @@ Los números son solamente para que entiendas la estructura del menú, no los de
 1. Archivos
 1.1 Plan de Cuentas
 1.2 Asientos
-1.3 Libro Compras
-1.4 Libro Ventas
+1.3 Compras
+1.4 Ventas
 1.5 Retenciones a Clientes
 1.6 Retenciones de Proveedores
 
@@ -12,17 +12,18 @@ Los números son solamente para que entiendas la estructura del menú, no los de
 2.1 Empresa
 2.2 Configuración
 2.3 Sucursales
-2.4 Clientes
-2.5 Proveedores
-2.6 Timbrados Propios
-2.7 Timbrados Proveedores
-2.8 Cuentas asignadas
+2.4 Cuentas asignadas
+2.5 Clientes
+2.6 Proveedores
+2.7 Timbrados Propios
+2.8 Timbrados Proveedores
 
 3. Procesos
-3.1 Reorganizar asientos
-3.2 Cierre Anual del Ejercicio
-3.3 Reapertura de Cuentas
-3.4 Marangatú
+3.1 Cierre Anual del Ejercicio
+3.2 Importar desde SQL_CONTA
+3.3 Marangatú
+3.4 Reapertura de Cuentas
+3.5 Reorganizar asientos
 
 4. Informes
 4.1 Verificación de datos

@@ -1,0 +1,214 @@
+========================================================================
+ESTADO DE SESIÓN — VS_CONTA (vs_flutter_conta)
+Para continuar en una nueva sesión: entregar este archivo completo.
+Última actualización: al cierre de la sesión del 18/11/2026.
+========================================================================
+
+1. ROL Y FLUJO
+--------------
+Programador senior en Flutter/Dart (asistente de IA), cotrabajo con el
+usuario (dueño del proyecto). Él decide, yo propongo; él prueba y reporta,
+yo diagnostico y entrego. Español neutro, tono técnico sobrio.
+Repositorio: https://github.com/wojedav2104/vs_flutter_conta
+Flujo: releer fragmentos de lectura/ (o el .dart en GitHub) antes de
+entregar; parches "Buscar:"/"Reemplazar:" exactos sobre los .dart REALES
+de lib/ (nunca sobre lectura/); archivos completos cuando hay muchos
+cambios. El usuario aplica, compila/prueba y reporta. Tras cambios de
+recursos/idiomas o de clases de Estado: flutter clean (el hot reload NO
+sirve ahí; "Assertion failed: framework.dart"). Verificar anchors contra el
+código real antes de entregar.
+
+2. PROYECTO
+-----------
+VS_CONTA: contabilidad multi-país/moneda/sucursal/usuario/idioma
+(español/francés). Hoy Paraguay (SET, DNIT, Marangatú, IVA 10%/5%, I.R.E.,
+I.R.P., Retención 30%). LA APLICACIÓN ES PRINCIPALMENTE WEB (navegador);
+también Windows táctil y Android.
+FASE 1: 8 pantallas ABM con datos de prueba + Login + menú drawer +
+Asientos, Compras y Cuentas (Plan de Cuentas) con datos de prueba.
+DEMO PÚBLICA en VPS Ubuntu 22.04 (Nginx) con dominio e IP; se actualiza
+con flutter build web --release + subir build/web a /var/www/vsconta
+(WinSCP). Firebird 2.5.9 pendiente (guía VPS lista en docs 09_01_01/02).
+Diseño base 1920x1080; responsive para 1366x768 y 1024x768.
+Especificaciones fuente de verdad en Documentación/ (25 archivos "0"):
+00_00_01..03 (UI/UX, nomenclatura, ventanas, mensajes, máscaras), 00_01
+(carpetas), 00_02 (drawer), 00_03_01/02 (23 reglas ABM), 00_04 (monedas),
+00_05 (países), 01_01..01_08 (tablas), 02_01..02_03_02 (Cuentas, Asientos,
+Compras), 09_01/09_02 (VPS Firebird, enlaces). Si la spec y el código
+difieren, manda la spec.
+
+LECTURA COMPLETA DEL CÓDIGO: en esta sesión se leyeron los 25 archivos "0"
+de Documentación y los 145 fragmentos de lectura/ (índices 00_indice_1/2/3
+son el listado canónico; 00_indice_4/5/6 devuelven vacíos; 00_total = 145).
+El fragmento ventana_mensaje.dart parte 1de4, que falló en un scrape
+anterior, fue recuperado esta sesión. NO hace falta releer todo al inicio:
+releer solo los fragmentos necesarios por tarea.
+
+3. ARQUITECTURA (resumen)
+-------------------------
+MVVM con widgets. Formularios autocontenidos: List<ClaseCampoAbm> +
+datos de prueba → ClaseFormularioAbm (tablas simples) o
+ClaseFormularioCabeceraDetalle (Asientos/Compras). Archivos clave y estado:
+- generales/modelos/campo_abm.dart — getAnchoCampo()/getAnchoColumna()
+  ESCALADOS: la parte de texto se multiplica por ClaseGenLayout.dEscala;
+  iconos y paddings NO escalan. iAnchoVisible; iFila (campos con el mismo
+  número > 0 comparten fila visual; orden de Tab = orden visual).
+- generales/widgets/campo_formulario.dart — bAnchoFlexible; bEtiquetaArriba
+  (Comentarios al pie); etiqueta = dAnchoEtiquetaCampo * dEscala;
+  separación inferior = dSeparacionCampo * dEscala (uniforme para todos los
+  controles); hintStyle con el mismo estilo escalado que el texto del campo;
+  IconButtons (picker, "X") y Checkbox/Switch con
+  MaterialTapTargetSize.shrinkWrap; Enter = Tab vía _alEnterCampo() (con
+  error no avanza); números con máscara (formateados al cargar y al perder
+  foco, plano al editar); fechas/horas con completado inteligente y
+  validación al salir solo si el foco pasó a otro campo de entrada.
+- generales/widgets/abm_comun.dart — ClaseFormularioCampos: pestañas como
+  fichas (_construirPestana); _construirFila con ancho máximo y flex =
+  getAnchoCampo() + dAnchoEtiquetaCampo * dEscala (nunca se estiran; si no
+  caben se angostan proporcionalmente); funcExtraGrupo; mapFocos.
+  ClaseGrillaRegistros: dAnchoGrillaRegistros * dEscala y
+  dAnchoTiraGrilla * dEscala; flechita de orden; búsqueda con colores de
+  controles habilitados; foco en la grilla (item 23). ClaseBotoneraAbm:
+  iconos por botón (agregar=add_circle_outline, borrar=delete_outline,
+  modificar=edit_outlined, grabar=save_outlined, cancelar=cancel_outlined,
+  encontrar=search, fin=exit_to_app); ancho dAnchoBotonAbm * dEscala, alto
+  dAltoBotonAbm FIJO 48 (táctil, no escala); foco = amarillo + texto negro.
+- generales/temas/layout.dart — ClaseGenLayout: constantes + dEscala
+  (double, recalculada), dEscalaMinima = 0.55, dSeparacionCampo = 8.0,
+  calcularEscala(dAncho): dAncho/1920 acotado [0.55, 1.0]; SOLO el ancho
+  participa (16:9; 1920 de ancho se ve siempre igual, con o sin barra del
+  navegador).
+- generales/temas/estilos_textos.dart — _estilo() multiplica fontSize por
+  dFactorTexto (1.0/1.25 "texto grande") * ClaseGenLayout.dEscala. Único
+  punto de escalado de textos.
+- main.dart — ClaseEstadoAplicacion con WidgetsBindingObserver
+  (didChangeMetrics → setState); en build():
+  ClaseGenLayout.calcularEscala(MediaQueryData.fromView(View.of(oContexto))
+  .size.width).
+- generales/widgets/formulario_abm.dart — ABM simple; grabación exitosa con
+  cierre automático 3 s.
+- generales/widgets/formulario_cabecera_detalle.dart — sGrupoConDetalles
+  (Compras: en la pestaña; Asientos: al pie); scroll horizontal compartido;
+  fila de totales con "Agregar fila"; celdas numéricas formateadas; cierre
+  automático 3 s. PENDIENTE revisión responsive (etapa 2).
+- generales/widgets/ventana_mensaje.dart — advertencia/confirmación/error/
+  información (auto-cierre solo en información); funcConstruirBoton con
+  icono; selectores de fecha y hora. PENDIENTE revisión responsive (etapa 2).
+- generales/idiomas/ — 8 archivos es/fr, paridad completa;
+  'comDetalles' = 'Detalles'/'Détails'.
+- generales/validaciones/ — cap_validar.dart (sin BD) y can_validar.dart
+  (con BD, para la fase de conexión).
+- opciones/archivos/compras.dart — 3 grupos (Generales, Detalles,
+  Resolución 90/2021); auto-cálculos intactos.
+- La lógica de filas y pestañas está lista para reutilizar en Ventas.
+
+4. REGLAS UI/UX ESTABLECIDAS (aplicar en todo lo nuevo)
+-------------------------------------------------------
+a) Enter = Tab en campos de entrada (Comentario conserva su Enter);
+   IconButtons (picker, "X") fuera del orden de foco (ExcludeFocus).
+b) Pestañas: siempre como fichas visibles (_construirPestana).
+c) Controles: habilitado = cian suave + texto cian con contraste;
+   deshabilitado = gris tenue + texto gris/negro. Colores exactos
+   pendientes de decidir con los usuarios (mecanismo en ClaseGenTemas).
+d) Botón con foco de teclado: fondo amarillo + texto negro.
+e) Ventana de grabación exitosa: se cierra sola a los 3 s.
+f) Grilla lateral: flechita de orden por columna (asc/desc).
+g) Formularios con muchos campos: varios campos por fila (iFila), cada uno
+   a su ancho mínimo (nunca se estira); filas de pocos campos: uno debajo
+   del otro (Asientos).
+h) Números: valor interno plano; SIEMPRE con su máscara al mostrar, salvo
+   al editar (plano para teclear).
+i) Mensajes al usuario: SIEMPRE de "tú" (es y fr; tu/toi).
+j) Traducciones francesas: R.U.C. no se traduce; "apellido materno/paterno"
+   = "nom de famille maternel/paternel"; "compte" masculino (ce compte).
+k) ESCALA RESPONSIVE (nueva, implementada): todo tamaño visible pasa por
+   ClaseGenLayout.dEscala. Textos en _estilo(); anchos de campo en
+   getAnchoCampo()/getAnchoColumna() (solo la parte de texto); etiqueta,
+   grilla y botonera en su punto de uso. Iconos, paddings internos y alto
+   de los botones ABM (48) NO escalan. En 1920 de ancho dEscala = 1.0.
+   Fórmula: SOLO ancho (dAncho/1920), piso dEscalaMinima 0.55, techo 1.0.
+l) SEPARACIÓN VERTICAL ENTRE CONTROLES (nueva, implementada): visible
+   siempre la misma para todos los tipos = dSeparacionCampo (8.0) * dEscala.
+   Con MaterialTapTargetSize.shrinkWrap en IconButtons/Checkbox/Switch.
+m) Hint del campo: mismo estilo escalado que el texto del campo.
+
+5. DESPLIEGUE (VPS)
+-------------------
+VPS Ubuntu 22.04 (vps3832812) con Nginx. Carpeta pública:
+/var/www/vsconta (www-data:www-data, 755). Configuración en
+/etc/nginx/sites-available/vsconta (try_files → index.html; gzip; caché 7d
+para assets). El código fuente NUNCA se sube al VPS: solo build\web
+(compilado). Actualización: flutter build web --release en Windows →
+WinSCP reemplaza contenido de /var/www/vsconta → Ctrl+F5. Acceso por IP;
+dominio pendiente de propagación DNS (registro A; nslookup/dnschecker).
+HTTPS pendiente (certbot --nginx cuando el DNS resuelva). WinSCP y PuTTY
+instalados en la PC.
+
+6. PENDIENTES
+-------------
+1. [PRÓXIMA SESIÓN - PRIORITARIO] Pequeños ajustes responsive que el
+   usuario mencionó al cerrar ("aún faltan algunos pequeños ajustes"):
+   recibir su lista concreta (qué texto/control queda cortado, en qué
+   pantalla, resolución y escalado de Windows) y corregir. Posibles puntos:
+   restos de texto cortado por abajo en algunos casos; altos fijos que no
+   escalan (AppBar 56, filas de grilla 26, filas compactas de detalles).
+2. Etapa 2 responsive: login.dart (tarjeta 420 px), ventana_mensaje.dart
+   (iAnchoColumnasMensaje), formulario_cabecera_detalle.dart (grilla de
+   detalles: mínimos 700, altos de fila fijos), menu_lateral.dart; decidir
+   piso mínimo de legibilidad si el texto queda muy chico con Windows 125%.
+3. Decidir con los usuarios: colores exactos de controles habilitados/
+   deshabilitados y tamaño del texto (dFactorTexto hoy 1.25; baja a 1.0 si
+   lo piden; vive en ClaseGenEstilosTexto).
+4. Mejoras sustanciales al botón "Encontrar" (no tocar hasta entonces).
+5. Barrer claves crudas restantes si aparecen (Sucursales, Cuentas, Cuentas
+   Asignadas, Configuración).
+6. Ajustar redacciones es/fr de validFechaInvalida/validHoraInvalida a
+   gusto (verificar que mapFr acompañe).
+7. Mayores: DDL de la BD de las 8 tablas (specs 01_01..01_08, con
+   validaciones de unicidad), Firebird 2.5.9 en el VPS, API en el VPS (la
+   app web no puede hablar directo con Firebird), Lector de archivos de
+   Marangatú (01_06), Entorno 00_00_01, pantallas de Informes/Procesos.
+8. HTTPS + dominio del VPS cuando el DNS se propague.
+
+7. LECCIONES / ERRORES A NO REPETIR
+-----------------------------------
+- Nunca editar fragmentos de lectura/; solo .dart reales de lib/.
+- Si un cambio no se refleja: flutter clean y recompilar. Hot reload no sirve
+  con cambios de clases de Estado ni de recursos/idiomas. Si el usuario
+  reporta "Assertion failed: framework.dart", primero pedir flutter clean.
+- OVERFLOW de la grilla: el ancho total debe incluir el padding horizontal
+  de las filas (16 px).
+- Ternarias de colores por estado: revisar TODOS los puntos al invertir la
+  lógica.
+- Verificar anchors "Buscar:" contra el .dart real (con los parches ya
+  aplicados) antes de entregar; si se entrega un archivo completo,
+  reconstruirlo sobre el estado actual (GitHub + parches aplicados).
+- Unificar tratamientos de mensaje (tú/tu) al agregar textos nuevos.
+- Hint de los campos: SIEMPRE con el mismo estilo escalado que el texto del
+  campo; el estilo crudo del tema se ve más grande en ventanas menores a
+  1920 y se corta por abajo (causó el "texto cortado" reportado en web).
+- MaterialTapTargetSize.shrinkWrap en IconButtons/Checkbox/Switch de
+  formularios: el área táctil de 48 px ensancha filas y desiguala las
+  separaciones.
+- Web = píxeles CSS: con Windows al 125% una notebook 1366x768 muestra
+  ~1093 px lógicos. Pensar la escala contra el ancho lógico real.
+- Escalar SOLO por ancho (no min(ancho, alto)): 1366x768 es 16:9 y acompaña
+  solo; así 1920 de ancho se ve igual con o sin barra del navegador (regla
+  del usuario: en 1920x1080 se ve todo muy bien).
+- Los archivos completos entregados hasta ahora: asientos.dart,
+  formulario_cabecera_detalle.dart, compras.dart. Si se vuelve a entregar
+  uno completo, reconstruirlo sobre el estado actual del usuario.
+
+8. CÓMO CONTINUAR EN LA PRÓXIMA SESIÓN
+---------------------------------------
+1. Leer este archivo completo y el CLAUDE.md.
+2. Preguntar por los "pequeños ajustes" pendientes que el usuario mencionó
+   al cerrar la sesión (pendiente 1): pedir el detalle concreto (pantalla,
+   qué se corta, resolución, escalado de Windows) y entregar los parches.
+3. Si reporta un bug de lo aplicado (escala o separación), releer los
+   fragmentos correspondientes de lectura/ (o GitHub) y entregar parches
+   correctivos. Recordar: si el cambio no se refleja, flutter clean.
+4. Luego continuar con la etapa 2 responsive (pendiente 2) o con lo que el
+   usuario pida (DDL de la BD, etc.).
+5. Al cerrar la próxima sesión, actualizar este archivo y el CLAUDE.md.
+========================================================================
