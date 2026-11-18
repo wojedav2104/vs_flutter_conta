@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 6 DE 11
+PARTE 6 DE 12
 ---
  _alClicarBoton(EnumBotonAbm oBoton) {
     switch (oBoton) {

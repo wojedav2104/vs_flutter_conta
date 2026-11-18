@@ -1,7 +1,11 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 10 DE 10
 ---
-       'iva10'               : '0',
+
+        'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',
+        'importeNoImputable'  : '0',
+        'iva10'               : '0',
         'iva5'                : '20000',
         'mostrarEnLibro'      : ClaseSiNo.si,
         'numero'              : '001-001-0000456',

@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 9 DE 10
 ---
- 'subcuenta'    : '',
+: '2000000',
+            'haber'        : '',
+            'nombreCuenta' : 'Mercaderías Gravadas 10%',
+            'subcuenta'    : '',
           },
           <String, String>{
             'concepto'     : 'Compra de mercadería',
@@ -100,7 +103,3 @@ PARTE 9 DE 10
         'importeExento'       : '100000',
         'importeGravado10'    : '0',
         'importeGravado5'     : '420000',
-        'importeIreSimple'    : '0',
-        'importeIrpSimple'    : '0',
-        'importeNoImputable'  : '0',
- 

@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 5 DE 11
+PARTE 5 DE 12
 ---
 ll) {
           return _traducirFila(sIdioma, iFila, sError);

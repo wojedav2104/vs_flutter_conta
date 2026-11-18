@@ -21,6 +21,7 @@ class ClaseCampoAbm {
     required this.sEtiqueta,
     this.bCompletarCeros        = false,
     this.bEnGrilla              = true,
+    this.bEsTotal               = false,
     this.bMayusculas            = false,
     this.bObligatorio           = false,
     this.bSiempreDeshabilitado  = false,
@@ -49,6 +50,7 @@ class ClaseCampoAbm {
   /// iAnchoCaracteres (ej: códigos de cliente: '123' → '000123').
   bool              bCompletarCeros;
   bool              bEnGrilla;
+  bool              bEsTotal;
   bool              bMayusculas;
   bool              bObligatorio;
   bool              bSiempreDeshabilitado;
@@ -104,5 +106,4 @@ class ClaseCampoAbm {
     final int iCaracteres =
         (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
     // El ancho por carácter se escala con el modo texto grande: sin esto,
-    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
-    
+    // 

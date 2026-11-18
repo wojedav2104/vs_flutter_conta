@@ -769,8 +769,14 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                 ],
               ),
             ),
-            Padding(
-              padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio08),
+            // Regla UI/UX: los nombres de las columnas llevan un fondo
+            // distinto al de las celdas de abajo, para distinguirlos.
+            Container(
+              color   : ClaseGenTemas.colorFondoEncabezadoGrilla(oContexto),
+              padding : const EdgeInsets.symmetric(
+                horizontal : ClaseGenEspacios.dEspacio08,
+                vertical   : ClaseGenEspacios.dEspacio04,
+              ),
               child   : Row(
                 children: <Widget>[
                   for (final ClaseCampoAbm oCampo in listColumnas)
@@ -800,7 +806,8 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                                     padding : _getPaddingCelda(),
                                     child   : Text(
                                       oCampo.sEtiqueta,
-                                      style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                      style    : ClaseGenEstilosTexto.encabezadoGrilla(oContexto).copyWith(
+                                                   color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto)),
                                       maxLines : 1,
                                       overflow : TextOverflow.ellipsis,
                                     ),
@@ -811,7 +818,7 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
                                   Icon(
                                     bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
                                     size  : 14,
-                                    color : Theme.of(oContexto).colorScheme.primary,
+                                    color : ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto),
                                   ),
                                 ],
                               ],

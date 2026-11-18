@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 4 DE 10
 ---
-ght,
+    style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+        children: <InlineSpan>[
+          TextSpan(text: widget.oCampo.sEtiqueta),
+          if (widget.oCampo.bObligatorio)
+            TextSpan(
+              text  : ' *',
+              style : ClaseGenEstilosTexto.etiquetaCampo(oContexto)
+                          .copyWith(color: Theme.of(oContexto).colorScheme.error),
+            ),
+        ],
+      ),
+      textAlign : TextAlign.right,
     );
   }
 
@@ -90,18 +101,4 @@ ght,
   static bool _esBoton(BuildContext oContexto) {
     if (oContexto.widget is ButtonStyleButton
         || oContexto.widget is IconButton) return true;
-    bool bBoton = false;
-    oContexto.visitAncestorElements((Element oElement) {
-      if (oElement.widget is ButtonStyleButton
-          || oElement.widget is IconButton) {
-        bBoton = true;
-        return false;
-      }
-      return true;
-    });
-    return bBoton;
-  }
-
-  /// true si el foco terminó en otro campo de entrada (otro campo del
-  /// formulario o una celda de la grilla de detalles). Es la condición
-  /// POSITIVA para validar
+  

@@ -135,6 +135,23 @@ abstract final class ClaseGenTemas {
   static Color colorFondoCampoTotal(BuildContext oContexto) =>
       Theme.of(oContexto).colorScheme.secondaryContainer;
 
+  /// Fondo del encabezado de las grillas (nombres de columnas de la grilla
+  /// lateral de los ABM y de la grilla de detalles): distinto del fondo de
+  /// las celdas de abajo, para que se distingan a simple vista. Color exacto
+  /// pendiente de decidir con los usuarios.
+  static Color colorFondoEncabezadoGrilla(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorEncabezadoGrillaOscuro
+          : ClaseGenColores.colorEncabezadoGrillaClaro;
+
+  /// Texto del encabezado de las grillas (nombres de columnas y flechita de
+  /// orden): el tono del par ámbar que contrasta con la banda. Color exacto
+  /// pendiente de decidir con los usuarios.
+  static Color colorTextoEncabezadoGrilla(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoEncabezadoGrillaOscuro
+          : ClaseGenColores.colorTextoEncabezadoGrillaClaro;
+          
   /// Forecolor del control habilitado: buen contraste sobre el relleno
   /// habilitado (nunca gris ni negro: esos quedan para el deshabilitado,
   /// que conserva el color de texto normal).

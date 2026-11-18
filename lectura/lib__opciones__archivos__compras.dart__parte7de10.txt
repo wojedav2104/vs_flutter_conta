@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 7 DE 10
 ---
-laseCampoAbm(
+: '999.999.999.999',
+      ),
+      ClaseCampoAbm(
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
@@ -36,6 +38,7 @@ laseCampoAbm(
       ),
       ClaseCampoAbm(
         bEnGrilla             : false,
+        bEsTotal              : true,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         iFila                 : 12,
@@ -93,5 +96,4 @@ laseCampoAbm(
       ClaseCampoAbm(
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'importeIrpSimple',
-        sEtiqueta        : ClaseIdioma
+        

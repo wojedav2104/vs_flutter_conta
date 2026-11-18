@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 8 DE 10
 ---
-s.getTexto('comImporteIrpSimple', sIdioma),
+sClave           : 'importeIrpSimple',
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteIrpSimple', sIdioma),
         sGrupo           : 'comResolucion',
         sMascara         : '999.999.999.999',
         sValorDefecto    : '0',
@@ -16,6 +17,7 @@ s.getTexto('comImporteIrpSimple', sIdioma),
         sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
+        bEsTotal              : true,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
         oTipo                 : EnumTipoCampoAbm.numero,
@@ -96,7 +98,4 @@ s.getTexto('comImporteIrpSimple', sIdioma),
           <String, String>{
             'concepto'     : 'Compra de mercadería',
             'cuenta'       : '1.04.02',
-            'debe'         : '2000000',
-            'haber'        : '',
-            'nombreCuenta' : 'Mercaderías Gravadas 10%',
-           
+            'debe'         

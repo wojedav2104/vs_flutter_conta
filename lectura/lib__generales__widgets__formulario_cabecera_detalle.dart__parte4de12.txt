@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 4 DE 11
+PARTE 4 DE 12
 ---
  });
     // Regla UI/UX: la ventana de "grabación exitosa" se cierra sola a los 3

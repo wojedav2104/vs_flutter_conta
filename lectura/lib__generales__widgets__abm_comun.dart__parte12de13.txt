@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 12 DE 13
 ---
-    case EnumBotonAbm.modificar: return ClaseIdiomas.getTexto('abmModificar', sIdioma);
+r', sIdioma);
+      case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto('abmBorrar', sIdioma);
+      case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto('abmCancelar', sIdioma);
+      case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto('abmEncontrar', sIdioma);
+      case EnumBotonAbm.fin:       return ClaseIdiomas.getTexto('abmFin', sIdioma);
+      case EnumBotonAbm.grabar:    return ClaseIdiomas.getTexto('abmGrabar', sIdioma);
+      case EnumBotonAbm.modificar: return ClaseIdiomas.getTexto('abmModificar', sIdioma);
     }
   }
 
@@ -79,13 +85,4 @@ PARTE 12 DE 13
           mainAxisAlignment : MainAxisAlignment.center,
           mainAxisSize       : MainAxisSize.min,
           children          : <Widget>[
-            Icon(_getIcono(oBoton), size: 20),
-            const SizedBox(width: ClaseGenEspacios.dEspacio08),
-            Flexible(
-              child : Text(
-                _getEtiqueta(oBoton),
-                // El color del texto lo resuelve el estilo del botón por
-                // estados (habilitado / deshabilitado / con foco).
-                style    : ClaseGenEstilosTexto.botonGrande(oContexto),
-                maxLines : 1,
-                overf
+            Ic

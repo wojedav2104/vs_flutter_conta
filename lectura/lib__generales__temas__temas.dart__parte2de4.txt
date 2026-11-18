@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/temas/temas.dart
-PARTE 2 DE 3
+PARTE 2 DE 4
 ---
 rficieOscura,
     onSurface               : ClaseGenColores.colorGris1,
@@ -63,20 +63,19 @@ rficieOscura,
   static Color colorFondoCampoDeshabilitado(BuildContext oContexto) =>
       Theme.of(oContexto).colorScheme.surfaceContainerHighest;
 
-  /// Forecolor del control habilitado: buen contraste sobre el relleno
-  /// habilitado (nunca gris ni negro: esos quedan para el deshabilitado,
-  /// que conserva el color de texto normal).
-  static Color colorTextoCampoHabilitado(BuildContext oContexto) =>
+  /// Relleno de los resultados de una suma (campos Total y fila de totales
+  /// de la grilla de detalles): distinto del relleno de los datos sumados,
+  /// para resaltarlos. Color exacto pendiente de decidir con los usuarios.
+  static Color colorFondoCampoTotal(BuildContext oContexto) =>
+      Theme.of(oContexto).colorScheme.secondaryContainer;
+
+  /// Fondo del encabezado de las grillas (nombres de columnas de la grilla
+  /// lateral de los ABM y de la grilla de detalles): distinto del fondo de
+  /// las celdas de abajo, para que se distingan a simple vista. Color exacto
+  /// pendiente de decidir con los usuarios.
+  static Color colorFondoEncabezadoGrilla(BuildContext oContexto) =>
       _esModoOscuro(oContexto)
-          ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
-          : ClaseGenColores.colorTextoCampoHabilitadoClaro;
+          ? ClaseGenColores.colorEncabezadoGrillaOscuro
+          : ClaseGenColores.colorEncabezadoGrillaClaro;
 
-  // ── Colores de los botones con foco de teclado (regla UI/UX) ────────────
-  // El fondo del botón enfocado debe ser bastante distinto al de los botones
-  // sin foco (mismo color en claro y en oscuro, para que sea inmediato).
-
-  /// Fondo del botón con foco de teclado (amarillo de atención).
-  static Color colorBotonConFoco(BuildContext oContexto) =>
-      ClaseGenColores.colorAmarillo1;
-
-  /// Texto del botón con foco de teclado (buen contraste sobre el a
+  /// Texto del encabezado de las grill

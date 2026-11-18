@@ -1,7 +1,22 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 7 DE 10
 ---
-a:
+     SizedBox(
+              width : _getAnchoCampo(),
+              child : _construirControl(oContexto),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirControl(BuildContext oContexto) {
+    switch (widget.oCampo.oTipo) {
+      case EnumTipoCampoAbm.casillas:
+        return _construirCasillas(oContexto);
+      case EnumTipoCampoAbm.comentario:
+        return _construirComentario(oContexto);
+      case EnumTipoCampoAbm.fecha:
         return _construirFecha(oContexto);
       case EnumTipoCampoAbm.hora:
         return _construirHora(oContexto);
@@ -92,12 +107,4 @@ a:
         Expanded(
           child: TextField(
             controller   : oControl,
-            enabled      : widget.bHabilitado,
-            focusNode    : oFoco,
-            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
-            keyboardType : TextInputType.datetime,
-            onChanged    : _alCambiarFecha,
-            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
-            decoration   : _getDecoracion(oContexto, sHint: 'dd/mm/aaaa'),            
-          ),
-    
+            enable

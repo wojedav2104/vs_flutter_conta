@@ -1,7 +1,20 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 6 DE 10
 ---
-     sDia = sDigitos.substring(0, 2);
+ 2022, 026 → 2026.
+  void _completarFecha() {
+    final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (sDigitos.isEmpty) return;
+    final DateTime fHoy = DateTime.now();
+    String sDia;
+    String sMes;
+    String sAno;
+    if (sDigitos.length <= 2) {
+      sDia = sDigitos.padLeft(2, '0');
+      sMes = fHoy.month.toString().padLeft(2, '0');
+      sAno = fHoy.year.toString();
+    } else if (sDigitos.length == 3) {
+      sDia = sDigitos.substring(0, 2);
       sMes = sDigitos.substring(2).padLeft(2, '0');
       sAno = fHoy.year.toString();
     } else if (sDigitos.length == 4) {
@@ -94,19 +107,4 @@ PARTE 6 DE 10
           if (widget.bAnchoFlexible)
             Expanded(child: _construirControl(oContexto))
           else
-            SizedBox(
-              width : _getAnchoCampo(),
-              child : _construirControl(oContexto),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _construirControl(BuildContext oContexto) {
-    switch (widget.oCampo.oTipo) {
-      case EnumTipoCampoAbm.casillas:
-        return _construirCasillas(oContexto);
-      case EnumTipoCampoAbm.comentario:
-        return _construirComentario(oContexto);
-      case EnumTipoCampoAbm.fech
+       

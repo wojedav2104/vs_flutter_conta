@@ -42,7 +42,19 @@ abstract final class ClaseGenColores {
   static const colorTextoCampoHabilitadoClaro  = Color(0xFF005F7D); // cian oscuro
   static const colorTextoCampoHabilitadoOscuro = Color(0xFF7FDCF2); // cian claro
 
+  // ── Encabezado de las grillas (regla UI/UX) ─────────────────────────────
+  // Banda y texto de los nombres de columnas (grilla lateral de los ABM y
+  // grilla de detalles): par ámbar invertido según el modo — la banda oscura
+  // con texto claro va en el modo claro; la banda clara con texto oscuro, en
+  // el modo oscuro —, distinto del fondo del formulario, de los campos y de
+  // la fila de totales.
+  static const colorEncabezadoGrillaClaro       = Color(0xFF3D2E00); // ámbar profundo: banda del modo claro
+  static const colorEncabezadoGrillaOscuro      = Color(0xFFFFEAC2); // ámbar suave: banda del modo oscuro
+  static const colorTextoEncabezadoGrillaClaro  = Color(0xFFFFEAC2); // texto sobre la banda del modo claro
+  static const colorTextoEncabezadoGrillaOscuro = Color(0xFF3D2E00); // texto sobre la banda del modo oscuro
+  
   // ── Superficies por tema ────────────────────────────────────────────────
+
   static const colorSuperficieClara         = Color(0xFFFFFFFF);
   static const colorSuperficieOscura        = Color(0xFF1E1F22);
   static const colorSuperficieOscuraElevada = Color(0xFF2A2B2F);

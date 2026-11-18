@@ -1,7 +1,16 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 11 DE 13
 ---
-              oFocoGrilla;
+ulo,
+  });
+
+  final void Function(EnumBotonAbm oBoton) funcAlClicar;
+  final void Function(int iIndice)         funcSeleccionar;
+  final int                                iRegistro;
+  final List<ClaseCampoAbm>                listCampos;
+  final List<Map<String, dynamic>>         listRegistros;
+  /// Nodo de foco de la grilla lateral (opcional): para devolverle el foco desde el formulario, ej: al cancelar la edición.
+  final FocusNode?                         oFocoGrilla;
   
   /// Área derecha: el formulario (campos, o cabecera + detalles).
   final Widget                             oFormulario;
@@ -103,10 +112,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
 
   String _getEtiqueta(EnumBotonAbm oBoton) {
     switch (oBoton) {
-      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
-      case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto('abmBorrar', sIdioma);
-      case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto('abmCancelar', sIdioma);
-      case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto('abmEncontrar', sIdioma);
-      case EnumBotonAbm.fin:       return ClaseIdiomas.getTexto('abmFin', sIdioma);
-      case EnumBotonAbm.grabar:    return ClaseIdiomas.getTexto('abmGrabar', sIdioma);
-  
+      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgrega

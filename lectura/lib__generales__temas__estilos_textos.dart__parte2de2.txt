@@ -13,4 +13,17 @@ ndes (ABM, Ingresar, Cancelar).
     return textoCampo(oContexto).copyWith(fontWeight: FontWeight.w600);
   }
 
+    /// Encabezado de la grilla lateral de registros: en negritas para
+  /// distinguirlo de las celdas de abajo (regla UI/UX).
+  static TextStyle encabezadoGrilla(BuildContext oContexto) =>
+      normalChico(oContexto).copyWith(fontWeight: FontWeight.bold);
+
+  /// Encabezado de la grilla de detalles (Asientos, Compras): mismos forecolor
+  /// y negritas que encabezadoGrilla (los dos encabezados se ven iguales);
+  /// solo cambia el tamaño, que es el de las etiquetas de campo.
+  static TextStyle encabezadoGrillaDetalle(BuildContext oContexto) =>
+      encabezadoGrilla(oContexto).copyWith(
+        fontSize: etiquetaCampo(oContexto).fontSize,
+      );
+      
 }

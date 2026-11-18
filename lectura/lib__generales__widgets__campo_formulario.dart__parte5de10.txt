@@ -1,7 +1,21 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 5 DE 10
 ---
- al salir del campo: si el foco está en un
+  bool bBoton = false;
+    oContexto.visitAncestorElements((Element oElement) {
+      if (oElement.widget is ButtonStyleButton
+          || oElement.widget is IconButton) {
+        bBoton = true;
+        return false;
+      }
+      return true;
+    });
+    return bBoton;
+  }
+
+  /// true si el foco terminó en otro campo de entrada (otro campo del
+  /// formulario o una celda de la grilla de detalles). Es la condición
+  /// POSITIVA para validar al salir del campo: si el foco está en un
   /// botón, en una ventana o en ningún lugar, se devuelve false y no se
   /// valida (regla 00_00_03 y el criterio de que Cancelar/Fin/Grabar no
   /// deben interrumpirse con ventanas de validación).
@@ -71,17 +85,4 @@ PARTE 5 DE 10
   ///   127    → 12/07/aaaa: día de 2, mes de 1 dígito (07), año actual
   ///   1611   → 16/11/aaaa con el año actual
   ///   161126 → 16/11/2026: el año de 2 dígitos lleva "20" delante
-  /// El año de 1 o 3 dígitos se completa igual: 2 → 2022, 026 → 2026.
-  void _completarFecha() {
-    final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
-    if (sDigitos.isEmpty) return;
-    final DateTime fHoy = DateTime.now();
-    String sDia;
-    String sMes;
-    String sAno;
-    if (sDigitos.length <= 2) {
-      sDia = sDigitos.padLeft(2, '0');
-      sMes = fHoy.month.toString().padLeft(2, '0');
-      sAno = fHoy.year.toString();
-    } else if (sDigitos.length == 3) {
- 
+  /// El año de 1 o 3 dígitos se completa igual: 2 →

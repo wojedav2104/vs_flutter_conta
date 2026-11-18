@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 8 DE 10
 ---
-    ),
+d      : widget.bHabilitado,
+            focusNode    : oFoco,
+            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+            keyboardType : TextInputType.datetime,
+            onChanged    : _alCambiarFecha,
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
+            decoration   : _getDecoracion(oContexto, sHint: 'dd/mm/aaaa'),            
+          ),
+        ),
         const SizedBox(width: ClaseGenEspacios.dEspacio04),
         // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
         // pasa al siguiente campo); el clic y el táctil siguen funcionando.
@@ -84,15 +92,4 @@ PARTE 8 DE 10
                 : null,
           ),
         ),
-        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
-      ],
-    );
-  }
-
-  /// Normaliza la hora mientras se teclea: el valor interno siempre queda
-  /// en formato hh:mm. El display solo se corrige cuando los minutos ya
-  /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
-  void _alCambiarHora(String sValor) {
-    // Máscara 99:99: el usuario teclea solo dígitos y los dos puntos se
-    // insertan solos (spec 00_00_03).
-    final String sDigitos =
+        if (_getMostrarBorrarCampo())

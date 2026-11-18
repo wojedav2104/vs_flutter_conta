@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 2 DE 11
+PARTE 2 DE 12
 ---
 er foco al primer campo.
   bool   bPedirFoco   = false;                          // ← CAMBIO item 10

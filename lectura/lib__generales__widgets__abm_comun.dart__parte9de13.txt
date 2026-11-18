@@ -1,7 +1,11 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 13
 ---
-sa columna.
+tip(
+                          message : ClaseIdiomas.getTexto('ordenarPor', widget.sIdioma),
+                          // Regla UI/UX: la flechita junto al nombre indica la
+                          // columna activa de orden y su sentido (ascendente/
+                          // descendente). Solo se muestra en esa columna.
                           child   : Align(
                             alignment : _getAlineacionCelda(oCampo),
                             child : Row(
@@ -13,7 +17,8 @@ sa columna.
                                     padding : _getPaddingCelda(),
                                     child   : Text(
                                       oCampo.sEtiqueta,
-                                      style    : ClaseGenEstilosTexto.normalChico(oContexto),
+                                      style    : ClaseGenEstilosTexto.encabezadoGrilla(oContexto).copyWith(
+                                                   color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto)),
                                       maxLines : 1,
                                       overflow : TextOverflow.ellipsis,
                                     ),
@@ -24,7 +29,7 @@ sa columna.
                                   Icon(
                                     bOrdenDesc ? Icons.arrow_downward : Icons.arrow_upward,
                                     size  : 14,
-                                    color : Theme.of(oContexto).colorScheme.primary,
+                                    color : ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto),
                                   ),
                                 ],
                               ],
@@ -69,11 +74,4 @@ sa columna.
                       ),
                       child: Row(
                         children: <Widget>[
-                          for (final ClaseCampoAbm oCampo in listColumnas)
-                            Expanded(
-                              child: GestureDetector(
-                                onLongPressStart: (oDetalle) => _mostrarMenuCelda(
-                                    oContexto, oRegistro, oCampo, oDetalle.globalPosition),
-                                child: Padding(
-                                  // Separación entre columnas (regla UI/UX).
-                                 
+                          for (final ClaseCampoAb

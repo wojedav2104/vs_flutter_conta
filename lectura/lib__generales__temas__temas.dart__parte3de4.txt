@@ -1,7 +1,31 @@
 RUTA ORIGINAL: lib/generales/temas/temas.dart
-PARTE 3 DE 3
+PARTE 3 DE 4
 ---
-marillo).
+as (nombres de columnas y flechita de
+  /// orden): el tono del par ámbar que contrasta con la banda. Color exacto
+  /// pendiente de decidir con los usuarios.
+  static Color colorTextoEncabezadoGrilla(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoEncabezadoGrillaOscuro
+          : ClaseGenColores.colorTextoEncabezadoGrillaClaro;
+          
+  /// Forecolor del control habilitado: buen contraste sobre el relleno
+  /// habilitado (nunca gris ni negro: esos quedan para el deshabilitado,
+  /// que conserva el color de texto normal).
+  static Color colorTextoCampoHabilitado(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
+          : ClaseGenColores.colorTextoCampoHabilitadoClaro;
+
+  // ── Colores de los botones con foco de teclado (regla UI/UX) ────────────
+  // El fondo del botón enfocado debe ser bastante distinto al de los botones
+  // sin foco (mismo color en claro y en oscuro, para que sea inmediato).
+
+  /// Fondo del botón con foco de teclado (amarillo de atención).
+  static Color colorBotonConFoco(BuildContext oContexto) =>
+      ClaseGenColores.colorAmarillo1;
+
+  /// Texto del botón con foco de teclado (buen contraste sobre el amarillo).
   static Color colorTextoBotonConFoco(BuildContext oContexto) =>
       ClaseGenColores.colorNegro;
 
@@ -56,26 +80,4 @@ marillo).
   /// cuando el factor no es 1.0 y algún estilo del tema base no lo trae.
   static TextTheme _escalarTexto(TextTheme oText) {
     TextStyle escalar(TextStyle? oEstilo) =>
-        (oEstilo ?? const TextStyle()).copyWith(
-            fontSize: (oEstilo?.fontSize ?? 14.0) * ClaseGenEstilosTexto.dFactorTexto);
-    return TextTheme(
-      displayLarge  : escalar(oText.displayLarge),
-      displayMedium : escalar(oText.displayMedium),
-      displaySmall  : escalar(oText.displaySmall),
-      headlineLarge : escalar(oText.headlineLarge),
-      headlineMedium: escalar(oText.headlineMedium),
-      headlineSmall : escalar(oText.headlineSmall),
-      titleLarge    : escalar(oText.titleLarge),
-      titleMedium   : escalar(oText.titleMedium),
-      titleSmall    : escalar(oText.titleSmall),
-      bodyLarge     : escalar(oText.bodyLarge),
-      bodyMedium    : escalar(oText.bodyMedium),
-      bodySmall     : escalar(oText.bodySmall),
-      labelLarge    : escalar(oText.labelLarge),
-      labelMedium   : escalar(oText.labelMedium),
-      labelSmall    : escalar(oText.labelSmall),
-    );
-  }
-
-}
-
+        (o

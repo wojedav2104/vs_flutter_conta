@@ -1,0 +1,33 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 12 DE 12
+---
+ocusNode       : oFoco,
+      style           : widget.bHabilitado
+          ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
+              color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+          : ClaseGenEstilosTexto.textoCampo(oContexto),
+      textAlign       : TextAlign.right,
+      inputFormatters : <TextInputFormatter>[
+        if (widget.oCampo.bTieneDecimales)
+          ClaseFormateadorImporte()
+        else
+          FilteringTextInputFormatter.digitsOnly,
+        if (iLimite > 0)
+          LengthLimitingTextInputFormatter(iLimite),
+      ],
+      onChanged       : widget.funcAlCambiar,
+      decoration      : InputDecoration(
+        isDense   : true,
+        filled    : true,
+        fillColor : widget.bHabilitado
+            ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+            : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+        contentPadding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio08,
+        ),
+        border    : const OutlineInputBorder(),
+      ),
+    );
+  }
+}

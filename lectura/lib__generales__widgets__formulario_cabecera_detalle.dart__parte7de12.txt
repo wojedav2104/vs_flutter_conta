@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 7 DE 11
+PARTE 7 DE 12
 ---
  : _getBotonesHabilitados(),
       sIdioma        : getIdioma(),
@@ -81,23 +81,21 @@ PARTE 7 DE 11
     return const SizedBox.shrink();
   }
 
-  Widget _construirFilaEncabezado(BuildContext oContexto) {
-    return Padding(
-      padding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio08,
-        vertical   : ClaseGenEspacios.dEspacio04,
-      ),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width : ClaseGenLayout.dAnchoNumeroFila,
-            child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
-                style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
-          ),
-          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
-            SizedBox(
-              width : oCampo.getAnchoColumna(),
-              child : Text(oCampo.sEtiqueta,
-                  style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
-                  maxLines : 1,
-                  overflow : T
+  /// Alineación del texto de una columna (encabezado y fila de totales):
+  /// la misma que la de sus celdas, resuelta por getAlineacion (números a
+  /// la derecha, resto a la izquierda; regla 24 de 00_03_02_ABMs.txt).
+  TextAlign _getTextAlignColumna(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:
+        return TextAlign.center;
+      case EnumAlineacion.derecha:
+        return TextAlign.right;
+      case EnumAlineacion.izquierda:
+        return TextAlign.left;
+    }
+  }
+
+  /// Padding del texto dentro de una columna (encabezado y fila de totales):
+  /// el mismo que el de los valores de sus celdas (el padding de la fila más
+  /// el borde y el padding interior del control), para que el valor quede
+  /// alineado con su encabezado y los nombres de las columnas vecinas nun

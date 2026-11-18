@@ -760,7 +760,10 @@ class ClaseEstadoFormularioCabeceraDetalle
   }
 
   Widget _construirFilaEncabezado(BuildContext oContexto) {
-    return Padding(
+    // Regla UI/UX: mismos colores de encabezado que la grilla lateral de
+    // los ABM (backcolor del tema + texto en negritas).
+    return Container(
+      color   : ClaseGenTemas.colorFondoEncabezadoGrilla(oContexto),
       padding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio08,
         vertical   : ClaseGenEspacios.dEspacio04,
@@ -770,7 +773,8 @@ class ClaseEstadoFormularioCabeceraDetalle
           SizedBox(
             width : ClaseGenLayout.dAnchoNumeroFila,
             child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
-                style: ClaseGenEstilosTexto.etiquetaCampo(oContexto)),
+                style: ClaseGenEstilosTexto.encabezadoGrillaDetalle(oContexto).copyWith(
+                    color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto))),
           ),
           for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
             SizedBox(
@@ -778,7 +782,8 @@ class ClaseEstadoFormularioCabeceraDetalle
               child : Padding(
                 padding : _getPaddingColumna(),
                 child   : Text(oCampo.sEtiqueta,
-                    style    : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+                    style    : ClaseGenEstilosTexto.encabezadoGrillaDetalle(oContexto).copyWith(
+                                 color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto)),
                     textAlign: _getTextAlignColumna(oCampo),
                     maxLines : 1,
                     overflow : TextOverflow.ellipsis),

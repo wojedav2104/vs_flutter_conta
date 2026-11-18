@@ -1,7 +1,16 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 13 DE 13
 ---
-low : TextOverflow.ellipsis,
+on(_getIcono(oBoton), size: 20),
+            const SizedBox(width: ClaseGenEspacios.dEspacio08),
+            Flexible(
+              child : Text(
+                _getEtiqueta(oBoton),
+                // El color del texto lo resuelve el estilo del botón por
+                // estados (habilitado / deshabilitado / con foco).
+                style    : ClaseGenEstilosTexto.botonGrande(oContexto),
+                maxLines : 1,
+                overflow : TextOverflow.ellipsis,
               ),
             ),
           ],

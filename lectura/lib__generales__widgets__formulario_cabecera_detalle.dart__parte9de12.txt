@@ -1,7 +1,47 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 9 DE 11
+PARTE 9 DE 12
 ---
-    items: <DropdownMenuItem<String>>[
+onst Icon(Icons.delete_outline, size: 18),
+                  onPressed : bModoEdicion ? () => borrarFila(iFila) : null,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirCelda(BuildContext oContexto, int iFila, ClaseCampoAbm oCampo) {
+    final String sValor = listDetalles[iFila][oCampo.sClave] ?? '';
+    final bool bHabilitado = bModoEdicion
+        && !oCampo.bSiempreDeshabilitado
+        && !oCampo.bSoloLecturaPorRol;
+    switch (oCampo.oTipo) {
+      case EnumTipoCampoAbm.lista:
+        final List<String> listOpciones = oCampo.listOpciones ?? <String>[];
+        final List<String> listValores  = oCampo.listValores  ?? listOpciones;
+        return DropdownButtonFormField<String>(
+          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
+          initialValue : listValores.contains(sValor) ? sValor : null,
+          isExpanded   : true,
+          style        : bHabilitado
+              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
+                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+              : ClaseGenEstilosTexto.textoCampo(oContexto),
+          decoration   : InputDecoration(
+            isDense   : true,
+            filled    : true,
+            fillColor : bHabilitado
+                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            contentPadding : const EdgeInsets.symmetric(
+              horizontal : ClaseGenEspacios.dEspacio08,
+              vertical   : ClaseGenEspacios.dEspacio08,
+            ),
+            border    : const OutlineInputBorder(),
+          ),
+          items: <DropdownMenuItem<String>>[
             for (int i = 0; i < listOpciones.length; i++)
               DropdownMenuItem<String>(
                 value : listValores[i],
@@ -52,49 +92,4 @@ PARTE 9 DE 11
   Widget _construirFilaTotales(BuildContext oContexto) {
 
     // Sumas de las columnas numéricas.
-    final Map<String, double> mapSumas = <String, double>{};
-    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
-      if (oCampo.oTipo != EnumTipoCampoAbm.numero) continue;
-      double dSuma = 0;
-      for (final Map<String, String> mapFila in listDetalles) {
-        dSuma += funcParsearNumero(mapFila[oCampo.sClave] ?? '') ?? 0;
-      }
-      mapSumas[oCampo.sClave] = dSuma;
-    }
-
-    // El rótulo TOTALES va en la columna previa a la primera numérica.
-    int iPrimeraSuma = -1;
-    for (int i = 0; i < widget.listCamposDetalle.length; i++) {
-      if (widget.listCamposDetalle[i].oTipo == EnumTipoCampoAbm.numero) {
-        iPrimeraSuma = i;
-        break;
-      }
-    }
-    final int iRotulo = (iPrimeraSuma > 0)
-        ? iPrimeraSuma - 1
-        : widget.listCamposDetalle.length - 1;
-
-    // Regla UI/UX: el botón Agregar fila ocupa el ancho de las columnas
-    // previas al rótulo (quedan vacías en la fila de totales) y así se
-    // muestra a la izquierda de la grilla, en la misma fila que TOTALES.
-    double dAnchoIzquierda = ClaseGenLayout.dAnchoNumeroFila;
-    for (int i = 0; i < iRotulo; i++) {
-      dAnchoIzquierda += widget.listCamposDetalle[i].getAnchoColumna();
-    }
-
-    final String sFormato = widget.oPreferencias.getFormatoNumeros();
-    final TextStyle oEstilo =
-        ClaseGenEstilosTexto.textoDestacado(oContexto);
-
-    return Container(
-      color : Theme.of(oContexto).colorScheme.surfaceContainerLow,
-      padding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio08,
-        vertical   : ClaseGenEspacios.dEspacio04,
-      ),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width : dAnchoIzquierda,
-            child : Align(
-              alignment : Al
+    final Map<String, double> mapSumas = <String, double>

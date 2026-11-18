@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 10 DE 13
 ---
- padding : _getPaddingCelda(),
+m oCampo in listColumnas)
+                            Expanded(
+                              child: GestureDetector(
+                                onLongPressStart: (oDetalle) => _mostrarMenuCelda(
+                                    oContexto, oRegistro, oCampo, oDetalle.globalPosition),
+                                child: Padding(
+                                  // Separación entre columnas (regla UI/UX).
+                                  padding : _getPaddingCelda(),
                                   child   : Text(
                                     (oRegistro[oCampo.sClave] ?? '').toString(),
                                     // Alineación de la celda según la columna.
@@ -86,13 +93,4 @@ class ClaseAndamiajeAbm extends StatelessWidget {
     required this.oFormulario,
     required this.setHabilitados,
     required this.sIdioma,
-    required this.sTitulo,
-  });
-
-  final void Function(EnumBotonAbm oBoton) funcAlClicar;
-  final void Function(int iIndice)         funcSeleccionar;
-  final int                                iRegistro;
-  final List<ClaseCampoAbm>                listCampos;
-  final List<Map<String, dynamic>>         listRegistros;
-  /// Nodo de foco de la grilla lateral (opcional): para devolverle el foco desde el formulario, ej: al cancelar la edición.
-  final FocusNode?           
+    required this.sTit

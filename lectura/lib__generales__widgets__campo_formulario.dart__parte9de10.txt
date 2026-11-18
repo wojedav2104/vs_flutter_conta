@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 9 DE 10
 ---
- sValor.replaceAll(RegExp(r'[^0-9]'), '');
+ _construirBotonBorrarCampo(),
+      ],
+    );
+  }
+
+  /// Normaliza la hora mientras se teclea: el valor interno siempre queda
+  /// en formato hh:mm. El display solo se corrige cuando los minutos ya
+  /// tienen 2 dígitos (hora completa), para no interrumpir al usuario.
+  void _alCambiarHora(String sValor) {
+    // Máscara 99:99: el usuario teclea solo dígitos y los dos puntos se
+    // insertan solos (spec 00_00_03).
+    final String sDigitos = sValor.replaceAll(RegExp(r'[^0-9]'), '');
     String sHora = funcAplicarMascara(sDigitos, _sMascaraHora);
     // Normaliza solo con los 4 dígitos escritos: mientras tanto '16:3' se
     // deja como está para poder seguir tecleando (1630 → 16:30). Con menos
@@ -76,14 +87,4 @@ PARTE 9 DE 10
                 materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
                 onChanged: widget.bHabilitado
                     ? (bool? bMarcado) {
-                        final Set<String> setNuevos = listMarcados.toSet();
-                        if (bMarcado == true) {
-                          setNuevos.add(listValores[i]);
-                        } else {
-                          setNuevos.remove(listValores[i]);
-                        }
-                        widget.funcAlCambiar(listValores
-                            .where((String s) => setNuevos.contains(s))
-                            .join(','));
-                      }
-                    
+                        final Set<String> setNuevos = listMarca

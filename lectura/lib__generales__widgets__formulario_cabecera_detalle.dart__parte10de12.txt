@@ -1,7 +1,56 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 10 DE 11
+PARTE 10 DE 12
 ---
-ignment.centerLeft,
+{};
+    for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
+      if (oCampo.oTipo != EnumTipoCampoAbm.numero) continue;
+      double dSuma = 0;
+      for (final Map<String, String> mapFila in listDetalles) {
+        dSuma += funcParsearNumero(mapFila[oCampo.sClave] ?? '') ?? 0;
+      }
+      mapSumas[oCampo.sClave] = dSuma;
+    }
+
+    // El rótulo TOTALES va en la columna previa a la primera numérica.
+    int iPrimeraSuma = -1;
+    for (int i = 0; i < widget.listCamposDetalle.length; i++) {
+      if (widget.listCamposDetalle[i].oTipo == EnumTipoCampoAbm.numero) {
+        iPrimeraSuma = i;
+        break;
+      }
+    }
+    final int iRotulo = (iPrimeraSuma > 0)
+        ? iPrimeraSuma - 1
+        : widget.listCamposDetalle.length - 1;
+
+    // Regla UI/UX: el botón Agregar fila ocupa el ancho de las columnas
+    // previas al rótulo (quedan vacías en la fila de totales) y así se
+    // muestra a la izquierda de la grilla, en la misma fila que TOTALES.
+    double dAnchoIzquierda = ClaseGenLayout.dAnchoNumeroFila;
+    for (int i = 0; i < iRotulo; i++) {
+      dAnchoIzquierda += widget.listCamposDetalle[i].getAnchoColumna();
+    }
+
+    final String sFormato = widget.oPreferencias.getFormatoNumeros();
+    // Regla UI/UX: la suma de las columnas numéricas (Debe, Haber) es un
+    // resultado de suma: se muestra en negritas y con un relleno distinto
+    // al de los datos sumados.
+    final TextStyle oEstilo =
+        ClaseGenEstilosTexto.textoDestacado(oContexto).copyWith(
+            fontWeight: FontWeight.bold);
+
+    return Container(
+      color   : ClaseGenTemas.colorFondoCampoTotal(oContexto),
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width : dAnchoIzquierda,
+            child : Align(
+              alignment : Alignment.centerLeft,
               // Regla UI/UX: el botón usa el estilo de los botones ABM
               // (fondo resaltado, texto blanco) para distinguirse del fondo
               // de la fila de totales; gris cuando está deshabilitado y
@@ -35,59 +84,4 @@ ignment.centerLeft,
                       if (setEstados.contains(WidgetState.disabled)) {
                         return ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
                       }
-                      return ClaseGenTemas.colorTextoBotonHabilitado(oContexto);
-                    },
-                  ),
-                ),
-                label     : Text(ClaseIdiomas.getTexto('detAgregarFila', getIdioma()),
-                    style: ClaseGenEstilosTexto.normalMediano(oContexto)),
-              ),
-            ),
-          ),
-          for (int i = iRotulo; i < widget.listCamposDetalle.length; i++)
-            SizedBox(
-              width : widget.listCamposDetalle[i].getAnchoColumna(),
-              child : Text(
-                (i == iRotulo)
-                    ? ClaseIdiomas.getTexto('detTotales', getIdioma())
-                    : ((i == iPrimeraSuma || mapSumas
-                            .containsKey(widget.listCamposDetalle[i].sClave))
-                        ? funcFormatearImporte(
-                            mapSumas[widget.listCamposDetalle[i].sClave] ?? 0, sFormato)
-                        : ''),
-                style     : oEstilo,
-                textAlign : TextAlign.right,
-              ),
-            ),
-          const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
-        ],
-      ),
-    );
-  }
-
-}
-
-/// Celda numérica de la grilla de detalles: guarda el valor plano y lo
-/// muestra formateado con la máscara cuando pierde el foco (regla 9).
-class _ClaseCeldaNumero extends StatefulWidget {
-  const _ClaseCeldaNumero({
-    required this.bHabilitado,
-    required this.funcAlCambiar,
-    required this.oCampo,
-    required this.oControl,
-    required this.sValor,
-  });
-
-  final bool                         bHabilitado;
-  final void Function(String sValor) funcAlCambiar;
-  final ClaseCampoAbm                oCampo;
-  final TextEditingController        oControl;
-  final String                       sValor;
-
-  @override
-  State<_ClaseCeldaNumero> createState() => _ClaseEstadoCeldaNumero();
-}
-
-class _ClaseEstadoCeldaNumero extends State<_ClaseCeldaNumero> {
-
-  final FocusNod
+        

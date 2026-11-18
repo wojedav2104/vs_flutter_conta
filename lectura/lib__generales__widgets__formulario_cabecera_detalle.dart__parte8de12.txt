@@ -1,7 +1,45 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
-PARTE 8 DE 11
+PARTE 8 DE 12
 ---
-extOverflow.ellipsis),
+ca
+  /// se peguen (regla 24).
+  EdgeInsets _getPaddingColumna() {
+    return EdgeInsets.only(
+      left  : ClaseGenLayout.dAnchoBordeCampo + ClaseGenEspacios.dEspacio08,
+      right : ClaseGenEspacios.dEspacio04 + ClaseGenLayout.dAnchoBordeCampo
+              + ClaseGenEspacios.dEspacio08,
+    );
+  }
+
+  Widget _construirFilaEncabezado(BuildContext oContexto) {
+    // Regla UI/UX: mismos colores de encabezado que la grilla lateral de
+    // los ABM (backcolor del tema + texto en negritas).
+    return Container(
+      color   : ClaseGenTemas.colorFondoEncabezadoGrilla(oContexto),
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width : ClaseGenLayout.dAnchoNumeroFila,
+            child : Text(ClaseIdiomas.getTexto('detFila', getIdioma()),
+                style: ClaseGenEstilosTexto.encabezadoGrillaDetalle(oContexto).copyWith(
+                    color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto))),
+          ),
+          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+            SizedBox(
+              width : oCampo.getAnchoColumna(),
+              child : Padding(
+                padding : _getPaddingColumna(),
+                child   : Text(oCampo.sEtiqueta,
+                    style    : ClaseGenEstilosTexto.encabezadoGrillaDetalle(oContexto).copyWith(
+                                 color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto)),
+                    textAlign: _getTextAlignColumna(oCampo),
+                    maxLines : 1,
+                    overflow : TextOverflow.ellipsis),
+              ),
             ),
           const SizedBox(width: ClaseGenLayout.dAnchoAccionesFila),
         ],
@@ -52,44 +90,4 @@ extOverflow.ellipsis),
                 IconButton(
                   visualDensity : VisualDensity.compact,
                   tooltip   : ClaseIdiomas.getTexto('detBorrarFila', getIdioma()),
-                  icon      : const Icon(Icons.delete_outline, size: 18),
-                  onPressed : bModoEdicion ? () => borrarFila(iFila) : null,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _construirCelda(BuildContext oContexto, int iFila, ClaseCampoAbm oCampo) {
-    final String sValor = listDetalles[iFila][oCampo.sClave] ?? '';
-    final bool bHabilitado = bModoEdicion
-        && !oCampo.bSiempreDeshabilitado
-        && !oCampo.bSoloLecturaPorRol;
-    switch (oCampo.oTipo) {
-      case EnumTipoCampoAbm.lista:
-        final List<String> listOpciones = oCampo.listOpciones ?? <String>[];
-        final List<String> listValores  = oCampo.listValores  ?? listOpciones;
-        return DropdownButtonFormField<String>(
-          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
-          initialValue : listValores.contains(sValor) ? sValor : null,
-          isExpanded   : true,
-          style        : bHabilitado
-              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
-                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
-              : ClaseGenEstilosTexto.textoCampo(oContexto),
-          decoration   : InputDecoration(
-            isDense   : true,
-            filled    : true,
-            fillColor : bHabilitado
-                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
-                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
-            contentPadding : const EdgeInsets.symmetric(
-              horizontal : ClaseGenEspacios.dEspacio08,
-              vertical   : ClaseGenEspacios.dEspacio08,
-            ),
-            border    : const OutlineInputBorder(),
-          ),
-      
+                  icon      : c
