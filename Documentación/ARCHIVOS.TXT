@@ -19,6 +19,9 @@
 02_02_Archivo_Asientos.txt
 02_03_01_Archivo_Compras.txt
 02_03_02_Archivo_Compras.txt
+02_04_01_Archivo_Ventas.txt
+02_04_02_Archivo_Ventas.txt
+02_05_Archivo_Retenciones_Clientes.txt
 09_01_01_Gu¡a VPS para Firebird.txt
 09_01_02_Gu¡a VPS para Firebird.txt
 09_02_01_Enlaces_GitHub.txt

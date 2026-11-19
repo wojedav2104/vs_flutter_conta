@@ -11,6 +11,7 @@ https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/idiomas/
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/idiomas/idiomas_tablas.dart
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/idiomas/idiomas_terceros.dart
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/idiomas/idiomas_validaciones.dart
+https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/idiomas/idiomas_ventas.dart
 
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/inicio/login.dart
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/inicio/menu_lateral.dart
@@ -51,12 +52,4 @@ https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/widgets/
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/widgets/ventana_configuracion.dart
 https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/generales/widgets/ventana_mensaje.dart
 
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/clientes.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/configuracion.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/cuentas_asignadas.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/empresa.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/proveedores.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/sucursales.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/timbrados_propios.dart
-https://github.com/wojedav2104/vs_flutter_conta/blob/main/lib/opciones/tablas/timbrados_proveedores.dart
 

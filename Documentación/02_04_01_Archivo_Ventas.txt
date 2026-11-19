@@ -15,8 +15,6 @@ Los campos de la cabecera son:
     Factura Crédito
     Comprobante de Venta
     Factura Exportación
-    Comprobante de Tributo Único
-    Ticket máquina registradora
     Comprobante
     Nota de Débito
     Nota de Crédito

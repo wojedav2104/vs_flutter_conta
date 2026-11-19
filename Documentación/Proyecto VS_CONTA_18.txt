@@ -1,0 +1,135 @@
+========================================================================
+CONTEXTO DE SESIÓN — VS_CONTA — 19/11/2026 (01:14 a.m.)
+Este archivo se le pega al asistente al iniciar sesión para continuar
+desde el punto exacto donde se dejó el trabajo.
+========================================================================
+
+ESTADO GENERAL
+--------------
+- Todo el volcado del proyecto está leído y comprendido: las 25 specs de
+  Documentación/ y los 153 archivos de lectura/ (incluidos temas.dart y
+  formulario_cabecera_detalle.dart, que llegaron por chat porque el
+  filtro de los CDN los bloqueaba).
+- Se implementó la pantalla Ventas completa y una serie de mejoras UI/UX
+  aprobadas por el usuario. Todo quedó probado y cerrado.
+
+LO HECHO EN ESTA SESIÓN
+------------------------
+1. TOTALES CON RELLENO DISTINTO (modo claro):
+   - colores.dart: nuevos colorCampoTotalClaro (#FFEAC2 ámbar suave) y
+     colorCampoTotalOscuro (#2A2B2C).
+   - temas.dart: colorFondoCampoTotal ahora usa esos colores. Antes, en
+     modo claro los totales se confundían con los campos de ingreso.
+
+2. PANTALLA VENTAS (nueva, espejo de compras.dart):
+   - lib/opciones/archivos/ventas.dart (ClaseVentas): formulario
+     cabecera/detalle con ClaseFormularioCabeceraDetalle,
+     sClaveCampoAlPie 'comentarios', sGrupoConDetalles 'venDetalles'.
+     Grupos: venGenerales, venDetalles, venResolucion. Auto-cálculos
+     (Total grupo 1, sugerencias grupo 2, Total del comprobante, cuotas
+     según tipo de documento, timbrado en blanco sin máscara) y
+     validaciones cruzadas (fecha en ejercicio, cuotas 1-240 solo en
+     Factura Crédito, timbrado 8 dígitos solo con máscara, N° con máscara
+     solo si el tipo la usa, identificación, vigencia fin > inicio,
+     Marangatú: totalComprobante = suma del Debe). Datos de prueba: 2
+     registros CON sucursal (corrección pedida).
+   - lib/generales/idiomas/idiomas_ventas.dart (ClaseIdiomasVentas): ES
+     y FR, claves ven* incluidos los 16 tipos de documento (venTipoDocNN).
+   - documentos.dart: nueva clase ClaseTipoDocumentoVentas (códigos
+     '01'..'16'; con máscara: 01,02,03,06,08,09,13; sMascaraNumero
+     '999-999-9999999'). Nota: la spec lista "Ticket máquina registradora"
+     dos veces (posiciones 6 y 13) — se dejaron literales ambos.
+   - idiomas.dart: import + spreads de ClaseIdiomasVentas.
+   - generador_rutas.dart: import + ruta ClaseRutas.rutaVentas.
+   - Especificación de Ventas recibida por chat en 2 documentos (no está
+     en el repo; conviene subirla como 02_04_01/02_Archivo_Ventas.txt).
+
+3. HINTS CON COLOR APAGADO:
+   - colores.dart: colorHintCampoClaro (#A8A8A8) y colorHintCampoOscuro
+     (#7A7A7A).
+   - temas.dart: colorTextoHintCampo.
+   - campo_formulario.dart: hintStyle usa ese color (antes el mismo que el
+     dato ingresado y parecían datos cargados).
+
+4. ETIQUETAS EN UNA SOLA LÍNEA:
+   - layout.dart: dAnchoEtiquetaCampo 220 → 300.
+   - campo_abm.dart: nuevo ClaseCampoAbm.getAnchoEtiqueta() escalado por
+     dFactorTexto y dEscala (una sola fuente del ancho de etiquetas).
+   - campo_formulario.dart y abm_comun.dart lo usan. Cubrió: "Nombre de
+     la Empresa *", "Carpeta para Marangatú *", "Número del último
+     documento *", 8 de cuentas_asignadas y 3 de cuentas.
+
+5. OVERFLOW EN CONFIGURACIÓN ("Overflow by 96 pixels"):
+   - abm_comun.dart: _construirFila reescrito; las filas de UN solo campo
+     también usan Flexible/ConstrainedBox (antes tenían ancho fijo y
+     desbordaban con "Carpeta para Marangatú", de 100 caracteres).
+
+6. COLUMNA CONCEPTO EXPANSIBLE:
+   - campo_abm.dart: nueva propiedad bColumnaExpansible.
+   - formulario_cabecera_detalle.dart: LayoutBuilder +
+     _listAnchosColumnas: el sobrante de la ventana se reparte entre las
+     columnas expansibles; encabezado, filas y fila de totales usan los
+     mismos anchos. Marcado bColumnaExpansible: true en concepto de
+     asientos.dart, compras.dart y ventas.dart.
+   - PRIMERO se agregó ventana + doble clic/doble tap y luego icono por
+     fila; como la columna ya muestra los 60 caracteres, el usuario pidió
+     eliminarlos. ESTADO FINAL: NO hay ventana ni icono. Se revirtieron:
+       * formulario_cabecera_detalle.dart: sin _oDuracionDobleTap, sin
+         _mapUltimoTap, sin _alTocarCeldaTexto/_editarTextoCompleto, sin
+         onTap en el TextField, sin icono extra en la tira de acciones.
+       * ventana_mensaje.dart: funcMostrarEditarTexto ELIMINADA (y el
+         import de flutter/services.dart que se agregó con ella).
+       * idiomas_asientos.dart: clave 'detTextoCompleto' eliminada (ES/FR).
+       * layout.dart: dAnchoAccionesFila vuelto a 144 (3 iconos).
+
+ARCHIVOS TOCADOS EN LA SESIÓN (para regenerar el espejo lectura/)
+-----------------------------------------------------------------
+- lib/generales/temas/colores.dart
+- lib/generales/temas/temas.dart
+- lib/generales/temas/layout.dart
+- lib/generales/modelos/campo_abm.dart
+- lib/generales/modelos/documentos.dart
+- lib/generales/idiomas/idiomas.dart
+- lib/generales/idiomas/idiomas_asientos.dart
+- lib/generales/idiomas/idiomas_ventas.dart (NUEVO)
+- lib/generales/widgets/abm_comun.dart
+- lib/generales/widgets/campo_formulario.dart
+- lib/generales/widgets/formulario_cabecera_detalle.dart
+- lib/generales/widgets/ventana_mensaje.dart
+- lib/rutas/generador_rutas.dart
+- lib/opciones/archivos/asientos.dart
+- lib/opciones/archivos/compras.dart
+- lib/opciones/archivos/ventas.dart (NUEVO)
+
+DECISIONES TOMADAS (vigentes)
+-----------------------------
+- Los totales tienen relleno distinto al de los datos sumados en ambos
+  modos. En claro: ámbar suave (familia del acento). Aún no definido con
+  usuarios finales (marcado "pendiente de decidir" en temas.dart).
+- Hints: gris muy apagado, apenas visibles.
+- Etiquetas: 300 escalados, siempre en una línea.
+- Concepto: se expande con el sobrante; sin ventana ni icono.
+- Ventas no incluye "Es Factura Electrónica" ni "Tipo de afectación" (la
+  spec no los lista). Tercer grupo: se usó la pestaña venDetalles (la spec
+  decía "tres grupos" pero no nombraba el tercero).
+
+PRÓXIMOS PASOS (orden acordado)
+-------------------------------
+1. RETENCIONES A CLIENTES y RETENCIONES DE PROVEEDORES: las specs las
+   enviará el usuario por chat (dos .txt; son muy similares entre sí).
+   Se implementarán siguiendo el patrón de compras/ventas (mismos
+   widgets, estilos y validaciones). Con eso terminan los formularios de
+   ingreso de datos.
+2. Validaciones que NO requieren Base de Datos (todas las que falten,
+   centralizadas en ClaseCapValidar).
+3. Firebird en el VPS (guía 09_01_01/02) + creación de la Base de Datos.
+4. Grabación y consultas (capa de datos, ClaseBaseDatos).
+
+NOTAS TÉCNICAS PENDIENTES
+-------------------------
+- El espejo lectura/ está desactualizado respecto a los archivos listados
+  arriba: regenerar con el script de troceado.
+- El archivo de idiomas de Compras usa el prefijo com*; el detalle
+  compartido usa det* (idiomas_asientos.dart) — respetar eso en Retenciones
+  (probablemente ret* para cabecera y det* para la grilla, según la spec).
+========================================================================

@@ -1,0 +1,20 @@
+1. Recuerda que en Visual Studio Code puedo ver 176 caracteres por línea, ya te lo había dicho. Siempre que se pueda trata de utilizarlos a todos. Por ejemplo, en lugar de escribir:
+  static const List<String> listValores = <String>[
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
+    '11', '12', '13', '14',
+  ];
+
+podrías escribir:
+  static const List<String> listValores = <String>[
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14',
+  ];
+
+ya que hay espacio más que suficiente y me facilita la lectura
+
+Ídem para los comentarios. Siempre que sea posible trata de usar los 176 caracteres que tengo visibles
+
+Lo que ya está, déjalo como está. Pero de ahora en adelante trata de usar 176 caracteres por línea siempre que sea posible.
+
+2. Actualiza el drawer para que coincida con lo especificado en "00_02_Opciones drawer.txt"
+3. Actualiza el formulario de EMPRESA para que coincida con lo especificado en "01_01_Tabla_Empresa.txt"
+4. Actualiza el formulario de VENTAS para que los tipos de documentos coincidan con lo especificado en "02_04_01_Archivo_Ventas.txt"
