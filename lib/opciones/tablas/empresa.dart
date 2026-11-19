@@ -89,13 +89,15 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
     ];
     const List<String> listIvaValores = <String>['GEN', 'SIM', 'NPG'];
 
-    // Países vigentes para la Empresa: Argentina, Paraguay y Perú.
-    // Francia nunca aparece porque es de solo lectura. Uruguay se
-    // agregará cuando esté vigente.
+    // Códigos internos del tipo de I.R.E. (solo se usan en esta pantalla).
+    final List<String> listIreOpciones = <String>[
+      ClaseIdiomas.getTexto('empIreGeneral', sIdioma), ClaseIdiomas.getTexto('empIreSimple', sIdioma), ClaseIdiomas.getTexto('empIreResimple', sIdioma), ClaseIdiomas.getTexto('empNoPagaIre', sIdioma),
+    ];
+    const List<String> listIreValores = <String>['GEN', 'SIM', 'RES', 'NPG'];
+
+    // Países vigentes para la Empresa: Argentina, Paraguay y Perú. Francia nunca aparece porque es de solo lectura. Uruguay se agregará cuando esté vigente.
     const List<String> listPaisesValores = <String>['ARG', 'PRY', 'PER'];
-    final List<String> listPaisesOpciones = listPaisesValores
-        .map((String s) => ClasePaises.getEtiqueta(s, sIdioma))
-        .toList();
+    final List<String> listPaisesOpciones = listPaisesValores.map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma)}').toList();
 
     return <ClaseCampoAbm>[
 
@@ -210,8 +212,20 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         sGrupo           : 'empGrupoVarios',
       ),
 
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'emiteFacturaElectronica',
+        sEtiqueta        : ClaseIdiomas.getTexto('empEmiteFacturaElectronica', sIdioma),
+        sGrupo           : 'empGrupoVarios',
+      ),
+
       // ── Grupo 3: Impuestos ──────────────────────────────────────────────
       ClaseCampoAbm(
+        bObligatorio     : true,
         iAnchoCaracteres : funcAnchoOpcion(listIvaOpciones),
         listOpciones     : listIvaOpciones,
         listValores      : listIvaValores,
@@ -222,16 +236,17 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
         sValorDefecto    : 'GEN',
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
-        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
-        listValores      : ClaseSiNo.listValores,
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(listIreOpciones),
+        listOpciones     : listIreOpciones,
+        listValores      : listIreValores,
         oTipo            : EnumTipoCampoAbm.lista,
-        sClave           : 'ireSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto('empIreSimple', sIdioma),
+        sClave           : 'ire',
+        sEtiqueta        : ClaseIdiomas.getTexto('empIre', sIdioma),
         sGrupo           : 'empGrupoImpuestos',
-        sValorDefecto    : ClaseSiNo.no,
       ),
       ClaseCampoAbm(
+        bObligatorio     : true,
         iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
         listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
         listValores      : ClaseSiNo.listValores,
@@ -250,21 +265,22 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[
       <String, dynamic>{
-        'apellidos'    : '',
-        'departamento' : 'Central',
-        'direccion'    : 'Av. España 1234',
-        'ejercicio'    : '2026',
-        'email'        : 'info@empresa.com.py',
-        'ireSimple'    : ClaseSiNo.no,
-        'irp'          : ClaseSiNo.si,
-        'iva'          : 'GEN',
-        'localidad'    : 'Luque',
-        'nombre'       : 'Empresa de Prueba S.A.',
-        'nombres'      : '',
-        'pais'         : ClaseEmpresa.sPaisDefecto,       // ← CAMBIO limpieza sPaisDefecto
-        'ramo'         : 'Servicios contables',
-        'ruc'          : '80012345-0',
-        'telefono'     : '021 500 400',
+        'apellidos'               : '',
+        'departamento'            : 'Central',
+        'direccion'               : 'Av. España 1234',
+        'ejercicio'               : '2026',
+        'email'                   : 'info@empresa.com.py',
+        'emiteFacturaElectronica' : ClaseSiNo.si,
+        'ire'                     : 'SIM',
+        'irp'                     : ClaseSiNo.si,
+        'iva'                     : 'GEN',
+        'localidad'               : 'Luque',
+        'nombre'                  : 'Empresa de Prueba S.A.',
+        'nombres'                 : '',
+        'pais'                    : ClaseEmpresa.sPaisDefecto,       // ← CAMBIO limpieza sPaisDefecto
+        'ramo'                    : 'Servicios contables',
+        'ruc'                     : '80012345-0',
+        'telefono'                : '021 500 400',
       },
     ];
   }

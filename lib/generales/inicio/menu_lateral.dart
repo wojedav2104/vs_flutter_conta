@@ -46,11 +46,11 @@ class ClaseMenuLateral extends StatelessWidget {
   ];
 
   static final List<ClaseOpcionMenu> _listProcesos = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.sort,                    sClave: 'menuReorganizarAsientos', sRuta: ClaseRutas.rutaReorganizarAsientos),
-    ClaseOpcionMenu(oIcono: Icons.event_busy_outlined,     sClave: 'menuCierreAnual',         sRuta: ClaseRutas.rutaCierreAnual),
-    ClaseOpcionMenu(oIcono: Icons.lock_open_outlined,      sClave: 'menuReaperturaCuentas',   sRuta: ClaseRutas.rutaReaperturaCuentas),
-    ClaseOpcionMenu(oIcono: Icons.upload_file_outlined,    sClave: 'menuMarangatu',           sRuta: ClaseRutas.rutaMarangatu,
-                    listPaises: <String>[ClaseSesion.paisParaguay]),
+    ClaseOpcionMenu(oIcono: Icons.event_busy_outlined,  sClave: 'menuCierreAnual',         sRuta: ClaseRutas.rutaCierreAnual),
+    ClaseOpcionMenu(oIcono: Icons.download_outlined,    sClave: 'menuImportarSqlConta',    sRuta: ClaseRutas.rutaImportarSqlConta, listPaises: <String>[ClaseSesion.paisParaguay]),
+    ClaseOpcionMenu(oIcono: Icons.upload_file_outlined, sClave: 'menuMarangatu',           sRuta: ClaseRutas.rutaMarangatu, listPaises: <String>[ClaseSesion.paisParaguay]),
+    ClaseOpcionMenu(oIcono: Icons.lock_open_outlined,   sClave: 'menuReaperturaCuentas',   sRuta: ClaseRutas.rutaReaperturaCuentas),
+    ClaseOpcionMenu(oIcono: Icons.sort,                 sClave: 'menuReorganizarAsientos', sRuta: ClaseRutas.rutaReorganizarAsientos),
   ];
 
   static final List<ClaseOpcionMenu> _listSistema = <ClaseOpcionMenu>[
@@ -58,14 +58,14 @@ class ClaseMenuLateral extends StatelessWidget {
   ];
 
   static final List<ClaseOpcionMenu> _listTablas = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.business,                    sClave: 'menuEmpresa',             sRuta: ClaseRutas.rutaEmpresa),
-    ClaseOpcionMenu(oIcono: Icons.settings_outlined,           sClave: 'menuConfiguracion',       sRuta: ClaseRutas.rutaConfiguracion),
-    ClaseOpcionMenu(oIcono: Icons.store_outlined,              sClave: 'menuSucursales',          sRuta: ClaseRutas.rutaSucursales),
-    ClaseOpcionMenu(oIcono: Icons.person_outline,              sClave: 'menuClientes',            sRuta: ClaseRutas.rutaClientes),
-    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,     sClave: 'menuProveedores',         sRuta: ClaseRutas.rutaProveedores),
-    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios',   sRuta: ClaseRutas.rutaTimbradosPropios),
-    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined,   sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
-    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,     sClave: 'menuCuentasAsignadas',    sRuta: ClaseRutas.rutaCuentasAsignadas),
+    ClaseOpcionMenu(oIcono: Icons.business,                     sClave: 'menuEmpresa',              sRuta: ClaseRutas.rutaEmpresa),
+    ClaseOpcionMenu(oIcono: Icons.settings_outlined,            sClave: 'menuConfiguracion',        sRuta: ClaseRutas.rutaConfiguracion),
+    ClaseOpcionMenu(oIcono: Icons.store_outlined,               sClave: 'menuSucursales',           sRuta: ClaseRutas.rutaSucursales),
+    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,      sClave: 'menuCuentasAsignadas',     sRuta: ClaseRutas.rutaCuentasAsignadas),
+    ClaseOpcionMenu(oIcono: Icons.person_outline,               sClave: 'menuClientes',             sRuta: ClaseRutas.rutaClientes),
+    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,      sClave: 'menuProveedores',          sRuta: ClaseRutas.rutaProveedores),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios',     sRuta: ClaseRutas.rutaTimbradosPropios),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined,    sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
   ];
 
   static final List<ClaseOpcionMenu> _listUtilitarios = <ClaseOpcionMenu>[

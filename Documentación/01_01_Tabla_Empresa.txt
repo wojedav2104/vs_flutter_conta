@@ -17,11 +17,11 @@ Grupo 1: Generales
 
 Grupo 2: Varios
 - Ejercicio contable actual (numérico, 4, obligatorio)
-- Emite Factura Electrónica (debe seleccionar de una lista: Sí, No)
+- Emite Factura Electrónica (debe seleccionar de una lista: Sí, No). Obligatorio
 
 Grupo 3: Impuestos
-- ¿Cuál I.V.A. paga? (debe seleccionar de una lista: I.V.A. General, I.V.A. simplificado, No paga I.V.A.)
-- ¿Paga I.R.E. simple? (debe seleccionar de una lista: Sí, No)
-- ¿Paga I.R.P.? (debe seleccionar de una lista: Sí, No)
+- ¿Cuál I.V.A. paga? (debe seleccionar de una lista: I.V.A. General, I.V.A. simplificado, No paga I.V.A.). Obligatorio
+- ¿Cuál I.R.E. paga? (debe seleccionar de una lista: I.R.E. General, I.R.E. simple, I.R.E. ReSimple, No paga I.R.E.). Obligatorio
+- ¿Paga I.R.P.? (debe seleccionar de una lista: Sí, No). Obligatorio
 
 Lo que está entre comillas debe mostrarse como "hint" del campo.
