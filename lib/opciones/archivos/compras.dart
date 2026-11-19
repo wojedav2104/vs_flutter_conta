@@ -698,12 +698,13 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : 60,
-        iAnchoVisible    : 15,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'concepto',
-        sEtiqueta        : ClaseIdiomas.getTexto('detConcepto', sIdioma),
-        sHint            : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
+        bColumnaExpansible: true,
+        iAnchoCaracteres  : 60,
+        iAnchoVisible     : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'concepto',
+        sEtiqueta         : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
       ),
     ];
   }

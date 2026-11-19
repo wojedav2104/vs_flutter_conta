@@ -131,9 +131,12 @@ abstract final class ClaseGenTemas {
 
   /// Relleno de los resultados de una suma (campos Total y fila de totales
   /// de la grilla de detalles): distinto del relleno de los datos sumados,
-  /// para resaltarlos. Color exacto pendiente de decidir con los usuarios.
+  /// para resaltarlos. En modo claro, ámbar suave; en modo oscuro, el gris
+  /// elevado (decidido con los usuarios).
   static Color colorFondoCampoTotal(BuildContext oContexto) =>
-      Theme.of(oContexto).colorScheme.secondaryContainer;
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorCampoTotalOscuro
+          : ClaseGenColores.colorCampoTotalClaro;
 
   /// Fondo del encabezado de las grillas (nombres de columnas de la grilla
   /// lateral de los ABM y de la grilla de detalles): distinto del fondo de
@@ -159,6 +162,13 @@ abstract final class ClaseGenTemas {
       _esModoOscuro(oContexto)
           ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
           : ClaseGenColores.colorTextoCampoHabilitadoClaro;
+
+  /// Forecolor del texto de ejemplo (hint) de los controles de entrada:
+  /// gris muy apagado, distinto del dato introducido (regla UI/UX).
+  static Color colorTextoHintCampo(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorHintCampoOscuro
+          : ClaseGenColores.colorHintCampoClaro;
 
   // ── Colores de los botones con foco de teclado (regla UI/UX) ────────────
   // El fondo del botón enfocado debe ser bastante distinto al de los botones

@@ -16,6 +16,7 @@ class ClaseCampoAbm {
     required this.oTipo,
     required this.sClave,
     required this.sEtiqueta,
+    this.bColumnaExpansible     = false,
     this.bCompletarCeros        = false,
     this.bEnGrilla              = true,
     this.bEsTotal               = false,
@@ -45,6 +46,7 @@ class ClaseCampoAbm {
 
   /// Al grabar, el valor se completa con ceros a la izquierda hasta
   /// iAnchoCaracteres (ej: códigos de cliente: '123' → '000123').
+  bool              bColumnaExpansible;
   bool              bCompletarCeros;
   bool              bEnGrilla;
   bool              bEsTotal;
@@ -131,6 +133,19 @@ class ClaseCampoAbm {
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
                + ClaseGenLayout.dAnchoIconoBorrar;
     }
+  }
+
+  /// Ancho de la etiqueta de un campo (incluye el asterisco de los
+  /// obligatorios y el padding derecho). Única fuente del ancho de las
+  /// etiquetas: lo usan campo_formulario y las filas compartidas de
+  /// abm_comun. Escala con el modo texto grande (dFactorTexto) y con la
+  /// escala de la ventana (dEscala), igual que la fuente de la etiqueta:
+  /// con un ancho fijo en píxeles, las etiquetas largas (ej: "Nombre de la
+  /// Empresa *") se partían en dos líneas.
+  static double getAnchoEtiqueta() {
+    return ClaseGenLayout.dAnchoEtiquetaCampo
+           * ClaseGenEstilosTexto.dFactorTexto
+           * ClaseGenLayout.dEscala;
   }
 
   /// Ancho de la columna de este campo dentro de la grilla editable de

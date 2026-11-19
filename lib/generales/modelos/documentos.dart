@@ -40,6 +40,49 @@ abstract final class ClaseTipoDocumento {
 
 }
 
+/// Tipos de documento de venta (Libro Ventas).
+///
+/// Los códigos '01'..'16' son los valores que se guardan en la base; las
+/// etiquetas se traducen con las claves venTipoDocNN de ClaseIdiomas.
+/// Nota: la spec de Ventas lista "Ticket máquina registradora" dos veces
+/// (posiciones 6 y 13); ambos códigos usan la máscara porque llevan el
+/// mismo nombre de documento.
+abstract final class ClaseTipoDocumentoVentas {
+
+  /// Máscara del N° de documento para los tipos que la usan.
+  static const String sMascaraNumero = '999-999-9999999';
+
+  /// Valores internos, en el orden en que se muestran
+  /// (etiquetas venTipoDoc01..venTipoDoc16).
+  static const List<String> listValores = <String>[
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
+    '11', '12', '13', '14', '15', '16',
+  ];
+
+  /// Tipos cuyo N° de documento usa la máscara: Factura Contado,
+  /// Factura Crédito, Comprobante de Venta, Ticket máquina registradora
+  /// (06 y 13), Nota de Débito y Nota de Crédito.
+  static const List<String> _listConMascara = <String>[
+    '01', '02', '03', '06', '08', '09', '13',
+  ];
+
+  static bool esConMascara(String sValor) {
+    return _listConMascara.contains(sValor);
+  }
+
+  static bool esFacturaCredito(String sValor) {
+    return (sValor == '02');
+  }
+
+  static String getEtiqueta(String sValor, String sIdioma) {
+    return ClaseIdiomas.getTexto('venTipoDoc$sValor', sIdioma);
+  }
+
+  static List<String> getListOpciones(String sIdioma) {
+    return listValores.map((String s) => getEtiqueta(s, sIdioma)).toList();
+  }
+
+}
 
 /// Tipos de documento de identidad (Clientes, Proveedores y Compras).
 ///

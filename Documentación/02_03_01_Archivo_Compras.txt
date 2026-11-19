@@ -1,6 +1,6 @@
 El formulario de compras es cabecera/detalle.
 
-Tiene dos grupos.
+Tiene tres grupos.
 
 Grupo 1: Generales
 Los campos de la cabecera son:

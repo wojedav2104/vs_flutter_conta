@@ -668,42 +668,77 @@ class ClaseEstadoFormularioCabeceraDetalle
     return dAncho;
   }
 
+  /// Anchos efectivos de las columnas de la grilla de detalles: el ancho base
+  /// de cada campo más el espacio sobrante de la ventana, repartido entre las
+  /// columnas expansibles (ej: Concepto). Así, al contraer la grilla lateral,
+  /// la columna Concepto se ensancha y se ven más caracteres (regla UI/UX).
+  List<double> _listAnchosColumnas(BoxConstraints oLimites) {
+    final List<double> listAnchos = <double>[
+      for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+        oCampo.getAnchoColumna(),
+    ];
+    final double dSobrante = oLimites.maxWidth
+        - (_getAnchoDetalle() + ClaseGenEspacios.dEspacio08 * 2);
+    if (dSobrante <= 0) return listAnchos;
+    final List<int> listExpansible = <int>[
+      for (int i = 0; i < widget.listCamposDetalle.length; i++)
+        if (widget.listCamposDetalle[i].bColumnaExpansible) i,
+    ];
+    if (listExpansible.isEmpty) return listAnchos;
+    final double dExtra = dSobrante / listExpansible.length;
+    for (final int i in listExpansible) {
+      listAnchos[i] += dExtra;
+    }
+    return listAnchos;
+  }
+
   Widget _construirDetalle(BuildContext oContexto) {
     // Regla UI/UX: el encabezado, las filas y la fila de totales comparten
     // el mismo desplazamiento horizontal: las columnas quedan siempre
     // alineadas, el encabezado queda fijo arriba y la fila de totales no
-    // desborda el ancho de la pantalla.
-    return Column(
-      crossAxisAlignment : CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection : Axis.horizontal,
-            child: SizedBox(
-              // El padding horizontal de las filas (dEspacio08 por lado) forma
-              // parte del ancho total de la grilla: sin estas dos columnas, la
-              // fila desborda 16 px a la derecha (rayas de OVERFLOW).
-              width : _getAnchoDetalle() + ClaseGenEspacios.dEspacio08 * 2,
-              child : Column(
-                crossAxisAlignment : CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _construirFilaEncabezado(oContexto),
-                  Expanded(
-                    child: ListView(
-                      children: <Widget>[
-                        for (int i = 0; i < listDetalles.length; i++)
-                          _construirFilaDetalle(oContexto, i),
-                      ],
-                    ),
+    // desborda el ancho de la pantalla. Con LayoutBuilder, las columnas
+    // expansibles (Concepto) absorben el sobrante de la ventana.
+    return LayoutBuilder(
+      builder: (oContexto, oLimites) {
+        final List<double> listAnchos = _listAnchosColumnas(oLimites);
+        double dAnchoTotal =
+            ClaseGenLayout.dAnchoNumeroFila + ClaseGenLayout.dAnchoAccionesFila;
+        for (final double dAncho in listAnchos) {
+          dAnchoTotal += dAncho;
+        }
+        return Column(
+          crossAxisAlignment : CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection : Axis.horizontal,
+                child: SizedBox(
+                  // El padding horizontal de las filas (dEspacio08 por lado) forma
+                  // parte del ancho total de la grilla: sin estas dos columnas, la
+                  // fila desborda 16 px a la derecha (rayas de OVERFLOW).
+                  width : dAnchoTotal + ClaseGenEspacios.dEspacio08 * 2,
+                  child : Column(
+                    crossAxisAlignment : CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      _construirFilaEncabezado(oContexto, listAnchos),
+                      Expanded(
+                        child: ListView(
+                          children: <Widget>[
+                            for (int i = 0; i < listDetalles.length; i++)
+                              _construirFilaDetalle(oContexto, i, listAnchos),
+                          ],
+                        ),
+                      ),
+                      _construirFilaTotales(oContexto, listAnchos),
+                    ],
                   ),
-                  _construirFilaTotales(oContexto),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-        _construirCampoAlPie(oContexto),
-      ],
+            _construirCampoAlPie(oContexto),
+          ],
+        );
+      },
     );
   }
 
@@ -759,7 +794,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     );
   }
 
-  Widget _construirFilaEncabezado(BuildContext oContexto) {
+  Widget _construirFilaEncabezado(BuildContext oContexto, List<double> listAnchos) {
     // Regla UI/UX: mismos colores de encabezado que la grilla lateral de
     // los ABM (backcolor del tema + texto en negritas).
     return Container(
@@ -776,15 +811,15 @@ class ClaseEstadoFormularioCabeceraDetalle
                 style: ClaseGenEstilosTexto.encabezadoGrillaDetalle(oContexto).copyWith(
                     color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto))),
           ),
-          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+          for (int i = 0; i < widget.listCamposDetalle.length; i++)
             SizedBox(
-              width : oCampo.getAnchoColumna(),
+              width : listAnchos[i],
               child : Padding(
                 padding : _getPaddingColumna(),
-                child   : Text(oCampo.sEtiqueta,
+                child   : Text(widget.listCamposDetalle[i].sEtiqueta,
                     style    : ClaseGenEstilosTexto.encabezadoGrillaDetalle(oContexto).copyWith(
                                  color: ClaseGenTemas.colorTextoEncabezadoGrilla(oContexto)),
-                    textAlign: _getTextAlignColumna(oCampo),
+                    textAlign: _getTextAlignColumna(widget.listCamposDetalle[i]),
                     maxLines : 1,
                     overflow : TextOverflow.ellipsis),
               ),
@@ -795,7 +830,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     );
   }
 
-  Widget _construirFilaDetalle(BuildContext oContexto, int iFila) {
+  Widget _construirFilaDetalle(BuildContext oContexto, int iFila, List<double> listAnchos) {
     return Padding(
       padding : const EdgeInsets.symmetric(
         horizontal : ClaseGenEspacios.dEspacio08,
@@ -808,12 +843,12 @@ class ClaseEstadoFormularioCabeceraDetalle
             child : Text('${iFila + 1}',
                 style: ClaseGenEstilosTexto.normalChico(oContexto)),
           ),
-          for (final ClaseCampoAbm oCampo in widget.listCamposDetalle)
+          for (int i = 0; i < widget.listCamposDetalle.length; i++)
             SizedBox(
-              width : oCampo.getAnchoColumna(),
+              width : listAnchos[i],
               child : Padding(
                 padding : const EdgeInsets.only(right: ClaseGenEspacios.dEspacio04),
-                child   : _construirCelda(oContexto, iFila, oCampo),
+                child   : _construirCelda(oContexto, iFila, widget.listCamposDetalle[i]),
               ),
             ),
           SizedBox(
@@ -926,7 +961,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     }
   }
 
-  Widget _construirFilaTotales(BuildContext oContexto) {
+  Widget _construirFilaTotales(BuildContext oContexto, List<double> listAnchos) {
 
     // Sumas de las columnas numéricas.
     final Map<String, double> mapSumas = <String, double>{};
@@ -956,7 +991,7 @@ class ClaseEstadoFormularioCabeceraDetalle
     // muestra a la izquierda de la grilla, en la misma fila que TOTALES.
     double dAnchoIzquierda = ClaseGenLayout.dAnchoNumeroFila;
     for (int i = 0; i < iRotulo; i++) {
-      dAnchoIzquierda += widget.listCamposDetalle[i].getAnchoColumna();
+      dAnchoIzquierda += listAnchos[i];
     }
 
     final String sFormato = widget.oPreferencias.getFormatoNumeros();
@@ -1023,7 +1058,7 @@ class ClaseEstadoFormularioCabeceraDetalle
           ),
           for (int i = iRotulo; i < widget.listCamposDetalle.length; i++)
             SizedBox(
-              width : widget.listCamposDetalle[i].getAnchoColumna(),
+              width : listAnchos[i],
               child : Padding(
                 padding : _getPaddingColumna(),
                 child   : Text(

@@ -5,6 +5,7 @@ import '../generales/varios/pantalla_proximamente.dart';
 
 import '../opciones/archivos/asientos.dart';
 import '../opciones/archivos/compras.dart';
+import '../opciones/archivos/ventas.dart';
 import '../opciones/archivos/cuentas.dart';
 
 import '../opciones/tablas/clientes.dart';
@@ -107,6 +108,13 @@ Route<dynamic> funcGenerarRuta(
     );
   }
 
+  if (oConfiguracion.name == ClaseRutas.rutaVentas) {
+    return MaterialPageRoute<dynamic>(
+      settings : oConfiguracion,
+      builder  : (oContexto) => ClaseVentas(oPreferencias: oPreferencias),
+    );
+  }
+  
   // Resto de las opciones: pantalla provisoria
   return MaterialPageRoute<dynamic>(
     settings : oConfiguracion,

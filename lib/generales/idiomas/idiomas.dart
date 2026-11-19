@@ -6,6 +6,8 @@ import 'idiomas_interfaz.dart';
 import 'idiomas_tablas.dart';
 import 'idiomas_terceros.dart';
 import 'idiomas_validaciones.dart';
+import 'idiomas_ventas.dart';
+
 
 /// Textos de la interfaz en los idiomas de la aplicación.
 ///
@@ -22,6 +24,7 @@ abstract final class ClaseIdiomas {
     ...ClaseIdiomasTerceros.mapEs,
     ...ClaseIdiomasCuentas.mapEs,
     ...ClaseIdiomasCompras.mapEs,
+    ...ClaseIdiomasVentas.mapEs,    
   };
 
   static final Map<String, String> mapTextosFr = <String, String>{
@@ -33,6 +36,7 @@ abstract final class ClaseIdiomas {
     ...ClaseIdiomasTerceros.mapFr,
     ...ClaseIdiomasCuentas.mapFr,
     ...ClaseIdiomasCompras.mapFr,
+    ...ClaseIdiomasVentas.mapFr,    
   };
 
   /// Devuelve el texto traducido de una clave. Si la clave no existe,

@@ -68,6 +68,7 @@ Future<String?> funcMostrarEncontrar(
         decoration  : InputDecoration(
           labelText : oCampo.sEtiqueta,
           hintText  : oCampo.sHint,
+          hintStyle : ClaseGenEstilosTexto.textoCampo(oContextoDialogo).copyWith(color: ClaseGenTemas.colorTextoHintCampo(oContextoDialogo)),
           border    : const OutlineInputBorder(),
         ),
         onSubmitted : (String sValor) => Navigator.of(oContextoDialogo).pop(),
@@ -362,16 +363,16 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
     ];
   }
 
+  // Regla UI/UX (spec 00_03_01, ancho mínimo): cada campo de la fila ocupa
+  // su ancho natural (etiqueta + control) y nunca se estira más de él. Si
+  // la fila no cabe en el ancho del formulario, los campos se angostan
+  // proporcionalmente a su ancho natural (FlexFit.loose + tope máximo).
+  // Aplica también a las filas de un solo campo (ej: "Carpeta para
+  // Marangatú", de 100 caracteres): sin este ajuste, las etiquetas anchas
+  // más los campos largos desbordaban el ancho del formulario.
   Widget _construirFila(
       List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
-    if (listFila.length == 1) {
-      return _construirCampo(listFila.first,
-          bAutoFocus: widget.bAutoFocus && listFila.first == oPrimeroHabilitado);
-    }
-    // Regla UI/UX (spec 00_03_01, ancho mínimo): cada campo de la fila ocupa
-    // su ancho natural (etiqueta + control) y nunca se estira más de él. Si
-    // la fila no cabe en el ancho del formulario, los campos se angostan
-    // proporcionalmente a su ancho natural (FlexFit.loose + tope máximo).
+    final double dAnchoEtiqueta = ClaseCampoAbm.getAnchoEtiqueta();
     return Row(
       crossAxisAlignment : CrossAxisAlignment.start,
       children: <Widget>[
@@ -380,11 +381,11 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
           Flexible(
             fit  : FlexFit.loose,
             flex : math.max(1, (listFila[i].getAnchoCampo()
-                   + ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala).round()),
+                   + dAnchoEtiqueta).round()),
             child : ConstrainedBox(
               constraints : BoxConstraints(
                 maxWidth : listFila[i].getAnchoCampo()
-                    + ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
+                    + dAnchoEtiqueta,
               ),
               child : _construirCampo(listFila[i],
                   bAnchoFlexible : true,
@@ -394,7 +395,6 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
         ],
       ],
     );
-
   }
 
   /// Contenido de una pestaña: los campos del grupo y, si el grupo tiene

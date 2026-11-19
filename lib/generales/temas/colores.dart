@@ -42,6 +42,23 @@ abstract final class ClaseGenColores {
   static const colorTextoCampoHabilitadoClaro  = Color(0xFF005F7D); // cian oscuro
   static const colorTextoCampoHabilitadoOscuro = Color(0xFF7FDCF2); // cian claro
 
+  // ── Resultado de una suma (campo Total y fila de totales) ────────────────
+  // Regla UI/UX: el relleno del Total debe distinguirse a simple vista del
+  // relleno de los campos sumados, tanto habilitados como deshabilitados.
+  // En modo claro: ámbar suave, de la familia del acento (el gris casi no se
+  // distinguía de los campos de ingreso). En modo oscuro: el gris elevado
+  // que ya funcionaba bien. El texto sobre este relleno es el normal, en
+  // negritas (gris #374151 sobre ámbar suave: 8.7:1, WCAG AAA).
+  static const colorCampoTotalClaro  = Color(0xFFFFEAC2); // ámbar suave
+  static const colorCampoTotalOscuro = Color(0xFF2A2B2C); // gris elevado
+
+  // ── Texto de ejemplo (hints) de los controles de entrada ─────────────────
+  // Regla UI/UX: el hint debe distinguirse a simple vista del dato introducido
+  // por el usuario: gris muy apagado, apenas visible. El usuario confunde un
+  // hint brillante con un dato ya cargado.
+  static const colorHintCampoClaro  = Color(0xFFA8A8A8); // gris muy apagado
+  static const colorHintCampoOscuro = Color(0xFF7A7A7A); // gris apagado sobre fondo oscuro
+
   // ── Encabezado de las grillas (regla UI/UX) ─────────────────────────────
   // Banda y texto de los nombres de columnas (grilla lateral de los ABM y
   // grilla de detalles): par ámbar invertido según el modo — la banda oscura

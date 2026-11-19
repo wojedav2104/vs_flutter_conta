@@ -244,8 +244,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       // El texto de ejemplo usa el mismo estilo escalado que el texto del
       // campo: si tomara el estilo del tema (sin escalar), en ventanas menores
       // a 1920 se vería más grande que el texto y se cortaría por abajo.
-      hintStyle      : _estiloTexto(
-          oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+      hintStyle      : ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
+          color: ClaseGenTemas.colorTextoHintCampo(oContexto)),
       suffixIcon     : oIconoDerecha,
       filled         : true,
       // Regla UI/UX: el resultado de una suma (campo Total) lleva un relleno
@@ -562,7 +562,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
+            width : ClaseCampoAbm.getAnchoEtiqueta(),
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
