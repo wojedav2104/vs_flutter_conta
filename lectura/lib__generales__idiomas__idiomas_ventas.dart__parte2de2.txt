@@ -1,10 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_ventas.dart
 PARTE 2 DE 2
 ---
- 'Exercice comptable',
-    'venExentas'              : 'Exonérées',
-    'venFecha'                : 'Date de la vente',
-    'venGravadas10'           : 'Taxables 10%',
+enGravadas10'           : 'Taxables 10%',
     'venGravadas5'            : 'Taxables 5%',
     'venHora'                 : 'Heure',
     'venIdentificacion'       : 'Identification N°',
@@ -33,23 +30,21 @@ PARTE 2 DE 2
     'venHintCliente'          : 'Nom du client',
     'venHintComentarios'      : 'Commentaires sur cette vente',
     'venHintSucursal'         : 'Code et nom de la succursale',
-    // ── Types de document (codes '01'..'16' dans listValores) ───────────
+        // ── Types de document (codes '01'..'14' dans listValores) ───────────
     'venTipoDoc01'            : 'Facture au comptant',
     'venTipoDoc02'            : 'Facture à crédit',
     'venTipoDoc03'            : 'Justificatif de vente',
     'venTipoDoc04'            : 'Facture d\'exportation',
-    'venTipoDoc05'            : 'Justificatif d\'impôt unique',
-    'venTipoDoc06'            : 'Ticket de caisse enregistreuse',
-    'venTipoDoc07'            : 'Justificatif',
-    'venTipoDoc08'            : 'Note de débit',
-    'venTipoDoc09'            : 'Note de crédit',
-    'venTipoDoc10'            : 'Bulletin de ventes',
-    'venTipoDoc11'            : 'Contrôle interne',
-    'venTipoDoc12'            : 'Billet de transport public de passagers',
-    'venTipoDoc13'            : 'Ticket de caisse enregistreuse',
-    'venTipoDoc14'            : 'Billet de loterie, jeux de hasard',
-    'venTipoDoc15'            : 'Billet ou ticket de transport aérien',
-    'venTipoDoc16'            : 'Entrée à des spectacles publics',
+    'venTipoDoc05'            : 'Justificatif',
+    'venTipoDoc06'            : 'Note de débit',
+    'venTipoDoc07'            : 'Note de crédit',
+    'venTipoDoc08'            : 'Bon de vente',
+    'venTipoDoc09'            : 'Contrôle interne',
+    'venTipoDoc10'            : 'Billet de transport public de passagers',
+    'venTipoDoc11'            : 'Ticket de caisse enregistreuse',
+    'venTipoDoc12'            : 'Billet de loterie, jeux de hasard',
+    'venTipoDoc13'            : 'Billet ou ticket de transport aérien',
+    'venTipoDoc14'            : 'Billet d\'entrée à des spectacles publics',
     // ── Validations croisées ─────────────────────────────────────────────
     'venErrorMarangatu'       : 'Le Total du document doit être égal à la somme du Doit pour envoyer à Marangatú',
   };

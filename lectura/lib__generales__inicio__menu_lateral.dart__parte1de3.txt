@@ -49,16 +49,12 @@ class ClaseMenuLateral extends StatelessWidget {
   ];
 
   static final List<ClaseOpcionMenu> _listProcesos = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.sort,                    sClave: 'menuReorganizarAsientos', sRuta: ClaseRutas.rutaReorganizarAsientos),
-    ClaseOpcionMenu(oIcono: Icons.event_busy_outlined,     sClave: 'menuCierreAnual',         sRuta: ClaseRutas.rutaCierreAnual),
-    ClaseOpcionMenu(oIcono: Icons.lock_open_outlined,      sClave: 'menuReaperturaCuentas',   sRuta: ClaseRutas.rutaReaperturaCuentas),
-    ClaseOpcionMenu(oIcono: Icons.upload_file_outlined,    sClave: 'menuMarangatu',           sRuta: ClaseRutas.rutaMarangatu,
-                    listPaises: <String>[ClaseSesion.paisParaguay]),
+    ClaseOpcionMenu(oIcono: Icons.event_busy_outlined,  sClave: 'menuCierreAnual',         sRuta: ClaseRutas.rutaCierreAnual),
+    ClaseOpcionMenu(oIcono: Icons.download_outlined,    sClave: 'menuImportarSqlConta',    sRuta: ClaseRutas.rutaImportarSqlConta, listPaises: <String>[ClaseSesion.paisParaguay]),
+    ClaseOpcionMenu(oIcono: Icons.upload_file_outlined, sClave: 'menuMarangatu',           sRuta: ClaseRutas.rutaMarangatu, listPaises: <String>[ClaseSesion.paisParaguay]),
+    ClaseOpcionMenu(oIcono: Icons.lock_open_outlined,   sClave: 'menuReaperturaCuentas',   sRuta: ClaseRutas.rutaReaperturaCuentas),
+    ClaseOpcionMenu(oIcono: Icons.sort,                 sClave: 'menuReorganizarAsientos', sRuta: ClaseRutas.rutaReorganizarAsientos),
   ];
 
   static final List<ClaseOpcionMenu> _listSistema = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.storage_outlined, sClave: 'menuBasesDatos', sRuta: ClaseRutas.rutaBasesDatos),
-  ];
-
-  static final List<ClaseOpcionMenu> _listTablas = <ClaseOpcionMenu>[
-    ClaseOpcionMenu(oIcono: Icons.business,     
+    ClaseOpcionMenu(oIcono: Icons.storage_outlined, sClave: 'menuBasesDatos', sRuta: ClaseRut

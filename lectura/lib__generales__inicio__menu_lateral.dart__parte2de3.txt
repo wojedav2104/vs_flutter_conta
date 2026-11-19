@@ -1,14 +1,18 @@
 RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
 PARTE 2 DE 3
 ---
-               sClave: 'menuEmpresa',             sRuta: ClaseRutas.rutaEmpresa),
-    ClaseOpcionMenu(oIcono: Icons.settings_outlined,           sClave: 'menuConfiguracion',       sRuta: ClaseRutas.rutaConfiguracion),
-    ClaseOpcionMenu(oIcono: Icons.store_outlined,              sClave: 'menuSucursales',          sRuta: ClaseRutas.rutaSucursales),
-    ClaseOpcionMenu(oIcono: Icons.person_outline,              sClave: 'menuClientes',            sRuta: ClaseRutas.rutaClientes),
-    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,     sClave: 'menuProveedores',         sRuta: ClaseRutas.rutaProveedores),
-    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios',   sRuta: ClaseRutas.rutaTimbradosPropios),
-    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined,   sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
-    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,     sClave: 'menuCuentasAsignadas',    sRuta: ClaseRutas.rutaCuentasAsignadas),
+as.rutaBasesDatos),
+  ];
+
+  static final List<ClaseOpcionMenu> _listTablas = <ClaseOpcionMenu>[
+    ClaseOpcionMenu(oIcono: Icons.business,                     sClave: 'menuEmpresa',              sRuta: ClaseRutas.rutaEmpresa),
+    ClaseOpcionMenu(oIcono: Icons.settings_outlined,            sClave: 'menuConfiguracion',        sRuta: ClaseRutas.rutaConfiguracion),
+    ClaseOpcionMenu(oIcono: Icons.store_outlined,               sClave: 'menuSucursales',           sRuta: ClaseRutas.rutaSucursales),
+    ClaseOpcionMenu(oIcono: Icons.assignment_ind_outlined,      sClave: 'menuCuentasAsignadas',     sRuta: ClaseRutas.rutaCuentasAsignadas),
+    ClaseOpcionMenu(oIcono: Icons.person_outline,               sClave: 'menuClientes',             sRuta: ClaseRutas.rutaClientes),
+    ClaseOpcionMenu(oIcono: Icons.local_shipping_outlined,      sClave: 'menuProveedores',          sRuta: ClaseRutas.rutaProveedores),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_number_outlined, sClave: 'menuTimbradosPropios',     sRuta: ClaseRutas.rutaTimbradosPropios),
+    ClaseOpcionMenu(oIcono: Icons.confirmation_num_outlined,    sClave: 'menuTimbradosProveedores', sRuta: ClaseRutas.rutaTimbradosProveedores),
   ];
 
   static final List<ClaseOpcionMenu> _listUtilitarios = <ClaseOpcionMenu>[
@@ -70,6 +74,4 @@ PARTE 2 DE 3
         children: <Widget>[
           Text(ClaseIdiomas.getTexto('aplicacion', sIdioma),
                style: ClaseGenEstilosTexto.tituloMediano(oContexto)
-                        .copyWith(color: oTema.colorScheme.onPrimaryContainer)),
-          const SizedBox(height: ClaseGenEspacios.dEspacio04),
-          Text(ClaseIdiomas.getTexto('baseConectada', sIdioma
+                        .copyWith(color: oTe

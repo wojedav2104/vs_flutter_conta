@@ -1,7 +1,17 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
-PARTE 2 DE 3
+PARTE 2 DE 4
 ---
-  sEtiqueta        : ClaseIdiomas.getTexto('empNombre', sIdioma),
+s = listPaisesValores.map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma)}').toList();
+
+    return <ClaseCampoAbm>[
+
+      // ── Grupo 1: Generales ──────────────────────────────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 50,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'nombre',
+        sEtiqueta        : ClaseIdiomas.getTexto('empNombre', sIdioma),
         sGrupo           : 'empGrupoGenerales',
         sHint            : ClaseIdiomas.getTexto('empHintNombre', sIdioma),
       ),
@@ -80,13 +90,4 @@ PARTE 2 DE 3
         sClave           : 'email',
         sEtiqueta        : ClaseIdiomas.getTexto('empEmail', sIdioma),
         sGrupo           : 'empGrupoGenerales',
-        sHint            : ClaseIdiomas.getTexto('empHintEmail', sIdioma),
-      ),
-      ClaseCampoAbm(
-        bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRuc(
-            sValor, ClaseIdiomas.getTexto('empRuc', sIdioma), sIdioma),
-        iAnchoCaracteres : 10,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'ruc',
-        
+        sHint            : 

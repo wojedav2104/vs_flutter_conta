@@ -1,0 +1,13 @@
+RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
+PARTE 4 DE 4
+---
+       'pais'                    : ClaseEmpresa.sPaisDefecto,       // ← CAMBIO limpieza sPaisDefecto
+        'ramo'                    : 'Servicios contables',
+        'ruc'                     : '80012345-0',
+        'telefono'                : '021 500 400',
+      },
+    ];
+  }
+
+}
+

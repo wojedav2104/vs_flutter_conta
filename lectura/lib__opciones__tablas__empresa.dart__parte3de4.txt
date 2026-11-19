@@ -1,7 +1,16 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
-PARTE 3 DE 3
+PARTE 3 DE 4
 ---
-sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
+ClaseIdiomas.getTexto('empHintEmail', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRuc(
+            sValor, ClaseIdiomas.getTexto('empRuc', sIdioma), sIdioma),
+        iAnchoCaracteres : 10,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'ruc',
+        sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
         sGrupo           : 'empGrupoGenerales',
         sHint            : ClaseIdiomas.getTexto('empHintRuc', sIdioma),
       ),
@@ -18,8 +27,20 @@ sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
         sGrupo           : 'empGrupoVarios',
       ),
 
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'emiteFacturaElectronica',
+        sEtiqueta        : ClaseIdiomas.getTexto('empEmiteFacturaElectronica', sIdioma),
+        sGrupo           : 'empGrupoVarios',
+      ),
+
       // ── Grupo 3: Impuestos ──────────────────────────────────────────────
       ClaseCampoAbm(
+        bObligatorio     : true,
         iAnchoCaracteres : funcAnchoOpcion(listIvaOpciones),
         listOpciones     : listIvaOpciones,
         listValores      : listIvaValores,
@@ -30,16 +51,17 @@ sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
         sValorDefecto    : 'GEN',
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
-        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
-        listValores      : ClaseSiNo.listValores,
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(listIreOpciones),
+        listOpciones     : listIreOpciones,
+        listValores      : listIreValores,
         oTipo            : EnumTipoCampoAbm.lista,
-        sClave           : 'ireSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto('empIreSimple', sIdioma),
+        sClave           : 'ire',
+        sEtiqueta        : ClaseIdiomas.getTexto('empIre', sIdioma),
         sGrupo           : 'empGrupoImpuestos',
-        sValorDefecto    : ClaseSiNo.no,
       ),
       ClaseCampoAbm(
+        bObligatorio     : true,
         iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
         listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
         listValores      : ClaseSiNo.listValores,
@@ -58,24 +80,16 @@ sEtiqueta        : ClaseIdiomas.getTexto('empRuc', sIdioma),
   List<Map<String, dynamic>> crearRegistrosPrueba() {
     return <Map<String, dynamic>>[
       <String, dynamic>{
-        'apellidos'    : '',
-        'departamento' : 'Central',
-        'direccion'    : 'Av. España 1234',
-        'ejercicio'    : '2026',
-        'email'        : 'info@empresa.com.py',
-        'ireSimple'    : ClaseSiNo.no,
-        'irp'          : ClaseSiNo.si,
-        'iva'          : 'GEN',
-        'localidad'    : 'Luque',
-        'nombre'       : 'Empresa de Prueba S.A.',
-        'nombres'      : '',
-        'pais'         : ClaseEmpresa.sPaisDefecto,       // ← CAMBIO limpieza sPaisDefecto
-        'ramo'         : 'Servicios contables',
-        'ruc'          : '80012345-0',
-        'telefono'     : '021 500 400',
-      },
-    ];
-  }
-
-}
-
+        'apellidos'               : '',
+        'departamento'            : 'Central',
+        'direccion'               : 'Av. España 1234',
+        'ejercicio'               : '2026',
+        'email'                   : 'info@empresa.com.py',
+        'emiteFacturaElectronica' : ClaseSiNo.si,
+        'ire'                     : 'SIM',
+        'irp'                     : ClaseSiNo.si,
+        'iva'                     : 'GEN',
+        'localidad'               : 'Luque',
+        'nombre'                  : 'Empresa de Prueba S.A.',
+        'nombres'                 : '',
+ 

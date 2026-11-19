@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
-PARTE 1 DE 3
+PARTE 1 DE 4
 ---
 import 'package:flutter/material.dart';
 
@@ -92,20 +92,12 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
     ];
     const List<String> listIvaValores = <String>['GEN', 'SIM', 'NPG'];
 
-    // Países vigentes para la Empresa: Argentina, Paraguay y Perú.
-    // Francia nunca aparece porque es de solo lectura. Uruguay se
-    // agregará cuando esté vigente.
+    // Códigos internos del tipo de I.R.E. (solo se usan en esta pantalla).
+    final List<String> listIreOpciones = <String>[
+      ClaseIdiomas.getTexto('empIreGeneral', sIdioma), ClaseIdiomas.getTexto('empIreSimple', sIdioma), ClaseIdiomas.getTexto('empIreResimple', sIdioma), ClaseIdiomas.getTexto('empNoPagaIre', sIdioma),
+    ];
+    const List<String> listIreValores = <String>['GEN', 'SIM', 'RES', 'NPG'];
+
+    // Países vigentes para la Empresa: Argentina, Paraguay y Perú. Francia nunca aparece porque es de solo lectura. Uruguay se agregará cuando esté vigente.
     const List<String> listPaisesValores = <String>['ARG', 'PRY', 'PER'];
-    final List<String> listPaisesOpciones = listPaisesValores
-        .map((String s) => ClasePaises.getEtiqueta(s, sIdioma))
-        .toList();
-
-    return <ClaseCampoAbm>[
-
-      // ── Grupo 1: Generales ──────────────────────────────────────────────
-      ClaseCampoAbm(
-        bObligatorio     : true,
-        iAnchoCaracteres : 50,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'nombre',
-      
+    final List<String> listPaisesOpcione

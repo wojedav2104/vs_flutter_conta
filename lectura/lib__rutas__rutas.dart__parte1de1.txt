@@ -24,6 +24,7 @@ abstract final class ClaseRutas {
 
   // ── Procesos ────────────────────────────────────────────────────────────
   static const String rutaCierreAnual         = '/procesos/cierre_anual';
+  static const String rutaImportarSqlConta    = '/procesos/importar_sqlconta';
   static const String rutaMarangatu           = '/procesos/marangatu';
   static const String rutaReaperturaCuentas   = '/procesos/reapertura_cuentas';
   static const String rutaReorganizarAsientos = '/procesos/reorganizar_asientos';

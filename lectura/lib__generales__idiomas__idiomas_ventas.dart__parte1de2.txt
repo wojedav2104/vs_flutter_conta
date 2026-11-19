@@ -44,23 +44,21 @@ abstract final class ClaseIdiomasVentas {
     'venHintCliente'          : 'Nombre del cliente',
     'venHintComentarios'      : 'Comentarios sobre esta venta',
     'venHintSucursal'         : 'Código y Nombre de la sucursal',
-    // ── Tipos de documento (códigos '01'..'16' en listValores) ──────────
+    // ── Tipos de documento (códigos '01'..'14' en listValores) ──────────
     'venTipoDoc01'            : 'Factura Contado',
     'venTipoDoc02'            : 'Factura Crédito',
     'venTipoDoc03'            : 'Comprobante de Venta',
     'venTipoDoc04'            : 'Factura Exportación',
-    'venTipoDoc05'            : 'Comprobante de Tributo Único',
-    'venTipoDoc06'            : 'Ticket máquina registradora',
-    'venTipoDoc07'            : 'Comprobante',
-    'venTipoDoc08'            : 'Nota de Débito',
-    'venTipoDoc09'            : 'Nota de Crédito',
-    'venTipoDoc10'            : 'Boleta de Ventas',
-    'venTipoDoc11'            : 'Control Interno',
-    'venTipoDoc12'            : 'Boleta de Transporte Público de Pasajero',
-    'venTipoDoc13'            : 'Ticket Máquina Registradora',
-    'venTipoDoc14'            : 'Boleto de Loterías, juegos de azar',
-    'venTipoDoc15'            : 'Boleto o Ticket de Transporte Aéreo',
-    'venTipoDoc16'            : 'Entrada a espectáculos públicos',
+    'venTipoDoc05'            : 'Comprobante',
+    'venTipoDoc06'            : 'Nota de Débito',
+    'venTipoDoc07'            : 'Nota de Crédito',
+    'venTipoDoc08'            : 'Boleta de Ventas',
+    'venTipoDoc09'            : 'Control Interno',
+    'venTipoDoc10'            : 'Boleta de Transporte Público de Pasajero',
+    'venTipoDoc11'            : 'Ticket Máquina Registradora',
+    'venTipoDoc12'            : 'Boleto de Loterías, juegos de azar',
+    'venTipoDoc13'            : 'Boleto o Ticket de Transporte Aéreo',
+    'venTipoDoc14'            : 'Entrada a espectáculos públicos',
     // ── Validaciones cruzadas ────────────────────────────────────────────
     'venErrorMarangatu'       : 'El Total del comprobante debe ser igual a la suma del Debe para enviar a Marangatú',
   };
@@ -73,4 +71,7 @@ abstract final class ClaseIdiomasVentas {
     'venCantidadCuotas'       : 'Nombre de versements',
     'venCliente'              : 'Client',
     'venComentarios'          : 'Commentaires',
-    'venEjercicio'            :
+    'venEjercicio'            : 'Exercice comptable',
+    'venExentas'              : 'Exonérées',
+    'venFecha'                : 'Date de la vente',
+    'v

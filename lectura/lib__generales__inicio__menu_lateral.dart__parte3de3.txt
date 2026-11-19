@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/inicio/menu_lateral.dart
 PARTE 3 DE 3
 ---
-),
+ma.colorScheme.onPrimaryContainer)),
+          const SizedBox(height: ClaseGenEspacios.dEspacio04),
+          Text(ClaseIdiomas.getTexto('baseConectada', sIdioma),
                style: ClaseGenEstilosTexto.normalChico(oContexto)),
           Text(ClaseSesion.getBaseDatos(),
                style: ClaseGenEstilosTexto.textoCampo(oContexto)

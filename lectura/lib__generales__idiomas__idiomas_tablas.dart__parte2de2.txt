@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_tablas.dart
 PARTE 2 DE 2
 ---
-empIrp'               : 'Paye-t-elle l\'I.R.P. ?',
+rise individuelle',
+    'empHintNombre'        : 'Nom de l\'entreprise ou nom commercial',
+    'empHintRamo'          : 'Secteur ou activité exercée',
+    'empHintRuc'           : 'Numéro RUC',
+    'empHintTelefono'      : 'N° de téléphone',
+    'empIreSimple'         : 'I.R.E. simple',
+    'empIrp'               : 'Paye-t-elle l\'I.R.P. ?',
     'empIva'               : 'Quelle T.V.A. paye-t-elle ?',
     'empIvaGeneral'        : 'T.V.A. générale',
     'empIvaSimplificado'   : 'T.V.A. simplifiée',
@@ -13,6 +19,12 @@ empIrp'               : 'Paye-t-elle l\'I.R.P. ?',
     'empRamo'              : 'Secteur ou activité',
     'empRuc'               : 'R.U.C.',
     'empTelefono'          : 'Téléphone N°',
+    'empEmiteFacturaElectronica' : 'Émet des factures électroniques',
+    'empIre'                     : 'Quel I.R.E. paie-t-elle ?',
+    'empIreGeneral'              : 'I.R.E. général',
+    'empIreResimple'             : 'I.R.E. ReSimple',
+    'empNoPagaIre'               : 'Ne paie pas d\'I.R.E.',    
+
     // ── Pantalla Configuración (ABM con pestañas) ────────────────────────
     'cfgCantidadBackups'      : 'Nombre de sauvegardes à conserver',
     'cfgCarpetaMarangatu'     : 'Dossier pour Marangatú',

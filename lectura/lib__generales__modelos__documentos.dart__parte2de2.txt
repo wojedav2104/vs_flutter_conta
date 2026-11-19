@@ -1,12 +1,7 @@
 RUTA ORIGINAL: lib/generales/modelos/documentos.dart
 PARTE 2 DE 2
 ---
-SinNombre',
-    diplomatico      : 'docDiplomatico',
-  };
-
-  static String getEtiqueta(String sValor, String sIdioma) {
-    return ClaseIdiomas.getTexto(_mapClaves[sValor] ?? sValor, sIdioma);
+mas.getTexto(_mapClaves[sValor] ?? sValor, sIdioma);
   }
 
   static List<String> getListOpciones(String sIdioma) {
