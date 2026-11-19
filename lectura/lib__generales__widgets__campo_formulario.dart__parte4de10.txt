@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 4 DE 10
 ---
-    style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
+urn Text.rich(
+      TextSpan(
+        style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
         children: <InlineSpan>[
           TextSpan(text: widget.oCampo.sEtiqueta),
           if (widget.oCampo.bObligatorio)
@@ -100,5 +102,4 @@ PARTE 4 DE 10
   /// los campos, botones de las ventanas), directa o indirectamente.
   static bool _esBoton(BuildContext oContexto) {
     if (oContexto.widget is ButtonStyleButton
-        || oContexto.widget is IconButton) return true;
-  
+        || oContexto.w

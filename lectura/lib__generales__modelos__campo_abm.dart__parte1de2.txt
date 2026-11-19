@@ -19,6 +19,7 @@ class ClaseCampoAbm {
     required this.oTipo,
     required this.sClave,
     required this.sEtiqueta,
+    this.bColumnaExpansible     = false,
     this.bCompletarCeros        = false,
     this.bEnGrilla              = true,
     this.bEsTotal               = false,
@@ -48,6 +49,7 @@ class ClaseCampoAbm {
 
   /// Al grabar, el valor se completa con ceros a la izquierda hasta
   /// iAnchoCaracteres (ej: códigos de cliente: '123' → '000123').
+  bool              bColumnaExpansible;
   bool              bCompletarCeros;
   bool              bEnGrilla;
   bool              bEsTotal;
@@ -105,5 +107,3 @@ class ClaseCampoAbm {
   double getAnchoCampo({String? sMascaraEfectiva}) {
     final int iCaracteres =
         (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
-    // El ancho por carácter se escala con el modo texto grande: sin esto,
-    // 

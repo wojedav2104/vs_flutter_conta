@@ -1,7 +1,49 @@
 RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
 PARTE 10 DE 12
 ---
-{};
+o.sClave, sNuevo ?? '')
+              : null,
+        );
+      case EnumTipoCampoAbm.numero:
+        return _ClaseCeldaNumero(
+          bHabilitado   : bHabilitado,
+          funcAlCambiar : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          oCampo        : oCampo,
+          oControl      : listControles[iFila][oCampo.sClave]!,
+          sValor        : sValor,
+        );
+      default:
+        return TextField(
+          controller      : listControles[iFila][oCampo.sClave],
+          enabled         : bHabilitado,
+          style           : bHabilitado
+              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
+                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+              : ClaseGenEstilosTexto.textoCampo(oContexto),
+          inputFormatters : (oCampo.iAnchoCaracteres > 0)
+              ? <TextInputFormatter>[LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres)]
+              : null,
+          onChanged       : (String sValor) => _alCambiarFila(iFila, oCampo.sClave, sValor),
+          decoration      : InputDecoration(
+            isDense   : true,
+            filled    : true,
+            fillColor : bHabilitado
+                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            contentPadding : const EdgeInsets.symmetric(
+              horizontal : ClaseGenEspacios.dEspacio08,
+              vertical   : ClaseGenEspacios.dEspacio08,
+            ),
+            border    : const OutlineInputBorder(),
+          ),
+        );
+    }
+  }
+
+  Widget _construirFilaTotales(BuildContext oContexto, List<double> listAnchos) {
+
+    // Sumas de las columnas numéricas.
+    final Map<String, double> mapSumas = <String, double>{};
     for (final ClaseCampoAbm oCampo in widget.listCamposDetalle) {
       if (oCampo.oTipo != EnumTipoCampoAbm.numero) continue;
       double dSuma = 0;
@@ -28,7 +70,7 @@ PARTE 10 DE 12
     // muestra a la izquierda de la grilla, en la misma fila que TOTALES.
     double dAnchoIzquierda = ClaseGenLayout.dAnchoNumeroFila;
     for (int i = 0; i < iRotulo; i++) {
-      dAnchoIzquierda += widget.listCamposDetalle[i].getAnchoColumna();
+      dAnchoIzquierda += listAnchos[i];
     }
 
     final String sFormato = widget.oPreferencias.getFormatoNumeros();
@@ -53,35 +95,4 @@ PARTE 10 DE 12
               alignment : Alignment.centerLeft,
               // Regla UI/UX: el botón usa el estilo de los botones ABM
               // (fondo resaltado, texto blanco) para distinguirse del fondo
-              // de la fila de totales; gris cuando está deshabilitado y
-              // amarillo cuando tiene el foco del teclado.
-              child     : ElevatedButton.icon(
-                onPressed : bModoEdicion ? agregarFila : null,
-                icon      : const Icon(Icons.add),
-                style     : ElevatedButton.styleFrom(
-                  disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
-                  disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
-                  shape  : RoundedRectangleBorder(
-                    borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
-                  ),
-                ).copyWith(
-                  backgroundColor : WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> setEstados) {
-                      if (setEstados.contains(WidgetState.focused)) {
-                        return ClaseGenTemas.colorBotonConFoco(oContexto);
-                      }
-                      if (setEstados.contains(WidgetState.disabled)) {
-                        return ClaseGenTemas.colorBotonDeshabilitado(oContexto);
-                      }
-                      return ClaseGenTemas.colorBotonHabilitado(oContexto);
-                    },
-                  ),
-                  foregroundColor : WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> setEstados) {
-                      if (setEstados.contains(WidgetState.focused)) {
-                        return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
-                      }
-                      if (setEstados.contains(WidgetState.disabled)) {
-                        return ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
-                      }
-        
+              // de la fila de to

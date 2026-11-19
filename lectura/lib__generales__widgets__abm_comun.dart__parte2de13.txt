@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 2 DE 13
 ---
-olumna; con grupos,
+         style: ClaseGenEstilosTexto.normalChico(oContexto)),
+    ],
+  );
+}
+
+
+/// Formulario de campos de cabecera: sin grupo, una sola columna; con grupos,
 /// los campos comunes arriba y una pestaña por grupo.
 class ClaseFormularioCampos extends StatefulWidget {
 
@@ -96,11 +102,4 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
     }
     if (iGrupo >= 0 && iGrupo != oControladorPestanas.index) {
       oControladorPestanas.animateTo(iGrupo);
-      WidgetsBinding.instance.addPostFrameCallback((_) => _pedirFoco(oCampoFoco));
-    } else {
-      _pedirFoco(oCampoFoco);
-    }
-  }
-
-  void _pedirFoco(ClaseCampoAbm? oCampo) {
-    
+      WidgetsBinding.instance.addPostFrameCallba

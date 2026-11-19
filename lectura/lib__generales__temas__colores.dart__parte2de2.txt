@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/generales/temas/colores.dart
 PARTE 2 DE 2
 ---
-dvertenciaContenedorClaro   = Color(0xFFFFF3CD);
+claro
+  static const colorEncabezadoGrillaOscuro      = Color(0xFFFFEAC2); // ámbar suave: banda del modo oscuro
+  static const colorTextoEncabezadoGrillaClaro  = Color(0xFFFFEAC2); // texto sobre la banda del modo claro
+  static const colorTextoEncabezadoGrillaOscuro = Color(0xFF3D2E00); // texto sobre la banda del modo oscuro
+  
+  // ── Superficies por tema ────────────────────────────────────────────────
+
+  static const colorSuperficieClara         = Color(0xFFFFFFFF);
+  static const colorSuperficieOscura        = Color(0xFF1E1F22);
+  static const colorSuperficieOscuraElevada = Color(0xFF2A2B2F);
+
+  // ── Containers Material 3 ────────────────────────────────────────────────
+  static const colorPrimarioContenedorClaro   = Color(0xFFEAD5FF);
+  static const colorPrimarioContenedorOscuro  = Color(0xFF4A1470);
+
+  static const colorSecundarioContenedorClaro  = Color(0xFFE5E5E6);
+  static const colorSecundarioContenedorOscuro = Color(0xFF2A2B2C);
+
+  static const colorTerciarioContenedorClaro   = Color(0xFFEDE4FF);
+  static const colorTerciarioContenedorOscuro  = Color(0xFF452B85);
+
+  static const colorAdvertenciaContenedorClaro   = Color(0xFFFFF3CD);
   static const colorAdvertenciaContenedorOscuro  = Color(0xFF664D03);
 
   static const colorErrorContenedorClaro   = Color(0xFFFFDAD6);

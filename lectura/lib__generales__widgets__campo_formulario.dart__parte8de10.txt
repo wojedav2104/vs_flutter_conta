@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 8 DE 10
 ---
-d      : widget.bHabilitado,
+    enabled      : widget.bHabilitado,
             focusNode    : oFoco,
             style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
             keyboardType : TextInputType.datetime,
@@ -92,4 +92,4 @@ d      : widget.bHabilitado,
                 : null,
           ),
         ),
-        if (_getMostrarBorrarCampo())
+        if (_getMostrarBorr

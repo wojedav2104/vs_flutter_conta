@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/temas/temas.dart
 PARTE 3 DE 4
 ---
-as (nombres de columnas y flechita de
+abezadoGrillaOscuro
+          : ClaseGenColores.colorEncabezadoGrillaClaro;
+
+  /// Texto del encabezado de las grillas (nombres de columnas y flechita de
   /// orden): el tono del par ámbar que contrasta con la banda. Color exacto
   /// pendiente de decidir con los usuarios.
   static Color colorTextoEncabezadoGrilla(BuildContext oContexto) =>
@@ -16,6 +19,13 @@ as (nombres de columnas y flechita de
       _esModoOscuro(oContexto)
           ? ClaseGenColores.colorTextoCampoHabilitadoOscuro
           : ClaseGenColores.colorTextoCampoHabilitadoClaro;
+
+  /// Forecolor del texto de ejemplo (hint) de los controles de entrada:
+  /// gris muy apagado, distinto del dato introducido (regla UI/UX).
+  static Color colorTextoHintCampo(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorHintCampoOscuro
+          : ClaseGenColores.colorHintCampoClaro;
 
   // ── Colores de los botones con foco de teclado (regla UI/UX) ────────────
   // El fondo del botón enfocado debe ser bastante distinto al de los botones
@@ -70,14 +80,4 @@ as (nombres de columnas y flechita de
       // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
       // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
       // multiplican por su cuenta.
-      textTheme : _escalarTexto(oTemaBase.textTheme.merge(ClaseGenEstilosTexto.oTextTheme)),
-    );
-  }
-
-  /// Escala todos los estilos del TextTheme por dFactorTexto.
-  /// Se calcula el tamaño estilo por estilo en vez de usar
-  /// TextStyle.apply(fontSizeFactor:), porque apply exige fontSize definido
-  /// cuando el factor no es 1.0 y algún estilo del tema base no lo trae.
-  static TextTheme _escalarTexto(TextTheme oText) {
-    TextStyle escalar(TextStyle? oEstilo) =>
-        (o
+      textTheme : _escalarTexto(oTem

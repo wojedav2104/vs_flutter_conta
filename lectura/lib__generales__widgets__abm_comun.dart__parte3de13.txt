@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 3 DE 13
 ---
-if (mounted && oCampo != null) mapFocos[oCampo]?.requestFocus();
+ck((_) => _pedirFoco(oCampoFoco));
+    } else {
+      _pedirFoco(oCampoFoco);
+    }
+  }
+
+  void _pedirFoco(ClaseCampoAbm? oCampo) {
+    if (mounted && oCampo != null) mapFocos[oCampo]?.requestFocus();
   }
 
   List<String> _getListGrupos() {
@@ -103,7 +110,4 @@ if (mounted && oCampo != null) mapFocos[oCampo]?.requestFocus();
         // color primario y texto en negrita.
         Padding(
           padding : const EdgeInsets.symmetric(
-            horizontal : ClaseGenEspacios.dEspacio16,
-            vertical   : ClaseGenEspacios.dEspacio04,
-          ),
-          child : AnimatedBuilder(
+            hor

@@ -1,0 +1,102 @@
+RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
+PARTE 8 DE 9
+---
+             : EnumTipoCampoAbm.numero,
+        sClave                : 'totalComprobante',
+        sEtiqueta             : ClaseIdiomas.getTexto('venTotalComprobante', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+    ];
+  }
+
+  // ── Columnas de la grilla de detalles ───────────────────────────────────
+
+  List<ClaseCampoAbm> crearCamposDetalle() {
+
+    final String sIdioma = getIdioma();
+
+    return <ClaseCampoAbm>[
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
+            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 16,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'cuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bCompletarCeros  : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
+            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'subcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 40,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'nombreCuenta',
+        sEtiqueta             : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint                 : ClaseIdiomas.getTexto('detHintNombreCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'debe',
+        sEtiqueta        : ClaseIdiomas.getTexto('detDebe', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'haber',
+        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bColumnaExpansible: true,
+        iAnchoCaracteres  : 60,
+        iAnchoVisible     : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'concepto',
+        sEtiqueta         : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
+      ),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'cantidadCuotas'      : '3',
+        'cliente'             : 'Juan Pérez',
+        'comentarios'         : 'Venta de servicios contables a crédito',
+        'detalles'            : <Map<String, String>>[
+          <String, String>{
+            'concepto'     : 'Venta de servicios contables',
+            'cuenta'       : '1.02.01',
+            'debe'         : '2200000',
+            'haber'        : '',
+            'nombreCuenta' : 'Clientes',
+            'subcuenta'    : '',
+          },
+          <String, String>{
+            'concepto'     : 'Venta de servicios contables',
+            'cuenta'       : '4.01.02',
+            'debe'         : '',
+            'haber'        : '2000000',
+            'nombreCuenta' : 'Ventas Gravadas 10%',
+            'subcuenta'    : '',
+          },
+          <String, String>{
+            'concepto'     : 'Venta de servicios contables',
+            'cuenta'       : '2.03.01',
+            'debe'         : '',
+            'haber'        : '200000',
+            'nombreCuenta' : 'I.V.A 

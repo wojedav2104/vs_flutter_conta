@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 11 DE 13
 ---
-ulo,
+tRegistros,
+    this.oFocoGrilla,
+    required this.oFormulario,
+    required this.setHabilitados,
+    required this.sIdioma,
+    required this.sTitulo,
   });
 
   final void Function(EnumBotonAbm oBoton) funcAlClicar;
@@ -108,8 +113,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
   /// Devuelve true si el país conectado permite edición.
   bool _puedeOperar(EnumBotonAbm oBoton) =>
       !_setBotonesEdicion.contains(oBoton)
-      || ClasePermisos.puedeEditar(ClaseSesion.getPais());
-
-  String _getEtiqueta(EnumBotonAbm oBoton) {
-    switch (oBoton) {
-      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgrega
+      || ClasePermisos.puedeEditar(ClaseSesion.getPa

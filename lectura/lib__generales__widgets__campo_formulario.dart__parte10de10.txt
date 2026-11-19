@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 10 DE 10
 ---
-dos.toSet();
+ listMarcados.toSet();
                         if (bMarcado == true) {
                           setNuevos.add(listValores[i]);
                         } else {

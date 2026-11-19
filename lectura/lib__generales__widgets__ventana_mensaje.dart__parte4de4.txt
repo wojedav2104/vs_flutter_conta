@@ -57,3 +57,4 @@ ubtituloMediano(oContextoVentana)),
   oControl.dispose();
   return (sAccion == null) ? null : sTextoIngresado;
 }
+

@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/modelos/campo_abm.dart
 PARTE 2 DE 2
 ---
-los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
+    // El ancho por carácter se escala con el modo texto grande: sin esto,
+    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
     // es 1.25.
     final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
     switch (oTipo) {
@@ -29,6 +30,19 @@ los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
                + ClaseGenLayout.dAnchoIconoBorrar;
     }
+  }
+
+  /// Ancho de la etiqueta de un campo (incluye el asterisco de los
+  /// obligatorios y el padding derecho). Única fuente del ancho de las
+  /// etiquetas: lo usan campo_formulario y las filas compartidas de
+  /// abm_comun. Escala con el modo texto grande (dFactorTexto) y con la
+  /// escala de la ventana (dEscala), igual que la fuente de la etiqueta:
+  /// con un ancho fijo en píxeles, las etiquetas largas (ej: "Nombre de la
+  /// Empresa *") se partían en dos líneas.
+  static double getAnchoEtiqueta() {
+    return ClaseGenLayout.dAnchoEtiquetaCampo
+           * ClaseGenEstilosTexto.dFactorTexto
+           * ClaseGenLayout.dEscala;
   }
 
   /// Ancho de la columna de este campo dentro de la grilla editable de

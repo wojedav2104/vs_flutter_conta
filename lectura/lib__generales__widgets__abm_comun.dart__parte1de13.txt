@@ -71,6 +71,7 @@ Future<String?> funcMostrarEncontrar(
         decoration  : InputDecoration(
           labelText : oCampo.sEtiqueta,
           hintText  : oCampo.sHint,
+          hintStyle : ClaseGenEstilosTexto.textoCampo(oContextoDialogo).copyWith(color: ClaseGenTemas.colorTextoHintCampo(oContextoDialogo)),
           border    : const OutlineInputBorder(),
         ),
         onSubmitted : (String sValor) => Navigator.of(oContextoDialogo).pop(),
@@ -102,10 +103,4 @@ Widget funcConstruirTituloAppBar(BuildContext oContexto, String sIdioma, String 
            style: ClaseGenEstilosTexto.tituloMediano(oContexto)
                     .copyWith(fontWeight: FontWeight.w600)),
       Text('${ClaseSesion.getBaseDatos()} · ${ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma)}',
-           style: ClaseGenEstilosTexto.normalChico(oContexto)),
-    ],
-  );
-}
-
-
-/// Formulario de campos de cabecera: sin grupo, una sola c
+  

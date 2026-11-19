@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 7 DE 13
 ---
-ativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
+or = (oRegistro[oCampo.sClave] ?? '').toString();
+    final String? sAccion = await showMenu<String>(
+      context  : oContexto,
+      position : RelativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
       items    : <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
           value : 'copiarValor',
@@ -96,6 +99,4 @@ ativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
     final int iTotalPaginas = math.max(1,
         (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
     final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
-    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
-    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
-    final List<Map<String, dynamic>> li
+    final int iInicio = iPaginaActual * ClaseGenLayout.iFi

@@ -17,7 +17,7 @@ abstract final class ClaseGenLayout {
   static const double dAnchoCampoFecha                =  180.0;
   static const double dAnchoCampoHora                 =  120.0;
   static const double dAnchoCaracter                  =    8.6;   // ancho de 1 carácter en Roboto Mono
-  static const double dAnchoEtiquetaCampo             =  220.0;
+  static const double dAnchoEtiquetaCampo             =  300.0;   // etiqueta de un campo (antes 220: las etiquetas largas se partían en dos líneas)
   static const double dAnchoExtraLista                =   72.0;   // flecha, padding interno y margen de una lista
   static const double dAnchoGrillaAbm                 =  280.0;
   static const double dAnchoGrillaRegistros           =  500.0;

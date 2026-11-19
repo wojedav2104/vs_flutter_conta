@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 9 DE 10
 ---
- _construirBotonBorrarCampo(),
+arCampo()) _construirBotonBorrarCampo(),
       ],
     );
   }
@@ -87,4 +87,4 @@ PARTE 9 DE 10
                 materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
                 onChanged: widget.bHabilitado
                     ? (bool? bMarcado) {
-                        final Set<String> setNuevos = listMarca
+                        final Set<String> setNuevos =

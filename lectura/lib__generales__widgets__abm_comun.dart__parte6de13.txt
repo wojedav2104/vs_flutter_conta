@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 6 DE 13
 ---
-de
+lback((_) {
+      if (mounted && bVisible && widget.listRegistros.isNotEmpty) {
+        oFocoGrilla.requestFocus();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     oControlFiltro.dispose();
     _oFocoInterno.dispose();
@@ -91,7 +98,4 @@ de
     ClaseCampoAbm        oCampo,
     Offset               oPosicion,
   ) async {
-    final String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
-    final String? sAccion = await showMenu<String>(
-      context  : oContexto,
-      position : Rel
+    final String sVal

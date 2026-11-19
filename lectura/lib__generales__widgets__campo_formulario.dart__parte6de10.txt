@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 6 DE 10
 ---
- 2022, 026 → 2026.
+ 1 o 3 dígitos se completa igual: 2 → 2022, 026 → 2026.
   void _completarFecha() {
     final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
     if (sDigitos.isEmpty) return;
@@ -95,7 +95,7 @@ PARTE 6 DE 10
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : ClaseGenLayout.dAnchoEtiquetaCampo * ClaseGenLayout.dEscala,
+            width : ClaseCampoAbm.getAnchoEtiqueta(),
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
@@ -106,5 +106,4 @@ PARTE 6 DE 10
           ),
           if (widget.bAnchoFlexible)
             Expanded(child: _construirControl(oContexto))
-          else
-       
+          els

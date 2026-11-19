@@ -1,7 +1,11 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 12 DE 13
 ---
-r', sIdioma);
+is());
+
+  String _getEtiqueta(EnumBotonAbm oBoton) {
+    switch (oBoton) {
+      case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
       case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto('abmBorrar', sIdioma);
       case EnumBotonAbm.cancelar:  return ClaseIdiomas.getTexto('abmCancelar', sIdioma);
       case EnumBotonAbm.encontrar: return ClaseIdiomas.getTexto('abmEncontrar', sIdioma);
@@ -82,7 +86,4 @@ r', sIdioma);
           ),
         ),
         child : Row(
-          mainAxisAlignment : MainAxisAlignment.center,
-          mainAxisSize       : MainAxisSize.min,
-          children          : <Widget>[
-            Ic
+         

@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 7 DE 10
 ---
-     SizedBox(
+e
+            SizedBox(
               width : _getAnchoCampo(),
               child : _construirControl(oContexto),
             ),
@@ -107,4 +108,4 @@ PARTE 7 DE 10
         Expanded(
           child: TextField(
             controller   : oControl,
-            enable
+        

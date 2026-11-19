@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 5 DE 10
 ---
-  bool bBoton = false;
+idget is IconButton) return true;
+    bool bBoton = false;
     oContexto.visitAncestorElements((Element oElement) {
       if (oElement.widget is ButtonStyleButton
           || oElement.widget is IconButton) {
@@ -85,4 +86,4 @@ PARTE 5 DE 10
   ///   127    → 12/07/aaaa: día de 2, mes de 1 dígito (07), año actual
   ///   1611   → 16/11/aaaa con el año actual
   ///   161126 → 16/11/2026: el año de 2 dígitos lleva "20" delante
-  /// El año de 1 o 3 dígitos se completa igual: 2 →
+  /// El año de

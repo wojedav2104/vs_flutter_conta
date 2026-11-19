@@ -1,0 +1,13 @@
+RUTA ORIGINAL: lib/rutas/generador_rutas.dart
+PARTE 2 DE 2
+---
+antalla provisoria
+  return MaterialPageRoute<dynamic>(
+    settings : oConfiguracion,
+    builder  : (oContexto) => ClasePantallaProximamente(
+      oPreferencias : oPreferencias,
+      sTitulo       : sTitulo,
+    ),
+  );
+
+}

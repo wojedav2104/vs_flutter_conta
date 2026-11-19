@@ -1,7 +1,11 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 13
 ---
-tip(
+.sClave;
+                            bOrdenDesc  = false;
+                          }
+                        }),
+                        child: Tooltip(
                           message : ClaseIdiomas.getTexto('ordenarPor', widget.sIdioma),
                           // Regla UI/UX: la flechita junto al nombre indica la
                           // columna activa de orden y su sentido (ascendente/
@@ -71,7 +75,4 @@ tip(
                       padding : const EdgeInsets.symmetric(
                         horizontal : ClaseGenEspacios.dEspacio08,
                         vertical   : ClaseGenEspacios.dEspacio04,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          for (final ClaseCampoAb
+  

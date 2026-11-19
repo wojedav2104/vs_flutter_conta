@@ -1,0 +1,57 @@
+RUTA ORIGINAL: lib/generales/idiomas/idiomas_ventas.dart
+PARTE 2 DE 2
+---
+ 'Exercice comptable',
+    'venExentas'              : 'Exonérées',
+    'venFecha'                : 'Date de la vente',
+    'venGravadas10'           : 'Taxables 10%',
+    'venGravadas5'            : 'Taxables 5%',
+    'venHora'                 : 'Heure',
+    'venIdentificacion'       : 'Identification N°',
+    'venIva10'                : 'T.V.A. 10%',
+    'venIva5'                 : 'T.V.A. 5%',
+    'venMostrarEnLibro'       : 'Afficher dans le Livre des Ventes',
+    'venNumero'               : 'N°',
+    'venNumeroAsiento'        : 'Numéro de l\'écriture',
+    'venSucursal'             : 'Succursale',
+    'venTimbrado'             : 'Timbrado N°',
+    'venTipoDocumento'        : 'Type de document',
+    'venTipoIdentificacion'   : 'Type d\'identification',
+    'venTotal'                : 'Total',
+    'venVigenteDesde'         : 'Valide à partir du',
+    'venVigenteHasta'         : 'Valide jusqu\'au',
+    // ── Résolution 90/2021 ───────────────────────────────────────────────
+    'venEnviarMarangatu'      : 'Envoyer à Marangatú',
+    'venImporteGravado10'     : 'Montant taxable 10%',
+    'venImporteGravado5'      : 'Montant taxable 5%',
+    'venImporteExento'        : 'Montant exonéré',
+    'venImporteIreSimple'     : 'Montant I.R.E. Simplifié',
+    'venImporteIrpSimple'     : 'Montant I.R.P. Simplifié',
+    'venImporteNoImputable'   : 'Montant non imputable',
+    'venTotalComprobante'     : 'Total du document',
+    // ── Hints ────────────────────────────────────────────────────────────
+    'venHintCliente'          : 'Nom du client',
+    'venHintComentarios'      : 'Commentaires sur cette vente',
+    'venHintSucursal'         : 'Code et nom de la succursale',
+    // ── Types de document (codes '01'..'16' dans listValores) ───────────
+    'venTipoDoc01'            : 'Facture au comptant',
+    'venTipoDoc02'            : 'Facture à crédit',
+    'venTipoDoc03'            : 'Justificatif de vente',
+    'venTipoDoc04'            : 'Facture d\'exportation',
+    'venTipoDoc05'            : 'Justificatif d\'impôt unique',
+    'venTipoDoc06'            : 'Ticket de caisse enregistreuse',
+    'venTipoDoc07'            : 'Justificatif',
+    'venTipoDoc08'            : 'Note de débit',
+    'venTipoDoc09'            : 'Note de crédit',
+    'venTipoDoc10'            : 'Bulletin de ventes',
+    'venTipoDoc11'            : 'Contrôle interne',
+    'venTipoDoc12'            : 'Billet de transport public de passagers',
+    'venTipoDoc13'            : 'Ticket de caisse enregistreuse',
+    'venTipoDoc14'            : 'Billet de loterie, jeux de hasard',
+    'venTipoDoc15'            : 'Billet ou ticket de transport aérien',
+    'venTipoDoc16'            : 'Entrée à des spectacles publics',
+    // ── Validations croisées ─────────────────────────────────────────────
+    'venErrorMarangatu'       : 'Le Total du document doit être égal à la somme du Doit pour envoyer à Marangatú',
+  };
+
+}

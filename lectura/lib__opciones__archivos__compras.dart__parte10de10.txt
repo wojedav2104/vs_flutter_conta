@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 10 DE 10
 ---
-
+        'importeGravado5'     : '420000',
         'importeIreSimple'    : '0',
         'importeIrpSimple'    : '0',
         'importeNoImputable'  : '0',

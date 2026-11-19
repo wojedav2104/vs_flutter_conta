@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/rutas/generador_rutas.dart
-PARTE 1 DE 1
+PARTE 1 DE 2
 ---
 import 'package:flutter/material.dart';
 
@@ -8,6 +8,7 @@ import '../generales/varios/pantalla_proximamente.dart';
 
 import '../opciones/archivos/asientos.dart';
 import '../opciones/archivos/compras.dart';
+import '../opciones/archivos/ventas.dart';
 import '../opciones/archivos/cuentas.dart';
 
 import '../opciones/tablas/clientes.dart';
@@ -110,13 +111,11 @@ Route<dynamic> funcGenerarRuta(
     );
   }
 
-  // Resto de las opciones: pantalla provisoria
-  return MaterialPageRoute<dynamic>(
-    settings : oConfiguracion,
-    builder  : (oContexto) => ClasePantallaProximamente(
-      oPreferencias : oPreferencias,
-      sTitulo       : sTitulo,
-    ),
-  );
-
-}
+  if (oConfiguracion.name == ClaseRutas.rutaVentas) {
+    return MaterialPageRoute<dynamic>(
+      settings : oConfiguracion,
+      builder  : (oContexto) => ClaseVentas(oPreferencias: oPreferencias),
+    );
+  }
+  
+  // Resto de las opciones: p

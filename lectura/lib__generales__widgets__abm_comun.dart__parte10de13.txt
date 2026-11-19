@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 10 DE 13
 ---
-m oCampo in listColumnas)
+                    ),
+                      child: Row(
+                        children: <Widget>[
+                          for (final ClaseCampoAbm oCampo in listColumnas)
                             Expanded(
                               child: GestureDetector(
                                 onLongPressStart: (oDetalle) => _mostrarMenuCelda(
@@ -88,9 +91,4 @@ class ClaseAndamiajeAbm extends StatelessWidget {
     required this.funcSeleccionar,
     required this.iRegistro,
     required this.listCampos,
-    required this.listRegistros,
-    this.oFocoGrilla,
-    required this.oFormulario,
-    required this.setHabilitados,
-    required this.sIdioma,
-    required this.sTit
+    required this.lis
