@@ -79,12 +79,12 @@ class ClaseEstadoCuentasAsignadas extends State<ClaseCuentasAsignadas> {
       // ── Identificación del registro ──────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('ctaEjercicio', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('ctaEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('ctaEjercicio', sIdioma),
+        sMascara         : '9.999',
         sValorDefecto    : DateTime.now().year.toString(),
       ),
 

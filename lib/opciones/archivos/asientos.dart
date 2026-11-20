@@ -82,13 +82,13 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('asiEjercicio', sIdioma),
+        sMascara         : '9.999',
         sValorDefecto    : ClaseFechas.getAnoMaximo().toString(),
       ),
       ClaseCampoAbm(
@@ -101,8 +101,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto('asiFecha', sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('asiFecha', sIdioma),
             DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         oAlineacion      : EnumAlineacion.centro,
@@ -136,8 +135,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -146,8 +144,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'subcuenta',

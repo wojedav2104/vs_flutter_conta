@@ -260,6 +260,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('venEjercicio', sIdioma),
+        sMascara         : '9.999',
         sGrupo           : 'venGenerales',
       ),
       ClaseCampoAbm(
@@ -286,8 +287,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto('venFecha', sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('venFecha', sIdioma),
             DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
@@ -300,8 +300,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
-            sValor, ClaseIdiomas.getTexto('venHora', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(sValor, ClaseIdiomas.getTexto('venHora', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         iFila            : 2,
         oTipo            : EnumTipoCampoAbm.hora,
@@ -325,8 +324,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
       ClaseCampoAbm(
         bMayusculas       : true,
         bObligatorio      : true,
-        funcMascara       : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(
-            mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumentoVentas.sMascaraNumero : null,
+        funcMascara       : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumentoVentas.sMascaraNumero : null,
         iAnchoCaracteres  : 15,
         iFila             : 3,
         oTipo             : EnumTipoCampoAbm.texto,
@@ -407,8 +405,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
         sGrupo                : 'venGenerales',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('venGravadas10', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venGravadas10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            :  6,
@@ -497,8 +494,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
       ),
 
       // ── Detalles: los importes de las filas 6 a 11, solo de lectura ────
-      // Mismas claves que en Generales (mismo valor); siempre deshabilitados
-      // y fuera de la grilla lateral.
+      // Mismas claves que en Generales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
       ClaseCampoAbm(
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
@@ -650,8 +646,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -660,8 +655,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'subcuenta',

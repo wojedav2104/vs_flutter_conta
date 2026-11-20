@@ -249,13 +249,14 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
-        iAnchoCaracteres : 10,
+        iAnchoCaracteres : 4,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            :  1,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('comEjercicio', sIdioma),
+        sMascara         : '9.999',
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
@@ -372,8 +373,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sGrupo                : 'comGenerales',
       ),
       ClaseCampoAbm(
-        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esConMascara(
-            mapValores['tipoDocumento'] ?? ''),
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esConMascara(mapValores['tipoDocumento'] ?? ''),
         iAnchoCaracteres     :  8,
         iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
         iFila                :  5,

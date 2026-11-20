@@ -190,8 +190,7 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRuc(
-            sValor, ClaseIdiomas.getTexto('empRuc', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarRuc(sValor, ClaseIdiomas.getTexto('empRuc', sIdioma), sIdioma),
         iAnchoCaracteres : 10,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'ruc',
@@ -203,12 +202,12 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
       // ── Grupo 2: Varios ─────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('empEjercicio', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('empEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('empEjercicio', sIdioma),
+        sMascara         : '9.999',
         sGrupo           : 'empGrupoVarios',
       ),
 

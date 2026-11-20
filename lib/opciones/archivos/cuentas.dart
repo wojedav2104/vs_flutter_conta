@@ -210,13 +210,13 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       // ── Datos comunes (sin grupo, siempre visibles) ──────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('planEjercicio', sIdioma),
+        sMascara         : '9.999',
         sValorDefecto    : DateTime.now().year.toString(),
       ),
 
