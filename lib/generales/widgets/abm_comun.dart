@@ -371,8 +371,7 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
   // Marangatú", de 100 caracteres): sin este ajuste, las etiquetas anchas
   // más los campos largos desbordaban el ancho del formulario.
   Widget _construirFila(
-      List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
-    final double dAnchoEtiqueta = ClaseCampoAbm.getAnchoEtiqueta();
+    List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
     return Row(
       crossAxisAlignment : CrossAxisAlignment.start,
       children: <Widget>[
@@ -381,11 +380,11 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
           Flexible(
             fit  : FlexFit.loose,
             flex : math.max(1, (listFila[i].getAnchoCampo()
-                   + dAnchoEtiqueta).round()),
+                   + listFila[i].getAnchoEtiqueta()).round()),
             child : ConstrainedBox(
               constraints : BoxConstraints(
                 maxWidth : listFila[i].getAnchoCampo()
-                    + dAnchoEtiqueta,
+                    + listFila[i].getAnchoEtiqueta(),
               ),
               child : _construirCampo(listFila[i],
                   bAnchoFlexible : true,

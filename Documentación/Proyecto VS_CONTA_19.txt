@@ -1,0 +1,39 @@
+# VS_CONTA — Estado al reiniciar sesión (REINICIO.md)
+
+## 1. Estado de lectura
+- COMPLETA: 161/161 fragmentos de lectura/ + archivos fuente leídos por raw: documentos.dart (completo), idiomas.dart (completo), idiomas_ventas.dart (ES completo; FR cortado en venImporteGravado10), idiomas_interfaz.dart (ES completo; FR cortado en menuLibroDiario), idiomas_general.dart (completo), idiomas_tablas.dart (completo, pegado por el usuario), campo_abm.dart (completo, pegado por el usuario), campo_formulario.dart (completo, pegado por el usuario), layout.dart (completo), pantalla_principal.dart (completo).
+- PARCIALES (lectura cortada): abm_comun.dart (~línea 120), formulario_abm.dart (~línea 120), formulario_cabecera_detalle.dart (cabecera, detalles y totales completos leídos por fragmentos), compras.dart (crearCampos y registros leídos por fragmentos), ventas.dart (~línea 120 por raw; estructura conocida), empresa.dart (crearCampos por fragmentos), menu_lateral.dart (hasta _listUtilitarios; falta el build), generador_rutas.dart (completo), rutas.dart (completo), pubspec.yaml (completo).
+- NOTA herramienta: raw.githubusercontent se corta a ~120 líneas. Para leer más: fragmentos lectura/ (nombres lib__ruta__con_guiones_bajos.dart__parteXdeY.txt) o pedir al usuario que pegue el archivo.
+
+## 2. Parches aplicados y confirmados por el usuario
+1. 14 tipos de documento de Ventas (documentos.dart + idiomas_ventas.dart): códigos '01'..'14'; máscara 01,02,03,06,07,11; eliminados '05' Tributo Único y el ticket duplicado. Traducciones FR aceptadas.
+2. Drawer según spec 00_02 (menu_lateral.dart + rutas.dart + idiomas_interfaz.dart): Procesos en orden 3.1–3.5 (Cierre Anual, Importar desde SQL_CONTA [solo Paraguay], Marangatú [solo Paraguay], Reapertura, Reorganizar); Tablas con Cuentas asignadas en 2.4; ruta nueva '/procesos/importar_sqlconta' (cae en PantallaProximamente); claves menuImportarSqlConta ES/FR.
+3. Empresa según spec 01_01 (empresa.dart + idiomas_tablas.dart): País muestra "ARG - Argentina" (código + nombre); Emite Factura Electrónica en Varios; I.R.E. como lista GEN/SIM/RES/NPG (reemplaza ireSimple booleano); sin valor por defecto en los campos nuevos (decisión del usuario). Correcciones en idiomas_tablas.dart: empEjercicio = "Ejercicio contable actual" / "Exercice comptable actuel"; empIreSimple = "I.R.E. simple" (ya no es etiqueta, es opción de lista).
+4. Obligatoriedad en Empresa: bObligatorio en emiteFacturaElectronica, iva, ire, irp.
+5. Sistema iAnchoEtiqueta (campo_abm.dart + abm_comun.dart + campo_formulario.dart): propiedad iAnchoEtiqueta (caracteres; 0 = 300 px de ClaseGenLayout.dAnchoEtiquetaCampo); método de instancia getAnchoEtiqueta() (única fuente; escala con dFactorTexto y dEscala); el método estático viejo fue eliminado. En abm_comun.dart: listFila[i].getAnchoEtiqueta() en _construirFila (flex y maxWidth). En campo_formulario.dart: widget.oCampo.getAnchoEtiqueta() en el build. COMPILA y está confirmado.
+6. Compras: "Mostrar en Libro Compras" movido debajo de Total (iFila 13).
+7. compras.dart: iAnchoEtiqueta: 30 en 14 campos de Generales (Ejercicio, Fecha, Tipo doc, Cuotas, Proveedor, Timbrado, Es Factura Electrónica, Exentas, Gravadas 10%, IVA 10%, Gravadas 5%, IVA 5%, Total, Mostrar en Libro) + 6 copias de Detalles (opcionales, aplicadas por el usuario).
+8. ventas.dart: iAnchoEtiqueta: 30 en 13 campos (Ejercicio, Fecha, Tipo doc, Cuotas, Cliente, Timbrado, Gravadas 10%, IVA 10%, Gravadas 5%, IVA 5%, Exentas, Total, Mostrar en Libro).
+9. Corrección de overflow en texto grande (compras.dart y ventas.dart): Ejercicio iAnchoEtiqueta 30→22; Sucursal iAnchoEtiqueta: 10 (mueve Número del asiento a la izquierda).
+10. Botón "X" de borrado en texto/número: se desplazó con Transform (-48, luego -18 por invadir el texto).
+
+## 3. PENDIENTE INMEDIATO (entregado hoy, sin confirmar)
+- Parche de la X compacta (5 reemplazos en 3 archivos) — ENTREGADO en el último turno, el usuario NO llegó a aplicarlo ni confirmarlo:
+  a) lib/generales/temas/layout.dart: nueva constante dAnchoSuffixBorrar = 24.0 (tras dAnchoReferencia).
+  b) lib/generales/modelos/campo_abm.dart: en getAnchoCampo, caso logico/numero/texto: dAnchoIconoBorrar → dAnchoSuffixBorrar (el campo termina 4 px después de la X).
+  c) lib/generales/widgets/campo_formulario.dart: (1) en _getDecoracion: suffixIconConstraints (minWidth dAnchoSuffixBorrar, minHeight 48) y realineación; (2) _construirBotonBorrarCampo({bool bCompacto = false}); (3) padding EdgeInsets.zero si bCompacto (solo el botón del suffixIcon, alineación 8/10 espacios; NO los de Fecha/Hora); (4) en _construirTexto: reemplazar el Transform.translate por _construirBotonBorrarCampo(bCompacto: true) y borrar los comentarios viejos.
+- Objetivo: eliminar el espacio en blanco a la derecha de la X (había ~2 huecos de icono por el minWidth de 48 del suffixIcon). Resultado esperado: campo termina ~4 px después de la X; X más cerca de los datos que con Transform -18.
+- Si con valores a tope de ancho la X roza el texto: ajustar dAnchoSuffixBorrar a 22 (3 px totales).
+
+## 4. Otros pendientes (no urgentes)
+- Verificar en el build de lib/generales/inicio/menu_lateral.dart que los grupos se rendericen en orden 1–7 (Archivos, Tablas, Procesos, Informes, Utilitarios, Sistema, Fin). El archivo quedó cortado en la lectura; el usuario puede pegar el build.
+- Traducciones FR de los hints restantes y ajustes menores de idiomas_tablas.dart (empEjercicio/empIreSimple ya corregidos). Regla: proponer FR siempre; el usuario acepta.
+- Reordenar las claves nuevas de idiomas_tablas.dart / idiomas_interfaz.dart si se quiere mantener el orden alfabético (opcional, son mapas).
+- Trabajo futuro mencionado antes: borrado suave y número de documento (ClaseDocumentos / ClaseSesion + R1).
+- Fecha/Hora: la X de esos campos está fuera (junto al picker) y NO se movió a propósito (se superpondría con el calendario). Trabajar esa zona es un tema aparte si el usuario lo pide.
+
+## 5. Cómo retomar
+1. Saludar y leer REINICIO.md + CLAUDE.md.
+2. Primer paso: preguntar si el parche de la X compacta (sección 3) fue aplicado y cómo se ve (valores cortos/largos, texto normal y grande).
+3. Si algo no compila o un Buscar no encuentra: pedir al usuario que pegue el bloque exacto (así se hizo siempre; funciona bien).
+4. Recordar: respuestas con rutas completas, formato Buscar/Reemplazar, líneas de 176 caracteres, traducciones FR propuestas siempre.

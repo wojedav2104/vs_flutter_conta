@@ -18,3 +18,4 @@ Lo que ya está, déjalo como está. Pero de ahora en adelante trata de usar 176
 2. Actualiza el drawer para que coincida con lo especificado en "00_02_Opciones drawer.txt"
 3. Actualiza el formulario de EMPRESA para que coincida con lo especificado en "01_01_Tabla_Empresa.txt"
 4. Actualiza el formulario de VENTAS para que los tipos de documentos coincidan con lo especificado en "02_04_01_Archivo_Ventas.txt"
+5. En sesiones anteriores me mostrabas "Buscar" y luego "Reemplazar por". ¿Podrías volver a hacerlo así? me facilita la búsqueda de lo que debo reemplazar. También cuando te refieras a un archivo .dart dime la ruta completa ya que son muchos archivos ya y no recuerdo sus ubicaciones

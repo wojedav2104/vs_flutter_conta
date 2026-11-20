@@ -7,7 +7,7 @@ Nota 2: Más adelante, cuando tengamos conexión con la Base de Datos, el usuari
 Nota 3: El formato de los números de cuenta es: 9.99.99.99.99 pero no es necesario que complete todos los dígitos hasta el final. Números de cuenta válidos son: 1, 1.01, 1.01.04, 2.03.05.17
 
 Los campos de esta tabla son:
-- Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Ejercicio contable (numérico, 4, máscara de entrada: 9999, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
 - Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio). 
 - Caja (carácter, 58, "Número de la cuenta Caja", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta
 - I.V.A Crédito Fiscal 10% (carácter, 58, "Número de la cuenta I.V.A Crédito Fiscal 10%", opcional). Validación: Solamente se deben aceptar números que cumplen con el formato de números de cuenta

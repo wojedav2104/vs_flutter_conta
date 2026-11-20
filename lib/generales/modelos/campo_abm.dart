@@ -27,6 +27,7 @@ class ClaseCampoAbm {
     this.bTieneDecimales        = false,    
     this.bVigencia              = false,
     this.iAnchoCaracteres       = 10,
+    this.iAnchoEtiqueta         = 0,
     this.iAnchoVisible          = 0,
     this.iFila                  = 0,
     this.iMaxComentario         = 500,
@@ -57,6 +58,7 @@ class ClaseCampoAbm {
   bool              bTieneDecimales;
   bool              bVigencia;
   int               iAnchoCaracteres;
+  int               iAnchoEtiqueta;
   int               iAnchoVisible;
   int               iFila;
   int               iMaxComentario;
@@ -94,7 +96,13 @@ class ClaseCampoAbm {
 
   // ── Anchos ────────────────────────────────────────────────────────────────
 
-  // ── Anchos ────────────────────────────────────────────────────────────────
+  /// Ancho de la etiqueta del campo dentro de un formulario (incluye el asterisco de los obligatorios y el padding derecho). Si iAnchoEtiqueta es 0 usa el ancho general (ClaseGenLayout.dAnchoEtiquetaCampo);
+  /// en caso contrario usa iAnchoEtiqueta caracteres. Escala con el modo texto grande (dFactorTexto) y con la escala de la ventana (dEscala), igual que la fuente de la etiqueta: con un ancho fijo en píxeles,
+  /// las etiquetas largas (ej: "Nombre de la Empresa *") se partían en dos líneas. Única fuente del ancho de las etiquetas: lo usan campo_formulario y las filas compartidas de abm_comun.
+  double getAnchoEtiqueta() {
+    final double dBase = (iAnchoEtiqueta <= 0) ? ClaseGenLayout.dAnchoEtiquetaCampo : iAnchoEtiqueta * ClaseGenLayout.dAnchoCaracter;
+    return dBase * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
+  }
 
   /// Ancho del campo dentro de un formulario (incluye los iconos laterales).
   /// sMascaraEfectiva es la máscara que realmente se muestra (la dinámica de
@@ -128,24 +136,11 @@ class ClaseCampoAbm {
       case EnumTipoCampoAbm.logico:
       case EnumTipoCampoAbm.numero:
       case EnumTipoCampoAbm.texto:
-        // El icono de borrado es suffixIcon, dentro del campo.
+        // El icono de borrado es suffixIcon, dentro del campo, en el hueco angosto de dAnchoSuffixBorrar: el campo termina 4 px después de la "X".
         return dAnchoTexto
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
-               + ClaseGenLayout.dAnchoIconoBorrar;
+               + ClaseGenLayout.dAnchoSuffixBorrar;
     }
-  }
-
-  /// Ancho de la etiqueta de un campo (incluye el asterisco de los
-  /// obligatorios y el padding derecho). Única fuente del ancho de las
-  /// etiquetas: lo usan campo_formulario y las filas compartidas de
-  /// abm_comun. Escala con el modo texto grande (dFactorTexto) y con la
-  /// escala de la ventana (dEscala), igual que la fuente de la etiqueta:
-  /// con un ancho fijo en píxeles, las etiquetas largas (ej: "Nombre de la
-  /// Empresa *") se partían en dos líneas.
-  static double getAnchoEtiqueta() {
-    return ClaseGenLayout.dAnchoEtiquetaCampo
-           * ClaseGenEstilosTexto.dFactorTexto
-           * ClaseGenLayout.dEscala;
   }
 
   /// Ancho de la columna de este campo dentro de la grilla editable de

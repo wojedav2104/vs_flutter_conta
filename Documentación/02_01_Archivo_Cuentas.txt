@@ -7,7 +7,7 @@ Nota 2: Se debe tener una correspondencia uno a uno entre cada cuenta usada en L
 Nota 3: Aunque el primer grupo corresponderá al Plan de Cuentas utilizado en un país latinoamericano y el segundo grupo corresponderá al Plan de Cuentas usado en Francia los nombres de los grupos deben ser "Principal (nombre del país latinoamericano)" y "Alternativo"
 
 Datos comunes:
-- Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Ejercicio contable (numérico, 4, máscara de entrada: 9999, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
 - Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio).
 
 Grupo local:

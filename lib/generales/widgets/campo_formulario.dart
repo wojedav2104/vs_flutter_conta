@@ -219,8 +219,6 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
 
-  // ── Ancho del campo ──────────────────────────────────────────────────────
-
   /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
   /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
   double _getAnchoCampo() =>
@@ -246,8 +244,14 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       // a 1920 se vería más grande que el texto y se cortaría por abajo.
       hintStyle      : ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
           color: ClaseGenTemas.colorTextoHintCampo(oContexto)),
-      suffixIcon     : oIconoDerecha,
-      filled         : true,
+      suffixIcon           : oIconoDerecha,
+      // El hueco del suffixIcon viene de 48 px por defecto y dejaba mucho espacio en blanco a la derecha de la "X": se angosta al ancho del hueco y el campo termina 4 px después 
+      // de la X. El alto mínimo se mantiene en 48 (el de por defecto) para no cambiar el alto de los campos.
+      suffixIconConstraints : const BoxConstraints(
+        minWidth  : ClaseGenLayout.dAnchoSuffixBorrar,
+        minHeight : 48,
+      ),
+      filled               : true,
       // Regla UI/UX: el resultado de una suma (campo Total) lleva un relleno
       // distinto al de los campos sumados, para resaltarlo.
       fillColor      : widget.oCampo.bEsTotal
@@ -306,7 +310,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   bool _getMostrarBorrarCampo() =>
       widget.bHabilitado && widget.sValor.isNotEmpty;
 
-  Widget _construirBotonBorrarCampo() {
+  Widget _construirBotonBorrarCampo({bool bCompacto = false}) {    
     // ExcludeFocus: la "X" queda fuera del orden de Tab/Enter (el foco pasa
     // directamente al siguiente campo); el clic y el táctil siguen igual.
     return ExcludeFocus(
@@ -317,6 +321,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         // Sin área táctil forzada de 48 px: la fila queda del alto del campo
         // y la separación con el campo de arriba se ve igual en todos.
         style     : IconButton.styleFrom(
+          padding       : bCompacto ? EdgeInsets.zero : null,
           tapTargetSize : MaterialTapTargetSize.shrinkWrap,
         ),
         onPressed : () {
@@ -562,7 +567,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : ClaseCampoAbm.getAnchoEtiqueta(),
+            width : widget.oCampo.getAnchoEtiqueta(),
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
@@ -643,8 +648,8 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
       decoration      : _getDecoracion(
         oContexto,
-        sHint        : widget.oCampo.sHint,
-        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
+        sHint         : widget.oCampo.sHint,
+        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo(bCompacto: true) : null,
       ),
     );
   }

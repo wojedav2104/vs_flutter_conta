@@ -238,6 +238,8 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
   // primer campo; dentro de la fila, los campos van en orden de declaración).
 
   List<ClaseCampoAbm> crearCamposCabecera() {
+    
+    final int    iAnchoEtiquetasPrimeraColumna = 29;
 
     final String sIdioma = getIdioma();
 
@@ -246,10 +248,10 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       // ── Generales ──────────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
-        iAnchoCaracteres : 4,
-        iFila            : 1,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
+        iAnchoCaracteres : 10,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  1,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
@@ -259,7 +261,8 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 44,
-        iFila            : 1,
+        iAnchoEtiqueta   : 15,
+        iFila            :  1,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'sucursal',
         sEtiqueta        : ClaseIdiomas.getTexto('comSucursal', sIdioma),
@@ -270,6 +273,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 6,
+        iAnchoEtiqueta        : 22,
         iFila                 : 1,
         oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'numeroAsiento',
@@ -278,10 +282,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto('comFecha', sIdioma),
-            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('comFecha', sIdioma), DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 2,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.fecha,
@@ -291,8 +294,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
-            sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         iFila            : 2,
         oTipo            : EnumTipoCampoAbm.hora,
@@ -303,7 +305,8 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : funcAnchoOpcion(ClaseTipoDocumento.getListOpciones(sIdioma)),
-        iFila            : 3,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  3,
         listOpciones     : ClaseTipoDocumento.getListOpciones(sIdioma),
         listValores      : ClaseTipoDocumento.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
@@ -315,21 +318,20 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bMayusculas       : true,
         bObligatorio      : true,
-        funcMascara       : (mapValores) => ClaseTipoDocumento.esConMascara(
-            mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
+        funcMascara       : (mapValores) => ClaseTipoDocumento.esConMascara(mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
         iAnchoCaracteres  : 16,
-        iFila             : 3,
+        iAnchoEtiqueta    :  5,
+        iFila             :  3,
         oTipo             : EnumTipoCampoAbm.texto,
         sClave            : 'numero',
         sEtiqueta         : ClaseIdiomas.getTexto('comNumero', sIdioma),
         sGrupo            : 'comGenerales',
       ),
       ClaseCampoAbm(
-        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(
-            mapValores['tipoDocumento'] ?? ''),
-        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma),
-        iAnchoCaracteres     : 3,
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(mapValores['tipoDocumento'] ?? ''),
+        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(sValor, ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma),
+        iAnchoCaracteres     :  3,
+        iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
         oTipo                : EnumTipoCampoAbm.numero,
         sClave               : 'cantidadCuotas',
         sEtiqueta            : ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma),
@@ -339,6 +341,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 48,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 4,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'proveedor',
@@ -348,6 +351,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : 12,
         iFila            : 4,
         listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
         listValores      : ClaseTipoIdentificacion.listValores,
@@ -360,6 +364,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
+        iAnchoEtiqueta        : 15,
         iFila                 : 4,
         oTipo                 : EnumTipoCampoAbm.texto,
         sClave                : 'identificacion',
@@ -369,8 +374,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esConMascara(
             mapValores['tipoDocumento'] ?? ''),
-        iAnchoCaracteres     : 8,
-        iFila                : 5,
+        iAnchoCaracteres     :  8,
+        iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
+        iFila                :  5,
         oTipo                : EnumTipoCampoAbm.texto,
         sClave               : 'timbrado',
         sEtiqueta            : ClaseIdiomas.getTexto('comTimbrado', sIdioma),
@@ -379,6 +385,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 10,
+        iAnchoEtiqueta        : 22,
         iFila                 : 5,
         oTipo                 : EnumTipoCampoAbm.fecha,
         sClave                : 'vigenteDesde',
@@ -388,6 +395,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 10,
+        iAnchoEtiqueta        : 22,
         iFila                 : 5,
         oTipo                 : EnumTipoCampoAbm.fecha,
         sClave                : 'vigenteHasta',
@@ -396,7 +404,8 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
-        iFila            : 6,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  6,
         listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
         listValores      : ClaseSiNo.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
@@ -418,21 +427,10 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sValorDefecto    : ClaseTipoAfectacion.directo,
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
-        iFila            : 6,
-        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
-        listValores      : ClaseSiNo.listValores,
-        oTipo            : EnumTipoCampoAbm.lista,
-        sClave           : 'mostrarEnLibro',
-        sEtiqueta        : ClaseIdiomas.getTexto('comMostrarEnLibro', sIdioma),
-        sGrupo           : 'comGenerales',
-        sValorDefecto    : ClaseSiNo.si,
-      ),
-      ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('comExentas', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('comExentas', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iFila            : 7,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  7,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'exentas',
         sEtiqueta        : ClaseIdiomas.getTexto('comExentas', sIdioma),
@@ -440,10 +438,10 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('comGravadas10', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('comGravadas10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iFila            : 8,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  8,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas10',
         sEtiqueta        : ClaseIdiomas.getTexto('comGravadas10', sIdioma),
@@ -451,10 +449,10 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('comIva10', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('comIva10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iFila            : 9,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  9,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva10',
         sEtiqueta        : ClaseIdiomas.getTexto('comIva10', sIdioma),
@@ -462,9 +460,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('comGravadas5', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('comGravadas5', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 10,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas5',
@@ -473,9 +471,9 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('comIva5', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('comIva5', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 11,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva5',
@@ -487,12 +485,25 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
         bEsTotal              : true,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
+        iAnchoEtiqueta        : iAnchoEtiquetasPrimeraColumna,
         iFila                 : 12,
         oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'total',
         sEtiqueta             : ClaseIdiomas.getTexto('comTotal', sIdioma),
         sGrupo                : 'comGenerales',
         sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 13,
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'mostrarEnLibro',
+        sEtiqueta        : ClaseIdiomas.getTexto('comMostrarEnLibro', sIdioma),
+        sGrupo           : 'comGenerales',
+        sValorDefecto    : ClaseSiNo.si,
       ),
       ClaseCampoAbm(
         iAnchoCaracteres : 60,
@@ -505,8 +516,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
 
       // ── Detalles: los importes de las filas 7 a 12, solo de lectura ────
-      // Mismas claves que en Generales (mismo valor); siempre deshabilitados
-      // y fuera de la grilla lateral.
+      // Mismas claves que en Generales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
       ClaseCampoAbm(
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
@@ -658,8 +668,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -668,8 +677,7 @@ class ClaseEstadoCompras extends State<ClaseCompras> {
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'subcuenta',

@@ -16,7 +16,7 @@ Grupo 1: Generales
 - R.U.C. (carácter, 10, "Número RUC", obligatorio)
 
 Grupo 2: Varios
-- Ejercicio contable actual (numérico, 4, obligatorio)
+- Ejercicio contable actual (numérico, 4, máscara de entrada: 9999, obligatorio)
 - Emite Factura Electrónica (debe seleccionar de una lista: Sí, No). Obligatorio
 
 Grupo 3: Impuestos
