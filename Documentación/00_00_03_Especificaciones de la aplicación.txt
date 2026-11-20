@@ -9,6 +9,10 @@ Todos estos popus deben tener un icono para identificarlos
 UI/UX:
 - En todos los mensajes debes tratar de tú al usuario, nunca de vos ni de usted, siempre de tú
 - Todos los mensajes deben ser asexuados, eso significa que no se debe suponer que el usuario es hombre o es mujer porque hay hombres y hay mujeres.
+- El dígito verificador del RUC debe ser autocompletado. Por ejemplo, el usuario escribe: "1069218" y se le muestra "1069218-5"
+- Las grillas de detalles, donde el usuario escribe datos, deben tener un botón para subir la fila, un botón para bajar la fila, y un botón paa eliminar la fila
+- Debajo de la grilla de datos y en la misma fila que muestra los totales se debe tener el botón "Agregar fila"
+- Arriba de la grilla lateral izquierda se debe tener un campo para que el usuario pueda realizar búsquedas en la grilla lateral izquierda
 
 MENSAJES AL USUARIO:
 - Todos los mensajes deben dirigirse al usuario de "tú", nunca de "usted".

@@ -1,0 +1,216 @@
+REINICIO DE LA CONVERSACIÓN — VS_CONTA (2)
+Fecha: viernes 20 de noviembre de 2026
+Este archivo es el contexto vigente para continuar el trabajo desde el estado
+exacto del proyecto al cierre de esta sesión. Complementa a lectura/REINICIO.md
+(ese queda como historia de la sesión anterior).
+
+────────────────────────────────────────────────────────────────────────────
+1. CÓMO CONTINUAR (protocolo de trabajo)
+────────────────────────────────────────────────────────────────────────────
+- Proyecto: VS_CONTA (contabilidad multiempresa, multipaís y multiusuario;
+  Flutter; destinos: equipos de escritorio primero, web después).
+- Repo: https://github.com/wojedav2104/vs_flutter_conta (rama main).
+- Reglas de estilo y UI/UX: CLAUDE.md (raíz) — actualizado hoy con las
+  reglas 16, 25 y 26 y con las notas de medición de anchos.
+- Documentación funcional en docs/: 00_01_roles, 00_02_menu,
+  00_00_03_elementos_de_los_formularios, 00_03_01_reglas_de_interfaz_de_
+  usuario_ux, specs de tablas 01_xx y de archivos 02_xx.
+- Lectura del código por URL: los fragmentos de lib/ están en lectura/
+  (una parte por archivo, nombre lib__ruta__parteNdeM.txt).
+- Los cambios se entregan en pares "Buscar:" / "Reemplazar por:" con la
+  RUTA COMPLETA del archivo; el usuario aplica, prueba y confirma. Si un
+  Buscar no encuentra, el usuario pega el bloque y se devuelve el
+  reemplazo exacto.
+- Idiomas: mapas en idiomas_xx.dart con prefijo por módulo, ES y FR
+  completos, en orden alfabético. Proponer siempre la traducción FR de los
+  textos nuevos.
+- El usuario sincroniza GitHub cuando hay que verificar el estado real del
+  código (raw.githubusercontent.com tiene caché CDN de varios minutos:
+  esperar o reintentar antes de concluir que un cambio no se aplicó).
+
+────────────────────────────────────────────────────────────────────────────
+2. ESTADO DEL PROYECTO AL CIERRE DE ESTA SESIÓN
+────────────────────────────────────────────────────────────────────────────
+Pantallas implementadas:
+- lib/opciones/archivos/: asientos.dart (cabecera+detalles), compras.dart
+  (cabecera+detalles, 3 grupos), ventas.dart (cabecera+detalles, 3 grupos),
+  cuentas.dart (Plan de Cuentas, pestañas Principal/Alternativo).
+- lib/opciones/tablas/: empresa.dart, configuracion.dart, sucursales.dart,
+  cuentas_asignadas.dart, clientes.dart, proveedores.dart,
+  timbrados_propios.dart, timbrados_proveedores.dart.
+- lib/generales/inicio/: login.dart, pantalla_principal.dart,
+  menu_lateral.dart (7 grupos: Archivos, Tablas, Procesos, Informes,
+  Utilitarios, Sistema, Fin).
+- Las opciones sin pantalla (Retenciones, Procesos, Informes, Usuarios,
+  Bases de Datos) abren pantalla_proximamente.dart.
+
+Infraestructura:
+- ABM genérico: formulario_abm.dart + abm_comun.dart (ClaseFormularioCampos,
+  ClaseGrillaRegistros) + campo_formulario.dart + ventana_configuracion.dart
+  + ventana_mensaje.dart; modelo de campos: campo_abm.dart (getAnchoCampo,
+  getAnchoEtiqueta, getAnchoColumna, medirAnchoCaracter).
+- Cabecera/detalle genérico: formulario_cabecera_detalle.dart.
+- Validaciones: cap_validar.dart + can_validar.dart. Formatos y máscaras:
+  formatos.dart. Sesión/permisos/documentos: modelos/. Preferencias.
+  Temas: colores, espacios, estilos_textos, layout, radios, temas.
+  Idiomas: 9 módulos idiomas_*.dart. Rutas: rutas/generador_rutas.dart.
+- Sin Base de Datos todavía: todos los datos son de prueba
+  (crearRegistrosPrueba en cada pantalla). Firebird es el destino.
+
+────────────────────────────────────────────────────────────────────────────
+3. LO QUE SE HIZO EN ESTA SESIÓN (20/11/2026)
+────────────────────────────────────────────────────────────────────────────
+3.1 Máscara del campo "Ejercicio contable"
+- Decisión del usuario: máscara '9.999' (con el punto incluido en la
+  máscara): teclea 4 dígitos y el formato mostrado "2.026" respeta la
+  máscara; implica menos cambios de código que una máscara sin separador.
+- Se agregó sMascara : '9.999' a los 6 formularios que tienen el campo:
+  asientos.dart, compras.dart, ventas.dart, cuentas.dart, empresa.dart y
+  cuentas_asignadas.dart (sClave 'ejercicio', siempre EnumTipoCampoAbm.
+  numero con validarEjercicio). En compras.dart además
+  iAnchoCaracteres : 10 → 4 (el resto ya tenía 4).
+- Comportamiento: con foco muestra el valor plano ("2026"); sin foco y en
+  modo vista muestra el formateado ("2.026"); máximo 4 dígitos tecleables
+  (la cantidad de "9" de la máscara); validación 2020–año actual.
+- 02_05 Retenciones Clientes (sin implementar) no especifica máscara en su
+  spec: al implementarlo usar '9.999' y actualizar el .txt.
+
+3.2 Geometría de la "X" de borrado (regla nueva del usuario)
+- Regla: en los campos obligatorios (y en general en todo campo que muestre
+  la "X") el ancho del campo debe considerar la "X"; la "X" queda a 3-4 px
+  del último carácter del texto y a 3-4 px del borde derecho.
+- Implementada así: contentPadding derecho = 1 px cuando hay "X" (12 px sin
+  "X"); hueco suffixIconConstraints = BoxConstraints.tightFor(width: 24,
+  height: 48); IconButton con minimumSize: Size.zero. Cierre: [texto][4 px]
+  [X 18 px][4 px][borde]. La "X" de Fecha/Hora queda fuera de esta regla
+  (sigue junto al picker, fuera del campo).
+
+3.3 Escala de texto externa anulada
+- main.dart: el builder de MaterialApp aplica
+  MediaQuery.copyWith(textScaler: TextScaler.noScaling). Motivo: la escala
+  de texto del SO/navegador (Windows "recomendado 125%") se sumaba a la
+  escala propia de la app y rompía el cálculo de anchos (caracteres ×
+  dAnchoCaracter): el texto se salía de los campos.
+
+3.4 Ancho real del carácter + margen de seguridad
+- campo_abm.dart: dAnchoCaracterReal (estática) y medirAnchoCaracter()
+  (TextPainter con el estilo textoCampo y la escala del entorno); la llama
+  ClaseFormularioCampos.build (abm_comun.dart) antes de armar las filas.
+  getAnchoCampo usa la medición real (y la estimación
+  dAnchoCaracter × dFactorTexto × dEscala solo como respaldo si aún no se
+  midió).
+- layout.dart: constante dMargenTextoCampo = 24 (margen de seguridad del
+  área de texto: absorbe lo que el decorador de Material y el dibujo del
+  texto en web consumen por encima de la cuenta exacta).
+
+3.5 Etiqueta flexible en filas compartidas
+- campo_formulario.dart (build): en las filas con varios campos (mismo
+  iFila), la ETIQUETA se angosta (Flexible) y el control conserva siempre
+  su ancho natural (SizedBox fijo): el valor nunca se corta aunque la fila
+  no quepa (ej: fila 1 de compras/ventas con texto grande).
+
+────────────────────────────────────────────────────────────────────────────
+4. ARCHIVOS TOCADOS EN ESTA SESIÓN
+────────────────────────────────────────────────────────────────────────────
+- lib/opciones/archivos/asientos.dart ............ sMascara '9.999'
+- lib/opciones/archivos/compras.dart ............. sMascara '9.999' + iAnchoCaracteres 4
+- lib/opciones/archivos/ventas.dart .............. sMascara '9.999'
+- lib/opciones/archivos/cuentas.dart ............. sMascara '9.999'
+- lib/opciones/tablas/empresa.dart ............... sMascara '9.999'
+- lib/opciones/tablas/cuentas_asignadas.dart ..... sMascara '9.999'
+- lib/generales/modelos/campo_abm.dart ........... import material + dAnchoCaracterReal/medirAnchoCaracter + dAnchoTexto medido + dMargenTextoCampo
+- lib/generales/widgets/campo_formulario.dart .... etiqueta Flexible + contentPadding derecho 1 px con X + suffixIconConstraints tightFor(24, 48) + minimumSize Size.zero
+- lib/generales/widgets/abm_comun.dart ........... llamada a medirAnchoCaracter en ClaseFormularioCampos.build
+- lib/generales/temas/layout.dart ................ dMargenTextoCampo = 24
+- lib/main.dart .................................. builder con TextScaler.noScaling
+
+────────────────────────────────────────────────────────────────────────────
+5. EL BUG DEL ANCHO: CAUSA Y SÍNTOMAS (para no repetir el trabajo)
+────────────────────────────────────────────────────────────────────────────
+Síntoma original: en modo de edición, al perder el foco, el campo Ejercicio
+mostraba "2.02" (o "26") en lugar de "2.026"; el dígito final no se veía.
+Igual con texto normal y con texto grande. En modo vista se veía completo.
+
+Causas encontradas, en orden:
+1. Escala de texto externa (Windows 125%): el texto se dibujaba ~25% más
+   ancho de lo que la estimación reservaba. Se anuló con TextScaler.
+   noScaling (3.3).
+2. El IconButton de la "X" impone su mínimo de 48 px de ancho: el hueco
+   crecía de 24 a 48 px y robaba 24 px al texto (se veía "26"). Se arregló
+   con minimumSize: Size.zero y suffixIconConstraints tightFor(24, 48).
+3. Con la cuenta exacta (5 × anchoReal + 39) el área de texto quedaba al
+   ras (52,5 px de texto en 52,5 px de área) y el decorador de Material
+   consumía ~10 px igual: se agregó dMargenTextoCampo = 24 (3.4).
+
+Lección clave (ya en CLAUDE.md): el ancho del carácter se mide en runtime
+con TextPainter, nunca se estima a ciegas; y el valor formateado (con
+separadores de la máscara) debe caber completo en el campo.
+
+────────────────────────────────────────────────────────────────────────────
+6. PENDIENTES
+────────────────────────────────────────────────────────────────────────────
+Inmediatos:
+1. Quitar el diagnóstico temporal de _getAnchoCampo en campo_formulario.dart
+   (el método debe quedar:
+   double _getAnchoCampo() =>
+       widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
+   ). Ver detalle del estado actual en la sección 7.
+2. Confirmar/aplicar el ajuste de funcFormatearNumero en formatos.dart
+   (bAgruparMiles = sMascara.contains(sSeparadorMiles)): una máscara sin
+   separador ('9999') no debe inventar uno al formatear. Con '9.999' en uso
+   no es imprescindible, pero evita que el mismo bug vuelva con otra
+   máscara. Propuesto el 20/11; estado por confirmar.
+3. Actualizar los .txt de las specs a "(numérico, 4, máscara de entrada:
+   9.999, obligatorio)" en 01_01, 01_08, 02_01, 02_02, 02_03 y 02_04.
+
+Cosméticos (para cuando el proyecto esté casi terminado):
+4. En los campos con máscara sobra espacio a izquierda y derecha del valor
+   (dMargenTextoCampo = 24): ajustar margen/padding al final.
+
+Generales del proyecto (previos a esta sesión):
+5. Conexión a Firebird (los datos siguen siendo de prueba en todas partes).
+6. Pantallas pendientes: Retenciones a Clientes (spec 02_05 lista),
+   Retenciones de Proveedores (sin spec), Procesos (5), Informes (9),
+   Usuarios, Bases de Datos.
+7. Trabajo futuro mencionado antes: borrado suave y número de documento
+   (ClaseDocumentos / ClaseSesion + regla R1 de 00_02).
+8. Verificación del orden de los grupos del menú (1-7) en el build de
+   menu_lateral.dart (leído en sesión anterior: Archivos, Tablas, Procesos,
+   Informes, Utilitarios, Sistema, Fin — conforme).
+
+────────────────────────────────────────────────────────────────────────────
+7. DETALLES TÉCNICOS ÚTILES
+────────────────────────────────────────────────────────────────────────────
+- Campo 'ejercicio' (sClave), tipo numero, sMascara '9.999': con foco
+  muestra "2026" (valor plano), sin foco "2.026" (formateado por
+  _mostrarNumeroFormateado → funcFormatearNumero con separador tomado de la
+  máscara); límite de tecleado = 4 dígitos (los "9" de la máscara).
+- Ancho de los campos texto/número/lógico = caracteres × anchoRealCarácter
+  + dMargenTextoCampo(24) + padding(12 izquierda + 1 derecha con X)
+  + hueco X(24) + borde(2). Ejercicio: ~115 px.
+- medirAnchoCaracter se llama en ClaseFormularioCampos.build antes de
+  _construirFila: mide con ClaseGenEstilosTexto.textoCampo (Roboto Mono,
+  letterSpacing 0) y MediaQuery.textScalerOf.
+- Estado actual de _getAnchoCampo en campo_formulario.dart: quedó la versión
+  de DIAGNÓSTICO TEMPORAL que imprime en consola (líneas "ANCHO <clave>:...")
+  y devuelve el ancho calculado. Quitarla según pendiente 1.
+- La "X": ExcludeFocus + IconButton(icon: Icons.close, size: 18,
+  minimumSize: Size.zero, tapTargetSize: shrinkWrap); aparece solo si el
+  campo está habilitado y tiene contenido (getMostrarBorrarCampo).
+- Los números se formatean al salir del foco y al mostrarse; el valor
+  interno siempre queda plano ("2026").
+- Validación del ejercicio: ClaseCapValidar.validarEjercicio (2020–año
+  actual); cruzada con la fecha: validarFechaEnEjercicio.
+- Flutter Web: el usuario prueba en Chrome (flutter run sobre web_entrypoint)
+  y también en Windows (D:\Flutter_aplicaciones\vs_conta). Publicación: VPS
+  Ubuntu con nginx (la app es responsive: dEscala mínima 0.55).
+
+────────────────────────────────────────────────────────────────────────────
+8. PRÓXIMOS PASOS SUGERIDOS
+────────────────────────────────────────────────────────────────────────────
+- Aplicar el pendiente 1 (quitar el diagnóstico) y confirmar el pendiente 2.
+- Retomar el desarrollo funcional: la pantalla de Retenciones a Clientes
+  (spec 02_05) es la próxima con spec lista; sigue el patrón
+  cabecera/detalle de compras/ventas.
+- O continuar con Firebird (conexión y migración de los datos de prueba).
+
