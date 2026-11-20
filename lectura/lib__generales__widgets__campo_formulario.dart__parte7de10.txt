@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 7 DE 10
 ---
-e
+et.oCampo.getAnchoEtiqueta(),
+            child : Padding(
+              padding : const EdgeInsets.only(
+                top   : ClaseGenEspacios.dEspacio14,
+                right : ClaseGenEspacios.dEspacio04,
+              ),
+              child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
+            ),
+          ),
+          if (widget.bAnchoFlexible)
+            Expanded(child: _construirControl(oContexto))
+          else
             SizedBox(
               width : _getAnchoCampo(),
               child : _construirControl(oContexto),
@@ -71,8 +82,8 @@ e
       onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
       decoration      : _getDecoracion(
         oContexto,
-        sHint        : widget.oCampo.sHint,
-        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo() : null,
+        sHint         : widget.oCampo.sHint,
+        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo(bCompacto: true) : null,
       ),
     );
   }
@@ -91,21 +102,4 @@ e
         ? sMascara.split('').where((String s) => s == '9').length
         : widget.oCampo.iAnchoCaracteres;
     return <TextInputFormatter>[
-      if (widget.oCampo.bTieneDecimales)
-        ClaseFormateadorImporte()
-      else
-        FilteringTextInputFormatter.digitsOnly,
-      if (iLimite > 0)
-        LengthLimitingTextInputFormatter(iLimite),
-    ];
-  }
-
-  // ── Fecha ────────────────────────────────────────────────────────────────
-
-  Widget _construirFecha(BuildContext oContexto) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: TextField(
-            controller   : oControl,
-        
+      if (widget.oCampo.bTie

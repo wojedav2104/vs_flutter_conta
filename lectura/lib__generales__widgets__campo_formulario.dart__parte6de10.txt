@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 6 DE 10
 ---
- 1 o 3 dígitos se completa igual: 2 → 2022, 026 → 2026.
+a fecha según los dígitos que alcanzó a teclear el usuario.
+  /// Se ejecuta al salir del campo o con Enter (para poder seguir tecleando
+  /// sin que el campo se complete a mitad de camino):
+  ///   16     → 16/mm/aaaa con el mes y el año actuales
+  ///   127    → 12/07/aaaa: día de 2, mes de 1 dígito (07), año actual
+  ///   1611   → 16/11/aaaa con el año actual
+  ///   161126 → 16/11/2026: el año de 2 dígitos lleva "20" delante
+  /// El año de 1 o 3 dígitos se completa igual: 2 → 2022, 026 → 2026.
   void _completarFecha() {
     final String sDigitos = oControl.text.replaceAll(RegExp(r'[^0-9]'), '');
     if (sDigitos.isEmpty) return;
@@ -95,15 +102,4 @@ PARTE 6 DE 10
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            width : ClaseCampoAbm.getAnchoEtiqueta(),
-            child : Padding(
-              padding : const EdgeInsets.only(
-                top   : ClaseGenEspacios.dEspacio14,
-                right : ClaseGenEspacios.dEspacio04,
-              ),
-              child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
-            ),
-          ),
-          if (widget.bAnchoFlexible)
-            Expanded(child: _construirControl(oContexto))
-          els
+            width : widg

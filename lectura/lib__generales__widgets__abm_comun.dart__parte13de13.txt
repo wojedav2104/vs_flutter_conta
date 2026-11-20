@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 13 DE 13
 ---
- mainAxisAlignment : MainAxisAlignment.center,
+center,
           mainAxisSize       : MainAxisSize.min,
           children          : <Widget>[
             Icon(_getIcono(oBoton), size: 20),

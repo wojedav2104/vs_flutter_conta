@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
-PARTE 8 DE 9
+PARTE 8 DE 10
 ---
-             : EnumTipoCampoAbm.numero,
+choCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeIrpSimple',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteIrpSimple', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeNoImputable',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteNoImputable', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        bEsTotal              : true,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'totalComprobante',
         sEtiqueta             : ClaseIdiomas.getTexto('venTotalComprobante', sIdioma),
         sGrupo                : 'venResolucion',
@@ -77,26 +98,4 @@ PARTE 8 DE 9
         'cantidadCuotas'      : '3',
         'cliente'             : 'Juan Pérez',
         'comentarios'         : 'Venta de servicios contables a crédito',
-        'detalles'            : <Map<String, String>>[
-          <String, String>{
-            'concepto'     : 'Venta de servicios contables',
-            'cuenta'       : '1.02.01',
-            'debe'         : '2200000',
-            'haber'        : '',
-            'nombreCuenta' : 'Clientes',
-            'subcuenta'    : '',
-          },
-          <String, String>{
-            'concepto'     : 'Venta de servicios contables',
-            'cuenta'       : '4.01.02',
-            'debe'         : '',
-            'haber'        : '2000000',
-            'nombreCuenta' : 'Ventas Gravadas 10%',
-            'subcuenta'    : '',
-          },
-          <String, String>{
-            'concepto'     : 'Venta de servicios contables',
-            'cuenta'       : '2.03.01',
-            'debe'         : '',
-            'haber'        : '200000',
-            'nombreCuenta' : 'I.V.A 
+        'detalles'            : 

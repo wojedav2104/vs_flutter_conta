@@ -1,10 +1,10 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_ventas.dart
 PARTE 2 DE 2
 ---
-enGravadas10'           : 'Taxables 10%',
+     : 'Taxables 10%',
     'venGravadas5'            : 'Taxables 5%',
     'venHora'                 : 'Heure',
-    'venIdentificacion'       : 'Identification N°',
+    'venIdentificacion'       : 'Id. N°',
     'venIva10'                : 'T.V.A. 10%',
     'venIva5'                 : 'T.V.A. 5%',
     'venMostrarEnLibro'       : 'Afficher dans le Livre des Ventes',
@@ -13,7 +13,7 @@ enGravadas10'           : 'Taxables 10%',
     'venSucursal'             : 'Succursale',
     'venTimbrado'             : 'Timbrado N°',
     'venTipoDocumento'        : 'Type de document',
-    'venTipoIdentificacion'   : 'Type d\'identification',
+    'venTipoIdentificacion'   : 'Identification',
     'venTotal'                : 'Total',
     'venVigenteDesde'         : 'Valide à partir du',
     'venVigenteHasta'         : 'Valide jusqu\'au',

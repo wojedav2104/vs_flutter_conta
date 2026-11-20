@@ -65,6 +65,8 @@ o de 8 dígitos solo si el Tipo de documento lleva
   // primer campo; dentro de la fila, los campos van en orden de declaración).
 
   List<ClaseCampoAbm> crearCamposCabecera() {
+    
+    final int    iAnchoEtiquetasPrimeraColumna = 29;
 
     final String sIdioma = getIdioma();
 
@@ -73,10 +75,10 @@ o de 8 dígitos solo si el Tipo de documento lleva
       // ── Generales ──────────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
-        iAnchoCaracteres : 4,
-        iFila            : 1,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
+        iAnchoCaracteres : 10,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  1,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
@@ -86,15 +88,12 @@ o de 8 dígitos solo si el Tipo de documento lleva
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 44,
-        iFila            : 1,
+        iAnchoEtiqueta   : 15,
+        iFila            :  1,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'sucursal',
         sEtiqueta        : ClaseIdiomas.getTexto('comSucursal', sIdioma),
         sGrupo           : 'comGenerales',
         sHint            : ClaseIdiomas.getTexto('comHintSucursal', sIdioma),
       ),
-      ClaseCampoAbm(
-        bEnGrilla             : false,
-        bSiempreDeshabilitado : true,
-        iAnchoCaracteres      : 6,
-     
+  

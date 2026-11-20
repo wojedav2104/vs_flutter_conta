@@ -1,7 +1,20 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 9 DE 10
 ---
-arCampo()) _construirBotonBorrarCampo(),
+ oContexto,
+                      widget.sIdioma,
+                      widget.sValor,
+                    );
+                    if (iMinutos != null) {
+                      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
+                      oControl.text = sHora;
+                      widget.funcAlCambiar(sHora);
+                    }
+                  }
+                : null,
+          ),
+        ),
+        if (_getMostrarBorrarCampo()) _construirBotonBorrarCampo(),
       ],
     );
   }
@@ -79,12 +92,4 @@ arCampo()) _construirBotonBorrarCampo(),
         for (int i = 0; i < listOpciones.length; i++)
           Row(
             mainAxisSize : MainAxisSize.min,
-            children     : <Widget>[
-              Checkbox(
-                value    : listMarcados.contains(listValores[i]),
-                // Sin área táctil forzada de 48 px: la fila de casillas queda
-                // del alto de su texto y la separación visible es la misma.
-                materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
-                onChanged: widget.bHabilitado
-                    ? (bool? bMarcado) {
-                        final Set<String> setNuevos =
+            children     : <Widg

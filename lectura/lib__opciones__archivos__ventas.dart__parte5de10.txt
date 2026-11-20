@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
-PARTE 5 DE 9
+PARTE 5 DE 10
 ---
-n.getListOpciones(sIdioma)),
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'cliente',
+        sEtiqueta        : ClaseIdiomas.getTexto('venCliente', sIdioma),
+        sGrupo           : 'venGenerales',
+        sHint            : ClaseIdiomas.getTexto('venHintCliente', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : 13,
         iFila            : 4,
         listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
         listValores      : ClaseTipoIdentificacion.listValores,
@@ -14,17 +22,18 @@ n.getListOpciones(sIdioma)),
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
-        iFila                 : 4,
+        iAnchoEtiqueta        :  6,
+        iFila                 :  4,
         oTipo                 : EnumTipoCampoAbm.texto,
         sClave                : 'identificacion',
         sEtiqueta             : ClaseIdiomas.getTexto('venIdentificacion', sIdioma),
         sGrupo                : 'venGenerales',
       ),
       ClaseCampoAbm(
-        funcActualizarEstado : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(
-            mapValores['tipoDocumento'] ?? ''),
-        iAnchoCaracteres     : 8,
-        iFila                : 5,
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(mapValores['tipoDocumento'] ?? ''),
+        iAnchoCaracteres     :  8,
+        iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
+        iFila                :  5,
         oTipo                : EnumTipoCampoAbm.texto,
         sClave               : 'timbrado',
         sEtiqueta            : ClaseIdiomas.getTexto('venTimbrado', sIdioma),
@@ -52,7 +61,8 @@ n.getListOpciones(sIdioma)),
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
             sValor, ClaseIdiomas.getTexto('venGravadas10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iFila            : 6,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  6,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas10',
         sEtiqueta        : ClaseIdiomas.getTexto('venGravadas10', sIdioma),
@@ -60,10 +70,10 @@ n.getListOpciones(sIdioma)),
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('venIva10', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venIva10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iFila            : 7,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  7,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'iva10',
         sEtiqueta        : ClaseIdiomas.getTexto('venIva10', sIdioma),
@@ -71,20 +81,6 @@ n.getListOpciones(sIdioma)),
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('venGravadas5', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venGravadas5', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iFila            : 8,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'gravadas5',
-        sEtiqueta        : ClaseIdiomas.getTexto('venGravadas5', sIdioma),
-        sGrupo           : 'venGenerales',
-        sMascara         : '999.999.999.999',
-      ),
-      ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('venIva5', sIdioma), sIdioma),
-        iAnchoCaracteres : 15,
-        iFila            : 9,
-        oTipo            : EnumTipoCampoAbm.numero,
-        
+        iAnchoEt

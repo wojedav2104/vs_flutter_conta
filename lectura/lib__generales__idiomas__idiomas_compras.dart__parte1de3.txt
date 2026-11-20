@@ -18,8 +18,8 @@ abstract final class ClaseIdiomasCompras {
     'comEjercicio'            : 'Ejercicio contable',
     'comHintSucursal'         : 'Código y Nombre de la sucursal',
     'comProveedor'            : 'Proveedor',
-    'comTipoIdentificacion'   : 'Tipo de identificación',
-    'comIdentificacion'       : 'Identificación N°',
+    'comTipoIdentificacion'   : 'Identificación',
+    'comIdentificacion'       : 'Id. N°',
     'comTimbrado'             : 'Timbrado N°',
     'comVigenteDesde'         : 'Vigente desde el día',
     'comVigenteHasta'         : 'Vigente hasta el día',
@@ -72,4 +72,4 @@ abstract final class ClaseIdiomasCompras {
     'comTipoDoc16'            : 'Boleto de Loterías, juegos de azar',
     'comTipoDoc17'            : 'Boleto o Ticket de Transporte Aéreo',
     'comTipoDoc18'            : 'Entrada a espectáculos públicos',
-    // ──
+    // ── Validaciones cruza

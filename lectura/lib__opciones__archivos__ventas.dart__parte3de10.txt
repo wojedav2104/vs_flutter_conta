@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
-PARTE 3 DE 9
+PARTE 3 DE 10
 ---
 a);
       if (sErrorCuotas != null) return sErrorCuotas;
@@ -73,6 +73,8 @@ a);
 
   List<ClaseCampoAbm> crearCamposCabecera() {
 
+    final int    iAnchoEtiquetasPrimeraColumna = 29;
+
     final String sIdioma = getIdioma();
 
     return <ClaseCampoAbm>[
@@ -80,9 +82,9 @@ a);
       // ── Generales ──────────────────────────────────────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('venEjercicio', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('venEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 1,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
@@ -93,7 +95,5 @@ a);
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 44,
-        iFila            : 1,
-        oTipo            : EnumTipoCampoAbm.texto,
-        sClave           : 'sucursal',
-        sEtiqueta        : ClaseIdi
+        iAnchoEtiqueta   : 13,
+        iFila            

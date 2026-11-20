@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 8 DE 13
 ---
-lasPorPagina;
-    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
+math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
     final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
         ? listFiltrados.sublist(iInicio, iFin)
         : <Map<String, dynamic>>[];
@@ -83,4 +82,5 @@ lasPorPagina;
                           if (sClaveOrden == oCampo.sClave) {
                             bOrdenDesc = !bOrdenDesc;
                           } else {
-                            sClaveOrden = oCampo
+                            sClaveOrden = oCampo.sClave;
+                            b

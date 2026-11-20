@@ -1,0 +1,24 @@
+RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
+PARTE 10 DE 10
+---
+   'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',
+        'importeNoImputable'  : '0',
+        'iva10'               : '0',
+        'iva5'                : '20000',
+        'mostrarEnLibro'      : ClaseSiNo.si,
+        'numero'              : '001-001-0000456',
+        'numeroAsiento'       : '4',
+        'sucursal'            : '0002 - Sucursal Luque',        
+        'timbrado'            : '55667788',
+        'tipoDocumento'       : '01',
+        'tipoIdentificacion'  : ClaseTipoIdentificacion.pasaporte,
+        'total'               : '520000',
+        'totalComprobante'    : '520000',
+        'vigenteDesde'        : '',
+        'vigenteHasta'        : '',
+      },
+    ];
+  }
+
+}

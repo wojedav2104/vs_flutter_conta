@@ -1,7 +1,28 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 7 DE 10
 ---
-: '999.999.999.999',
+erales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 7,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'exentas',
+        sEtiqueta             : ClaseIdiomas.getTexto('comExentas', sIdioma),
+        sGrupo                : 'comDetalles',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 8,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'gravadas10',
+        sEtiqueta             : ClaseIdiomas.getTexto('comGravadas10', sIdioma),
+        sGrupo                : 'comDetalles',
+        sMascara              : '999.999.999.999',
       ),
       ClaseCampoAbm(
         bEnGrilla             : false,
@@ -72,28 +93,4 @@ PARTE 7 DE 10
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado5',
-        sEtiqueta        : ClaseIdiomas.getTexto('comImporteGravado5', sIdioma),
-        sGrupo           : 'comResolucion',
-        sMascara         : '999.999.999.999',
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'importeExento',
-        sEtiqueta        : ClaseIdiomas.getTexto('comImporteExento', sIdioma),
-        sGrupo           : 'comResolucion',
-        sMascara         : '999.999.999.999',
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'importeIreSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto('comImporteIreSimple', sIdioma),
-        sGrupo           : 'comResolucion',
-        sMascara         : '999.999.999.999',
-        sValorDefecto    : '0',
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
-        
+        sEtiqueta        :

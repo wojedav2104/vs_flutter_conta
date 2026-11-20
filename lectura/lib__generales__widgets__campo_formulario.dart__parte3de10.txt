@@ -28,8 +28,6 @@ ia el texto
 
   // ── Ancho del campo según máscara o cantidad de caracteres ──────────────
 
-  // ── Ancho del campo ──────────────────────────────────────────────────────
-
   /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
   /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
   double _getAnchoCampo() =>
@@ -55,8 +53,14 @@ ia el texto
       // a 1920 se vería más grande que el texto y se cortaría por abajo.
       hintStyle      : ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
           color: ClaseGenTemas.colorTextoHintCampo(oContexto)),
-      suffixIcon     : oIconoDerecha,
-      filled         : true,
+      suffixIcon           : oIconoDerecha,
+      // El hueco del suffixIcon viene de 48 px por defecto y dejaba mucho espacio en blanco a la derecha de la "X": se angosta al ancho del hueco y el campo termina 4 px después 
+      // de la X. El alto mínimo se mantiene en 48 (el de por defecto) para no cambiar el alto de los campos.
+      suffixIconConstraints : const BoxConstraints(
+        minWidth  : ClaseGenLayout.dAnchoSuffixBorrar,
+        minHeight : 48,
+      ),
+      filled               : true,
       // Regla UI/UX: el resultado de una suma (campo Total) lleva un relleno
       // distinto al de los campos sumados, para resaltarlo.
       fillColor      : widget.oCampo.bEsTotal
@@ -80,15 +84,4 @@ ia el texto
     final TextStyle oSalida = widget.bHabilitado
         ? oEstilo.copyWith(
             color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
-        : oEstilo;
-    return widget.oCampo.bEsTotal
-        ? oSalida.copyWith(fontWeight: FontWeight.bold)
-        : oSalida;
-  }
-
-  // ── Etiqueta del campo ──────────────────────────────────────────────────
-
-  /// Etiqueta a la derecha, con asterisco rojo si el campo es obligatorio
-  /// (item 4).
-  Widget _construirEtiqueta(BuildContext oContexto) {
-    ret
+        :

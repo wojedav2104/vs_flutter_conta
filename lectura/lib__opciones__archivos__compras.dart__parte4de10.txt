@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 4 DE 10
 ---
-   iFila                 : 1,
+    ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        iAnchoEtiqueta        : 22,
+        iFila                 : 1,
         oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'numeroAsiento',
         sEtiqueta             : ClaseIdiomas.getTexto('comNumeroAsiento', sIdioma),
@@ -9,10 +14,9 @@ PARTE 4 DE 10
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto('comFecha', sIdioma),
-            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('comFecha', sIdioma), DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 2,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.fecha,
@@ -22,8 +26,7 @@ PARTE 4 DE 10
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
-            sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         iFila            : 2,
         oTipo            : EnumTipoCampoAbm.hora,
@@ -34,7 +37,8 @@ PARTE 4 DE 10
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : funcAnchoOpcion(ClaseTipoDocumento.getListOpciones(sIdioma)),
-        iFila            : 3,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  3,
         listOpciones     : ClaseTipoDocumento.getListOpciones(sIdioma),
         listValores      : ClaseTipoDocumento.listValores,
         oTipo            : EnumTipoCampoAbm.lista,
@@ -46,21 +50,20 @@ PARTE 4 DE 10
       ClaseCampoAbm(
         bMayusculas       : true,
         bObligatorio      : true,
-        funcMascara       : (mapValores) => ClaseTipoDocumento.esConMascara(
-            mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
+        funcMascara       : (mapValores) => ClaseTipoDocumento.esConMascara(mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumento.sMascaraNumero : null,
         iAnchoCaracteres  : 16,
-        iFila             : 3,
+        iAnchoEtiqueta    :  5,
+        iFila             :  3,
         oTipo             : EnumTipoCampoAbm.texto,
         sClave            : 'numero',
         sEtiqueta         : ClaseIdiomas.getTexto('comNumero', sIdioma),
         sGrupo            : 'comGenerales',
       ),
       ClaseCampoAbm(
-        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(
-            mapValores['tipoDocumento'] ?? ''),
-        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma),
-        iAnchoCaracteres     : 3,
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumento.esFacturaCredito(mapValores['tipoDocumento'] ?? ''),
+        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(sValor, ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma),
+        iAnchoCaracteres     :  3,
+        iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
         oTipo                : EnumTipoCampoAbm.numero,
         sClave               : 'cantidadCuotas',
         sEtiqueta            : ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma),
@@ -70,6 +73,7 @@ PARTE 4 DE 10
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 48,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 4,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'proveedor',
@@ -78,10 +82,4 @@ PARTE 4 DE 10
         sHint            : ClaseIdiomas.getTexto('comHintProveedor', sIdioma),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoIdentificacion.getListOpciones(sIdioma)),
-        iFila            : 4,
-        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
-        listValores      : ClaseTipoIdentificacion.listValores,
-        oTipo            : EnumTipoCampoAbm.lista,
-        sClave           : 'tipoIdentificacion',
-        sEtiqueta        : ClaseIdiomas
+        iAnchoCaracteres : funcAnchoOpci

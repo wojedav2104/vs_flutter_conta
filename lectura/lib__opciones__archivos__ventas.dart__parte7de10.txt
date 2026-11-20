@@ -1,7 +1,29 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
-PARTE 7 DE 9
+PARTE 7 DE 10
 ---
-            : ClaseIdiomas.getTexto('venIva5', sIdioma),
+
+        sGrupo                : 'venDetalles',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 8,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'gravadas5',
+        sEtiqueta             : ClaseIdiomas.getTexto('venGravadas5', sIdioma),
+        sGrupo                : 'venDetalles',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 9,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'iva5',
+        sEtiqueta             : ClaseIdiomas.getTexto('venIva5', sIdioma),
         sGrupo                : 'venDetalles',
         sMascara              : '999.999.999.999',
       ),
@@ -74,25 +96,4 @@ PARTE 7 DE 9
         sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'importeIrpSimple',
-        sEtiqueta        : ClaseIdiomas.getTexto('venImporteIrpSimple', sIdioma),
-        sGrupo           : 'venResolucion',
-        sMascara         : '999.999.999.999',
-        sValorDefecto    : '0',
-      ),
-      ClaseCampoAbm(
-        iAnchoCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
-        sClave           : 'importeNoImputable',
-        sEtiqueta        : ClaseIdiomas.getTexto('venImporteNoImputable', sIdioma),
-        sGrupo           : 'venResolucion',
-        sMascara         : '999.999.999.999',
-        sValorDefecto    : '0',
-      ),
-      ClaseCampoAbm(
-        bEsTotal              : true,
-        bSiempreDeshabilitado : true,
-        iAnchoCaracteres      : 15,
-        oTipo    
+        iAn

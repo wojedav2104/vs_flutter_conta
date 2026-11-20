@@ -1,7 +1,24 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 8 DE 10
 ---
-    enabled      : widget.bHabilitado,
+neDecimales)
+        ClaseFormateadorImporte()
+      else
+        FilteringTextInputFormatter.digitsOnly,
+      if (iLimite > 0)
+        LengthLimitingTextInputFormatter(iLimite),
+    ];
+  }
+
+  // ── Fecha ────────────────────────────────────────────────────────────────
+
+  Widget _construirFecha(BuildContext oContexto) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            controller   : oControl,
+            enabled      : widget.bHabilitado,
             focusNode    : oFoco,
             style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
             keyboardType : TextInputType.datetime,
@@ -79,17 +96,4 @@ PARTE 8 DE 10
             onPressed : widget.bHabilitado
                 ? () async {
                     final int? iMinutos = await funcMostrarSelectorHora(
-                      oContexto,
-                      widget.sIdioma,
-                      widget.sValor,
-                    );
-                    if (iMinutos != null) {
-                      final String sHora = funcFormatearHora(iMinutos ~/ 60, iMinutos % 60);
-                      oControl.text = sHora;
-                      widget.funcAlCambiar(sHora);
-                    }
-                  }
-                : null,
-          ),
-        ),
-        if (_getMostrarBorr
+                     

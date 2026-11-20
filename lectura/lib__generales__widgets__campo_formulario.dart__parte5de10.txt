@@ -1,7 +1,19 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 5 DE 10
 ---
-idget is IconButton) return true;
+
+      );
+    }
+    widget.funcAlCambiar(sConMascara);
+    // Con los 8 dígitos escritos se valida la fecha (29022026 → error).
+    if (sDigitos.length >= 8) _validarFechaHora();
+  }
+
+  /// true si el widget del contexto es un botón (botonera ABM, iconos de
+  /// los campos, botones de las ventanas), directa o indirectamente.
+  static bool _esBoton(BuildContext oContexto) {
+    if (oContexto.widget is ButtonStyleButton
+        || oContexto.widget is IconButton) return true;
     bool bBoton = false;
     oContexto.visitAncestorElements((Element oElement) {
       if (oElement.widget is ButtonStyleButton
@@ -79,11 +91,4 @@ idget is IconButton) return true;
   }
 
   // ── Fecha y hora inteligentes ────────────────────────────────────────────
-  /// Completa la fecha según los dígitos que alcanzó a teclear el usuario.
-  /// Se ejecuta al salir del campo o con Enter (para poder seguir tecleando
-  /// sin que el campo se complete a mitad de camino):
-  ///   16     → 16/mm/aaaa con el mes y el año actuales
-  ///   127    → 12/07/aaaa: día de 2, mes de 1 dígito (07), año actual
-  ///   1611   → 16/11/aaaa con el año actual
-  ///   161126 → 16/11/2026: el año de 2 dígitos lleva "20" delante
-  /// El año de
+  /// Completa l

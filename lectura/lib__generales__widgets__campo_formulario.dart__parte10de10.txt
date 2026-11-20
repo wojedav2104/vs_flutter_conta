@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 10 DE 10
 ---
- listMarcados.toSet();
+et>[
+              Checkbox(
+                value    : listMarcados.contains(listValores[i]),
+                // Sin área táctil forzada de 48 px: la fila de casillas queda
+                // del alto de su texto y la separación visible es la misma.
+                materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
+                onChanged: widget.bHabilitado
+                    ? (bool? bMarcado) {
+                        final Set<String> setNuevos = listMarcados.toSet();
                         if (bMarcado == true) {
                           setNuevos.add(listValores[i]);
                         } else {

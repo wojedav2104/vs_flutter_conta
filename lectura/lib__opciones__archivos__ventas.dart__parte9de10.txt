@@ -1,7 +1,29 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
-PARTE 9 DE 9
+PARTE 9 DE 10
 ---
-Débito Fiscal 10%',
+<Map<String, String>>[
+          <String, String>{
+            'concepto'     : 'Venta de servicios contables',
+            'cuenta'       : '1.02.01',
+            'debe'         : '2200000',
+            'haber'        : '',
+            'nombreCuenta' : 'Clientes',
+            'subcuenta'    : '',
+          },
+          <String, String>{
+            'concepto'     : 'Venta de servicios contables',
+            'cuenta'       : '4.01.02',
+            'debe'         : '',
+            'haber'        : '2000000',
+            'nombreCuenta' : 'Ventas Gravadas 10%',
+            'subcuenta'    : '',
+          },
+          <String, String>{
+            'concepto'     : 'Venta de servicios contables',
+            'cuenta'       : '2.03.01',
+            'debe'         : '',
+            'haber'        : '200000',
+            'nombreCuenta' : 'I.V.A Débito Fiscal 10%',
             'subcuenta'    : '',
           },
         ],
@@ -82,24 +104,4 @@ Débito Fiscal 10%',
         'importeExento'       : '100000',
         'importeGravado10'    : '0',
         'importeGravado5'     : '420000',
-        'importeIreSimple'    : '0',
-        'importeIrpSimple'    : '0',
-        'importeNoImputable'  : '0',
-        'iva10'               : '0',
-        'iva5'                : '20000',
-        'mostrarEnLibro'      : ClaseSiNo.si,
-        'numero'              : '001-001-0000456',
-        'numeroAsiento'       : '4',
-        'sucursal'            : '0002 - Sucursal Luque',        
-        'timbrado'            : '55667788',
-        'tipoDocumento'       : '01',
-        'tipoIdentificacion'  : ClaseTipoIdentificacion.pasaporte,
-        'total'               : '520000',
-        'totalComprobante'    : '520000',
-        'vigenteDesde'        : '',
-        'vigenteHasta'        : '',
-      },
-    ];
-  }
-
-}
+     

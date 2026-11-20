@@ -1,7 +1,32 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 9 DE 10
 ---
-: '1.04.02',
+o('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bColumnaExpansible: true,
+        iAnchoCaracteres  : 60,
+        iAnchoVisible     : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'concepto',
+        sEtiqueta         : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
+      ),
+    ];
+  }
+
+  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
+
+  List<Map<String, dynamic>> crearRegistrosPrueba() {
+    return <Map<String, dynamic>>[
+      <String, dynamic>{
+        'cantidadCuotas'      : '3',
+        'comentarios'         : 'Compra de mercadería para reventa',
+        'detalles'            : <Map<String, String>>[
+          <String, String>{
+            'concepto'     : 'Compra de mercadería',
+            'cuenta'       : '1.04.02',
             'debe'         : '2000000',
             'haber'        : '',
             'nombreCuenta' : 'Mercaderías Gravadas 10%',
@@ -77,29 +102,4 @@ PARTE 9 DE 10
           },
           <String, String>{
             'concepto'     : 'Compra de mercadería',
-            'cuenta'       : '1.04.01',
-            'debe'         : '100000',
-            'haber'        : '',
-            'nombreCuenta' : 'Mercaderías Exentas',
-            'subcuenta'    : '',
-          },
-          <String, String>{
-            'concepto'     : 'Compra de mercadería',
-            'cuenta'       : '1.01.01',
-            'debe'         : '',
-            'haber'        : '520000',
-            'nombreCuenta' : 'Caja',
-            'subcuenta'    : '',
-          },
-        ],
-        'ejercicio'           : '2026',
-        'enviarMarangatu'     : ClaseSiNo.no,
-        'esFacturaElectronica': ClaseSiNo.no,
-        'exentas'             : '100000',
-        'fecha'               : '20/02/2026',
-        'gravadas10'          : '0',
-        'gravadas5'           : '400000',
-        'hora'                : '10:30',
-        'identificacion'      : 'EX789012',
-        'importeExento'       : '100000',
-        'importeGravado10'    : '0',
+            'cuenta'       : '1.04

@@ -1,7 +1,31 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 8 DE 10
 ---
-sClave           : 'importeIrpSimple',
+ ClaseIdiomas.getTexto('comImporteGravado5', sIdioma),
+        sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeExento',
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteExento', sIdioma),
+        sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeIreSimple',
+        sEtiqueta        : ClaseIdiomas.getTexto('comImporteIreSimple', sIdioma),
+        sGrupo           : 'comResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeIrpSimple',
         sEtiqueta        : ClaseIdiomas.getTexto('comImporteIrpSimple', sIdioma),
         sGrupo           : 'comResolucion',
         sMascara         : '999.999.999.999',
@@ -37,8 +61,7 @@ sClave           : 'importeIrpSimple',
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -47,8 +70,7 @@ sClave           : 'importeIrpSimple',
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'subcuenta',
@@ -73,29 +95,4 @@ sClave           : 'importeIrpSimple',
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'haber',
-        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
-        sMascara         : '999.999.999.999',
-      ),
-      ClaseCampoAbm(
-        bColumnaExpansible: true,
-        iAnchoCaracteres  : 60,
-        iAnchoVisible     : 15,
-        oTipo             : EnumTipoCampoAbm.texto,
-        sClave            : 'concepto',
-        sEtiqueta         : ClaseIdiomas.getTexto('detConcepto', sIdioma),
-        sHint             : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
-      ),
-    ];
-  }
-
-  // ── Datos de prueba (se reemplazarán por Firebird) ──────────────────────
-
-  List<Map<String, dynamic>> crearRegistrosPrueba() {
-    return <Map<String, dynamic>>[
-      <String, dynamic>{
-        'cantidadCuotas'      : '3',
-        'comentarios'         : 'Compra de mercadería para reventa',
-        'detalles'            : <Map<String, String>>[
-          <String, String>{
-            'concepto'     : 'Compra de mercadería',
-            'cuenta'       
+        sEtiqueta        : ClaseIdiomas.getText

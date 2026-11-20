@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_compras.dart
 PARTE 2 DE 3
 ---
- Validaciones cruzadas ────────────────────────────────────────────
+das ────────────────────────────────────────────
     'comErrorNumeroFormato'   : 'El formato del N° de documento no es válido para el Tipo de documento seleccionado',
     'comErrorMarangatu'       : 'El Total del comprobante debe ser igual a la suma del Debe para enviar a Marangatú',
   };
@@ -20,8 +20,8 @@ PARTE 2 DE 3
     'comNumero'               : 'N°',
     'comCantidadCuotas'       : 'Nombre de versements',
     'comProveedor'            : 'Fournisseur',
-    'comTipoIdentificacion'   : 'Type d\'identification',
-    'comIdentificacion'       : 'Identification N°',
+    'comTipoIdentificacion'   : 'Identification',
+    'comIdentificacion'       : 'Id. N°',
     'comTimbrado'             : 'Timbrado N°',
     'comVigenteDesde'         : 'Valide à partir du',
     'comVigenteHasta'         : 'Valide jusqu\'au',
@@ -71,4 +71,4 @@ PARTE 2 DE 3
     'comTipoDoc13'            : 'Contrôle interne',
     'comTipoDoc14'            : 'Billet de transport public de passagers',
     'comTipoDoc15'            : 'Bulletin ReSimple',
-    
+    'comTipoDoc16'            : 'Billet de

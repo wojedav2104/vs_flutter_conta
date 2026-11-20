@@ -62,8 +62,7 @@ izontal : ClaseGenEspacios.dEspacio16,
   // Marangatú", de 100 caracteres): sin este ajuste, las etiquetas anchas
   // más los campos largos desbordaban el ancho del formulario.
   Widget _construirFila(
-      List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
-    final double dAnchoEtiqueta = ClaseCampoAbm.getAnchoEtiqueta();
+    List<ClaseCampoAbm> listFila, ClaseCampoAbm? oPrimeroHabilitado) {
     return Row(
       crossAxisAlignment : CrossAxisAlignment.start,
       children: <Widget>[
@@ -72,11 +71,11 @@ izontal : ClaseGenEspacios.dEspacio16,
           Flexible(
             fit  : FlexFit.loose,
             flex : math.max(1, (listFila[i].getAnchoCampo()
-                   + dAnchoEtiqueta).round()),
+                   + listFila[i].getAnchoEtiqueta()).round()),
             child : ConstrainedBox(
               constraints : BoxConstraints(
                 maxWidth : listFila[i].getAnchoCampo()
-                    + dAnchoEtiqueta,
+                    + listFila[i].getAnchoEtiqueta(),
               ),
               child : _construirCampo(listFila[i],
                   bAnchoFlexible : true,
@@ -93,4 +92,4 @@ izontal : ClaseGenEspacios.dEspacio16,
   /// sobra (los campos se desplazan solos si no caben).
   Widget _construirContenidoPestana(
       BuildContext oContexto, String sGrupo, ClaseCampoAbm? oPrimeroHabilitado) {
-    final List<C
+    final List<ClaseCampoAbm> listCamposGrupo = widget.

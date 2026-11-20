@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 4 DE 10
 ---
-urn Text.rich(
+ oEstilo;
+    return widget.oCampo.bEsTotal
+        ? oSalida.copyWith(fontWeight: FontWeight.bold)
+        : oSalida;
+  }
+
+  // ── Etiqueta del campo ──────────────────────────────────────────────────
+
+  /// Etiqueta a la derecha, con asterisco rojo si el campo es obligatorio
+  /// (item 4).
+  Widget _construirEtiqueta(BuildContext oContexto) {
+    return Text.rich(
       TextSpan(
         style : ClaseGenEstilosTexto.etiquetaCampo(oContexto),
         children: <InlineSpan>[
@@ -25,7 +36,7 @@ urn Text.rich(
   bool _getMostrarBorrarCampo() =>
       widget.bHabilitado && widget.sValor.isNotEmpty;
 
-  Widget _construirBotonBorrarCampo() {
+  Widget _construirBotonBorrarCampo({bool bCompacto = false}) {    
     // ExcludeFocus: la "X" queda fuera del orden de Tab/Enter (el foco pasa
     // directamente al siguiente campo); el clic y el táctil siguen igual.
     return ExcludeFocus(
@@ -36,6 +47,7 @@ urn Text.rich(
         // Sin área táctil forzada de 48 px: la fila queda del alto del campo
         // y la separación con el campo de arriba se ve igual en todos.
         style     : IconButton.styleFrom(
+          padding       : bCompacto ? EdgeInsets.zero : null,
           tapTargetSize : MaterialTapTargetSize.shrinkWrap,
         ),
         onPressed : () {
@@ -91,15 +103,3 @@ urn Text.rich(
       oControl.value = TextEditingValue(
         text      : sConMascara,
         selection : TextSelection.collapsed(offset: sConMascara.length),
-      );
-    }
-    widget.funcAlCambiar(sConMascara);
-    // Con los 8 dígitos escritos se valida la fecha (29022026 → error).
-    if (sDigitos.length >= 8) _validarFechaHora();
-  }
-
-  /// true si el widget del contexto es un botón (botonera ABM, iconos de
-  /// los campos, botones de las ventanas), directa o indirectamente.
-  static bool _esBoton(BuildContext oContexto) {
-    if (oContexto.widget is ButtonStyleButton
-        || oContexto.w

@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 13
 ---
-.sClave;
-                            bOrdenDesc  = false;
+OrdenDesc  = false;
                           }
                         }),
                         child: Tooltip(
@@ -75,4 +74,5 @@ PARTE 9 DE 13
                       padding : const EdgeInsets.symmetric(
                         horizontal : ClaseGenEspacios.dEspacio08,
                         vertical   : ClaseGenEspacios.dEspacio04,
-  
+                      ),
+               
