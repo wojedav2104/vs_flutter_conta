@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 8 DE 10
 ---
-choCaracteres : 15,
-        oTipo            : EnumTipoCampoAbm.numero,
+    : EnumTipoCampoAbm.numero,
         sClave           : 'importeIrpSimple',
         sEtiqueta        : ClaseIdiomas.getTexto('venImporteIrpSimple', sIdioma),
         sGrupo           : 'venResolucion',
@@ -39,8 +38,7 @@ choCaracteres : 15,
 
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'cuenta',
@@ -49,8 +47,7 @@ choCaracteres : 15,
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'subcuenta',
@@ -98,4 +95,6 @@ choCaracteres : 15,
         'cantidadCuotas'      : '3',
         'cliente'             : 'Juan Pérez',
         'comentarios'         : 'Venta de servicios contables a crédito',
-        'detalles'            : 
+        'detalles'            : <Map<String, String>>[
+          <String, String>{
+            'conc

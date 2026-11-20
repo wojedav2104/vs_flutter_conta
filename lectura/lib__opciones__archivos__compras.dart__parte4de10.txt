@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 4 DE 10
 ---
-    ClaseCampoAbm(
+ntSucursal', sIdioma),
+      ),
+      ClaseCampoAbm(
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 6,
@@ -82,4 +84,4 @@ PARTE 4 DE 10
         sHint            : ClaseIdiomas.getTexto('comHintProveedor', sIdioma),
       ),
       ClaseCampoAbm(
-        iAnchoCaracteres : funcAnchoOpci
+    

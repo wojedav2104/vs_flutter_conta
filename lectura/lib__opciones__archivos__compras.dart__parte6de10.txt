@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 6 DE 10
 ---
-sIdioma),
+etTexto('comExentas', sIdioma),
         sGrupo           : 'comGenerales',
         sMascara         : '999.999.999.999',
       ),
@@ -84,4 +84,4 @@ sIdioma),
       ),
 
       // ── Detalles: los importes de las filas 7 a 12, solo de lectura ────
-      // Mismas claves que en Gen
+      // Mi

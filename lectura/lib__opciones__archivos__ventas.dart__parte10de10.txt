@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 10 DE 10
 ---
-   'importeIreSimple'    : '0',
-        'importeIrpSimple'    : '0',
+
         'importeNoImputable'  : '0',
         'iva10'               : '0',
         'iva5'                : '20000',

@@ -35,8 +35,7 @@ PARTE 2 DE 3
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NumeroCuenta',
@@ -47,8 +46,7 @@ PARTE 2 DE 3
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(
-            sValor, ClaseIdiomas.getTexto('planNombreCuenta', sIdioma), 3, sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(sValor, ClaseIdiomas.getTexto('planNombreCuenta', sIdioma), 3, sIdioma),
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NombreCuenta',
@@ -58,8 +56,7 @@ PARTE 2 DE 3
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NumeroSubcuenta',
@@ -89,5 +86,5 @@ PARTE 2 DE 3
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(
-            sValor, Cl
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(sValor, ClaseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
+  

@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/tablas/proveedores.dart
 PARTE 3 DE 3
 ---
-idora del Sur S.A.',
+S.A.',
         'telefono'           : '021 300 200',
         'tipoIdentificacion' : ClaseTipoIdentificacion.ruc,
         'tipoProveedor'      : ClaseLocalExterior.local,

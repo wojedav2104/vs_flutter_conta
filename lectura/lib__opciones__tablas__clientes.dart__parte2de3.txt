@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/tablas/clientes.dart
 PARTE 2 DE 3
 ---
-        sClave           : 'direccion',
+           : 'direccion',
         sEtiqueta        : ClaseIdiomas.getTexto('cliDireccion', sIdioma),
         sHint            : ClaseIdiomas.getTexto('cliHintDireccion', sIdioma),
       ),
@@ -88,4 +88,4 @@ PARTE 2 DE 3
         'localidad'          : 'Asunción',
         'nombre'             : 'Juan Pérez',
         'telefono'           : '021 500 400',
-  
+        'tipoCli

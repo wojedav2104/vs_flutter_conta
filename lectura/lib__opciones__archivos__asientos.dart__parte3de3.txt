@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/asientos.dart
 PARTE 3 DE 3
 ---
-     'haber'        : '',
+ : '',
             'nombreCuenta' : 'Caja',
             'subcuenta'    : '',
           },

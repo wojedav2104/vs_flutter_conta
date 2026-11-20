@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/tablas/cuentas_asignadas.dart
 PARTE 2 DE 2
 ---
-           'ctaIvaCredito5',           'ctaHintIvaCredito5'),
+poCuenta('ivaCredito5',           'ctaIvaCredito5',           'ctaHintIvaCredito5'),
       crearCampoCuenta('ivaDebito10',           'ctaIvaDebito10',           'ctaHintIvaDebito10'),
       crearCampoCuenta('ivaDebito5',            'ctaIvaDebito5',            'ctaHintIvaDebito5'),
       crearCampoCuenta('mercaderiasExentas',    'ctaMercaderiasExentas',    'ctaHintMercExentas'),

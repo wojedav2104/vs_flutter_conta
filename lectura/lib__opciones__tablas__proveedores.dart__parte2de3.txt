@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/tablas/proveedores.dart
 PARTE 2 DE 3
 ---
-EnumTipoCampoAbm.texto,
+bm.texto,
         sClave           : 'direccion',
         sEtiqueta        : ClaseIdiomas.getTexto('prvDireccion', sIdioma),
         sHint            : ClaseIdiomas.getTexto('prvHintDireccion', sIdioma),
@@ -87,4 +87,4 @@ EnumTipoCampoAbm.texto,
         'esServicioPublico'  : ClaseSiNo.no,
         'identificacion'     : '80098765-9',
         'localidad'          : 'Asunción',
-        'nombre'             : 'Distribu
+        'nombre'             : 'Distribuidora del Sur 

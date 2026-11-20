@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 8 DE 10
 ---
- ClaseIdiomas.getTexto('comImporteGravado5', sIdioma),
+    sEtiqueta        : ClaseIdiomas.getTexto('comImporteGravado5', sIdioma),
         sGrupo           : 'comResolucion',
         sMascara         : '999.999.999.999',
       ),
@@ -95,4 +95,4 @@ PARTE 8 DE 10
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'haber',
-        sEtiqueta        : ClaseIdiomas.getText
+        sEtiqueta        

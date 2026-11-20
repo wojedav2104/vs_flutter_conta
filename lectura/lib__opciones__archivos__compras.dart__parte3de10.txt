@@ -76,13 +76,14 @@ o de 8 dígitos solo si el Tipo de documento lleva
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
-        iAnchoCaracteres : 10,
+        iAnchoCaracteres : 4,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            :  1,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('comEjercicio', sIdioma),
+        sMascara         : '9.999',
         sGrupo           : 'comGenerales',
       ),
       ClaseCampoAbm(
@@ -94,6 +95,4 @@ o de 8 dígitos solo si el Tipo de documento lleva
         sClave           : 'sucursal',
         sEtiqueta        : ClaseIdiomas.getTexto('comSucursal', sIdioma),
         sGrupo           : 'comGenerales',
-        sHint            : ClaseIdiomas.getTexto('comHintSucursal', sIdioma),
-      ),
-  
+        sHint            : ClaseIdiomas.getTexto('comHi

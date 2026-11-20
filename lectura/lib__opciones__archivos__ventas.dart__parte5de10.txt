@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 5 DE 10
 ---
-        oTipo            : EnumTipoCampoAbm.texto,
+       : EnumTipoCampoAbm.texto,
         sClave           : 'cliente',
         sEtiqueta        : ClaseIdiomas.getTexto('venCliente', sIdioma),
         sGrupo           : 'venGenerales',
@@ -58,8 +58,7 @@ PARTE 5 DE 10
         sGrupo                : 'venGenerales',
       ),
       ClaseCampoAbm(
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(
-            sValor, ClaseIdiomas.getTexto('venGravadas10', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venGravadas10', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            :  6,
@@ -83,4 +82,4 @@ PARTE 5 DE 10
       ClaseCampoAbm(
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venGravadas5', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
-        iAnchoEt
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimer

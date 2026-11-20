@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 7 DE 10
 ---
-erales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
+smas claves que en Generales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
       ClaseCampoAbm(
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
@@ -93,4 +93,4 @@ erales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'importeGravado5',
-        sEtiqueta        :
+    

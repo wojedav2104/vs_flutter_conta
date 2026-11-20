@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 6 DE 10
 ---
-iqueta   : iAnchoEtiquetasPrimeraColumna,
+aColumna,
         iFila            :  8,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'gravadas5',
@@ -66,8 +66,7 @@ iqueta   : iAnchoEtiquetasPrimeraColumna,
       ),
 
       // ── Detalles: los importes de las filas 6 a 11, solo de lectura ────
-      // Mismas claves que en Generales (mismo valor); siempre deshabilitados
-      // y fuera de la grilla lateral.
+      // Mismas claves que en Generales (mismo valor); siempre deshabilitados y fuera de la grilla lateral.
       ClaseCampoAbm(
         bEnGrilla             : false,
         bSiempreDeshabilitado : true,
@@ -86,4 +85,5 @@ iqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila                 : 7,
         oTipo                 : EnumTipoCampoAbm.numero,
         sClave                : 'iva10',
-        sEtiqueta             : ClaseIdiomas.getTexto('venIva10', sIdioma),
+        sEtiqueta             : ClaseIdiomas.getTexto('venIva10', sIdioma),
+        sGrupo                : 'venDetal

@@ -90,10 +90,10 @@ a);
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('venEjercicio', sIdioma),
+        sMascara         : '9.999',
         sGrupo           : 'venGenerales',
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
         iAnchoCaracteres : 44,
-        iAnchoEtiqueta   : 13,
-        iFila            
+        iAnchoEtique

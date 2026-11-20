@@ -70,8 +70,7 @@ class ClaseEstadoTimbradosPropios extends State<ClaseTimbradosPropios> {
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroDocumento(
-            sValor, ClaseIdiomas.getTexto('timUltimoDocumento', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroDocumento(sValor, ClaseIdiomas.getTexto('timUltimoDocumento', sIdioma), sIdioma),
         iAnchoCaracteres : 15,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'numeroUltimoDocumento',

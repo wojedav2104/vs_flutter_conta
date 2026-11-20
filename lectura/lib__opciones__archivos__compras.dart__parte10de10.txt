@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 10 DE 10
 ---
-.01',
+'cuenta'       : '1.04.01',
             'debe'         : '100000',
             'haber'        : '',
             'nombreCuenta' : 'Mercaderías Exentas',

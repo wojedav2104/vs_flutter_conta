@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/cuentas.dart
 PARTE 3 DE 3
 ---
-aseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
-        iAnchoCaracteres : 1,
+      iAnchoCaracteres : 1,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : '${sPrefijo}Nivel',
         sEtiqueta        : ClaseIdiomas.getTexto('planNivel', sIdioma),
@@ -30,13 +29,13 @@ aseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
       // ── Datos comunes (sin grupo, siempre visibles) ──────────────────────
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(
-            sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
         iAnchoCaracteres : 4,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',
         sEtiqueta        : ClaseIdiomas.getTexto('planEjercicio', sIdioma),
+        sMascara         : '9.999',
         sValorDefecto    : DateTime.now().year.toString(),
       ),
 

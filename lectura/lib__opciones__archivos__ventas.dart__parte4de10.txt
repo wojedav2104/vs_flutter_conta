@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 4 DE 10
 ---
-: 1,
+ta   : 13,
+        iFila            : 1,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'sucursal',
         sEtiqueta        : ClaseIdiomas.getTexto('venSucursal', sIdioma),
@@ -21,9 +22,7 @@ PARTE 4 DE 10
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(
-            sValor, ClaseIdiomas.getTexto('venFecha', sIdioma),
-            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('venFecha', sIdioma), DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 2,
@@ -35,8 +34,7 @@ PARTE 4 DE 10
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(
-            sValor, ClaseIdiomas.getTexto('venHora', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(sValor, ClaseIdiomas.getTexto('venHora', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         iFila            : 2,
         oTipo            : EnumTipoCampoAbm.hora,
@@ -60,8 +58,7 @@ PARTE 4 DE 10
       ClaseCampoAbm(
         bMayusculas       : true,
         bObligatorio      : true,
-        funcMascara       : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(
-            mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumentoVentas.sMascaraNumero : null,
+        funcMascara       : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumentoVentas.sMascaraNumero : null,
         iAnchoCaracteres  : 15,
         iFila             : 3,
         oTipo             : EnumTipoCampoAbm.texto,
@@ -85,3 +82,4 @@ PARTE 4 DE 10
         iAnchoCaracteres : 48,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 4,
+        oTipo     

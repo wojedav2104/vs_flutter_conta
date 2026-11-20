@@ -1,9 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 9 DE 10
 ---
-<Map<String, String>>[
-          <String, String>{
-            'concepto'     : 'Venta de servicios contables',
+epto'     : 'Venta de servicios contables',
             'cuenta'       : '1.02.01',
             'debe'         : '2200000',
             'haber'        : '',
@@ -104,4 +102,5 @@ PARTE 9 DE 10
         'importeExento'       : '100000',
         'importeGravado10'    : '0',
         'importeGravado5'     : '420000',
-     
+        'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',

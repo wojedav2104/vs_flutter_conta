@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/compras.dart
 PARTE 9 DE 10
 ---
-o('detHaber', sIdioma),
+: ClaseIdiomas.getTexto('detHaber', sIdioma),
         sMascara         : '999.999.999.999',
       ),
       ClaseCampoAbm(
@@ -102,4 +102,4 @@ o('detHaber', sIdioma),
           },
           <String, String>{
             'concepto'     : 'Compra de mercadería',
-            'cuenta'       : '1.04
+            

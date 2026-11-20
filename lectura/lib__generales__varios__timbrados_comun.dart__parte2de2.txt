@@ -1,11 +1,7 @@
 RUTA ORIGINAL: lib/generales/varios/timbrados_comun.dart
 PARTE 2 DE 2
 ---
-oma,
-    );
-  }
-
-  /// Sugiere la Fecha de fin cuando está vacía y el Medio de generación es
+o está vacía y el Medio de generación es
   /// PreImpresos: el último día del mismo mes del año siguiente al de la
   /// Fecha de inicio (lo más común para esos talonarios).
   /// Ejemplo de la SET: inicio 13/11/2025 → fin 30/11/2026.

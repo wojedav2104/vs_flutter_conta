@@ -1,8 +1,7 @@
 RUTA ORIGINAL: lib/opciones/archivos/ventas.dart
 PARTE 7 DE 10
 ---
-
-        sGrupo                : 'venDetalles',
+les',
         sMascara              : '999.999.999.999',
       ),
       ClaseCampoAbm(
@@ -96,4 +95,5 @@ PARTE 7 DE 10
         sValorDefecto    : '0',
       ),
       ClaseCampoAbm(
-        iAn
+        iAnchoCaracteres : 15,
+        oTipo        
