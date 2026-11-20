@@ -126,8 +126,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(
-            sValor, ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('planNumeroCuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 16,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NumeroCuenta',
@@ -138,8 +137,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(
-            sValor, ClaseIdiomas.getTexto('planNombreCuenta', sIdioma), 3, sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarLongitudMinima(sValor, ClaseIdiomas.getTexto('planNombreCuenta', sIdioma), 3, sIdioma),
         iAnchoCaracteres : 40,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NombreCuenta',
@@ -149,8 +147,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       ),
       ClaseCampoAbm(
         bCompletarCeros  : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(
-            sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('planNumeroSubcuenta', sIdioma), sIdioma),
         iAnchoCaracteres : 5,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : '${sPrefijo}NumeroSubcuenta',
@@ -180,8 +177,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
 
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(
-            sValor, ClaseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNivelCuenta(sValor, ClaseIdiomas.getTexto('planNivel', sIdioma), sIdioma),
         iAnchoCaracteres : 1,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : '${sPrefijo}Nivel',

@@ -87,8 +87,7 @@ class ClaseEstadoProveedores extends State<ClaseProveedores> {
       ClaseCampoAbm(
         bCompletarCeros  : true,
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(
-            sValor, ClaseIdiomas.getTexto('prvCodigo', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(sValor, ClaseIdiomas.getTexto('prvCodigo', sIdioma), sIdioma),
         iAnchoCaracteres : 6,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'codigo',

@@ -14,8 +14,7 @@ abstract final class ClaseTimbradosComun {
     return <ClaseCampoAbm>[
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarDigitosExactos(
-            sValor, ClaseIdiomas.getTexto('timTimbrado', sIdioma), 8, sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarDigitosExactos(sValor, ClaseIdiomas.getTexto('timTimbrado', sIdioma), 8, sIdioma),
         iAnchoCaracteres : 8,
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'timbradoNumero',
@@ -24,8 +23,7 @@ abstract final class ClaseTimbradosComun {
       ClaseCampoAbm(
         bObligatorio     : true,
         bVigencia        : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(
-            sValor, ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(sValor, ClaseIdiomas.getTexto('timFechaInicio', sIdioma),
             DateTime(ClaseFechas.iAnoMinimo, 1, 1),
             DateTime(ClaseFechas.getAnoMaximoVigencia(), 12, 31), sIdioma),
         iAnchoCaracteres : 10,
@@ -35,8 +33,7 @@ abstract final class ClaseTimbradosComun {
       ),
       ClaseCampoAbm(
         bVigencia        : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(
-            sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaEnRango(sValor, ClaseIdiomas.getTexto('timFechaFin', sIdioma),
             DateTime(ClaseFechas.iAnoMinimo, 1, 1),
             DateTime(ClaseFechas.getAnoMaximoVigencia(), 12, 31), sIdioma),
         iAnchoCaracteres : 10,
@@ -50,8 +47,7 @@ abstract final class ClaseTimbradosComun {
       ClaseCampoAbm(
         bEnGrilla        : false,
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarAlMenosUnoSeleccionado(
-            sValor, ClaseIdiomas.getTexto('timAfectaA', sIdioma), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarAlMenosUnoSeleccionado(sValor, ClaseIdiomas.getTexto('timAfectaA', sIdioma), sIdioma),
         iAnchoCaracteres : funcAnchoOpcion(ClaseAfectaA.getListOpciones(sIdioma)),
         listOpciones     : ClaseAfectaA.getListOpciones(sIdioma),
         listValores      : ClaseAfectaA.listValores,

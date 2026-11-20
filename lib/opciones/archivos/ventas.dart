@@ -287,8 +287,7 @@ class ClaseEstadoVentas extends State<ClaseVentas> {
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
-        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('venFecha', sIdioma),
-            DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('venFecha', sIdioma), DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
         iAnchoCaracteres : 10,
         iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
         iFila            : 2,
