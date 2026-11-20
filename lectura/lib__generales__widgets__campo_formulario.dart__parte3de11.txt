@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 3 DE 10
+PARTE 3 DE 11
 ---
-ia el texto
+do según la máscara. Solo cambia el texto
   /// visible: el valor interno queda plano.
   void _mostrarNumeroFormateado() {
     if (widget.oCampo.oTipo != EnumTipoCampoAbm.numero) return;
@@ -30,8 +30,7 @@ ia el texto
 
   /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
   /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
-  double _getAnchoCampo() =>
-      widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
+  double _getAnchoCampo() => widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
 
   // ── Decoración común de los controles ───────────────────────────────────
 
@@ -56,9 +55,13 @@ ia el texto
       suffixIcon           : oIconoDerecha,
       // El hueco del suffixIcon viene de 48 px por defecto y dejaba mucho espacio en blanco a la derecha de la "X": se angosta al ancho del hueco y el campo termina 4 px después 
       // de la X. El alto mínimo se mantiene en 48 (el de por defecto) para no cambiar el alto de los campos.
-      suffixIconConstraints : const BoxConstraints(
-        minWidth  : ClaseGenLayout.dAnchoSuffixBorrar,
-        minHeight : 48,
+      // Regla UI/UX (X del campo): el hueco de la "X" es de 24 px EXACTOS
+      // (icono 18 + 3 px por lado) por 48 de alto. Caja ajustada (tight):
+      // si se dejara libre, el IconButton impone su mínimo de 48 px de ancho,
+      // la "X" se come 24 px del texto y el último dígito queda invisible.
+      suffixIconConstraints : const BoxConstraints.tightFor(
+        width  : ClaseGenLayout.dAnchoSuffixBorrar,
+        height : 48,
       ),
       filled               : true,
       // Regla UI/UX: el resultado de una suma (campo Total) lleva un relleno
@@ -69,19 +72,8 @@ ia el texto
               ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
               : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto)),
       border         : const OutlineInputBorder(),
-      contentPadding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio12,
-        vertical   : ClaseGenEspacios.dEspacio12,
-      ),
-    );
-  }
-
-  /// Estilo del texto del control: el habilitado usa el forecolor destacado
-  /// de la regla UI/UX (nunca gris ni negro); el deshabilitado conserva el
-  /// color de texto normal (gris/negro). El resultado de una suma (campo
-  /// Total) va siempre en negritas (regla UI/UX).
-  TextStyle _estiloTexto(BuildContext oContexto, TextStyle oEstilo) {
-    final TextStyle oSalida = widget.bHabilitado
-        ? oEstilo.copyWith(
-            color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
-        :
+      // Regla UI/UX (X del campo): con la "X" a la derecha, el padding derecho
+      // se reduce a 1 px para que la "X" quede a 4 px del último carácter del
+      // texto (1 px de padding + 3 px del hueco) y a 4 px del borde derecho
+      // (3 px del hueco + 1 px de borde). Sin "X", mantiene el padding normal.
+      contentPadding : EdgeInsets.onl

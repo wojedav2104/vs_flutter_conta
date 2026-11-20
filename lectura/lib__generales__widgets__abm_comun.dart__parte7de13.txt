@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 7 DE 13
 ---
-oString();
+────────────────
+
+  Future<void> _mostrarMenuCelda(
+    BuildContext         oContexto,
+    Map<String, dynamic> oRegistro,
+    ClaseCampoAbm        oCampo,
+    Offset               oPosicion,
+  ) async {
+    final String sValor = (oRegistro[oCampo.sClave] ?? '').toString();
     final String? sAccion = await showMenu<String>(
       context  : oContexto,
       position : RelativeRect.fromLTRB(oPosicion.dx, oPosicion.dy, oPosicion.dx, oPosicion.dy),
@@ -97,7 +105,4 @@ oString();
 
     final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
     final int iTotalPaginas = math.max(1,
-        (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
-    final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
-    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
-    final int iFin    = 
+        (listFilt

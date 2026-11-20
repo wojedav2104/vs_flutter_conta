@@ -1,0 +1,74 @@
+RUTA ORIGINAL: lib/generales/modelos/campo_abm.dart
+PARTE 2 DE 3
+---
+l estilo del campo (textoCampo) y la escala
+  /// de texto del entorno (MediaQuery). La llama ClaseFormularioCampos.build
+  /// antes de calcular los anchos de los campos (regla UI/UX: el valor del
+  /// campo nunca se corta, en ningún entorno).
+  static void medirAnchoCaracter(BuildContext oContexto) {
+    const int    iMuestra = 10;
+    final TextPainter oMedidor = TextPainter(
+      text          : TextSpan(text: '0' * iMuestra, style: ClaseGenEstilosTexto.textoCampo(oContexto)),
+      textScaler    : MediaQuery.textScalerOf(oContexto),
+      textDirection : TextDirection.ltr,
+    )..layout();
+    dAnchoCaracterReal = oMedidor.width / iMuestra;
+    oMedidor.dispose();
+  }
+
+  /// Ancho de la etiqueta del campo dentro de un formulario (incluye el asterisco de los obligatorios y el padding derecho). Si iAnchoEtiqueta es 0 usa el ancho general (ClaseGenLayout.dAnchoEtiquetaCampo);
+
+
+  double getAnchoEtiqueta() {
+    final double dBase = (iAnchoEtiqueta <= 0) ? ClaseGenLayout.dAnchoEtiquetaCampo : iAnchoEtiqueta * ClaseGenLayout.dAnchoCaracter;
+    return dBase * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
+  }
+
+  /// Ancho del campo dentro de un formulario (incluye los iconos laterales).
+  /// sMascaraEfectiva es la máscara que realmente se muestra (la dinámica de
+  /// funcMascara manda sobre sMascara); si es null se usa la del campo.
+  /// Es la única fuente del ancho de los campos: lo usan los formularios y la
+  /// grilla editable de detalles.
+  double getAnchoCampo({String? sMascaraEfectiva}) {
+    final int iCaracteres =
+        (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
+    // El ancho por carácter sale de la medición real (dAnchoCaracterReal, ya
+    // escalada): solo si aún no se midió se usa la estimación de
+    // ClaseGenLayout.dAnchoCaracter escalada con texto grande y ventana.
+    final double dAnchoTexto = iCaracteres *
+        ((dAnchoCaracterReal > 0)
+            ? dAnchoCaracterReal
+            : ClaseGenLayout.dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala);
+    switch (oTipo) {
+      case EnumTipoCampoAbm.comentario:
+        return ClaseGenLayout.dAnchoCampoComentario;
+      case EnumTipoCampoAbm.casillas:
+      case EnumTipoCampoAbm.lista:
+        // dAnchoExtraLista cubre la flecha, el padding interno y el margen.
+        return dAnchoTexto + ClaseGenLayout.dAnchoExtraLista;
+      case EnumTipoCampoAbm.fecha:
+      case EnumTipoCampoAbm.hora:
+        // Fila: texto + padding + borde, icono de calendario/reloj (48 px,
+        // IconButton) y icono de borrado (48 px, aparece al editar),
+        // separados por 4 px. Antes se reservaba dAnchoIconoFlecha (32 px),
+        // que es de los combobox: faltaban 22 px y el texto se cortaba.
+        return dAnchoTexto
+               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
+               + ClaseGenLayout.dAnchoIconoBorrar * 2
+               + ClaseGenEspacios.dEspacio04;
+      case EnumTipoCampoAbm.logico:
+      case EnumTipoCampoAbm.numero:
+      case EnumTipoCampoAbm.texto:
+        // Regla UI/UX (X del campo): el ancho del campo incluye la "X" de
+        // borrado, a 4 px del último carácter del texto y a 4 px del borde
+        // derecho. El hueco dAnchoSuffixBorrar (icono 18 + 3 px por lado) más
+        // 1 px de padding derecho logran ambas separaciones; el padding
+        // izquierdo es el normal (12 px).
+        //
+        // Margen de seguridad: el área de texto real del control queda unos
+        // píxeles más corta que esta cuenta (el hueco de la "X" y el padding
+        // que dibuja el decorador de Material), y en web el texto puede
+        // dibujarse más ancho de lo que mide TextPainter. Sin margen, el
+        // último dígito del valor formateado (ej: "2.026") se cortaba.
+        return dAnchoTexto + ClaseGenLayout.dMargenTextoCampo
+               + ClaseGenEspacios.dEspacio12 + ClaseGenEspaci

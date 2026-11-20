@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 2 DE 10
+PARTE 2 DE 11
 ---
- solo dígitos y los separadores se insertan solos (spec 00_00_03).
+ora (99:99): el usuario teclea solo dígitos y los separadores se insertan solos (spec 00_00_03).
   static const String _sMascaraFecha = '99/99/9999';
   static const String _sMascaraHora  = '99:99';
 
@@ -97,4 +97,4 @@ PARTE 2 DE 10
     }
   }
 
-  /// Muestra el número formateado según la máscara. Solo camb
+  /// Muestra el número formatea

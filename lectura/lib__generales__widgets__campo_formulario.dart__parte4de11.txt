@@ -1,7 +1,26 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 4 DE 10
+PARTE 4 DE 11
 ---
- oEstilo;
+y(
+        bottom : ClaseGenEspacios.dEspacio12,
+        left   : ClaseGenEspacios.dEspacio12,
+        right  : (oIconoDerecha != null) ? ClaseGenEspacios.dEspacio01 : ClaseGenEspacios.dEspacio12,
+        top    : ClaseGenEspacios.dEspacio12,
+      ),
+
+
+    );
+  }
+
+  /// Estilo del texto del control: el habilitado usa el forecolor destacado
+  /// de la regla UI/UX (nunca gris ni negro); el deshabilitado conserva el
+  /// color de texto normal (gris/negro). El resultado de una suma (campo
+  /// Total) va siempre en negritas (regla UI/UX).
+  TextStyle _estiloTexto(BuildContext oContexto, TextStyle oEstilo) {
+    final TextStyle oSalida = widget.bHabilitado
+        ? oEstilo.copyWith(
+            color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+        : oEstilo;
     return widget.oCampo.bEsTotal
         ? oSalida.copyWith(fontWeight: FontWeight.bold)
         : oSalida;
@@ -47,6 +66,7 @@ PARTE 4 DE 10
         // Sin área táctil forzada de 48 px: la fila queda del alto del campo
         // y la separación con el campo de arriba se ve igual en todos.
         style     : IconButton.styleFrom(
+          minimumSize   : Size.zero,
           padding       : bCompacto ? EdgeInsets.zero : null,
           tapTargetSize : MaterialTapTargetSize.shrinkWrap,
         ),
@@ -82,24 +102,4 @@ PARTE 4 DE 10
         final String sConMascara = funcAplicarMascara(sDigitos, sMascaraNueva);
         if (sConMascara != sSalida) {
           sSalida = sConMascara;
-          oControl.value = TextEditingValue(
-            text      : sSalida,
-            selection : TextSelection.collapsed(offset: sSalida.length),
-          );
-        }
-      }
-    }
-    widget.funcAlCambiar(sSalida);
-  }
-
-  // ── Máscara de la fecha y error de fecha/hora ────────────────────────────
-
-  /// Máscara 99/99/9999: el usuario teclea solo dígitos y las barras se
-  /// insertan solas mientras escribe (spec 00_00_03).
-  void _alCambiarFecha(String sValor) {
-    final String sDigitos    = sValor.replaceAll(RegExp(r'[^0-9]'), '');
-    final String sConMascara = funcAplicarMascara(sDigitos, _sMascaraFecha);
-    if (sConMascara != oControl.text) {
-      oControl.value = TextEditingValue(
-        text      : sConMascara,
-        selection : TextSelection.collapsed(offset: sConMascara.length),
+    

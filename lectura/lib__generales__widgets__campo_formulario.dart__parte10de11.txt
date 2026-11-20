@@ -1,7 +1,24 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 10 DE 10
+PARTE 10 DE 11
 ---
-et>[
+ Casillas (checkboxes múltiples) ──────────────────────────────────────
+  // Varios valores seleccionados se guardan separados por comas, en el orden
+  // de listValores (ej: 'FAC,NCR'). Un valor vacío = ninguna casilla marcada.
+
+  Widget _construirCasillas(BuildContext oContexto) {
+    final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
+    final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
+    final List<String> listMarcados = widget.sValor.trim().isEmpty
+        ? <String>[]
+        : widget.sValor.trim().split(',');
+    return Wrap(
+      spacing    : ClaseGenEspacios.dEspacio16,
+      runSpacing : ClaseGenEspacios.dEspacio04,
+      children: <Widget>[
+        for (int i = 0; i < listOpciones.length; i++)
+          Row(
+            mainAxisSize : MainAxisSize.min,
+            children     : <Widget>[
               Checkbox(
                 value    : listMarcados.contains(listValores[i]),
                 // Sin área táctil forzada de 48 px: la fila de casillas queda
@@ -74,29 +91,3 @@ et>[
       style     : ClaseGenEstilosTexto.normalChico(oContexto),
     );
   }
-
-  // ── Lógico (switch Sí/No) ────────────────────────────────────────────────
-
-  Widget _construirLogico(BuildContext oContexto) {
-    final bool bActivo = widget.sValor == ClaseSiNo.si;
-    return Row(
-      children: <Widget>[
-        Switch(
-          value    : bActivo,
-          materialTapTargetSize : MaterialTapTargetSize.shrinkWrap,
-          onChanged: widget.bHabilitado
-              ? (bool bNuevo) => widget.funcAlCambiar(bNuevo ? ClaseSiNo.si : ClaseSiNo.no)
-              : null,
-        ),
-        const SizedBox(width: ClaseGenEspacios.dEspacio08),
-        Text(
-          bActivo
-              ? ClaseIdiomas.getTexto('si', widget.sIdioma)
-              : ClaseIdiomas.getTexto('no', widget.sIdioma),
-          style : ClaseGenEstilosTexto.normalMediano(oContexto),
-        ),
-      ],
-    );
-  }
-
-}

@@ -1,3 +1,6 @@
+lib__opciones__archivos__asientos.dart__parte2de3.txt
+lib__opciones__archivos__asientos.dart__parte3de3.txt
+lib__opciones__archivos__compras.dart__parte1de10.txt
 lib__opciones__archivos__compras.dart__parte2de10.txt
 lib__opciones__archivos__compras.dart__parte3de10.txt
 lib__opciones__archivos__compras.dart__parte4de10.txt

@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 13
 ---
-OrdenDesc  = false;
+    onTap: () => setState(() {
+                          if (sClaveOrden == oCampo.sClave) {
+                            bOrdenDesc = !bOrdenDesc;
+                          } else {
+                            sClaveOrden = oCampo.sClave;
+                            bOrdenDesc  = false;
                           }
                         }),
                         child: Tooltip(
@@ -69,10 +74,4 @@ OrdenDesc  = false;
                             ? Border.all(
                                 color : Theme.of(oContexto).colorScheme.primary,
                               )
-                            : null,
-                      ),
-                      padding : const EdgeInsets.symmetric(
-                        horizontal : ClaseGenEspacios.dEspacio08,
-                        vertical   : ClaseGenEspacios.dEspacio04,
-                      ),
-               
+                          

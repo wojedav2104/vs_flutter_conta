@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 8 DE 13
 ---
-math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
+rados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
+    final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
+    final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
+    final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
     final List<Map<String, dynamic>> listPagina = (iInicio < listFiltrados.length)
         ? listFiltrados.sublist(iInicio, iFin)
         : <Map<String, dynamic>>[];
@@ -78,9 +81,4 @@ math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
                   for (final ClaseCampoAbm oCampo in listColumnas)
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => setState(() {
-                          if (sClaveOrden == oCampo.sClave) {
-                            bOrdenDesc = !bOrdenDesc;
-                          } else {
-                            sClaveOrden = oCampo.sClave;
-                            b
+                    

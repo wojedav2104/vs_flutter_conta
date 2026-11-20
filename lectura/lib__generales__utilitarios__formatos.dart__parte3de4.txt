@@ -1,7 +1,24 @@
 RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
 PARTE 3 DE 4
 ---
-tUpdate(TextEditingValue oValorAnterior, TextEditingValue oValorNuevo) {
+(offset: sResultado.length),
+    );
+  }
+
+}
+
+/// Formateador de entrada para máscaras fijas como 999-999-9999999.
+/// Los caracteres '9' representan un dígito (0-9); los demás son fijos.
+class ClaseFormatoMascara extends TextInputFormatter {
+
+  ClaseFormatoMascara({
+    required this.sMascara,
+  });
+
+  final String sMascara;
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oValorAnterior, TextEditingValue oValorNuevo) {
     String sDigitos = oValorNuevo.text.replaceAll(RegExp(r'[^0-9]'), '');
     final int iMaxDigitos = sMascara.split('').where((s) => s == '9').length;
     if (sDigitos.length > iMaxDigitos) {
@@ -101,11 +118,4 @@ double? funcParsearNumero(String sValor) {
 /// Los decimales solo se muestran si son distintos de cero.
 String funcFormatearImporte(double dValor, String sFormato) {
   final bool   bLatino           = (sFormato != 'frances');
-  final String sSeparadorMiles   = bLatino ? '.' : ' ';
-  final String sSeparadorDecimal = bLatino ? ',' : '.';
-  final String sBase    = dValor.abs().toStringAsFixed(2);
-  final List<String> listPartes = sBase.split('.');
-  final String sEnteros = listPartes[0];
-  final StringBuffer oSalida = StringBuffer();
-  for (int i = 0; i < sEnteros.length; i++) {
-    if (i > 0 && (sEnteros.le
+  final S

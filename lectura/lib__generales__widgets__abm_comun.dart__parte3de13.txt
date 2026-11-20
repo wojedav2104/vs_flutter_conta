@@ -69,7 +69,13 @@ ck((_) => _pedirFoco(oCampoFoco));
   @override
   Widget build(BuildContext oContexto) {
 
+    // Ancho real de un carácter del texto (medido con el estilo y la escala
+    // con los que se dibuja): se mide antes de calcular los anchos de los
+    // campos (regla UI/UX: el valor del campo nunca se corta).
+    ClaseCampoAbm.medirAnchoCaracter(oContexto);
+
     // Primer campo habilitado → recibir foco al entrar en edición.
+
     ClaseCampoAbm? oPrimeroHabilitado;
     for (final ClaseCampoAbm oCampo in widget.listCampos) {
       if (widget.funcEsHabilitado(oCampo)) {
@@ -105,9 +111,4 @@ ck((_) => _pedirFoco(oCampoFoco));
               children: _construirCampos(listComunes, oPrimeroHabilitado),
             ),
           ),
-        // Regla UI/UX (fácil visualización): cada pestaña es una ficha
-        // visible con fondo y borde propios; la activa se resalta con el
-        // color primario y texto en negrita.
-        Padding(
-          padding : const EdgeInsets.symmetric(
-            hor
+    

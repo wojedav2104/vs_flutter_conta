@@ -1,7 +1,25 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 6 DE 10
+PARTE 6 DE 11
 ---
-a fecha según los dígitos que alcanzó a teclear el usuario.
+       .replaceAll('{0}', widget.oCampo.sEtiqueta),
+    );
+    if (mounted) oFoco.requestFocus();
+    return false;
+  }
+
+  /// Enter completa el campo (fecha u hora) y pasa el foco al siguiente
+  /// campo de entrada. Los iconos (picker y "X") están excluidos del orden
+  /// de foco, así que el foco nunca cae en ellos (regla UI/UX).
+  /// Si la fecha u hora no es válida, la ventana de error devuelve el foco
+  /// a este campo y no se avanza al siguiente.
+  Future<void> _alEnterCampo() async {
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
+    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
+    if (await _validarFechaHora() && mounted) oFoco.nextFocus();
+  }
+
+  // ── Fecha y hora inteligentes ────────────────────────────────────────────
+  /// Completa la fecha según los dígitos que alcanzó a teclear el usuario.
   /// Se ejecuta al salir del campo o con Enter (para poder seguir tecleando
   /// sin que el campo se complete a mitad de camino):
   ///   16     → 16/mm/aaaa con el mes y el año actuales
@@ -78,28 +96,4 @@ a fecha según los dígitos que alcanzó a teclear el usuario.
     if (widget.bEtiquetaArriba) {
       return Padding(
         padding : EdgeInsets.only(
-            bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
-        child   : Column(
-          crossAxisAlignment : CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment : MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _construirEtiqueta(oContexto),
-                _construirContador(oContexto),
-              ],
-            ),
-            const SizedBox(height: ClaseGenEspacios.dEspacio04),
-            _construirControl(oContexto),
-          ],
-        ),
-      );
-    }
-    return Padding(
-      padding : EdgeInsets.only(
-          bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
-      child   : Row(
-        crossAxisAlignment : CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            width : widg
+            bottom: ClaseGenLayout.dSeparacionCampo * Cla

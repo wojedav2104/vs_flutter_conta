@@ -1,7 +1,15 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 12 DE 13
 ---
-onAbm oBoton) {
+  EnumBotonAbm.cancelar,
+  };
+
+  /// Devuelve true si el país conectado permite edición.
+  bool _puedeOperar(EnumBotonAbm oBoton) =>
+      !_setBotonesEdicion.contains(oBoton)
+      || ClasePermisos.puedeEditar(ClaseSesion.getPais());
+
+  String _getEtiqueta(EnumBotonAbm oBoton) {
     switch (oBoton) {
       case EnumBotonAbm.agregar:   return ClaseIdiomas.getTexto('abmAgregar', sIdioma);
       case EnumBotonAbm.borrar:    return ClaseIdiomas.getTexto('abmBorrar', sIdioma);
@@ -77,11 +85,4 @@ onAbm oBoton) {
               if (setEstados.contains(WidgetState.focused)) {
                 return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
               }
-              return bHabilitado
-                  ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
-                  : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
-            },
-          ),
-        ),
-        child : Row(
-          mainAxisAlignment : MainAxisAlignment.
+              return 

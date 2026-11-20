@@ -1,7 +1,27 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 8 DE 10
+PARTE 8 DE 11
 ---
-neDecimales)
+: widget.oCampo.sHint,
+        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo(bCompacto: true) : null,
+      ),
+    );
+  }
+  List<TextInputFormatter>? _getFormateadores(bool bNumero) {
+    if (!bNumero) {
+      return widget.oCampo.iAnchoCaracteres > 0
+          ? <TextInputFormatter>[
+              LengthLimitingTextInputFormatter(widget.oCampo.iAnchoCaracteres),
+            ]
+          : null;
+    }
+    // Número: decimales o enteros. El límite de dígitos es el de la máscara
+    // (el ancho visual incluye los separadores de miles).
+    final String? sMascara = _getMascara();
+    final int    iLimite   = (sMascara != null && !widget.oCampo.bTieneDecimales)
+        ? sMascara.split('').where((String s) => s == '9').length
+        : widget.oCampo.iAnchoCaracteres;
+    return <TextInputFormatter>[
+      if (widget.oCampo.bTieneDecimales)
         ClaseFormateadorImporte()
       else
         FilteringTextInputFormatter.digitsOnly,
@@ -78,22 +98,4 @@ neDecimales)
             style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
             keyboardType : TextInputType.datetime,
             onChanged    : _alCambiarHora,
-            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
-            decoration   : _getDecoracion(oContexto, sHint: 'hh:mm'),            
-          ),
-        ),
-        const SizedBox(width: ClaseGenEspacios.dEspacio04),
-        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
-        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
-        ExcludeFocus(
-          excluding : true,
-          child     : IconButton(
-            tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
-            icon      : const Icon(Icons.schedule),
-            style     : IconButton.styleFrom(
-              tapTargetSize : MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed : widget.bHabilitado
-                ? () async {
-                    final int? iMinutos = await funcMostrarSelectorHora(
-                     
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter com

@@ -1,7 +1,13 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 10 DE 13
 ---
-       child: Row(
+  : null,
+                      ),
+                      padding : const EdgeInsets.symmetric(
+                        horizontal : ClaseGenEspacios.dEspacio08,
+                        vertical   : ClaseGenEspacios.dEspacio04,
+                      ),
+                      child: Row(
                         children: <Widget>[
                           for (final ClaseCampoAbm oCampo in listColumnas)
                             Expanded(
@@ -82,14 +88,4 @@ PARTE 10 DE 13
 /// Estructura común de un formulario ABM: título, grilla lateral de registros
 /// y el área de formulario (pasada como widget) a la derecha.
 /// La botonera se ubica al pie del formulario.
-class ClaseAndamiajeAbm extends StatelessWidget {
-
-  const ClaseAndamiajeAbm({
-    super.key,
-    required this.funcAlClicar,
-    required this.funcSeleccionar,
-    required this.iRegistro,
-    required this.listCampos,
-    required this.listRegistros,
-    this.oFocoGrilla,
-   
+class ClaseAnda

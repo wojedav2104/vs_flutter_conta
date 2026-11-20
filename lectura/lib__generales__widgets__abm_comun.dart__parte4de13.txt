@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 4 DE 13
 ---
-izontal : ClaseGenEspacios.dEspacio16,
+    // Regla UI/UX (fácil visualización): cada pestaña es una ficha
+        // visible con fondo y borde propios; la activa se resalta con el
+        // color primario y texto en negrita.
+        Padding(
+          padding : const EdgeInsets.symmetric(
+            horizontal : ClaseGenEspacios.dEspacio16,
             vertical   : ClaseGenEspacios.dEspacio04,
           ),
           child : AnimatedBuilder(
@@ -88,8 +93,4 @@ izontal : ClaseGenEspacios.dEspacio16,
   }
 
   /// Contenido de una pestaña: los campos del grupo y, si el grupo tiene
-  /// contenido extra, ese contenido debajo de los campos ocupando el alto que
-  /// sobra (los campos se desplazan solos si no caben).
-  Widget _construirContenidoPestana(
-      BuildContext oContexto, String sGrupo, ClaseCampoAbm? oPrimeroHabilitado) {
-    final List<ClaseCampoAbm> listCamposGrupo = widget.
+  /// contenido extra, ese contenido deba

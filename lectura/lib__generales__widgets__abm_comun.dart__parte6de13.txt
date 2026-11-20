@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 6 DE 13
 ---
-ble && widget.listRegistros.isNotEmpty) {
+tate() {
+    super.initState();
+    // ← CAMBIO item 23: al ingresar al formulario, el foco del teclado queda
+    //   en la grilla (sobre la primera fila seleccionada) si hay registros.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && bVisible && widget.listRegistros.isNotEmpty) {
         oFocoGrilla.requestFocus();
       }
     });
@@ -89,12 +94,4 @@ ble && widget.listRegistros.isNotEmpty) {
     return listSalida;
   }
 
-  // ── Menú contextual por celda ────────────────────────────────────────────
-
-  Future<void> _mostrarMenuCelda(
-    BuildContext         oContexto,
-    Map<String, dynamic> oRegistro,
-    ClaseCampoAbm        oCampo,
-    Offset               oPosicion,
-  ) async {
-    final String sValor = (oRegistro[oCampo.sClave] ?? '').t
+  // ── Menú contextual por celda ────────────────────────────

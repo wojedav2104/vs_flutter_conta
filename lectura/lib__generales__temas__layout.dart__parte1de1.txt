@@ -30,6 +30,7 @@ abstract final class ClaseGenLayout {
   static const double dAnchoPaddingCeldaCompacta      =    4.0;
   static const double dAnchoReferencia                = 1366.0;
   static const double dAnchoSuffixBorrar              =   24.0;   // hueco de la "X" de borrado dentro del campo (icono 18 + 3 px por lado)
+  static const double dMargenTextoCampo               =   24.0;   // margen de seguridad del área de texto de los campos (el decorador de Material y el dibujo del texto en web superan la cuenta exacta)
   static const double dAnchoTarjetaLogin              =  420.0;
   static const double dAnchoTiraGrilla                =   48.0;
   static const double dElevacionTarjeta               =    4.0;

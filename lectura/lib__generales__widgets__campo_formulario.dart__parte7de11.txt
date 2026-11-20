@@ -1,7 +1,33 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 7 DE 10
+PARTE 7 DE 11
 ---
-et.oCampo.getAnchoEtiqueta(),
+seGenLayout.dEscala),
+        child   : Column(
+          crossAxisAlignment : CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment : MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _construirEtiqueta(oContexto),
+                _construirContador(oContexto),
+              ],
+            ),
+            const SizedBox(height: ClaseGenEspacios.dEspacio04),
+            _construirControl(oContexto),
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding : EdgeInsets.only(
+          bottom: ClaseGenLayout.dSeparacionCampo * ClaseGenLayout.dEscala),
+      child   : Row(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children: <Widget>[
+          // Regla UI/UX (spec 00_03_01, ancho mínimo): si la fila compartida
+          // no cabe, se angosta la ETIQUETA y el control conserva siempre su
+          // ancho natural: el valor del campo nunca queda cortado.
+          Flexible(
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
@@ -10,13 +36,10 @@ et.oCampo.getAnchoEtiqueta(),
               child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
             ),
           ),
-          if (widget.bAnchoFlexible)
-            Expanded(child: _construirControl(oContexto))
-          else
-            SizedBox(
-              width : _getAnchoCampo(),
-              child : _construirControl(oContexto),
-            ),
+          SizedBox(
+            width : _getAnchoCampo(),
+            child : _construirControl(oContexto),
+          ),
         ],
       ),
     );
@@ -82,24 +105,4 @@ et.oCampo.getAnchoEtiqueta(),
       onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
       decoration      : _getDecoracion(
         oContexto,
-        sHint         : widget.oCampo.sHint,
-        oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo(bCompacto: true) : null,
-      ),
-    );
-  }
-  List<TextInputFormatter>? _getFormateadores(bool bNumero) {
-    if (!bNumero) {
-      return widget.oCampo.iAnchoCaracteres > 0
-          ? <TextInputFormatter>[
-              LengthLimitingTextInputFormatter(widget.oCampo.iAnchoCaracteres),
-            ]
-          : null;
-    }
-    // Número: decimales o enteros. El límite de dígitos es el de la máscara
-    // (el ancho visual incluye los separadores de miles).
-    final String? sMascara = _getMascara();
-    final int    iLimite   = (sMascara != null && !widget.oCampo.bTieneDecimales)
-        ? sMascara.split('').where((String s) => s == '9').length
-        : widget.oCampo.iAnchoCaracteres;
-    return <TextInputFormatter>[
-      if (widget.oCampo.bTie
+        sHint         

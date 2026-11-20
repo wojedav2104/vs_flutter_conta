@@ -1,7 +1,11 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 5 DE 13
 ---
-listCampos
+jo de los campos ocupando el alto que
+  /// sobra (los campos se desplazan solos si no caben).
+  Widget _construirContenidoPestana(
+      BuildContext oContexto, String sGrupo, ClaseCampoAbm? oPrimeroHabilitado) {
+    final List<ClaseCampoAbm> listCamposGrupo = widget.listCampos
         .where((ClaseCampoAbm o) => o.sGrupo == sGrupo)
         .toList();
     final Widget? oExtra = widget.funcExtraGrupo?.call(sGrupo);
@@ -104,9 +108,4 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   late final FocusNode oFocoGrilla = widget.oFocoExterno ?? _oFocoInterno;
 
   @override
-  void initState() {
-    super.initState();
-    // ← CAMBIO item 23: al ingresar al formulario, el foco del teclado queda
-    //   en la grilla (sobre la primera fila seleccionada) si hay registros.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && bVisi
+  void initS

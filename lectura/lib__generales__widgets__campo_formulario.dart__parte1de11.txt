@@ -1,5 +1,5 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 1 DE 10
+PARTE 1 DE 11
 ---
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,8 +62,8 @@ class ClaseCampoFormulario extends StatefulWidget {
 
   /// true para mover el foco a este campo al entrar en modo edición.
   /// true para repartir el ancho disponible entre los campos de una misma
-  /// fila (el control queda en un Expanded); false = ancho fijo mínimo del
-  /// campo solo en su fila.
+  /// fila (la etiqueta se angosta y el control conserva su ancho natural);
+  /// false = ancho fijo mínimo del campo solo en su fila.
   final bool                                bAnchoFlexible;
   /// true para mover el foco a este campo al entrar en modo edición.
   final bool                                bAutoFocus;
@@ -99,4 +99,4 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
   final FocusNode oFocoInterno = FocusNode();
   String sMascaraActual = '';
 
-  /// Máscaras de la fecha (99/99/9999) y de la hora (99:99): el usuario teclea
+  /// Máscaras de la fecha (99/99/9999) y de la h

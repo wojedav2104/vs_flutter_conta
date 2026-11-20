@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/utilitarios/formatos.dart
 PARTE 4 DE 4
 ---
-ngth - i) % 3 == 0) oSalida.write(sSeparadorMiles);
+tring sSeparadorMiles   = bLatino ? '.' : ' ';
+  final String sSeparadorDecimal = bLatino ? ',' : '.';
+  final String sBase    = dValor.abs().toStringAsFixed(2);
+  final List<String> listPartes = sBase.split('.');
+  final String sEnteros = listPartes[0];
+  final StringBuffer oSalida = StringBuffer();
+  for (int i = 0; i < sEnteros.length; i++) {
+    if (i > 0 && (sEnteros.length - i) % 3 == 0) oSalida.write(sSeparadorMiles);
     oSalida.write(sEnteros[i]);
   }
   if (listPartes[1] != '00') {

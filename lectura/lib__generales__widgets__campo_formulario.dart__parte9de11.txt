@@ -1,7 +1,25 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 9 DE 10
+PARTE 9 DE 11
 ---
- oContexto,
+pleta y va al siguiente campo
+            decoration   : _getDecoracion(oContexto, sHint: 'hh:mm'),            
+          ),
+        ),
+        const SizedBox(width: ClaseGenEspacios.dEspacio04),
+        // ExcludeFocus: el picker queda fuera del orden de Tab/Enter (el foco
+        // pasa al siguiente campo); el clic y el táctil siguen funcionando.
+        ExcludeFocus(
+          excluding : true,
+          child     : IconButton(
+            tooltip   : ClaseIdiomas.getTexto('campoElegirHora', widget.sIdioma),
+            icon      : const Icon(Icons.schedule),
+            style     : IconButton.styleFrom(
+              tapTargetSize : MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed : widget.bHabilitado
+                ? () async {
+                    final int? iMinutos = await funcMostrarSelectorHora(
+                      oContexto,
                       widget.sIdioma,
                       widget.sValor,
                     );
@@ -75,21 +93,4 @@ PARTE 9 DE 10
     );
   }
 
-  // ── Casillas (checkboxes múltiples) ──────────────────────────────────────
-  // Varios valores seleccionados se guardan separados por comas, en el orden
-  // de listValores (ej: 'FAC,NCR'). Un valor vacío = ninguna casilla marcada.
-
-  Widget _construirCasillas(BuildContext oContexto) {
-    final List<String> listOpciones = widget.oCampo.listOpciones ?? <String>[];
-    final List<String> listValores  = widget.oCampo.listValores  ?? listOpciones;
-    final List<String> listMarcados = widget.sValor.trim().isEmpty
-        ? <String>[]
-        : widget.sValor.trim().split(',');
-    return Wrap(
-      spacing    : ClaseGenEspacios.dEspacio16,
-      runSpacing : ClaseGenEspacios.dEspacio04,
-      children: <Widget>[
-        for (int i = 0; i < listOpciones.length; i++)
-          Row(
-            mainAxisSize : MainAxisSize.min,
-            children     : <Widg
+  // ──

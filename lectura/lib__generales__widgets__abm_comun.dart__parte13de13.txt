@@ -1,7 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 13 DE 13
 ---
-center,
+bHabilitado
+                  ? ClaseGenTemas.colorTextoBotonHabilitado(oContexto)
+                  : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
+            },
+          ),
+        ),
+        child : Row(
+          mainAxisAlignment : MainAxisAlignment.center,
           mainAxisSize       : MainAxisSize.min,
           children          : <Widget>[
             Icon(_getIcono(oBoton), size: 20),

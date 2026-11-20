@@ -1,7 +1,27 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
-PARTE 5 DE 10
+PARTE 5 DE 11
 ---
+      oControl.value = TextEditingValue(
+            text      : sSalida,
+            selection : TextSelection.collapsed(offset: sSalida.length),
+          );
+        }
+      }
+    }
+    widget.funcAlCambiar(sSalida);
+  }
 
+  // ── Máscara de la fecha y error de fecha/hora ────────────────────────────
+
+  /// Máscara 99/99/9999: el usuario teclea solo dígitos y las barras se
+  /// insertan solas mientras escribe (spec 00_00_03).
+  void _alCambiarFecha(String sValor) {
+    final String sDigitos    = sValor.replaceAll(RegExp(r'[^0-9]'), '');
+    final String sConMascara = funcAplicarMascara(sDigitos, _sMascaraFecha);
+    if (sConMascara != oControl.text) {
+      oControl.value = TextEditingValue(
+        text      : sConMascara,
+        selection : TextSelection.collapsed(offset: sConMascara.length),
       );
     }
     widget.funcAlCambiar(sConMascara);
@@ -73,22 +93,4 @@ PARTE 5 DE 10
       ClaseIdiomas.getTexto('aplicacion', widget.sIdioma),
       ClaseIdiomas.getTexto(
           bFecha ? 'validFechaInvalida' : 'validHoraInvalida', widget.sIdioma)
-          .replaceAll('{0}', widget.oCampo.sEtiqueta),
-    );
-    if (mounted) oFoco.requestFocus();
-    return false;
-  }
-
-  /// Enter completa el campo (fecha u hora) y pasa el foco al siguiente
-  /// campo de entrada. Los iconos (picker y "X") están excluidos del orden
-  /// de foco, así que el foco nunca cae en ellos (regla UI/UX).
-  /// Si la fecha u hora no es válida, la ventana de error devuelve el foco
-  /// a este campo y no se avanza al siguiente.
-  Future<void> _alEnterCampo() async {
-    if (widget.oCampo.oTipo == EnumTipoCampoAbm.fecha) _completarFecha();
-    if (widget.oCampo.oTipo == EnumTipoCampoAbm.hora)  _completarHora();
-    if (await _validarFechaHora() && mounted) oFoco.nextFocus();
-  }
-
-  // ── Fecha y hora inteligentes ────────────────────────────────────────────
-  /// Completa l
+   
