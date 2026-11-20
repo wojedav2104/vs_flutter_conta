@@ -167,11 +167,16 @@ class ClaseCampoAbm {
         // derecho. El hueco dAnchoSuffixBorrar (icono 18 + 3 px por lado) más
         // 1 px de padding derecho logran ambas separaciones; el padding
         // izquierdo es el normal (12 px).
-        return dAnchoTexto
+        //
+        // Margen de seguridad: el área de texto real del control queda unos
+        // píxeles más corta que esta cuenta (el hueco de la "X" y el padding
+        // que dibuja el decorador de Material), y en web el texto puede
+        // dibujarse más ancho de lo que mide TextPainter. Sin margen, el
+        // último dígito del valor formateado (ej: "2.026") se cortaba.
+        return dAnchoTexto + ClaseGenLayout.dMargenTextoCampo
                + ClaseGenEspacios.dEspacio12 + ClaseGenEspacios.dEspacio01
                + ClaseGenLayout.dAnchoSuffixBorrar
                + ClaseGenLayout.dAnchoBordeCampo;
-
     }
   }
 

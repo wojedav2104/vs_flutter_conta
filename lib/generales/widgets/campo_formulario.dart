@@ -221,8 +221,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
 
   /// El ancho lo calcula ClaseCampoAbm.getAnchoCampo con la máscara efectiva
   /// (que puede ser dinámica, de funcMascara). Único punto de cambio.
-  double _getAnchoCampo() =>
-      widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
+  double _getAnchoCampo() => widget.oCampo.getAnchoCampo(sMascaraEfectiva: _getMascara());
 
   // ── Decoración común de los controles ───────────────────────────────────
 

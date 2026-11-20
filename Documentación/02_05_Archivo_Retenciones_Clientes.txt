@@ -4,7 +4,7 @@ Tiene dos grupos.
 
 Grupo 1: Generales
 Los campos de la cabecera son:
-- Ejercicio contable (numérico, 4, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Ejercicio contable (numérico, 4, máscara de entrada: "9.999", obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
 - Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio).
 - Número del asiento (numérico, 6, deshabilitado). Este número se irá poniendo automáticamente cuando haya conexión con una Base de Datos
 - Fecha de la retención (fecha, obligatorio).

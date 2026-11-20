@@ -135,11 +135,19 @@ String funcFormatearNumero(String sValor, String sMascara, String sSeparadorMile
   final String sParteEntera  = sEscalar.substring(0, sEscalar.length - iDecimales);
   final String sParteDecimal = sEscalar.substring(sEscalar.length - iDecimales);
 
+    // Agrupa de a miles solo si la máscara trae el separador ('999.999.999');
+  // una máscara sin separadores ('9999') se muestra tal cual, respetando la
+  // máscara (spec 00_00_03). Así el texto mostrado nunca supera el ancho
+  // reservado, que es el largo de la máscara.
+  final bool bAgruparMiles = sMascara.contains(sSeparadorMiles);
   final StringBuffer oBuffer = StringBuffer();
   for (int i = 0; i < sParteEntera.length; i++) {
-    if (i > 0 && (sParteEntera.length - i) % 3 == 0) oBuffer.write(sSeparadorMiles);
+    if (bAgruparMiles && i > 0 && (sParteEntera.length - i) % 3 == 0) {
+      oBuffer.write(sSeparadorMiles);
+    }
     oBuffer.write(sParteEntera[i]);
   }
+  
   String sResultado = oBuffer.toString();
   if (iDecimales > 0) sResultado = '$sResultado,$sParteDecimal';
   return sResultado;

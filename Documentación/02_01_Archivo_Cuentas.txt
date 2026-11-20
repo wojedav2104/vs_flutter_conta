@@ -7,7 +7,7 @@ Nota 2: Se debe tener una correspondencia uno a uno entre cada cuenta usada en L
 Nota 3: Aunque el primer grupo corresponderá al Plan de Cuentas utilizado en un país latinoamericano y el segundo grupo corresponderá al Plan de Cuentas usado en Francia los nombres de los grupos deben ser "Principal (nombre del país latinoamericano)" y "Alternativo"
 
 Datos comunes:
-- Ejercicio contable (numérico, 4, máscara de entrada: 9999, obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
+- Ejercicio contable (numérico, 4, máscara de entrada: "9.999", obligatorio). Validación: El año debe ser igual o mayor a 2020 y menor o igual al año actual
 - Sucursal (carácter, 44, "Código y Nombre de la sucursal", obligatorio).
 
 Grupo local:
@@ -16,7 +16,7 @@ Grupo local:
 - Número de la subcuenta (carácter, 5, opcional). Validación: solamente dígitos entre "00001" y "99999". Se debe completar con ceros a la izquierda si fuera necesario para que la longitud sea 5
 - Nombre de la subcuenta (carácter, 40, "Nombre de la subcuenta contable", opcional)
 - Cuenta de nivel superior (carácter, 58, "La cuenta padre de esta cuenta", obligatorio). Validación: si la cuenta tiene 1 solo grupo, debe estar deshabilitada y totalmente vacía; en todos los demás casos sí es obligatoria
-- Nivel de la cuenta (numérico, 1, obligatorio). Validación: un dígito entre 1 y 5
+- Nivel de la cuenta (numérico, 1, máscara de entrada: "9", obligatorio). Validación: un dígito entre 1 y 5
 - Asentable (debe seleccionar entre: Sí, No)
 
 Grupo para enlazar con Francia:
