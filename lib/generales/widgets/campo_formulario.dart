@@ -59,8 +59,8 @@ class ClaseCampoFormulario extends StatefulWidget {
 
   /// true para mover el foco a este campo al entrar en modo edición.
   /// true para repartir el ancho disponible entre los campos de una misma
-  /// fila (el control queda en un Expanded); false = ancho fijo mínimo del
-  /// campo solo en su fila.
+  /// fila (la etiqueta se angosta y el control conserva su ancho natural);
+  /// false = ancho fijo mínimo del campo solo en su fila.
   final bool                                bAnchoFlexible;
   /// true para mover el foco a este campo al entrar en modo edición.
   final bool                                bAutoFocus;
@@ -247,9 +247,13 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       suffixIcon           : oIconoDerecha,
       // El hueco del suffixIcon viene de 48 px por defecto y dejaba mucho espacio en blanco a la derecha de la "X": se angosta al ancho del hueco y el campo termina 4 px después 
       // de la X. El alto mínimo se mantiene en 48 (el de por defecto) para no cambiar el alto de los campos.
-      suffixIconConstraints : const BoxConstraints(
-        minWidth  : ClaseGenLayout.dAnchoSuffixBorrar,
-        minHeight : 48,
+      // Regla UI/UX (X del campo): el hueco de la "X" es de 24 px EXACTOS
+      // (icono 18 + 3 px por lado) por 48 de alto. Caja ajustada (tight):
+      // si se dejara libre, el IconButton impone su mínimo de 48 px de ancho,
+      // la "X" se come 24 px del texto y el último dígito queda invisible.
+      suffixIconConstraints : const BoxConstraints.tightFor(
+        width  : ClaseGenLayout.dAnchoSuffixBorrar,
+        height : 48,
       ),
       filled               : true,
       // Regla UI/UX: el resultado de una suma (campo Total) lleva un relleno
@@ -260,10 +264,18 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
               ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
               : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto)),
       border         : const OutlineInputBorder(),
-      contentPadding : const EdgeInsets.symmetric(
-        horizontal : ClaseGenEspacios.dEspacio12,
-        vertical   : ClaseGenEspacios.dEspacio12,
+      // Regla UI/UX (X del campo): con la "X" a la derecha, el padding derecho
+      // se reduce a 1 px para que la "X" quede a 4 px del último carácter del
+      // texto (1 px de padding + 3 px del hueco) y a 4 px del borde derecho
+      // (3 px del hueco + 1 px de borde). Sin "X", mantiene el padding normal.
+      contentPadding : EdgeInsets.only(
+        bottom : ClaseGenEspacios.dEspacio12,
+        left   : ClaseGenEspacios.dEspacio12,
+        right  : (oIconoDerecha != null) ? ClaseGenEspacios.dEspacio01 : ClaseGenEspacios.dEspacio12,
+        top    : ClaseGenEspacios.dEspacio12,
       ),
+
+
     );
   }
 
@@ -321,6 +333,7 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
         // Sin área táctil forzada de 48 px: la fila queda del alto del campo
         // y la separación con el campo de arriba se ve igual en todos.
         style     : IconButton.styleFrom(
+          minimumSize   : Size.zero,
           padding       : bCompacto ? EdgeInsets.zero : null,
           tapTargetSize : MaterialTapTargetSize.shrinkWrap,
         ),
@@ -566,8 +579,10 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       child   : Row(
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(
-            width : widget.oCampo.getAnchoEtiqueta(),
+          // Regla UI/UX (spec 00_03_01, ancho mínimo): si la fila compartida
+          // no cabe, se angosta la ETIQUETA y el control conserva siempre su
+          // ancho natural: el valor del campo nunca queda cortado.
+          Flexible(
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
@@ -576,13 +591,10 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
               child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
             ),
           ),
-          if (widget.bAnchoFlexible)
-            Expanded(child: _construirControl(oContexto))
-          else
-            SizedBox(
-              width : _getAnchoCampo(),
-              child : _construirControl(oContexto),
-            ),
+          SizedBox(
+            width : _getAnchoCampo(),
+            child : _construirControl(oContexto),
+          ),
         ],
       ),
     );

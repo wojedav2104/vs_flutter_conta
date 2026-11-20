@@ -22,6 +22,9 @@ MÁSCARAS DE ENTRADA:
 - Si un campo de tipo carácter/string tiene máscara de entrada, esa máscara de entrada determina la cantidad máxima de caracteres que pueden introducirse en ese campo y el ancho del campo debe estar acorde a esa máscara de entrada
 - Si un campo de tipo numérico tiene máscara de entrada, esa máscara de entrada determina la cantidad máxima de dígitos que puede tener ese campo. Los números se justifican hacia la derecha. Ejemplos: máscara de entrada = "999.999.999", el usuario escribe: 12345, se le muestra 12.345; máscara de entrada = "999.999,99", el usuario escribe: 1234,5 y se le muestra: 1.234,50
 
+ANCHO DEL CAMPO:
+- Si un campo de tipo carácter o numérico es obligatorio entonces en el cálculo del ancho de ese campo se debe considerar la "x". La "x" debe estar cerca del último carácter que puede escribirse (pero no pegada) y también cerca del borde derecho del campo (pero no pegada). En ambos casos 3 ó 4 pixeles para la separación serían adecuados.
+
 LETRAS Ñ EN NOMBRES DE VARIABLES, FUNCIONES, MÉTODOS, Y CLASES:
 - Las letras ñ deben ser reemplazadas por las letras n. Ejemplos: iAnoMinimo, iAnoMaximo
 

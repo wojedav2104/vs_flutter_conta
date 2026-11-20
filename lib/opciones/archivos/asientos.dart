@@ -83,7 +83,7 @@ class ClaseEstadoAsientos extends State<ClaseAsientos> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('asiEjercicio', sIdioma), sIdioma),
-        iAnchoCaracteres : 4,
+        iAnchoCaracteres : 5,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',

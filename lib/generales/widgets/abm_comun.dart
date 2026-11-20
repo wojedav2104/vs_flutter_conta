@@ -269,7 +269,13 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
   @override
   Widget build(BuildContext oContexto) {
 
+    // Ancho real de un carácter del texto (medido con el estilo y la escala
+    // con los que se dibuja): se mide antes de calcular los anchos de los
+    // campos (regla UI/UX: el valor del campo nunca se corta).
+    ClaseCampoAbm.medirAnchoCaracter(oContexto);
+
     // Primer campo habilitado → recibir foco al entrar en edición.
+
     ClaseCampoAbm? oPrimeroHabilitado;
     for (final ClaseCampoAbm oCampo in widget.listCampos) {
       if (widget.funcEsHabilitado(oCampo)) {

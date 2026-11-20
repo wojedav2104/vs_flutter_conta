@@ -207,7 +207,7 @@ class ClaseEstadoCuentas extends State<ClaseCuentas> {
       ClaseCampoAbm(
         bObligatorio     : true,
         funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('planEjercicio', sIdioma), sIdioma),
-        iAnchoCaracteres : 4,
+        iAnchoCaracteres : 8,
         oAlineacion      : EnumAlineacion.centro,
         oTipo            : EnumTipoCampoAbm.numero,
         sClave           : 'ejercicio',

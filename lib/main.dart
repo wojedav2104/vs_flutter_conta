@@ -85,7 +85,16 @@ class ClaseEstadoAplicacion extends State<ClaseAplicacion>
       darkTheme                  : ClaseGenTemas.getTemaOscuro,
       themeMode                  : (widget.oPreferencias.getTema() == 'oscuro') ? ThemeMode.dark : ThemeMode.light,
       navigatorObservers         : <NavigatorObserver>[oObservadorRutas],
+      // Regla UI/UX: la escala de texto la maneja la aplicación (dFactorTexto
+      // y dEscala). La escala del sistema operativo o del navegador se aplica
+      // encima y rompe el cálculo de los anchos (caracteres × dAnchoCaracter):
+      // el texto se sale del campo. Se anula acá, en un solo punto.
+      builder                    : (oContextoVentana, oHijo) => MediaQuery(
+        data  : MediaQuery.of(oContextoVentana).copyWith(textScaler: TextScaler.noScaling),
+        child : oHijo!,
+      ),
       onGenerateRoute            : (oConfiguracion) => funcGenerarRuta(oConfiguracion, widget.oPreferencias),
+
       home                       : ClaseLogin(
                                     funcAlCambiar : alCambiar,
                                     oPreferencias : widget.oPreferencias,

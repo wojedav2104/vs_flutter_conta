@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../temas/espacios.dart';
 import '../temas/estilos_textos.dart';
 import '../temas/layout.dart';
@@ -93,12 +95,33 @@ class ClaseCampoAbm {
   /// Validación específica del campo. Recibe el valor y el idioma actual.
   final String? Function(String sValor, String sIdioma)? funcValidarCampo;
 
-
   // ── Anchos ────────────────────────────────────────────────────────────────
 
+  /// Ancho real de un carácter del texto de los campos, en píxeles ya
+  /// escalados. Lo fija medirAnchoCaracter() al empezar cada dibujado: se mide
+  /// con TextPainter y el MISMO estilo con el que se dibuja el texto, así que
+  /// contempla la fuente real, las escalas y el entorno. Si vale 0 (antes de
+  /// la primera medición) los anchos usan la estimación de ClaseGenLayout.
+  static double dAnchoCaracterReal = 0;
+
+  /// Mide dAnchoCaracterReal con el estilo del campo (textoCampo) y la escala
+  /// de texto del entorno (MediaQuery). La llama ClaseFormularioCampos.build
+  /// antes de calcular los anchos de los campos (regla UI/UX: el valor del
+  /// campo nunca se corta, en ningún entorno).
+  static void medirAnchoCaracter(BuildContext oContexto) {
+    const int    iMuestra = 10;
+    final TextPainter oMedidor = TextPainter(
+      text          : TextSpan(text: '0' * iMuestra, style: ClaseGenEstilosTexto.textoCampo(oContexto)),
+      textScaler    : MediaQuery.textScalerOf(oContexto),
+      textDirection : TextDirection.ltr,
+    )..layout();
+    dAnchoCaracterReal = oMedidor.width / iMuestra;
+    oMedidor.dispose();
+  }
+
   /// Ancho de la etiqueta del campo dentro de un formulario (incluye el asterisco de los obligatorios y el padding derecho). Si iAnchoEtiqueta es 0 usa el ancho general (ClaseGenLayout.dAnchoEtiquetaCampo);
-  /// en caso contrario usa iAnchoEtiqueta caracteres. Escala con el modo texto grande (dFactorTexto) y con la escala de la ventana (dEscala), igual que la fuente de la etiqueta: con un ancho fijo en píxeles,
-  /// las etiquetas largas (ej: "Nombre de la Empresa *") se partían en dos líneas. Única fuente del ancho de las etiquetas: lo usan campo_formulario y las filas compartidas de abm_comun.
+
+
   double getAnchoEtiqueta() {
     final double dBase = (iAnchoEtiqueta <= 0) ? ClaseGenLayout.dAnchoEtiquetaCampo : iAnchoEtiqueta * ClaseGenLayout.dAnchoCaracter;
     return dBase * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
@@ -112,10 +135,13 @@ class ClaseCampoAbm {
   double getAnchoCampo({String? sMascaraEfectiva}) {
     final int iCaracteres =
         (sMascaraEfectiva ?? sMascara)?.length ?? iAnchoCaracteres;
-    // El ancho por carácter se escala con el modo texto grande: sin esto,
-    // los campos quedan angostos cuando ClaseGenEstilosTexto.dFactorTexto
-    // es 1.25.
-    final double dAnchoTexto = iCaracteres * ClaseGenLayout.dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
+    // El ancho por carácter sale de la medición real (dAnchoCaracterReal, ya
+    // escalada): solo si aún no se midió se usa la estimación de
+    // ClaseGenLayout.dAnchoCaracter escalada con texto grande y ventana.
+    final double dAnchoTexto = iCaracteres *
+        ((dAnchoCaracterReal > 0)
+            ? dAnchoCaracterReal
+            : ClaseGenLayout.dAnchoCaracter * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala);
     switch (oTipo) {
       case EnumTipoCampoAbm.comentario:
         return ClaseGenLayout.dAnchoCampoComentario;
@@ -136,10 +162,16 @@ class ClaseCampoAbm {
       case EnumTipoCampoAbm.logico:
       case EnumTipoCampoAbm.numero:
       case EnumTipoCampoAbm.texto:
-        // El icono de borrado es suffixIcon, dentro del campo, en el hueco angosto de dAnchoSuffixBorrar: el campo termina 4 px después de la "X".
+        // Regla UI/UX (X del campo): el ancho del campo incluye la "X" de
+        // borrado, a 4 px del último carácter del texto y a 4 px del borde
+        // derecho. El hueco dAnchoSuffixBorrar (icono 18 + 3 px por lado) más
+        // 1 px de padding derecho logran ambas separaciones; el padding
+        // izquierdo es el normal (12 px).
         return dAnchoTexto
-               + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
-               + ClaseGenLayout.dAnchoSuffixBorrar;
+               + ClaseGenEspacios.dEspacio12 + ClaseGenEspacios.dEspacio01
+               + ClaseGenLayout.dAnchoSuffixBorrar
+               + ClaseGenLayout.dAnchoBordeCampo;
+
     }
   }
 
