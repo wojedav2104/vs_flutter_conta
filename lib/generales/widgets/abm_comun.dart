@@ -14,8 +14,8 @@ import '../temas/radios.dart';
 import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
-import 'campo_formulario.dart';
-import 'ventana_mensaje.dart';
+import '../widgets/campo_formulario.dart';
+import '../widgets/ventana_mensaje.dart';
 
 /// Botones de la botonera ABM.
 enum EnumBotonAbm { agregar, borrar, cancelar, encontrar, fin, grabar, modificar }
@@ -244,8 +244,8 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
           ),
           decoration : BoxDecoration(
             color        : bActiva
-                ? oEsquema.primaryContainer
-                : oEsquema.surfaceContainerHigh,
+                ? ClaseGenTemas.colorFondoPestanaActiva(oContexto)
+                : ClaseGenTemas.colorFondoPestanaInactiva(oContexto),
             borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
             border       : Border.all(
               color : bActiva ? oEsquema.primary : oEsquema.outline,

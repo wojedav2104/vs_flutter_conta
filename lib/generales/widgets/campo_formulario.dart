@@ -578,16 +578,19 @@ class _ClaseEstadoCampoFormulario extends State<ClaseCampoFormulario> {
       child   : Row(
         crossAxisAlignment : CrossAxisAlignment.start,
         children: <Widget>[
-          // Regla UI/UX (spec 00_03_01, ancho mínimo): si la fila compartida
-          // no cabe, se angosta la ETIQUETA y el control conserva siempre su
-          // ancho natural: el valor del campo nunca queda cortado.
+          // Regla UI/UX (spec 00_03_01, ancho mínimo): la etiqueta ocupa siempre su ancho propio (getAnchoEtiqueta: 240 px por defecto, o iAnchoEtiqueta en caracteres)
+          // y su texto queda alineado a la derecha, pegado al control; si la fila compartida no cabe, se angosta la ETIQUETA y el control conserva siempre su ancho
+          // natural: el valor del campo nunca queda cortado.
           Flexible(
             child : Padding(
               padding : const EdgeInsets.only(
                 top   : ClaseGenEspacios.dEspacio14,
                 right : ClaseGenEspacios.dEspacio04,
               ),
-              child : _construirEtiqueta(oContexto),          // ← CAMBIO item 4
+              child : SizedBox(
+                width : widget.oCampo.getAnchoEtiqueta(),
+                child : _construirEtiqueta(oContexto),       // ← CAMBIO item 4
+              ),
             ),
           ),
           SizedBox(

@@ -1,0 +1,96 @@
+RUTA ORIGINAL: lib/generales/widgets/grilla_detalles.dart
+PARTE 2 DE 7
+---
+nsible.isEmpty) return listAnchos;
+    final double dExtra = dSobrante / listExpansible.length;
+    for (final int i in listExpansible) {
+      listAnchos[i] += dExtra;
+    }
+    return listAnchos;
+  }
+
+  Widget _construirDetalle(BuildContext oContexto) {
+    // Regla UI/UX: el encabezado, las filas y la fila de totales comparten
+    // el mismo desplazamiento horizontal: las columnas quedan siempre
+    // alineadas, el encabezado queda fijo arriba y la fila de totales no
+    // desborda el ancho de la pantalla. Con LayoutBuilder, las columnas
+    // expansibles (Concepto) absorben el sobrante de la ventana.
+    return LayoutBuilder(
+      builder: (oContexto, oLimites) {
+        final List<double> listAnchos = _listAnchosColumnas(oLimites);
+        double dAnchoTotal =
+            ClaseGenLayout.dAnchoNumeroFila + ClaseGenLayout.dAnchoAccionesFila;
+        for (final double dAncho in listAnchos) {
+          dAnchoTotal += dAncho;
+        }
+        return Column(
+          crossAxisAlignment : CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection : Axis.horizontal,
+                child: SizedBox(
+                  // El padding horizontal de las filas (dEspacio08 por lado) forma
+                  // parte del ancho total de la grilla: sin estas dos columnas, la
+                  // fila desborda 16 px a la derecha (rayas de OVERFLOW).
+                  width : dAnchoTotal + ClaseGenEspacios.dEspacio08 * 2,
+                  child : Column(
+                    crossAxisAlignment : CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      _construirFilaEncabezado(oContexto, listAnchos),
+                      Expanded(
+                        child: ListView(
+                          children: <Widget>[
+                            for (int i = 0; i < listDetalles.length; i++)
+                              _construirFilaDetalle(oContexto, i, listAnchos),
+                          ],
+                        ),
+                      ),
+                      _construirFilaTotales(oContexto, listAnchos),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            oPie ?? const SizedBox.shrink(),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Alineación del texto de una columna (encabezado y fila de totales):
+  /// la misma que la de sus celdas, resuelta por getAlineacion (números a
+  /// la derecha, resto a la izquierda; regla 24 de 00_03_02_ABMs.txt).
+  TextAlign _getTextAlignColumna(ClaseCampoAbm oCampo) {
+    switch (oCampo.getAlineacion()) {
+      case EnumAlineacion.centro:
+        return TextAlign.center;
+      case EnumAlineacion.derecha:
+        return TextAlign.right;
+      case EnumAlineacion.izquierda:
+        return TextAlign.left;
+    }
+  }
+
+  /// Padding del texto dentro de una columna (encabezado y fila de totales):
+  /// el mismo que el de los valores de sus celdas (el padding de la fila más
+  /// el borde y el padding interior del control), para que el valor quede
+  /// alineado con su encabezado y los nombres de las columnas vecinas nunca
+  /// se peguen (regla 24).
+  EdgeInsets _getPaddingColumna() {
+    return EdgeInsets.only(
+      left  : ClaseGenLayout.dAnchoBordeCampo + ClaseGenEspacios.dEspacio08,
+      right : ClaseGenEspacios.dEspacio04 + ClaseGenLayout.dAnchoBordeCampo
+              + ClaseGenEspacios.dEspacio08,
+    );
+  }
+
+  Widget _construirFilaEncabezado(BuildContext oContexto, List<double> listAnchos) {
+    // Regla UI/UX: mismos colores de encabezado que la grilla lateral de
+    // los ABM (backcolor del tema + texto en negritas).
+    return Container(
+      color   : ClaseGenTemas.colorFondoEncabezadoGrilla(oContexto),
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertica

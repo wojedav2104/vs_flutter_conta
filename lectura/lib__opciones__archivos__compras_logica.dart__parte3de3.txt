@@ -1,0 +1,23 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras_logica.dart
+PARTE 3 DE 3
+---
+otal del comprobante debe ser igual a la suma del Debe.
+    if ((oRegistro['enviarMarangatu'] ?? '') == ClaseSiNo.si) {
+      double dDebe = 0;
+      final dynamic oDetalles =
+          oRegistro[ClaseFormularioCabeceraDetalle.sClaveDetalles];
+      if (oDetalles is List) {
+        for (final dynamic oFila in oDetalles) {
+          dDebe += funcParsearNumero(((oFila as Map)['debe'] ?? '').toString()) ?? 0;
+        }
+      }
+      final double dTotal = funcParsearNumero(
+          (oRegistro['totalComprobante'] ?? '').toString()) ?? 0;
+      if ((dTotal - dDebe).abs() > 0.005) {
+        return ClaseIdiomas.getTexto('comErrorMarangatu', sIdioma);
+      }
+    }
+    return null;
+  }
+
+}

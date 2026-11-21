@@ -1,7 +1,26 @@
 RUTA ORIGINAL: lib/generales/temas/temas.dart
 PARTE 3 DE 4
 ---
-abezadoGrillaOscuro
+ondoPestanaInactiva(BuildContext oContexto) =>
+      _esModoOscuro(oContexto) ? ClaseGenColores.colorPestanaInactivaOscura : ClaseGenColores.colorPestanaInactivaClaro;
+
+
+  /// Relleno de los resultados de una suma (campos Total y fila de totales
+  /// de la grilla de detalles): distinto del relleno de los datos sumados,
+  /// para resaltarlos. En modo claro, ámbar suave; en modo oscuro, el gris
+  /// elevado (decidido con los usuarios).
+  static Color colorFondoCampoTotal(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorCampoTotalOscuro
+          : ClaseGenColores.colorCampoTotalClaro;
+
+  /// Fondo del encabezado de las grillas (nombres de columnas de la grilla
+  /// lateral de los ABM y de la grilla de detalles): distinto del fondo de
+  /// las celdas de abajo, para que se distingan a simple vista. Color exacto
+  /// pendiente de decidir con los usuarios.
+  static Color colorFondoEncabezadoGrilla(BuildContext oContexto) =>
+      _esModoOscuro(oContexto)
+          ? ClaseGenColores.colorEncabezadoGrillaOscuro
           : ClaseGenColores.colorEncabezadoGrillaClaro;
 
   /// Texto del encabezado de las grillas (nombres de columnas y flechita de
@@ -62,22 +81,4 @@ abezadoGrillaOscuro
     // Base M3 completa: provee `headlineSmall`, `titleSmall`, `labelLarge`,
     // `displaySmall`, `headlineMedium`, `headlineLarge` (que
     // `ClaseGenEstilosTexto.oTextTheme` no define). Sin este merge, esos
-    // estilos quedan `null` y widgets como `AppBar`, `Dialog`, `ListTile`
-    // los heredan de `DefaultTextStyle`, rompiendo la consistencia.
-    final ThemeData oTemaBase = ThemeData(
-      colorScheme : oEsquema,
-      useMaterial3: true,
-    );
-    return oTemaBase.copyWith(
-      scaffoldBackgroundColor: oEsquema.surface,
-      // Regla UI/UX: los controles de entrada (texto, número, fecha, hora, lista) llevan un relleno distinto al fondo del formulario para que se distingan a simple vista 
-      //(usuarios noveles). Único punto de cambio: aplica a todos los InputDecoration de la aplicación.
-      inputDecorationTheme   : InputDecorationTheme(
-        filled    : true,
-        fillColor : oEsquema.surfaceContainerHighest,
-      ),
-
-      // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
-      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
-      // multiplican por su cuenta.
-      textTheme : _escalarTexto(oTem
+    // estilos que

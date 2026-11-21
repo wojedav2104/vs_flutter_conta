@@ -1,7 +1,25 @@
 RUTA ORIGINAL: lib/generales/temas/temas.dart
 PARTE 4 DE 4
 ---
-aBase.textTheme.merge(ClaseGenEstilosTexto.oTextTheme)),
+dan `null` y widgets como `AppBar`, `Dialog`, `ListTile`
+    // los heredan de `DefaultTextStyle`, rompiendo la consistencia.
+    final ThemeData oTemaBase = ThemeData(
+      colorScheme : oEsquema,
+      useMaterial3: true,
+    );
+    return oTemaBase.copyWith(
+      scaffoldBackgroundColor: oEsquema.surface,
+      // Regla UI/UX: los controles de entrada (texto, número, fecha, hora, lista) llevan un relleno distinto al fondo del formulario para que se distingan a simple vista 
+      //(usuarios noveles). Único punto de cambio: aplica a todos los InputDecoration de la aplicación.
+      inputDecorationTheme   : InputDecorationTheme(
+        filled    : true,
+        fillColor : oEsquema.surfaceContainerHighest,
+      ),
+
+      // Punto 5: el factor de texto escala TODO el TextTheme del tema, incluidos los estilos de Material que no pasan por
+      // ClaseGenEstilosTexto. No hay doble escala: los métodos de ClaseGenEstilosTexto parten del oTextTheme constante y
+      // multiplican por su cuenta.
+      textTheme : _escalarTexto(oTemaBase.textTheme.merge(ClaseGenEstilosTexto.oTextTheme)),
     );
   }
 

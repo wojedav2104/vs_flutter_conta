@@ -17,8 +17,8 @@ import '../temas/radios.dart';
 import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
 import '../validaciones/cap_validar.dart';
-import 'campo_formulario.dart';
-import 'ventana_mensaje.dart';
+import '../widgets/campo_formulario.dart';
+import '../widgets/ventana_mensaje.dart';
 
 /// Botones de la botonera ABM.
 enum EnumBotonAbm { agregar, borrar, cancelar, encontrar, fin, grabar, modificar }
@@ -102,5 +102,4 @@ Widget funcConstruirTituloAppBar(BuildContext oContexto, String sIdioma, String 
       Text(sTitulo,
            style: ClaseGenEstilosTexto.tituloMediano(oContexto)
                     .copyWith(fontWeight: FontWeight.w600)),
-      Text('${ClaseSesion.getBaseDatos()} · ${ClaseIdiomas.getTexto(ClaseSesion.getClavePais(), sIdioma)}',
-  
+      Text('${ClaseSesion.getBaseDatos()} · ${ClaseIdiomas.getTexto(ClaseSesion.getClaveP

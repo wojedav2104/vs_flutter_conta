@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 9 DE 13
 ---
-    onTap: () => setState(() {
+                     child: GestureDetector(
+                        onTap: () => setState(() {
                           if (sClaveOrden == oCampo.sClave) {
                             bOrdenDesc = !bOrdenDesc;
                           } else {
@@ -72,6 +73,4 @@ PARTE 9 DE 13
                         //   en la fila seleccionada.
                         border : (bSeleccionado && oFocoGrilla.hasFocus)
                             ? Border.all(
-                                color : Theme.of(oContexto).colorScheme.primary,
-                              )
-                          
+                                color : Theme.of(oContexto).colorScheme.pri

@@ -1,0 +1,39 @@
+RUTA ORIGINAL: lib/opciones/archivos/ventas_datos.dart
+PARTE 2 DE 2
+---
+     'subcuenta'    : '',
+          },
+        ],
+        'ejercicio'           : '2026',
+        'enviarMarangatu'     : ClaseSiNo.no,
+        'exentas'             : '100000',
+        'fecha'               : '20/02/2026',
+        'gravadas10'          : '0',
+        'gravadas5'           : '400000',
+        'hora'                : '10:30',
+        'identificacion'      : 'AB123456',
+        'importeExento'       : '100000',
+        'importeGravado10'    : '0',
+        'importeGravado5'     : '420000',
+        'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',
+        'importeNoImputable'  : '0',
+        'iva10'               : '0',
+        'iva5'                : '20000',
+        'mostrarEnLibro'      : ClaseSiNo.si,
+        'numero'              : '001-001-0000456',
+        'numeroAsiento'       : '4',
+        'sucursal'            : '0002 - Sucursal Luque',
+        'timbrado'            : '55667788',
+        'tipoDocumento'       : '01',
+        'tipoIdentificacion'  : ClaseTipoIdentificacion.pasaporte,
+        'total'               : '520000',
+        'totalComprobante'    : '520000',
+        'vigenteDesde'        : '',
+        'vigenteHasta'        : '',
+      },
+    ];
+  }
+
+}
+

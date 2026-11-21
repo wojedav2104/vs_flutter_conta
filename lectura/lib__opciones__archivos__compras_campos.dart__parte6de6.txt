@@ -1,0 +1,66 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras_campos.dart
+PARTE 6 DE 6
+---
+),
+        sGrupo                : 'comResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+    ];
+  }
+
+  // ── Columnas de la grilla de detalles ───────────────────────────────────
+
+  static List<ClaseCampoAbm> crearCamposDetalle(String sIdioma) {
+
+    return <ClaseCampoAbm>[
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 16,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'cuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('comHintCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bCompletarCeros  : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'subcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 40,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'nombreCuenta',
+        sEtiqueta             : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint                 : ClaseIdiomas.getTexto('comHintNombreCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'debe',
+        sEtiqueta        : ClaseIdiomas.getTexto('detDebe', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'haber',
+        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bColumnaExpansible: true,
+        iAnchoCaracteres  : 60,
+        iAnchoVisible     : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'concepto',
+        sEtiqueta         : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
+      ),
+    ];
+  }
+
+}

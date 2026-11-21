@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 3 DE 13
 ---
-ck((_) => _pedirFoco(oCampoFoco));
+nce.addPostFrameCallback((_) => _pedirFoco(oCampoFoco));
     } else {
       _pedirFoco(oCampoFoco);
     }
@@ -44,8 +44,8 @@ ck((_) => _pedirFoco(oCampoFoco));
           ),
           decoration : BoxDecoration(
             color        : bActiva
-                ? oEsquema.primaryContainer
-                : oEsquema.surfaceContainerHigh,
+                ? ClaseGenTemas.colorFondoPestanaActiva(oContexto)
+                : ClaseGenTemas.colorFondoPestanaInactiva(oContexto),
             borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
             border       : Border.all(
               color : bActiva ? oEsquema.primary : oEsquema.outline,
@@ -108,7 +108,4 @@ ck((_) => _pedirFoco(oCampoFoco));
             padding : const EdgeInsets.symmetric(horizontal: ClaseGenEspacios.dEspacio16),
             child   : Column(
               crossAxisAlignment : CrossAxisAlignment.start,
-              children: _construirCampos(listComunes, oPrimeroHabilitado),
-            ),
-          ),
-    
+              children: _construirCampos(lis

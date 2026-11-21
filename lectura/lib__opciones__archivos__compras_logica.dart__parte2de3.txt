@@ -1,0 +1,87 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras_logica.dart
+PARTE 2 DE 3
+---
+e arriba ya aplicadas).
+    final String sGravado10 = mapActualizaciones['importeGravado10'] ?? (mapValores['importeGravado10'] ?? '');
+    final String sGravado5  = mapActualizaciones['importeGravado5']  ?? (mapValores['importeGravado5']  ?? '');
+    final String sExento    = mapActualizaciones['importeExento']    ?? (mapValores['importeExento']    ?? '');
+    final double dComprobante =
+        (funcParsearNumero(sGravado10)                      ?? 0) +
+        (funcParsearNumero(sGravado5)                       ?? 0) +
+        (funcParsearNumero(sExento)                         ?? 0) +
+        (funcParsearNumero(mapValores['importeIreSimple']   ?? '') ?? 0) +
+        (funcParsearNumero(mapValores['importeIrpSimple']   ?? '') ?? 0) +
+        (funcParsearNumero(mapValores['importeNoImputable'] ?? '') ?? 0);
+    mapActualizaciones['totalComprobante'] = funcFormatearNumeroPlano(dComprobante);
+
+    return mapActualizaciones;
+  }
+
+  // ── Validación cruzada del registro completo ────────────────────────────
+
+  static String? validarRegistro(Map<String, dynamic> oRegistro, String sIdioma) {
+
+    // Fecha de la compra dentro del Ejercicio contable.
+    final String? sErrorFecha = ClaseCapValidar.validarFechaEnEjercicio(
+      (oRegistro['fecha']     ?? '').toString(),
+      (oRegistro['ejercicio'] ?? '').toString(),
+      ClaseIdiomas.getTexto('comFecha', sIdioma),
+      sIdioma,
+    );
+    if (sErrorFecha != null) return sErrorFecha;
+
+    final String sTipoDoc = (oRegistro['tipoDocumento'] ?? '').toString();
+
+    // Cantidad de cuotas: solo se escribe en Factura Crédito (1 a 240).
+    // En los demás tipos el campo está deshabilitado y vale 0.
+    final String sCuotas = (oRegistro['cantidadCuotas'] ?? '').toString().trim();
+    if (ClaseTipoDocumento.esFacturaCredito(sTipoDoc)) {
+      if (sCuotas.isEmpty) {
+        return ClaseCapValidar.validarObligatorio(sCuotas,
+            ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), sIdioma);
+      }
+      final String? sErrorCuotas = ClaseCapValidar.validarRangoEntero(sCuotas,
+          ClaseIdiomas.getTexto('comCantidadCuotas', sIdioma), 1, 240, sIdioma);
+      if (sErrorCuotas != null) return sErrorCuotas;
+    }
+
+    // Timbrado: obligatorio de 8 dígitos solo si el Tipo de documento lleva
+    // la máscara 999-999-9999999; en blanco y deshabilitado en los demás casos.
+    final String sTimbrado = (oRegistro['timbrado'] ?? '').toString();
+    if (ClaseTipoDocumento.esConMascara(sTipoDoc)) {
+      if (sTimbrado.trim().isEmpty) {
+        return ClaseCapValidar.validarObligatorio(sTimbrado,
+            ClaseIdiomas.getTexto('comTimbrado', sIdioma), sIdioma);
+      }
+      final String? sErrorTimbrado = ClaseCapValidar.validarDigitosExactos(sTimbrado,
+          ClaseIdiomas.getTexto('comTimbrado', sIdioma), 8, sIdioma);
+      if (sErrorTimbrado != null) return sErrorTimbrado;
+    }
+
+    // N° de documento según el Tipo de documento.
+    final String? sErrorNumero = ClaseCapValidar.validarNumeroDocumentoPorTipo(
+      (oRegistro['numero'] ?? '').toString(),
+      sTipoDoc,
+      ClaseIdiomas.getTexto('comNumero', sIdioma),
+      sIdioma,
+    );
+    if (sErrorNumero != null) return sErrorNumero;
+
+    // Identificación según el Tipo de identificación.
+    final String? sErrorIdent = ClaseCapValidar.validarIdentificacion(
+      (oRegistro['identificacion']      ?? '').toString(),
+      (oRegistro['tipoIdentificacion']  ?? '').toString(),
+      ClaseIdiomas.getTexto('comIdentificacion', sIdioma),
+      sIdioma,
+    );
+    if (sErrorIdent != null) return sErrorIdent;
+
+    // Vigencia del timbrado: el fin debe ser posterior al inicio.
+    final String? sErrorVigencia = ClaseCapValidar.validarFechaFinPosterior(
+      (oRegistro['vigenteDesde'] ?? '').toString(),
+      (oRegistro['vigenteHasta'] ?? '').toString(),
+      sIdioma,
+    );
+    if (sErrorVigencia != null) return sErrorVigencia;
+
+    // Marangatú: el T

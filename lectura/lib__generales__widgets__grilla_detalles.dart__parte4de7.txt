@@ -1,0 +1,92 @@
+RUTA ORIGINAL: lib/generales/widgets/grilla_detalles.dart
+PARTE 4 DE 7
+---
+;
+        final List<String> listValores  = oCampo.listValores  ?? listOpciones;
+        return DropdownButtonFormField<String>(
+          key          : ValueKey<String>('${oCampo.sClave}_${iFila}_$sValor'),
+          initialValue : listValores.contains(sValor) ? sValor : null,
+          isExpanded   : true,
+          style        : bHabilitado
+              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
+                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+              : ClaseGenEstilosTexto.textoCampo(oContexto),
+          decoration   : InputDecoration(
+            isDense   : true,
+            filled    : true,
+            fillColor : bHabilitado
+                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            contentPadding : const EdgeInsets.symmetric(
+              horizontal : ClaseGenEspacios.dEspacio08,
+              vertical   : ClaseGenEspacios.dEspacio08,
+            ),
+            border    : const OutlineInputBorder(),
+          ),
+          items: <DropdownMenuItem<String>>[
+            for (int i = 0; i < listOpciones.length; i++)
+              DropdownMenuItem<String>(
+                value : listValores[i],
+                child : Text(listOpciones[i],
+                    style: ClaseGenEstilosTexto.textoCampo(oContexto)),
+              ),
+          ],
+          onChanged: bHabilitado
+              ? (String? sNuevo) => funcAlCambiarFila(iFila, oCampo.sClave, sNuevo ?? '')
+              : null,
+        );
+      case EnumTipoCampoAbm.numero:
+        return ClaseCeldaNumero(
+          bHabilitado   : bHabilitado,
+          funcAlCambiar : (String sValor) => funcAlCambiarFila(iFila, oCampo.sClave, sValor),
+          oCampo        : oCampo,
+          oControl      : listControles[iFila][oCampo.sClave]!,
+          sValor        : sValor,
+        );
+      default:
+        return TextField(
+          controller      : listControles[iFila][oCampo.sClave],
+          enabled         : bHabilitado,
+          style           : bHabilitado
+              ? ClaseGenEstilosTexto.textoCampo(oContexto).copyWith(
+                  color: ClaseGenTemas.colorTextoCampoHabilitado(oContexto))
+              : ClaseGenEstilosTexto.textoCampo(oContexto),
+          inputFormatters : (oCampo.iAnchoCaracteres > 0)
+              ? <TextInputFormatter>[LengthLimitingTextInputFormatter(oCampo.iAnchoCaracteres)]
+              : null,
+          onChanged       : (String sValor) => funcAlCambiarFila(iFila, oCampo.sClave, sValor),
+          decoration      : InputDecoration(
+            isDense   : true,
+            filled    : true,
+            fillColor : bHabilitado
+                ? ClaseGenTemas.colorFondoCampoHabilitado(oContexto)
+                : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+            contentPadding : const EdgeInsets.symmetric(
+              horizontal : ClaseGenEspacios.dEspacio08,
+              vertical   : ClaseGenEspacios.dEspacio08,
+            ),
+            border    : const OutlineInputBorder(),
+          ),
+        );
+    }
+  }
+
+  Widget _construirFilaTotales(BuildContext oContexto, List<double> listAnchos) {
+
+    // Sumas de las columnas numéricas.
+    final Map<String, double> mapSumas = <String, double>{};
+    for (final ClaseCampoAbm oCampo in listCamposDetalle) {
+      if (oCampo.oTipo != EnumTipoCampoAbm.numero) continue;
+      double dSuma = 0;
+      for (final Map<String, String> mapFila in listDetalles) {
+        dSuma += funcParsearNumero(mapFila[oCampo.sClave] ?? '') ?? 0;
+      }
+      mapSumas[oCampo.sClave] = dSuma;
+    }
+
+    // El rótulo TOTALES va en la columna previa a la primera numérica.
+    int iPrimeraSuma = -1;
+    for (int i = 0; i < listCamposDetalle.length; i++) {
+      if (listCamposDetalle[i].oTipo == EnumTipoCampoAbm.numero) {
+        iPrimeraSuma = i;
+        bre

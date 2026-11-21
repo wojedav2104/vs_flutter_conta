@@ -1,0 +1,88 @@
+RUTA ORIGINAL: lib/generales/widgets/grilla_detalles.dart
+PARTE 5 DE 7
+---
+ak;
+      }
+    }
+    final int iRotulo = (iPrimeraSuma > 0)
+        ? iPrimeraSuma - 1
+        : listCamposDetalle.length - 1;
+
+    // Regla UI/UX: el botón Agregar fila ocupa el ancho de las columnas
+    // previas al rótulo (quedan vacías en la fila de totales) y así se
+    // muestra a la izquierda de la grilla, en la misma fila que TOTALES.
+    double dAnchoIzquierda = ClaseGenLayout.dAnchoNumeroFila;
+    for (int i = 0; i < iRotulo; i++) {
+      dAnchoIzquierda += listAnchos[i];
+    }
+
+    // Regla UI/UX: la suma de las columnas numéricas (Debe, Haber) es un
+    // resultado de suma: se muestra en negritas y con un relleno distinto
+    // al de los datos sumados.
+    final TextStyle oEstilo =
+        ClaseGenEstilosTexto.textoDestacado(oContexto).copyWith(
+            fontWeight: FontWeight.bold);
+
+    return Container(
+      color   : ClaseGenTemas.colorFondoCampoTotal(oContexto),
+      padding : const EdgeInsets.symmetric(
+        horizontal : ClaseGenEspacios.dEspacio08,
+        vertical   : ClaseGenEspacios.dEspacio04,
+      ),
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width : dAnchoIzquierda,
+            child : Align(
+              alignment : Alignment.centerLeft,
+              // Regla UI/UX: el botón usa el estilo de los botones ABM
+              // (fondo resaltado, texto blanco) para distinguirse del fondo
+              // de la fila de totales; gris cuando está deshabilitado y
+              // amarillo cuando tiene el foco del teclado.
+              child     : ElevatedButton.icon(
+                onPressed : bModoEdicion ? funcAgregarFila : null,
+                icon      : const Icon(Icons.add),
+                style     : ElevatedButton.styleFrom(
+                  disabledBackgroundColor : ClaseGenTemas.colorBotonDeshabilitado(oContexto),
+                  disabledForegroundColor : ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto),
+                  shape  : RoundedRectangleBorder(
+                    borderRadius : BorderRadius.circular(ClaseGenRadios.dPequeno),
+                  ),
+                ).copyWith(
+                  backgroundColor : WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> setEstados) {
+                      if (setEstados.contains(WidgetState.focused)) {
+                        return ClaseGenTemas.colorBotonConFoco(oContexto);
+                      }
+                      if (setEstados.contains(WidgetState.disabled)) {
+                        return ClaseGenTemas.colorBotonDeshabilitado(oContexto);
+                      }
+                      return ClaseGenTemas.colorBotonHabilitado(oContexto);
+                    },
+                  ),
+                  foregroundColor : WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> setEstados) {
+                      if (setEstados.contains(WidgetState.focused)) {
+                        return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
+                      }
+                      if (setEstados.contains(WidgetState.disabled)) {
+                        return ClaseGenTemas.colorTextoBotonDeshabilitado(oContexto);
+                      }
+                      return ClaseGenTemas.colorTextoBotonHabilitado(oContexto);
+                    },
+                  ),
+                ),
+                label     : Text(ClaseIdiomas.getTexto('detAgregarFila', sIdioma),
+                    style: ClaseGenEstilosTexto.normalMediano(oContexto)),
+              ),
+            ),
+          ),
+          for (int i = iRotulo; i < listCamposDetalle.length; i++)
+            SizedBox(
+              width : listAnchos[i],
+              child : Padding(
+                padding : _getPaddingColumna(),
+                child   : Text(
+                  (i == iRotulo)
+                      ? ClaseIdiomas.getTexto('detTotales', sIdioma)
+                      : ((i == iPrimeraSuma |

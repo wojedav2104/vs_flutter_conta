@@ -1,0 +1,12 @@
+RUTA ORIGINAL: lib/generales/temas/layout.dart
+PARTE 2 DE 2
+---
+dEscalaMinima como piso. La llama main.dart al abrir y al redimensionar la ventana.
+  static void calcularEscala(double dAncho) {
+    double dFactor = dAncho / 1920.0;
+    if (dFactor > 1.0)           dFactor = 1.0;
+    if (dFactor < dEscalaMinima) dFactor = dEscalaMinima;
+    dEscala = dFactor;
+  }
+
+}

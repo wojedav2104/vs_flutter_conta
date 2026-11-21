@@ -6,9 +6,17 @@ claro
   static const colorTextoEncabezadoGrillaClaro  = Color(0xFFFFEAC2); // texto sobre la banda del modo claro
   static const colorTextoEncabezadoGrillaOscuro = Color(0xFF3D2E00); // texto sobre la banda del modo oscuro
   
+    // ── Fondos de las pestañas de los formularios (regla UI/UX) ───────────────────────────────────────────────────────────────────────────────────────────
+  // Los cinco backcolors del formulario deben ser todos distintos entre sí: pestaña seleccionada, pestaña no seleccionada, campo habilitado, campo deshabilitado y fondo del formulario.
+  static const colorPestanaActivaClaro    = Color(0xFFEAD5FF); // lila suave, mismo tono que primaryContainer
+  static const colorPestanaActivaOscura   = Color(0xFF4A1470); // lila profundo, mismo tono que primaryContainer
+  static const colorPestanaInactivaClaro  = Color(0xFFC3CBD5); // gris azulado: distinto del gris #E2E2E2 del campo deshabilitado y del blanco del formulario
+  static const colorPestanaInactivaOscura = Color(0xFF2A2B2F); // gris elevado: distinto del #1E1F22 del formulario y del #374151 del campo deshabilitado
+
   // ── Superficies por tema ────────────────────────────────────────────────
 
   static const colorSuperficieClara         = Color(0xFFFFFFFF);
+  
   static const colorSuperficieOscura        = Color(0xFF1E1F22);
   static const colorSuperficieOscuraElevada = Color(0xFF2A2B2F);
 

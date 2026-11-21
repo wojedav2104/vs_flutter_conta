@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 2 DE 13
 ---
-         style: ClaseGenEstilosTexto.normalChico(oContexto)),
+ais(), sIdioma)}',
+           style: ClaseGenEstilosTexto.normalChico(oContexto)),
     ],
   );
 }
@@ -102,4 +103,4 @@ class ClaseEstadoFormularioCampos extends State<ClaseFormularioCampos>
     }
     if (iGrupo >= 0 && iGrupo != oControladorPestanas.index) {
       oControladorPestanas.animateTo(iGrupo);
-      WidgetsBinding.instance.addPostFrameCallba
+      WidgetsBinding.insta

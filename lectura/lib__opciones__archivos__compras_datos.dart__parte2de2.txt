@@ -1,0 +1,44 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras_datos.dart
+PARTE 2 DE 2
+---
+            'haber'        : '520000',
+            'nombreCuenta' : 'Caja',
+            'subcuenta'    : '',
+          },
+        ],
+        'ejercicio'           : '2026',
+        'enviarMarangatu'     : ClaseSiNo.no,
+        'esFacturaElectronica': ClaseSiNo.no,
+        'exentas'             : '100000',
+        'fecha'               : '20/02/2026',
+        'gravadas10'          : '0',
+        'gravadas5'           : '400000',
+        'hora'                : '10:30',
+        'identificacion'      : 'EX789012',
+        'importeExento'       : '100000',
+        'importeGravado10'    : '0',
+        'importeGravado5'     : '420000',
+        'importeIreSimple'    : '0',
+        'importeIrpSimple'    : '0',
+        'importeNoImputable'  : '0',
+        'iva10'               : '0',
+        'iva5'                : '20000',
+        'mostrarEnLibro'      : ClaseSiNo.si,
+        'numero'              : '001-001-0000456',
+        'numeroAsiento'       : '5',
+        'proveedor'           : 'Importadora Brasil Ltda.',
+        'sucursal'            : '0001 - Sucursal Central',
+        'timbrado'            : '55667788',
+        'tipoAfectacion'      : ClaseTipoAfectacion.indistinto,
+        'tipoDocumento'       : '01',
+        'tipoIdentificacion'  : ClaseTipoIdentificacion.cedulaExtranjera,
+        'total'               : '520000',
+        'totalComprobante'    : '520000',
+        'vigenteDesde'        : '',
+        'vigenteHasta'        : '',
+      },
+    ];
+  }
+
+}
+

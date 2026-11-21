@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
 PARTE 3 DE 4
 ---
-ClaseIdiomas.getTexto('empHintEmail', sIdioma),
+
+        sGrupo           : 'empGrupoGenerales',
+        sHint            : ClaseIdiomas.getTexto('empHintEmail', sIdioma),
       ),
       ClaseCampoAbm(
         bObligatorio     : true,
@@ -89,5 +91,4 @@ ClaseIdiomas.getTexto('empHintEmail', sIdioma),
         'irp'                     : ClaseSiNo.si,
         'iva'                     : 'GEN',
         'localidad'               : 'Luque',
-        'nombre'                  : 'Empresa de Prueba S.A.',
-        'nombres'                
+        'nombre'  

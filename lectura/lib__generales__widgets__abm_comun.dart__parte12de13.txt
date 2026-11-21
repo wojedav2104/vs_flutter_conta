@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 12 DE 13
 ---
-  EnumBotonAbm.cancelar,
+borrar,
+    EnumBotonAbm.modificar,
+    EnumBotonAbm.grabar,
+    EnumBotonAbm.cancelar,
   };
 
   /// Devuelve true si el país conectado permite edición.
@@ -83,6 +86,4 @@ PARTE 12 DE 13
           foregroundColor : WidgetStateProperty.resolveWith<Color>(
             (Set<WidgetState> setEstados) {
               if (setEstados.contains(WidgetState.focused)) {
-                return ClaseGenTemas.colorTextoBotonConFoco(oContexto);
-              }
-              return 
+                return ClaseGenTemas.colorTex

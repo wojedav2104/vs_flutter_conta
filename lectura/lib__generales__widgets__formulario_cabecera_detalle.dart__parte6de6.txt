@@ -1,0 +1,93 @@
+RUTA ORIGINAL: lib/generales/widgets/formulario_cabecera_detalle.dart
+PARTE 6 DE 6
+---
+jarFila     : bajarFila,
+      funcSubirFila     : subirFila,
+      listCamposDetalle : widget.listCamposDetalle,
+      listControles     : listControles,
+      listDetalles      : listDetalles,
+      oPie              : _construirCampoAlPie(oContexto),
+      sFormatoNumeros   : widget.oPreferencias.getFormatoNumeros(),
+      sIdioma           : getIdioma(),
+    );
+    final Widget oCabecera = ClaseFormularioCampos(
+      key                 : _oLlaveFormulario,       // ← CAMBIO item 14
+      bAutoFocus          : bPedirFoco,              // ← CAMBIO item 10
+      funcAlCambiarCampo  : _alCambiarCampo,
+      funcAlPerderFoco    : widget.funcAlPerderFoco,
+      funcEsHabilitado    : _getHabilitado,
+      // Regla UI/UX (Compras): la grilla de detalles se muestra dentro de su
+      // pestaña, debajo de los campos del grupo.
+      funcExtraGrupo      : (widget.sGrupoConDetalles == null)
+          ? null
+          : (String sGrupo) => (sGrupo == widget.sGrupoConDetalles)
+              ? oGrilla
+              : null,
+      listCampos          : listCabecera,
+      mapValores          : mapValores,
+      sIdioma             : getIdioma(),
+    );
+
+    return ClaseAndamiajeAbm(
+      funcAlClicar    : _alClicarBoton,
+      funcSeleccionar : seleccionar,
+      iRegistro       : iRegistro,
+      listCampos      : widget.listCamposCabecera,
+      listRegistros   : widget.listRegistros,
+      oFocoGrilla     : _oFocoGrilla,
+      // Regla UI/UX: con sGrupoConDetalles la grilla de detalles vive dentro
+      // de su pestaña (ej: Compras, pestaña Detalles); sin él, la grilla
+      // queda al pie del formulario (ej: Asientos).
+      oFormulario: (widget.sGrupoConDetalles != null)
+          ? oCabecera
+          : Column(
+              crossAxisAlignment : CrossAxisAlignment.stretch,
+              children: <Widget>[
+                if (bConPestanas)
+                  Expanded(
+                    flex  : 2,
+                    child : oCabecera,
+                  )
+                else
+                  oCabecera,
+                const Divider(height: ClaseGenEspacios.dEspacio01),
+                Expanded(
+                  flex  : 3,
+                  child : oGrilla,
+                ),
+              ],
+            ),
+      setHabilitados : _getBotonesHabilitados(),
+      sIdioma        : getIdioma(),
+      sTitulo        : widget.sTitulo,
+    );
+  }
+
+  /// Campo de la cabecera que se muestra al pie, debajo de la fila de totales
+  /// (spec 02_02, 02_03 y 02_04: el campo Comentarios).
+  /// Regla UI/UX: la etiqueta queda arriba, en la misma fila que el contador
+  /// de caracteres, y el campo ocupa el ancho de la grilla.
+  Widget _construirCampoAlPie(BuildContext oContexto) {
+    for (final ClaseCampoAbm oCampo in widget.listCamposCabecera) {
+      if (oCampo.sClave != widget.sClaveCampoAlPie) continue;
+      return Padding(
+        padding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio04,
+        ),
+        child : ClaseCampoFormulario(
+          bEtiquetaArriba : true,
+          bHabilitado   : _getHabilitado(oCampo),
+          funcAlCambiar : (String sValor) => _alCambiarCampo(oCampo.sClave, sValor),
+          mapValores    : mapValores,
+          oCampo        : oCampo,
+          sIdioma       : getIdioma(),
+          sValor        : mapValores[oCampo.sClave] ?? '',
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+}
+

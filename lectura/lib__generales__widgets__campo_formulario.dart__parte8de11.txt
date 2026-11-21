@@ -1,7 +1,12 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 8 DE 11
 ---
-: widget.oCampo.sHint,
+      : (String sValor) =>
+          _alCambiarTexto(sValor, bConMascara: !bNumero),    // ← CAMBIO item 9
+      onSubmitted     : (_) => _alEnterCampo(),              // Enter → siguiente campo
+      decoration      : _getDecoracion(
+        oContexto,
+        sHint         : widget.oCampo.sHint,
         oIconoDerecha : _getMostrarBorrarCampo() ? _construirBotonBorrarCampo(bCompacto: true) : null,
       ),
     );
@@ -94,8 +99,4 @@ PARTE 8 DE 11
           child: TextField(
             controller   : oControl,
             enabled      : widget.bHabilitado,
-            focusNode    : oFoco,
-            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
-            keyboardType : TextInputType.datetime,
-            onChanged    : _alCambiarHora,
-            onSubmitted  : (_) => _alEnterCampo(),   // Enter com
+            

@@ -1,0 +1,15 @@
+RUTA ORIGINAL: lib/generales/widgets/grilla_detalles.dart
+PARTE 7 DE 7
+---
+.colorFondoCampoHabilitado(oContexto)
+            : ClaseGenTemas.colorFondoCampoDeshabilitado(oContexto),
+        contentPadding : const EdgeInsets.symmetric(
+          horizontal : ClaseGenEspacios.dEspacio08,
+          vertical   : ClaseGenEspacios.dEspacio08,
+        ),
+        border    : const OutlineInputBorder(),
+      ),
+    );
+  }
+}
+

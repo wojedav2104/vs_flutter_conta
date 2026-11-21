@@ -95,10 +95,14 @@ class ClaseEstadoEmpresa extends State<ClaseEmpresa> {
     ];
     const List<String> listIreValores = <String>['GEN', 'SIM', 'RES', 'NPG'];
 
-    // Países vigentes para la Empresa: Argentina, Paraguay y Perú. Francia nunca aparece porque es de solo lectura. Uruguay se agregará cuando esté vigente.
-    const List<String> listPaisesValores = <String>['ARG', 'PRY', 'PER'];
-    final List<String> listPaisesOpciones = listPaisesValores.map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma)}').toList();
-
+    // Países que cargan datos (spec 01_01): Paraguay y Perú. Francia solo
+    // visualiza los datos, nunca carga, por eso no figura en esta lista.
+    // Los nombres salen de ClasePaises (assets/datos/paises.json).
+    const List<String> listPaisesValores = <String>['PRY', 'PER'];
+    final List<String> listPaisesOpciones = listPaisesValores
+        .map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma)}')
+        .toList();
+    
     return <ClaseCampoAbm>[
 
       // ── Grupo 1: Generales ──────────────────────────────────────────────

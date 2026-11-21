@@ -1,7 +1,11 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 9 DE 11
 ---
-pleta y va al siguiente campo
+focusNode    : oFoco,
+            style        : _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto)),
+            keyboardType : TextInputType.datetime,
+            onChanged    : _alCambiarHora,
+            onSubmitted  : (_) => _alEnterCampo(),   // Enter completa y va al siguiente campo
             decoration   : _getDecoracion(oContexto, sHint: 'hh:mm'),            
           ),
         ),
@@ -82,15 +86,4 @@ pleta y va al siguiente campo
           DropdownMenuItem<String>(
             value : listValores[i],
             child : Text(listOpciones[i],
-                style: _estiloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto))),
-          ),
-      ],
-      onChanged: widget.bHabilitado
-          ? (String? sNuevo) {
-              if (sNuevo != null) widget.funcAlCambiar(sNuevo);
-            }
-          : null,
-    );
-  }
-
-  // ──
+                style: _est

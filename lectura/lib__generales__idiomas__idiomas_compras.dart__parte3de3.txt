@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_compras.dart
 PARTE 3 DE 3
 ---
- loterie, jeux de hasard',
+erie, jeux de hasard',
     'comTipoDoc17'            : 'Billet ou ticket de transport aérien',
     'comTipoDoc18'            : 'Entrée à des spectacles publics',
     // ── Validations croisées ─────────────────────────────────────────────

@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 8 DE 13
 ---
-rados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
+s();
+    final int iTotalPaginas = math.max(1,
+        (listFiltrados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPagina);
     final int iPaginaActual = (iPagina < iTotalPaginas) ? iPagina : iTotalPaginas - 1;
     final int iInicio = iPaginaActual * ClaseGenLayout.iFilasPorPagina;
     final int iFin    = math.min(iInicio + ClaseGenLayout.iFilasPorPagina, listFiltrados.length);
@@ -80,5 +82,4 @@ rados.length + ClaseGenLayout.iFilasPorPagina - 1) ~/ ClaseGenLayout.iFilasPorPa
                 children: <Widget>[
                   for (final ClaseCampoAbm oCampo in listColumnas)
                     Expanded(
-                      child: GestureDetector(
-                    
+ 

@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 6 DE 13
 ---
-tate() {
+widget.oFocoExterno ?? _oFocoInterno;
+
+  @override
+  void initState() {
     super.initState();
     // ← CAMBIO item 23: al ingresar al formulario, el foco del teclado queda
     //   en la grilla (sobre la primera fila seleccionada) si hay registros.
@@ -93,5 +96,3 @@ tate() {
     }
     return listSalida;
   }
-
-  // ── Menú contextual por celda ────────────────────────────

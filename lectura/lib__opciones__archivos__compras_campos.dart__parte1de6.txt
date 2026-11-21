@@ -1,0 +1,91 @@
+RUTA ORIGINAL: lib/opciones/archivos/compras_campos.dart
+PARTE 1 DE 6
+---
+import '../../generales/idiomas/idiomas.dart';
+import '../../generales/modelos/campo_abm.dart';
+import '../../generales/modelos/documentos.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+
+/// Campos del Libro Compras (spec 02_03): cabecera con tres grupos
+/// (Generales, Detalles y Resolución 90/2021) y columnas de la grilla de
+/// detalles.
+abstract final class ClaseComprasCampos {
+
+  // ── Campos de la cabecera ──────────────────────────────────────────
+  //
+  // Orden visual = orden de declaración (la fila se coloca donde aparece su
+  // primer campo; dentro de la fila, los campos van en orden de declaración).
+
+  static List<ClaseCampoAbm> crearCamposCabecera(String sIdioma) {
+
+    final int iAnchoEtiquetasPrimeraColumna = 29;
+
+    return <ClaseCampoAbm>[
+
+      // ── Generales ──────────────────────────────────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('comEjercicio', sIdioma), sIdioma),
+        iAnchoCaracteres : 4,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  1,
+        oAlineacion      : EnumAlineacion.centro,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'ejercicio',
+        sEtiqueta        : ClaseIdiomas.getTexto('comEjercicio', sIdioma),
+        sMascara         : '9.999',
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 44,
+        iAnchoEtiqueta   : 15,
+        iFila            :  1,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'sucursal',
+        sEtiqueta        : ClaseIdiomas.getTexto('comSucursal', sIdioma),
+        sGrupo           : 'comGenerales',
+        sHint            : ClaseIdiomas.getTexto('comHintSucursal', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        iAnchoEtiqueta        : 22,
+        iFila                 : 1,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'numeroAsiento',
+        sEtiqueta             : ClaseIdiomas.getTexto('comNumeroAsiento', sIdioma),
+        sGrupo                : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('comFecha', sIdioma), DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        iAnchoCaracteres : 10,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 2,
+        oAlineacion      : EnumAlineacion.centro,
+        oTipo            : EnumTipoCampoAbm.fecha,
+        sClave           : 'fecha',
+        sEtiqueta        : ClaseIdiomas.getTexto('comFecha', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(sValor, ClaseIdiomas.getTexto('comHora', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        iFila            : 2,
+        oTipo            : EnumTipoCampoAbm.hora,
+        sClave           : 'hora',
+        sEtiqueta        : ClaseIdiomas.getTexto('comHora', sIdioma),
+        sGrupo           : 'comGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoDocumento.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  3,
+        listOpciones     : ClaseTipoDocumento.getListOpciones(sIdioma),
+        listValores      : ClaseTipoDocumento.listV

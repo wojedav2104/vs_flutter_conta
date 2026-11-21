@@ -1,8 +1,11 @@
 RUTA ORIGINAL: lib/opciones/tablas/empresa.dart
 PARTE 2 DE 4
 ---
-s = listPaisesValores.map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma)}').toList();
-
+RY', 'PER'];
+    final List<String> listPaisesOpciones = listPaisesValores
+        .map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma)}')
+        .toList();
+    
     return <ClaseCampoAbm>[
 
       // ── Grupo 1: Generales ──────────────────────────────────────────────
@@ -89,5 +92,3 @@ s = listPaisesValores.map((String s) => '$s - ${ClasePaises.getNombre(s, sIdioma
         oTipo            : EnumTipoCampoAbm.texto,
         sClave           : 'email',
         sEtiqueta        : ClaseIdiomas.getTexto('empEmail', sIdioma),
-        sGrupo           : 'empGrupoGenerales',
-        sHint            : 

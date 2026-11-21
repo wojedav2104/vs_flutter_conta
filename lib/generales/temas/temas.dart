@@ -124,10 +124,21 @@ abstract final class ClaseGenTemas {
           ? ClaseGenColores.colorCampoHabilitadoOscuro
           : ClaseGenColores.colorCampoHabilitadoClaro;
 
-  /// Relleno del control deshabilitado: el gris tenue (el que antes usaba
-  /// el habilitado), casi fundido con el formulario.
+  /// Relleno del control deshabilitado: el gris tenue (el que antes usaba el habilitado), casi fundido con el formulario. Color propio (colorGris2/colorGris4), sin depender de surfaceContainerHighest, que resolvía al mismo gris de la pestaña no seleccionada.
   static Color colorFondoCampoDeshabilitado(BuildContext oContexto) =>
-      Theme.of(oContexto).colorScheme.surfaceContainerHighest;
+      _esModoOscuro(oContexto) ? ClaseGenColores.colorGris4 : ClaseGenColores.colorGris2;
+
+  // ── Backcolors de las pestañas (regla UI/UX: los cinco distintos entre sí) ──
+  // Aquí se centralizan los cinco backcolors del formulario: pestaña seleccionada, pestaña no seleccionada, campo habilitado, campo deshabilitado (los tres de arriba) y fondo del formulario (scaffoldBackgroundColor, en _construir).
+
+  /// Fondo de la pestaña seleccionada (ficha activa de los formularios con grupos).
+  static Color colorFondoPestanaActiva(BuildContext oContexto) =>
+      _esModoOscuro(oContexto) ? ClaseGenColores.colorPestanaActivaOscura : ClaseGenColores.colorPestanaActivaClaro;
+
+  /// Fondo de la pestaña no seleccionada (ficha inactiva): distinto del campo deshabilitado y del fondo del formulario.
+  static Color colorFondoPestanaInactiva(BuildContext oContexto) =>
+      _esModoOscuro(oContexto) ? ClaseGenColores.colorPestanaInactivaOscura : ClaseGenColores.colorPestanaInactivaClaro;
+
 
   /// Relleno de los resultados de una suma (campos Total y fila de totales
   /// de la grilla de detalles): distinto del relleno de los datos sumados,

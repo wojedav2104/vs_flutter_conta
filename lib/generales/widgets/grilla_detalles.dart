@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vs_conta/generales/widgets/campo_formulario.dart';
 
 import '../idiomas/idiomas.dart';
 import '../modelos/campo_abm.dart';
@@ -10,6 +9,8 @@ import '../temas/layout.dart';
 import '../temas/radios.dart';
 import '../temas/temas.dart';
 import '../utilitarios/formatos.dart';
+import '../widgets/campo_formulario.dart';
+
 
 /// Grilla editable de detalles de ClaseFormularioCabeceraDetalle: encabezado
 /// fijo arriba, filas editables con acciones (subir, bajar y borrar), fila de

@@ -83,7 +83,7 @@ abstract final class ClaseIdiomasCompras {
     'comFecha'                : 'Date de l\'achat',
     'comHintSucursal'         : 'Code et nom de la succursale',
     'comHora'                 : 'Heure',
-    'comNumeroAsiento'        : 'Numéro de l\'écriture',
+    'comNumeroAsiento'        : 'N° de l\'écriture',
     'comTipoDocumento'        : 'Type de document',
     'comNumero'               : 'N°',
     'comCantidadCuotas'       : 'Nombre de versements',

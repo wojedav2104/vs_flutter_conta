@@ -1,7 +1,8 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 5 DE 13
 ---
-jo de los campos ocupando el alto que
+po y, si el grupo tiene
+  /// contenido extra, ese contenido debajo de los campos ocupando el alto que
   /// sobra (los campos se desplazan solos si no caben).
   Widget _construirContenidoPestana(
       BuildContext oContexto, String sGrupo, ClaseCampoAbm? oPrimeroHabilitado) {
@@ -105,7 +106,4 @@ class ClaseEstadoGrillaRegistros extends State<ClaseGrillaRegistros> {
   final FocusNode _oFocoInterno = FocusNode();
 
   /// Nodo de foco que usa la grilla: el externo si el formulario lo provee, o el propio. Se elige una sola vez en initState.
-  late final FocusNode oFocoGrilla = widget.oFocoExterno ?? _oFocoInterno;
-
-  @override
-  void initS
+  late final FocusNode oFocoGrilla = 

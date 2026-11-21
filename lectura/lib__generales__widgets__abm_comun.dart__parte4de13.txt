@@ -1,7 +1,10 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 4 DE 13
 ---
-    // Regla UI/UX (fácil visualización): cada pestaña es una ficha
+tComunes, oPrimeroHabilitado),
+            ),
+          ),
+        // Regla UI/UX (fácil visualización): cada pestaña es una ficha
         // visible con fondo y borde propios; la activa se resalta con el
         // color primario y texto en negrita.
         Padding(
@@ -92,5 +95,4 @@ PARTE 4 DE 13
     );
   }
 
-  /// Contenido de una pestaña: los campos del grupo y, si el grupo tiene
-  /// contenido extra, ese contenido deba
+  /// Contenido de una pestaña: los campos del gru

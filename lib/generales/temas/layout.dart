@@ -10,12 +10,14 @@ abstract final class ClaseGenLayout {
   static const double dAnchoAccionesFila              =  144.0;
   static const double dAnchoBordeCampo                =    2.0;   // borde total de un campo (1 px por lado)
   static const double dAnchoBotonAbm                  =  150.0;
+  static const double dAnchoBotonBorrarCampo          =   34.0;   // botón "X" a la derecha de los campos de fecha/hora: icono 18 + 8 px de padding por lado
+  static const double dAnchoBotonCalendario           =   48.0;   // botón del selector de fecha/hora: IconButton con ancho mínimo de 48 px
   static const double dAnchoCampoComentario           =  400.0;
   static const double dAnchoCampoFecha                =  180.0;
   static const double dAnchoCampoHora                 =  120.0;
   static const double dAnchoCaracter                  =    8.6;   // ancho de 1 carácter en Roboto Mono
-  static const double dAnchoEtiquetaCampo             =  300.0;   // etiqueta de un campo (antes 220: las etiquetas largas se partían en dos líneas)
-  static const double dAnchoExtraLista                =   72.0;   // flecha, padding interno y margen de una lista
+  static const double dAnchoEtiquetaCampo             =  240.0;   // etiqueta de un campo (antes 220: las etiquetas largas se partían en dos líneas)
+  static const double dAnchoExtraLista                =   58.0;   // flecha (32 px) + padding interno (24 px) + borde (2 px) de una lista: sin margen (ancho mínimo, spec 00_03_01 regla 6)
   static const double dAnchoGrillaAbm                 =  280.0;
   static const double dAnchoGrillaRegistros           =  500.0;
   static const double dAnchoIconoBorrar               =   48.0;   // espacio que ocupa el icono "X" de borrado

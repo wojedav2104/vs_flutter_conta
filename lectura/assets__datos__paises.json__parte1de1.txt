@@ -2,10 +2,8 @@ RUTA ORIGINAL: assets/datos/paises.json
 PARTE 1 DE 1
 ---
 [
-  { "codigo": "ARG", "clave": "paisArgentina" },
   { "codigo": "FRA", "clave": "paisFrancia" },
   { "codigo": "PRY", "clave": "paisParaguay" },
-  { "codigo": "PER", "clave": "paisPeru" },
-  { "codigo": "URY", "clave": "paisUruguay" }
+  { "codigo": "PER", "clave": "paisPeru" }
 ]
 

@@ -17,8 +17,6 @@ l estilo del campo (textoCampo) y la escala
   }
 
   /// Ancho de la etiqueta del campo dentro de un formulario (incluye el asterisco de los obligatorios y el padding derecho). Si iAnchoEtiqueta es 0 usa el ancho general (ClaseGenLayout.dAnchoEtiquetaCampo);
-
-
   double getAnchoEtiqueta() {
     final double dBase = (iAnchoEtiqueta <= 0) ? ClaseGenLayout.dAnchoEtiquetaCampo : iAnchoEtiqueta * ClaseGenLayout.dAnchoCaracter;
     return dBase * ClaseGenEstilosTexto.dFactorTexto * ClaseGenLayout.dEscala;
@@ -44,31 +42,25 @@ l estilo del campo (textoCampo) y la escala
         return ClaseGenLayout.dAnchoCampoComentario;
       case EnumTipoCampoAbm.casillas:
       case EnumTipoCampoAbm.lista:
-        // dAnchoExtraLista cubre la flecha, el padding interno y el margen.
+        // dAnchoExtraLista cubre la flecha (32 px), el padding interno (24 px) y el borde (2 px): sin margen extra (ancho mínimo, spec 00_03_01 regla 6).
         return dAnchoTexto + ClaseGenLayout.dAnchoExtraLista;
       case EnumTipoCampoAbm.fecha:
       case EnumTipoCampoAbm.hora:
-        // Fila: texto + padding + borde, icono de calendario/reloj (48 px,
-        // IconButton) y icono de borrado (48 px, aparece al editar),
-        // separados por 4 px. Antes se reservaba dAnchoIconoFlecha (32 px),
-        // que es de los combobox: faltaban 22 px y el texto se cortaba.
+        // Fila: texto + padding + borde, botón del calendario/reloj (dAnchoBotonCalendario) y botón "X" (dAnchoBotonBorrarCampo), separados por 4 px. Antes
+        // se reservaban 48 px para ambos botones y el campo sobraba unos 2 caracteres (ancho mínimo, spec 00_03_01 regla 6).
         return dAnchoTexto
                + ClaseGenEspacios.dEspacio24 + ClaseGenLayout.dAnchoBordeCampo
-               + ClaseGenLayout.dAnchoIconoBorrar * 2
+               + ClaseGenLayout.dAnchoBotonCalendario
+               + ClaseGenLayout.dAnchoBotonBorrarCampo
                + ClaseGenEspacios.dEspacio04;
       case EnumTipoCampoAbm.logico:
       case EnumTipoCampoAbm.numero:
-      case EnumTipoCampoAbm.texto:
-        // Regla UI/UX (X del campo): el ancho del campo incluye la "X" de
-        // borrado, a 4 px del último carácter del texto y a 4 px del borde
-        // derecho. El hueco dAnchoSuffixBorrar (icono 18 + 3 px por lado) más
-        // 1 px de padding derecho logran ambas separaciones; el padding
-        // izquierdo es el normal (12 px).
-        //
-        // Margen de seguridad: el área de texto real del control queda unos
-        // píxeles más corta que esta cuenta (el hueco de la "X" y el padding
-        // que dibuja el decorador de Material), y en web el texto puede
-        // dibujarse más ancho de lo que mide TextPainter. Sin margen, el
-        // último dígito del valor formateado (ej: "2.026") se cortaba.
+        // Los números conservan el margen de seguridad de 24 px: el área de texto real del control queda unos píxeles más corta que esta cuenta (el hueco de
+        // la "X" y el padding que dibuja el decorador de Material), y en web el valor formateado (ej: "2.026") se dibuja más ancho de lo que mide TextPainter.
         return dAnchoTexto + ClaseGenLayout.dMargenTextoCampo
-               + ClaseGenEspacios.dEspacio12 + ClaseGenEspaci
+               + ClaseGenEspacios.dEspacio12 + ClaseGenEspacios.dEspacio01
+               + ClaseGenLayout.dAnchoSuffixBorrar
+               + ClaseGenLayout.dAnchoBordeCampo;
+      case EnumTipoCampoAbm.texto:
+        // Regla UI/UX (ancho mínimo, spec 00_03_01 regla 6): el campo de texto ocupa exactamente sus caracteres más el hueco de la "X" (18 + 3 px por lado),
+        // los paddings (12 px

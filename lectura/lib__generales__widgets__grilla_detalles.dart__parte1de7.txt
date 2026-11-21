@@ -1,0 +1,103 @@
+RUTA ORIGINAL: lib/generales/widgets/grilla_detalles.dart
+PARTE 1 DE 7
+---
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../idiomas/idiomas.dart';
+import '../modelos/campo_abm.dart';
+import '../temas/espacios.dart';
+import '../temas/estilos_textos.dart';
+import '../temas/layout.dart';
+import '../temas/radios.dart';
+import '../temas/temas.dart';
+import '../utilitarios/formatos.dart';
+import '../widgets/campo_formulario.dart';
+
+
+/// Grilla editable de detalles de ClaseFormularioCabeceraDetalle: encabezado
+/// fijo arriba, filas editables con acciones (subir, bajar y borrar), fila de
+/// totales con el botón "Agregar fila" a la izquierda, y el campo de la
+/// cabecera al pie (ej: el Comentarios).
+///
+/// Regla UI/UX: el encabezado, las filas y la fila de totales comparten el
+/// mismo desplazamiento horizontal; las columnas expansibles (Concepto)
+/// absorben el sobrante de ancho de la ventana.
+class ClaseGrillaDetalles extends StatelessWidget {
+
+  const ClaseGrillaDetalles({
+    super.key,
+    required this.bModoEdicion,
+    required this.funcAgregarFila,
+    required this.funcAlCambiarFila,
+    required this.funcBorrarFila,
+    required this.funcBajarFila,
+    required this.funcSubirFila,
+    required this.listCamposDetalle,
+    required this.listControles,
+    required this.listDetalles,
+    this.oPie,
+    required this.sFormatoNumeros,
+    required this.sIdioma,
+  });
+
+  /// true mientras se edita el registro: habilita celdas y acciones.
+  final bool bModoEdicion;
+
+  /// Acciones de las filas; el resto del estado vive en el formulario padre.
+  final VoidCallback                                     funcAgregarFila;
+  final void Function(int iFila, String sClave, String sValor) funcAlCambiarFila;
+  final void Function(int iFila)                         funcBorrarFila;
+  final void Function(int iFila)                         funcBajarFila;
+  final void Function(int iFila)                         funcSubirFila;
+
+  /// Columnas de la grilla de detalles (una por campo).
+  final List<ClaseCampoAbm> listCamposDetalle;
+
+  /// Un control por celda, para conservar el cursor y actualizar valores
+  /// derivados (ej: el nombre de la cuenta).
+  final List<Map<String, TextEditingController>> listControles;
+
+  /// Filas de detalle que se están editando (valores internos).
+  final List<Map<String, String>> listDetalles;
+
+  /// Campo de la cabecera que se muestra debajo de la fila de totales (ej:
+  /// el Comentarios); null si el formulario no tiene campo al pie.
+  final Widget? oPie;
+
+  /// Formo de números de las preferencias del usuario (latino/francés).
+  final String sFormatoNumeros;
+  final String sIdioma;
+
+  @override
+  Widget build(BuildContext oContexto) {
+    return _construirDetalle(oContexto);
+  }
+
+  // ── Grilla editable de detalles ──────────────────────────────────────────
+
+  double _getAnchoDetalle() {
+    double dAncho = ClaseGenLayout.dAnchoNumeroFila + ClaseGenLayout.dAnchoAccionesFila;
+    for (final ClaseCampoAbm oCampo in listCamposDetalle) {
+      dAncho += oCampo.getAnchoColumna();
+    }
+    return dAncho;
+  }
+
+  /// Anchos efectivos de las columnas de la grilla de detalles: el ancho base
+  /// de cada campo más el espacio sobrante de la ventana, repartido entre las
+  /// columnas expansibles (ej: Concepto). Así, al contraer la grilla lateral,
+  /// la columna Concepto se ensancha y se ven más caracteres (regla UI/UX).
+  List<double> _listAnchosColumnas(BoxConstraints oLimites) {
+    final List<double> listAnchos = <double>[
+      for (final ClaseCampoAbm oCampo in listCamposDetalle)
+        oCampo.getAnchoColumna(),
+    ];
+    final double dSobrante = oLimites.maxWidth
+        - (_getAnchoDetalle() + ClaseGenEspacios.dEspacio08 * 2);
+    if (dSobrante <= 0) return listAnchos;
+    final List<int> listExpansible = <int>[
+      for (int i = 0; i < listCamposDetalle.length; i++)
+        if (listCamposDetalle[i].bColumnaExpansible) i,
+    ];
+    if (listExpa

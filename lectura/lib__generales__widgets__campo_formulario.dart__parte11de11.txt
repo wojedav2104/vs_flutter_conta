@@ -1,6 +1,14 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 11 DE 11
 ---
+xto) {
+    if (widget.oCampo.iMaxComentario <= 0) return const SizedBox.shrink();
+    return Text(
+      '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
+      textAlign : TextAlign.right,
+      style     : ClaseGenEstilosTexto.normalChico(oContexto),
+    );
+  }
 
   // ── Lógico (switch Sí/No) ────────────────────────────────────────────────
 

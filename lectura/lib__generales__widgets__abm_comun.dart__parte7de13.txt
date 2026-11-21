@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 7 DE 13
 ---
-────────────────
+
+
+  // ── Menú contextual por celda ────────────────────────────────────────────
 
   Future<void> _mostrarMenuCelda(
     BuildContext         oContexto,
@@ -103,6 +105,4 @@ PARTE 7 DE 13
         .take(3)
         .toList();
 
-    final List<Map<String, dynamic>> listFiltrados = _listFiltrados();
-    final int iTotalPaginas = math.max(1,
-        (listFilt
+    final List<Map<String, dynamic>> listFiltrados = _listFiltrado

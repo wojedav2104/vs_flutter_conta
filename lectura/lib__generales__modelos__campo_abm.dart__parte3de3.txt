@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/modelos/campo_abm.dart
 PARTE 3 DE 3
 ---
-os.dEspacio01
+ izquierda, 1 px derecha) y el borde, más solo 8 px de margen por el desfase de dibujo en web (antes 24 px: sobraban ~2 caracteres).
+        return dAnchoTexto + ClaseGenEspacios.dEspacio08
+               + ClaseGenEspacios.dEspacio12 + ClaseGenEspacios.dEspacio01
                + ClaseGenLayout.dAnchoSuffixBorrar
                + ClaseGenLayout.dAnchoBordeCampo;
     }

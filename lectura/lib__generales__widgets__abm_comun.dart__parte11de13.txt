@@ -1,7 +1,9 @@
 RUTA ORIGINAL: lib/generales/widgets/abm_comun.dart
 PARTE 11 DE 13
 ---
-miajeAbm extends StatelessWidget {
+
+/// La botonera se ubica al pie del formulario.
+class ClaseAndamiajeAbm extends StatelessWidget {
 
   const ClaseAndamiajeAbm({
     super.key,
@@ -112,7 +114,4 @@ class ClaseBotoneraAbm extends StatelessWidget {
   /// Botones de edición: no operan en países solo visualización.
   static const Set<EnumBotonAbm> _setBotonesEdicion = <EnumBotonAbm>{
     EnumBotonAbm.agregar,
-    EnumBotonAbm.borrar,
-    EnumBotonAbm.modificar,
-    EnumBotonAbm.grabar,
-  
+    EnumBotonAbm.

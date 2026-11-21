@@ -1,7 +1,18 @@
 RUTA ORIGINAL: lib/generales/widgets/campo_formulario.dart
 PARTE 10 DE 11
 ---
- Casillas (checkboxes múltiples) ──────────────────────────────────────
+iloTexto(oContexto, ClaseGenEstilosTexto.textoCampo(oContexto))),
+          ),
+      ],
+      onChanged: widget.bHabilitado
+          ? (String? sNuevo) {
+              if (sNuevo != null) widget.funcAlCambiar(sNuevo);
+            }
+          : null,
+    );
+  }
+
+  // ── Casillas (checkboxes múltiples) ──────────────────────────────────────
   // Varios valores seleccionados se guardan separados por comas, en el orden
   // de listValores (ej: 'FAC,NCR'). Un valor vacío = ninguna casilla marcada.
 
@@ -83,11 +94,4 @@ PARTE 10 DE 11
 
   /// Contador de caracteres del campo Comentarios ('27/500'); vacío si el
   /// campo no tiene máximo.
-  Widget _construirContador(BuildContext oContexto) {
-    if (widget.oCampo.iMaxComentario <= 0) return const SizedBox.shrink();
-    return Text(
-      '${widget.sValor.length}/${widget.oCampo.iMaxComentario}',
-      textAlign : TextAlign.right,
-      style     : ClaseGenEstilosTexto.normalChico(oContexto),
-    );
-  }
+  Widget _construirContador(BuildContext oConte
