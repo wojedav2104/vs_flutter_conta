@@ -1,0 +1,91 @@
+import '../idiomas/idiomas.dart';
+import '../modelos/campo_abm.dart';
+import '../utilitarios/formatos.dart';
+import '../validaciones/cap_validar.dart';
+import 'abm_comun.dart';
+
+/// Validación y utilidades de las filas de detalle de
+/// ClaseFormularioCabeceraDetalle (spec 02_02, 02_03 y 02_04):
+///   · Cada fila con contenido valida sus campos ("Fila N: …").
+///   · Debe o Haber: uno solo de los dos por fila.
+///   · Al menos una fila de detalle.
+///   · La suma del Debe debe ser igual a la suma del Haber.
+abstract final class ClaseDetalleValidar {
+
+  /// Valida las filas de detalle; devuelve el mensaje de error o null.
+  static String? validarDetalles(
+    List<Map<String, String>> listDetalles,
+    List<ClaseCampoAbm>        listCamposDetalle,
+    String                     sClaveDebe,
+    String                     sClaveHaber,
+    String                     sIdioma,
+  ) {
+
+    // Al menos una fila de detalle.
+    final bool bAlgunaConContenido = listDetalles.any((Map<String, String> mapFila) =>
+        mapFila.values.any((String s) => s.trim().isNotEmpty));
+    if (!bAlgunaConContenido) {
+      return ClaseIdiomas.getTexto('detDetalleVacio', sIdioma);
+    }
+
+    int iFila = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      iFila++;
+      final bool bConContenido =
+          mapFila.values.any((String s) => s.trim().isNotEmpty);
+      if (!bConContenido) continue;
+
+      // Validación de cada campo de la fila.
+      for (final ClaseCampoAbm oCampo in listCamposDetalle) {
+        final String? sError =
+            funcValidarCampoAbm(oCampo, mapFila[oCampo.sClave] ?? '', sIdioma);
+        if (sError != null) {
+          return _traducirFila(sIdioma, iFila, sError);
+        }
+      }
+
+      // Debe o Haber: uno solo de los dos.
+      final String sDebe  = (mapFila[sClaveDebe]  ?? '').trim();
+      final String sHaber = (mapFila[sClaveHaber] ?? '').trim();
+      if (sDebe.isNotEmpty == sHaber.isNotEmpty) {
+        return _traducirFila(
+            sIdioma, iFila, ClaseIdiomas.getTexto('detErrorDebeHaber', sIdioma));
+      }
+    }
+
+    // La suma del Debe debe ser igual a la suma del Haber.
+    double dDebe  = 0;
+    double dHaber = 0;
+    for (final Map<String, String> mapFila in listDetalles) {
+      dDebe  += funcParsearNumero(mapFila[sClaveDebe]  ?? '') ?? 0;
+      dHaber += funcParsearNumero(mapFila[sClaveHaber] ?? '') ?? 0;
+    }
+    return ClaseCapValidar.validarSumaDebeHaber(dDebe, dHaber, sIdioma);
+  }
+
+  /// Traduce el error de una fila con la clave detErrorFila ("Fila N: …").
+  static String _traducirFila(String sIdioma, int iFila, String sError) {
+    return ClaseIdiomas.getTexto('detErrorFila', sIdioma)
+        .replaceAll('{0}', '$iFila')
+        .replaceAll('{1}', sError);
+  }
+
+  /// Filas con contenido, clonadas (para grabar sin las filas vacías).
+  static List<Map<String, String>> listDetallesLimpias(
+      List<Map<String, String>> listDetalles) {
+    return clonarDetalles(listDetalles
+        .where((Map<String, String> mapFila) =>
+            mapFila.values.any((String s) => s.trim().isNotEmpty))
+        .toList());
+  }
+
+  /// Copia profunda de las filas de detalle.
+  static List<Map<String, String>> clonarDetalles(
+      List<Map<String, String>> listOrigen) {
+    return <Map<String, String>>[
+      for (final Map<String, String> mapFila in listOrigen)
+        Map<String, String>.from(mapFila),
+    ];
+  }
+
+}

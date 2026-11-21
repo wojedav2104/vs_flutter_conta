@@ -1,4 +1,5 @@
 Para los detalles se deben pedir los siguientes datos, los cuales se irán colocando en una grilla que estará ubicada justo debajo de los campos de la cabecera:
+Grupo 2: Detalles
 - Cuenta N° (carácter, 16, "Número de cuenta", opcional). NOTA: Cuando haya conexión con la Base de Datos si a) el campo está vacío y el usuario presionó la tecla [ENTER] o la tecla [TAB] o hizo tap, se le mostrarán todas las cuentas para que seleccione una de ellas y si, b) escribió un número de cuenta, se validará que esa cuenta exista. En ambos casos, si la cuenta existe se la mostrará en el campo "Nombre de la cuenta"
 - Subc. (carácter, 5, opcional). Validación: cuando haya conexión con la Base de Datos si se escribe un número de subcuenta entonces se validará que existan el número de la cuenta y el número de la subcuenta
 - Nombre de la cuenta (carácter, 40, "Nombre de la cuenta contable", obligatorio si existe Cuenta N°). NOTA: Siempre tiene que estar deshabilitado, su valor será obtenido desde una tabla SQL
@@ -16,7 +17,7 @@ Nota 4: El backcolor y el forecolor del total del Debe y del total del Haber tie
 
 Nota 5: Debajo de esos totales estará el campo de "Comentarios" que corresponde a la cabecera.
 
-Grupo 2: Resolución 90/2021
+Grupo 3: Resolución 90/2021
 - Enviar a Marangatú (debe seleccionar entre: Sí, No). NOTA: Por defecto este valor tiene que ser: Sí
 - Importe gravado 10% (numérico, 15, inicialmente debe ser igual al valor de Gravadas 10% + I.V.A. 10% que están en el grupo 1). La máscara de entrada es: 999.999.999.999
 - Importe gravado 5% (numérico, 15, inicialmente debe ser igual al valor de Gravadas 5% + I.V.A. 5% que están en el grupo 1). La máscara de entrada es: 999.999.999.999

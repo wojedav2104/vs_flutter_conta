@@ -9,7 +9,7 @@ Grupo 1: Generales
 - Ramo o actividad (carácter, 60, "Ramo o actividad a la cual se dedica", opcional)
 - Dirección (carácter, 60, "Ubicación del domicilio", opcional)
 - Teléfono N° (carácter, 15, "Nro de teléfono", opcional)
-- País (obligatorio, debe seleccionar de una lista donde se muestre el código internacional del país y el nombre del país. En esa lista deben estar: Argentina, Paraguay, Perú)
+- País (obligatorio, debe seleccionar de una lista donde se muestre el código internacional del país y el nombre del país. En esa lista deben estar: Paraguay, Perú)
 - Departamento (carácter, 29, "Nombre del departamento", obligatorio)
 - Localidad (carácter, 40, "Nombre de la localidad", obligatorio)
 - E-mail (carácter, 40, "Correo electrónico", opcional)

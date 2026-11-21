@@ -1,6 +1,6 @@
 El formulario de ventas es cabecera/detalle.
 
-Tiene dos grupos.
+Tiene tres grupos.
 
 Grupo 1: Generales
 Los campos de la cabecera son:
@@ -26,7 +26,7 @@ Los campos de la cabecera son:
     Entrada a espectáculos públicos
 - N° (carácter, 15, obligatorio). Validación: Si el "Tipo de Documento" es: Factura Contado, Factura Crédito, Comprobante de Venta, Ticket máquina registradora, Nota de Débito, Nota de Crédito, entonces la máscara de entrada debe ser 999-999-9999999 donde cada 9 representa un dígito entre 0 y 9. Si el "Tipo de Documento" es otro entonces no hay máscara de entrada y el usuario puede escribir letras mayúsculas, dígitos de 0 a 9, y caracteres especiales
 - Cantidad de cuotas (numérico, 3). Solo cuando el Tipo de Documento es Factura Crédito el campo está habilitado y admite valores entre 1 y 240; si su valor es vacío o 0 se coloca automáticamente 1. Para todos los demás tipos de documento el campo está deshabilitado y su valor es 0.
-- Cliente (carácter, 48, "Nombre del cliente", obligatorio). Validación: se buscará el cliente en una tabla y se colocarán automáticamente su Tipo de Identificación y su Identificación N° en los siguientes campos
+- Cliente (carácter, 48, "Código y Nombre del cliente", obligatorio). Validación: se buscará el cliente en una tabla y se colocarán automáticamente su Tipo de Identificación y su Identificación N° en los siguientes campos
 - Tipo de identificación (se mostrará uno de los siguientes: R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera, Sin Nombre, Diplomático). NOTA: Será puesto automáticamente cuando se seleccione a un cliente
 - Identificación N° (carácter, 15, deshabilitado). NOTA: Será puesto automáticamente cuando se seleccione a un cliente
 - Timbrado N° (carácter, 8). NOTA: Es obligatorio si la máscara de entrada es 999-999-9999999 y en tal caso debe contener 8 dígitos, ni más ni menos. Debe estar en blanco y deshabilitado en los demás casos

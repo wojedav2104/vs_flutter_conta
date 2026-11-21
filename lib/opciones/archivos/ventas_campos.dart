@@ -1,0 +1,478 @@
+import '../../generales/idiomas/idiomas.dart';
+import '../../generales/modelos/campo_abm.dart';
+import '../../generales/modelos/documentos.dart';
+import '../../generales/utilitarios/formatos.dart';
+import '../../generales/validaciones/cap_validar.dart';
+import '../../generales/varios/listas.dart';
+
+/// Campos del Libro Ventas (spec 02_04): cabecera con tres grupos
+/// (Generales, Detalles y Resolución 90/2021) y columnas de la grilla de
+/// detalles.
+///
+/// Disposición de los importes: se escriben en la pestaña Detalles
+/// (encima de la grilla) y se duplican deshabilitados en la pestaña
+/// Resolución 90/2021, como referencia para los importes de la resolución.
+abstract final class ClaseVentasCampos {
+
+  // ── Campos de la cabecera ──────────────────────────────────────────
+  //
+  // Orden visual = orden de declaración (la fila se coloca donde aparece su
+  // primer campo; dentro de la fila, los campos van en orden de declaración).
+
+  static List<ClaseCampoAbm> crearCamposCabecera(String sIdioma) {
+
+    final int iAnchoEtiquetasPrimeraColumna = 29;
+
+    return <ClaseCampoAbm>[
+
+      // ── Generales ──────────────────────────────────────────────────
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarEjercicio(sValor, ClaseIdiomas.getTexto('venEjercicio', sIdioma), sIdioma),
+        iAnchoCaracteres : 4,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 1,
+        oAlineacion      : EnumAlineacion.centro,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'ejercicio',
+        sEtiqueta        : ClaseIdiomas.getTexto('venEjercicio', sIdioma),
+        sMascara         : '9.999',
+        sGrupo           : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 44,
+        iAnchoEtiqueta   : 13,
+        iFila            : 1,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'sucursal',
+        sEtiqueta        : ClaseIdiomas.getTexto('venSucursal', sIdioma),
+        sGrupo           : 'venGenerales',
+        sHint            : ClaseIdiomas.getTexto('venHintSucursal', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 6,
+        iAnchoEtiqueta        : 18,
+        iFila                 : 1,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'numeroAsiento',
+        sEtiqueta             : ClaseIdiomas.getTexto('venNumeroAsiento', sIdioma),
+        sGrupo                : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFechaNoAnterior(sValor, ClaseIdiomas.getTexto('venFecha', sIdioma), DateTime(ClaseFechas.iAnoMinimo, 1, 1), sIdioma),
+        iAnchoCaracteres : 10,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 2,
+        oAlineacion      : EnumAlineacion.centro,
+        oTipo            : EnumTipoCampoAbm.fecha,
+        sClave           : 'fecha',
+        sEtiqueta        : ClaseIdiomas.getTexto('venFecha', sIdioma),
+        sGrupo           : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarHoraValida(sValor, ClaseIdiomas.getTexto('venHora', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        iFila            : 2,
+        oTipo            : EnumTipoCampoAbm.hora,
+        sClave           : 'hora',
+        sEtiqueta        : ClaseIdiomas.getTexto('venHora', sIdioma),
+        sGrupo           : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoDocumentoVentas.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  3,
+        listOpciones     : ClaseTipoDocumentoVentas.getListOpciones(sIdioma),
+        listValores      : ClaseTipoDocumentoVentas.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoDocumento',
+        sEtiqueta        : ClaseIdiomas.getTexto('venTipoDocumento', sIdioma),
+        sGrupo           : 'venGenerales',
+        sValorDefecto    : '01',
+      ),
+      ClaseCampoAbm(
+        bMayusculas       : true,
+        bObligatorio      : true,
+        funcMascara       : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(mapValores['tipoDocumento'] ?? '') ? ClaseTipoDocumentoVentas.sMascaraNumero : null,
+        iAnchoCaracteres  : 15,
+        iFila             : 3,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'numero',
+        sEtiqueta         : ClaseIdiomas.getTexto('venNumero', sIdioma),
+        sGrupo            : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumentoVentas.esFacturaCredito(mapValores['tipoDocumento'] ?? ''),
+        funcValidarCampo     : (sValor, sIdioma) => ClaseCapValidar.validarSoloEntero(sValor, ClaseIdiomas.getTexto('venCantidadCuotas', sIdioma), sIdioma),
+        iAnchoCaracteres     :  3,
+        iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
+        oTipo                : EnumTipoCampoAbm.numero,
+        sClave               : 'cantidadCuotas',
+        sEtiqueta            : ClaseIdiomas.getTexto('venCantidadCuotas', sIdioma),
+        sGrupo               : 'venGenerales',
+        sValorDefecto        : '0',
+      ),
+      ClaseCampoAbm(
+        bObligatorio     : true,
+        iAnchoCaracteres : 48,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 4,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'cliente',
+        sEtiqueta        : ClaseIdiomas.getTexto('venCliente', sIdioma),
+        sGrupo           : 'venGenerales',
+        sHint            : ClaseIdiomas.getTexto('venHintCliente', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseTipoIdentificacion.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : 13,
+        iFila            : 4,
+        listOpciones     : ClaseTipoIdentificacion.getListOpciones(sIdioma),
+        listValores      : ClaseTipoIdentificacion.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'tipoIdentificacion',
+        sEtiqueta        : ClaseIdiomas.getTexto('venTipoIdentificacion', sIdioma),
+        sGrupo           : 'venGenerales',
+        sValorDefecto    : ClaseTipoIdentificacion.ruc,
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iAnchoEtiqueta        :  6,
+        iFila                 :  4,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'identificacion',
+        sEtiqueta             : ClaseIdiomas.getTexto('venIdentificacion', sIdioma),
+        sGrupo                : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        funcActualizarEstado : (mapValores) => ClaseTipoDocumentoVentas.esConMascara(mapValores['tipoDocumento'] ?? ''),
+        iAnchoCaracteres     :  8,
+        iAnchoEtiqueta       : iAnchoEtiquetasPrimeraColumna,
+        iFila                :  5,
+        oTipo                : EnumTipoCampoAbm.texto,
+        sClave               : 'timbrado',
+        sEtiqueta            : ClaseIdiomas.getTexto('venTimbrado', sIdioma),
+        sGrupo               : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 10,
+        iFila                 : 5,
+        oTipo                 : EnumTipoCampoAbm.fecha,
+        sClave                : 'vigenteDesde',
+        sEtiqueta             : ClaseIdiomas.getTexto('venVigenteDesde', sIdioma),
+        sGrupo                : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 10,
+        iFila                 : 5,
+        oTipo                 : EnumTipoCampoAbm.fecha,
+        sClave                : 'vigenteHasta',
+        sEtiqueta             : ClaseIdiomas.getTexto('venVigenteHasta', sIdioma),
+        sGrupo                : 'venGenerales',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 6,
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'mostrarEnLibro',
+        sEtiqueta        : ClaseIdiomas.getTexto('venMostrarEnLibro', sIdioma),
+        sGrupo           : 'venGenerales',
+        sValorDefecto    : ClaseSiNo.si,
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 60,
+        iMaxComentario   : 500,
+        oTipo            : EnumTipoCampoAbm.comentario,
+        sClave           : 'comentarios',
+        sEtiqueta        : ClaseIdiomas.getTexto('venComentarios', sIdioma),
+        sGrupo           : 'venGenerales',
+        sHint            : ClaseIdiomas.getTexto('venHintComentarios', sIdioma),
+      ),
+
+      // ── Detalles: los importes (filas 6 a 11) y, debajo, la grilla ────
+      // Mismas claves que usan los cálculos y los registros; la grilla
+      // editable de detalles se muestra debajo, en esta misma pestaña.
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venGravadas10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  6,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'gravadas10',
+        sEtiqueta        : ClaseIdiomas.getTexto('venGravadas10', sIdioma),
+        sGrupo           : 'venDetalles',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venIva10', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  7,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'iva10',
+        sEtiqueta        : ClaseIdiomas.getTexto('venIva10', sIdioma),
+        sGrupo           : 'venDetalles',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venGravadas5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  8,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'gravadas5',
+        sEtiqueta        : ClaseIdiomas.getTexto('venGravadas5', sIdioma),
+        sGrupo           : 'venDetalles',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venIva5', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            :  9,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'iva5',
+        sEtiqueta        : ClaseIdiomas.getTexto('venIva5', sIdioma),
+        sGrupo           : 'venDetalles',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarImporteNoNegativo(sValor, ClaseIdiomas.getTexto('venExentas', sIdioma), sIdioma),
+        iAnchoCaracteres : 15,
+        iAnchoEtiqueta   : iAnchoEtiquetasPrimeraColumna,
+        iFila            : 10,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'exentas',
+        sEtiqueta        : ClaseIdiomas.getTexto('venExentas', sIdioma),
+        sGrupo           : 'venDetalles',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEsTotal              : true,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iAnchoEtiqueta        : iAnchoEtiquetasPrimeraColumna,
+        iFila                 : 11,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'total',
+        sEtiqueta             : ClaseIdiomas.getTexto('venTotal', sIdioma),
+        sGrupo                : 'venDetalles',
+        sMascara              : '999.999.999.999',
+      ),
+
+      // ── Resolución 90/2021 ─────────────────────────────────────────
+      ClaseCampoAbm(
+        iAnchoCaracteres : funcAnchoOpcion(ClaseSiNo.getListOpciones(sIdioma)),
+        listOpciones     : ClaseSiNo.getListOpciones(sIdioma),
+        listValores      : ClaseSiNo.listValores,
+        oTipo            : EnumTipoCampoAbm.lista,
+        sClave           : 'enviarMarangatu',
+        sEtiqueta        : ClaseIdiomas.getTexto('venEnviarMarangatu', sIdioma),
+        sGrupo           : 'venResolucion',
+        sValorDefecto    : ClaseSiNo.si,
+      ),
+
+      // Referencia: los importes de la pestaña Detalles, solo de lectura.
+      // Mismas claves (mismo valor); siempre deshabilitados y fuera de la
+      // grilla lateral. Se muestran arriba de los importes de la resolución
+      // para poder compararlos al cargarlos.
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 6,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'gravadas10',
+        sEtiqueta             : ClaseIdiomas.getTexto('venGravadas10', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 7,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'iva10',
+        sEtiqueta             : ClaseIdiomas.getTexto('venIva10', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 8,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'gravadas5',
+        sEtiqueta             : ClaseIdiomas.getTexto('venGravadas5', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 9,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'iva5',
+        sEtiqueta             : ClaseIdiomas.getTexto('venIva5', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 10,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'exentas',
+        sEtiqueta             : ClaseIdiomas.getTexto('venExentas', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bEnGrilla             : false,
+        bEsTotal              : true,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        iFila                 : 11,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'total',
+        sEtiqueta             : ClaseIdiomas.getTexto('venTotal', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeGravado10',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteGravado10', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeGravado5',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteGravado5', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeExento',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteExento', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeIreSimple',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteIreSimple', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeIrpSimple',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteIrpSimple', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'importeNoImputable',
+        sEtiqueta        : ClaseIdiomas.getTexto('venImporteNoImputable', sIdioma),
+        sGrupo           : 'venResolucion',
+        sMascara         : '999.999.999.999',
+        sValorDefecto    : '0',
+      ),
+      ClaseCampoAbm(
+        bEsTotal              : true,
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 15,
+        oTipo                 : EnumTipoCampoAbm.numero,
+        sClave                : 'totalComprobante',
+        sEtiqueta             : ClaseIdiomas.getTexto('venTotalComprobante', sIdioma),
+        sGrupo                : 'venResolucion',
+        sMascara              : '999.999.999.999',
+      ),
+    ];
+  }
+
+  // ── Columnas de la grilla de detalles ───────────────────────────────────
+
+  static List<ClaseCampoAbm> crearCamposDetalle(String sIdioma) {
+
+    return <ClaseCampoAbm>[
+      ClaseCampoAbm(
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarFormatoCuenta(sValor, ClaseIdiomas.getTexto('detCuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 16,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'cuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detCuenta', sIdioma),
+        sHint            : ClaseIdiomas.getTexto('detHintCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bCompletarCeros  : true,
+        funcValidarCampo : (sValor, sIdioma) => ClaseCapValidar.validarNumeroSubcuenta(sValor, ClaseIdiomas.getTexto('detSubcuenta', sIdioma), sIdioma),
+        iAnchoCaracteres : 5,
+        oTipo            : EnumTipoCampoAbm.texto,
+        sClave           : 'subcuenta',
+        sEtiqueta        : ClaseIdiomas.getTexto('detSubcuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        bSiempreDeshabilitado : true,
+        iAnchoCaracteres      : 40,
+        oTipo                 : EnumTipoCampoAbm.texto,
+        sClave                : 'nombreCuenta',
+        sEtiqueta             : ClaseIdiomas.getTexto('detNombreCuenta', sIdioma),
+        sHint                 : ClaseIdiomas.getTexto('detHintNombreCuenta', sIdioma),
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'debe',
+        sEtiqueta        : ClaseIdiomas.getTexto('detDebe', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        iAnchoCaracteres : 15,
+        oTipo            : EnumTipoCampoAbm.numero,
+        sClave           : 'haber',
+        sEtiqueta        : ClaseIdiomas.getTexto('detHaber', sIdioma),
+        sMascara         : '999.999.999.999',
+      ),
+      ClaseCampoAbm(
+        bColumnaExpansible: true,
+        iAnchoCaracteres  : 60,
+        iAnchoVisible     : 15,
+        oTipo             : EnumTipoCampoAbm.texto,
+        sClave            : 'concepto',
+        sEtiqueta         : ClaseIdiomas.getTexto('detConcepto', sIdioma),
+        sHint             : ClaseIdiomas.getTexto('detHintConcepto', sIdioma),
+      ),
+    ];
+  }
+
+}
+
