@@ -1,7 +1,7 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_compras.dart
 PARTE 2 DE 3
 ---
-das ────────────────────────────────────────────
+─ Validaciones cruzadas ────────────────────────────────────────────
     'comErrorNumeroFormato'   : 'El formato del N° de documento no es válido para el Tipo de documento seleccionado',
     'comErrorMarangatu'       : 'El Total del comprobante debe ser igual a la suma del Debe para enviar a Marangatú',
   };
@@ -21,7 +21,7 @@ das ─────────────────────────�
     'comCantidadCuotas'       : 'Nombre de versements',
     'comProveedor'            : 'Fournisseur',
     'comTipoIdentificacion'   : 'Identification',
-    'comIdentificacion'       : 'Id. N°',
+    'comIdentificacion'       : 'Identification N°',
     'comTimbrado'             : 'Timbrado N°',
     'comVigenteDesde'         : 'Valide à partir du',
     'comVigenteHasta'         : 'Valide jusqu\'au',
@@ -46,7 +46,7 @@ das ─────────────────────────�
     'comImporteNoImputable'   : 'Montant non imputable',
     'comTotalComprobante'     : 'Total du document',
     // ── Hints ────────────────────────────────────────────────────────────
-    'comHintProveedor'        : 'Nom du fournisseur',
+    'comHintProveedor'        : 'Code et nom du fournisseur',
     'comHintComentarios'      : 'Commentaires sur cet achat',
     'comHintCuenta'           : 'Numéro de compte',
     'comHintNombreCuenta'     : 'Nom du compte comptable',
@@ -71,4 +71,4 @@ das ─────────────────────────�
     'comTipoDoc13'            : 'Contrôle interne',
     'comTipoDoc14'            : 'Billet de transport public de passagers',
     'comTipoDoc15'            : 'Bulletin ReSimple',
-    'comTipoDoc16'            : 'Billet de lot
+    'co

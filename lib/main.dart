@@ -22,6 +22,7 @@ Future<void> main() async {
   runApp(ClaseAplicacion(oPreferencias: oPreferencias));
 }
 
+
 /// Aplicación raíz de VS_CONTA.
 class ClaseAplicacion extends StatefulWidget {
 

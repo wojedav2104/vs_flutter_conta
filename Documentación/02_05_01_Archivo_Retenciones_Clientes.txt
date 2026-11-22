@@ -22,4 +22,4 @@ Los campos de la cabecera son:
 - I.V.A. (numérico, 15, máscara de entrada: "999.999.999.999"). NOTA: será puesta automáticamente cuando se elija una Factura
 - Imponible Renta (numérico, 15, máscara de entrada: "999.999.999.999"). NOTA: será puesta automáticamente cuando se elija una Factura
 - Total (numérico, 15, máscara de entrada: "999.999.999.999"). NOTA: será puesta automáticamente cuando se elija una Factura
-- Comentarios (texto largo, 500, "Comentarios sobre esta compra", opcional). NOTA: Debe colocarse al final del formulario, después de los detalles
+- Comentarios (texto largo, 500, "Comentarios sobre esta retención", opcional). NOTA: Debe colocarse al final del formulario, después de los detalles

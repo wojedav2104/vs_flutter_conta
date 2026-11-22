@@ -354,6 +354,26 @@ class ClaseCapValidar {
     return null;
   }
 
+  /// El año de la fecha debe ser el año actual o el anterior (spec 02_05:
+  /// fecha de la retención). Una fecha no vacía con formato inválido
+  /// también es error.
+  static String? validarFechaAnoActualOAnterior(
+      String sValor, String sEtiqueta, String sIdioma) {
+    final String sTexto = sValor.trim();
+    if (sTexto.isEmpty) return null;
+    final DateTime? fValor = funcParsearFecha(sTexto);
+    if (fValor == null) {
+      return ClaseIdiomas.getTexto('validFechaInvalida', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    final int iAnoActual = DateTime.now().year;
+    if (fValor.year < iAnoActual - 1 || fValor.year > iAnoActual) {
+      return ClaseIdiomas.getTexto('validFechaAnoActualOAnterior', sIdioma)
+          .replaceAll('{0}', sEtiqueta);
+    }
+    return null;
+  }
+
   /// La fecha debe estar entre el 1 de enero del ejercicio contable y
   /// a) la fecha de hoy si el ejercicio es el año actual, o b) el 31 de
   /// diciembre del ejercicio si es anterior al año actual.

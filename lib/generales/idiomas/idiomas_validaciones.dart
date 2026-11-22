@@ -8,6 +8,7 @@ abstract final class ClaseIdiomasValidaciones {
     'validDiaRango'         : 'El campo "{0}" debe ser un día entre {1} y {2} para el mes indicado',                                            // ← nueva
     'validDigitosExactos'   : 'El campo "{0}" debe tener exactamente {1} dígitos',
     'validEjercicioRango'   : 'El campo "{0}" debe ser un ejercicio entre {1} y {2}',                                                           // ← ajuste
+    'validFechaAnoActualOAnterior': 'La fecha de {0} debe ser del año actual o del año anterior',
     'validFechaAnterior'    : 'El campo "{0}" no puede ser anterior al {1}',
     'validFechaFinPosterior': 'La fecha de fin de vigencia debe ser posterior a la fecha de inicio de vigencia',
     'validFechaInvalida'    : 'El campo "{0}" no es una fecha válida',
@@ -41,6 +42,7 @@ abstract final class ClaseIdiomasValidaciones {
     'validDiaRango'         : 'Le champ "{0}" doit correspondre à un jour entre {1} et {2} pour le mois indiqué',                                          // ← nueva
     'validDigitosExactos'   : 'Le champ "{0}" doit avoir exactement {1} chiffres',
     'validEjercicioRango'   : 'Le champ "{0}" doit être un exercice entre {1} et {2}',                                                            // ← ajuste
+    'validFechaAnoActualOAnterior': 'La date de {0} doit être de l\'année en cours ou de l\'année précédente',
     'validFechaAnterior'    : 'Le champ "{0}" ne peut pas être antérieur au {1}',
     'validFechaFinPosterior': 'La date de fin de validité doit être postérieure à la date de début de validité',
     'validFechaInvalida'    : 'Le champ "{0}" n\'est pas une date valide',

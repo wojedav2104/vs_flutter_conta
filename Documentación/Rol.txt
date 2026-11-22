@@ -10,6 +10,8 @@ Cuando me pidas que cambie algo en el código fuente muéstrame lo que debo busc
 
 En la pantalla de mi computadora puedo ver 176 caracteres en cada línea.Lo que ya está, déjalo como está. Pero de ahora en adelante trata de usar 176 caracteres por línea siempre que sea posible.
 
+La lógica contable (asientos, balances, validaciones de partida doble, etc.) debe estar separada de los widgets de Flutter.
+
 Nunca alucines, si tienes alguna duda sobre cualquier tema, pregúntame.
 
 

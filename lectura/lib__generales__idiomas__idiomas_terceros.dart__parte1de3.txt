@@ -65,13 +65,13 @@ abstract final class ClaseIdiomasTerceros {
     'cliTipoIdentificacion': 'Tipo de identificación',
     'cliIdentificacion'    : 'Identificación N°',
     'cliTipoCliente'       : 'Tipo de cliente',
-    'cliHintNombre'        : 'Nombre del cliente',
-    'cliHintDireccion'     : 'Dirección del cliente',
+    'cliHintNombre'        : 'Nombre de este cliente',
+    'cliHintDireccion'     : 'Calle y N° donde reside',
     'cliHintTelefono'      : 'Nro teléfono',
     'cliHintCelular'       : 'Nro celular',
-    'cliHintLocalidad'     : 'Nombre de la localidad',
+    'cliHintLocalidad'     : 'Localidad de su domicilio',
     'cliHintEmail'         : 'Correo electrónico',
-    'cliHintIdentificacion': 'Número de identidad',
+    'cliHintIdentificacion': 'N° documento',
 
     // ── Tipos de documento de identidad (compartido) ─────────────────
     'docRuc'               : 'R.U.C.',
@@ -90,4 +90,4 @@ abstract final class ClaseIdiomasTerceros {
     'prvLocalidad'         : 'Localidad',
     'prvEmail'             : 'Correo electrónico',
     'prvTipoIdentificacion': 'Tipo de identificación',
-    'prvIdentificacion'
+    'prvIdentificacio

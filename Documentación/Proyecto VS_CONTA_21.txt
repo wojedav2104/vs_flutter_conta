@@ -1,0 +1,79 @@
+# Reinicio de chat — 20 de noviembre de 2026, 01:25
+
+Este archivo resume todo lo trabajado en la sesión del 19/20 de noviembre de 2026. Se usa junto con CLAUDE.md para retomar el trabajo en el punto exacto donde se dejó.
+
+## Estado general
+
+Todo funciona: la aplicación compila y corre sin errores ni warnings. En esta sesión se completó la verificación documentación/código (H1–H8), se dividieron los tres archivos grandes, y se corrigieron etiquetas, backcolors y anchos de campos.
+
+## Trabajo terminado en esta sesión
+
+### 1. Verificación documentación vs. código (informe H1–H8)
+
+- H2 resuelto: 02_05 redactado por el usuario con el formato de N° correcto (13 dígitos + 2 guiones) y `cap_validar.validarNumeroDocumento` corregido a `RegExp(r'^\d{3}-\d{3}-\d{7}$')` + texto `validNumeroDocumento` (nueva clave en idiomas con español/francés).
+- H3 resuelto: `paises.json` con 3 países (FRA, PER, PRY); 01_01 redactado por el usuario (solo Paraguay y Perú cargan datos).
+- H5 resuelto: renombre de grupos en las specs de Compras (Tiene tres grupos: Generales, Detalles, Resolución 90/2021). En Ventas el rename quedó acordado igual (verificar abajo).
+- H6 resuelto (20-nov-2026): specs 02_03_01/02_04_01/02_05_01 unificadas en "Código y Nombre del proveedor/cliente" (48); código (`comHintProveedor`, `venHintCliente`) = "Código y Nombre del proveedor/cliente" (es) y "Code et nom du fournisseur/client" (fr); etiquetas `comIdentificacion`/`venIdentificacion` = "Identificación N°" (es) y "Identification N°" (fr); `iAnchoEtiqueta` = 17 en el campo identificacion de compras y ventas. Además se unificaron los hints de ABM Clientes/Proveedores/Timbrados a specs 01_04/01_05/01_07 (incluye la clave faltante `prvHintDireccion`). La etiqueta "Tipo de identificación" en Compras/Ventas se dejó como está ("Identificación") por decisión del usuario.
+- H7 resuelto: los comentarios del código ahora citan "spec 02_02, 02_03 y 02_04".
+- H8: mejoras de specs redactadas por el usuario (campos obligatorios, Descripción corta/larga de Cuentas, N° de timbrado sin máscara, Tipo de afectación en Compras, esquemas de Clientes/Proveedores en 02_02, validaciones de Municipio/Barrio, "Modificar" en lugar de "Editar", Cuenta Corriente/Conciliación).
+
+### 2. Divisiones de archivos grandes (ya subidas y funcionando)
+
+- `compras.dart` (~37 KB) → `compras.dart` (widget), `compras_campos.dart` (crearCamposCabecera/Detalle), `compras_logica.dart` (actualizarCampos/validarRegistro), `compras_datos.dart` (crearRegistrosPrueba).
+- `ventas.dart` (~36 KB) → misma estructura con prefijo `ventas`. Disposición de importes aplicada: se escriben en la pestaña Detalles (encima de la grilla) y se duplican deshabilitados en la pestaña Resolución 90/2021.
+- `formulario_cabecera_detalle.dart` (~55 KB) → `formulario_cabecera_detalle.dart` (widget + estado), `grilla_detalles.dart` (ClaseGrillaDetalles + ClaseCeldaNumero, ahora públicos), `detalle_validar.dart` (ClaseDetalleValidar: validarDetalles, listDetallesLimpias, clonarDetalles).
+- Nota: en `grilla_detalles.dart` quedó un import estilo package (`package:vs_conta/...`) agregado por el usuario para `campo_formulario.dart`; conviene uniformizar a relativo: `import 'campo_formulario.dart';`.
+
+### 3. Correcciones de bugs y reglas de UI
+
+- paises.json tenía una coma final que rompía `jsonDecode` al arrancar ("Main isolate is paused in debugger"). Corregido.
+- `flutter clean` borra `.dart_tool/package_config.json` y la IDE pierde los paquetes. Regla aprendida: `flutter clean && flutter pub get`.
+- Etiquetas desalineadas: la etiqueta estaba en un `Flexible` sin ancho propio, así que ocupaba solo el ancho de su texto. Fix aplicado en `campo_formulario.dart` (build, caso etiqueta a la izquierda): envolver `_construirEtiqueta` en `SizedBox(width: widget.oCampo.getAnchoEtiqueta(), child: ...)`. Además: `dAnchoEtiquetaCampo` = 240 (antes 300). Regla del usuario: sin `iAnchoEtiqueta` → 240 px fijos; con valor → en caracteres. PRIMERA COLUMNA de Compras/Ventas = `iAnchoEtiquetasPrimeraColumna = 29` (ese es el mecanismo deseado, NO cambiarlo a 0).
+- Backcolors: antes la pestaña no seleccionada y el campo deshabilitado resolvían al mismo gris (#E2E2E2). Ahora los cinco son distintos y se centralizan en `ClaseGenTemas`:
+  - Pestaña activa: #EAD5FF (claro) / #4A1470 (oscuro) — `colorFondoPestanaActiva`
+  - Pestaña inactiva: #C3CBD5 / #2A2B2F — `colorFondoPestanaInactiva`
+  - Campo habilitado: #DFF3FA / #14384A
+  - Campo deshabilitado: #E2E2E2 / #374151
+  - Formulario: #FFFFFF / #1E1F22
+  - Cambios en `colores.dart` (constantes colorPestanaActiva/Inactiva Claro/Oscuro), `temas.dart` (los métodos + colorFondoCampoDeshabilitado propio), `abm_comun.dart` (_construirPestana usa ClaseGenTemas).
+- Anchura de controles reducida (quedaban ~2 caracteres de más):
+  - `dAnchoExtraLista`: 72 → 58 (listas)
+  - Nuevo `dAnchoBotonBorrarCampo` = 34 (botón "X" de fecha/hora) y `dAnchoBotonCalendario` = 48
+  - Texto: margen de seguridad de 24 px (dMargenTextoCampo) reducido a 8 px solo para texto; números lo conservan (24 px) porque sin él el último dígito se corta en web.
+
+### 4. Convenciones nuevas acordadas (ver CLAUDE.md)
+
+- Formato "Buscar:" / "Reemplazar por:" en todos los reemplazos.
+- 176 caracteres por fila en comentarios y código.
+- Las referencias "del Grupo 2" / "grupo 2" en las specs de Resolución 90/2021 son CORRECTAS y no se cambian (Total Grupo 2 = Total del comprobante Grupo 3; importes del Grupo 3 reflejan los del Grupo 2).
+
+## Verificaciones rápidas al retomar (hacerlas primero)
+
+1. `lib/opciones/tablas/empresa.dart`: la lista de países debe ser solo Paraguay y Perú. Última versión vista: `const List<String> listPaisesValores = <String>['ARG', 'PRY', 'PER'];` con comentario viejo que menciona Argentina. Debe quedar: `const List<String> listPaisesValores = <String>['PRY', 'PER'];` con el comentario "Países que cargan datos (spec 01_01): Paraguay y Perú. Francia solo visualiza los datos, nunca carga". (Ver confirmar con el usuario si ya lo hizo.)
+2. `lib/generales/modelos/campo_abm.dart` — `getAnchoEtiqueta()`: debe estar la versión que devuelve `ClaseGenLayout.dAnchoEtiquetaCampo` SIN escalar cuando `iAnchoEtiqueta <= 0` (240 px fijos) y que con valor escala `iAnchoEtiqueta * dAnchoCaracter * dFactorTexto * dEscala`. Hubo versiones cruzadas durante la sesión.
+3. Specs 02_04_01/02_04_02 (Ventas): confirmar que quedó el rename de grupos ("Tiene tres grupos", "Grupo 2: Detalles", "Grupo 3: Resolución 90/2021"). Los reemplazos se dieron en la sesión; el usuario habló ya en términos de "grupo 2"/"grupo 3", así que presumiblemente aplicado.
+4. El usuario debe regenerar `lectura/`: los archivos nuevos (compras_*, ventas_*, grilla_detalles, detalle_validar, formulario_cabecera_detalle) todavía no están en el espejo (devuelven 404).
+
+## Pendientes
+
+1. **H6 — unificación de hints y etiquetas: RESUELTO (20-nov-2026)**. Unificado hacia las specs: hints `comHintProveedor`/`venHintCliente` = "Código y Nombre del proveedor/cliente" (es) / "Code et nom du fournisseur/client" (fr); etiquetas "Identificación N°" (es) / "Identification N°" (fr); `iAnchoEtiqueta` = 17 en identificacion (compras y ventas). También se unificaron los hints de ABM Clientes/Proveedores/Timbrados a specs 01_04/01_05/01_07 en `idiomas_terceros.dart` (es+fr), incluyendo la clave faltante `prvHintDireccion` (antes `proveedores.dart` mostraba la clave literal como hint). Decisión: la etiqueta `comTipoIdentificacion`/`venTipoIdentificacion` queda "Identificación" (NO cambiar a "Tipo de identificación" pese a las specs 02_03_01/02_04_01; el usuario eligió no ensanchar `iAnchoEtiqueta` ni la fila 4).
+2. **00_00_03 — 3 últimos puntos en suspenso**: (a) documentar el menú contextual con clic derecho (Copiar valor / Buscar valor / Copiar fila) en 00_03_01 y 00_03_02; (b) errata "paa" → "pa" en el punto 5; (c) el usuario irá avisando más detalles.
+3. **Monedas**: specs mencionan "Monedas en uso" (02_05) y "recordatorio Moneda" (00_04) pero no existe el módulo. Se definirá juntos después.
+4. **02_05**: el usuario seguirá agregando detalles de a poco.
+5. **Opcional — anchos de campos numéricos**: se dejaron con margen de 24 px a propósito; si el usuario quiere achicarlos, es una línea en `getAnchoCampo()` (riesgo de corte del último dígito en web).
+6. **Opcional — NOTA en specs** sobre la disposición de importes (pestaña 2 escribe / pestaña 3 duplica): el usuario considera las specs bien redactadas como están; no aplicar sin su pedido.
+7. **Pendientes antiguos** (de la sesión anterior): configuración del proyecto para despliegue web; implementaciones pendientes de specs (búsqueda de proveedor/cliente que auto-complete tipo y N° de identificación, tablas SQL de vigencia de timbrado, etc.).
+
+## Reglas de trabajo vigentes (resumen operativo)
+
+- Reemplazos: "Buscar:" + "Reemplazar por:" con el texto exacto.
+- 176 caracteres por fila en código y comentarios.
+- iAnchoEtiquetasPrimeraColumna = 29 se conserva tal cual.
+- Importes: pestaña 2 escribe, pestaña 3 duplica deshabilitado. Referencias "Grupo 2" en las specs de Resolución son correctas.
+- Tras `flutter clean`: `flutter pub get`.
+- Leer el repo con el scraper: prefijo `https://r.jina.ai/` sobre raw.githubusercontent.com.
+- El asistente no ve imágenes: describir con texto.
+
+## Cómo continuar
+
+Lo siguiente natural del proyecto, según lo hablado: cerrar los pendientes de specs (00_00_03) y después seguir con las implementaciones pendientes de las specs (conexión con Firebird, tablas SQL, búsqueda de proveedor/cliente, monedas). Preguntar al usuario por dónde seguir.

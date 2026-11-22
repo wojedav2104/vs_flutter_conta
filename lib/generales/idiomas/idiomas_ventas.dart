@@ -15,7 +15,7 @@ abstract final class ClaseIdiomasVentas {
     'venGravadas10'           : 'Gravadas 10%',
     'venGravadas5'            : 'Gravadas 5%',
     'venHora'                 : 'Hora',
-    'venIdentificacion'       : 'Id. N°',
+    'venIdentificacion'       : 'Identificación N°',
     'venIva10'                : 'I.V.A. 10%',
     'venIva5'                 : 'I.V.A. 5%',
     'venMostrarEnLibro'       : 'Mostrar en Libro Ventas',
@@ -38,7 +38,7 @@ abstract final class ClaseIdiomasVentas {
     'venImporteNoImputable'   : 'Importe no imputable',
     'venTotalComprobante'     : 'Total del comprobante',
     // ── Hints ────────────────────────────────────────────────────────────
-    'venHintCliente'          : 'Nombre del cliente',
+    'venHintCliente'          : 'Código y Nombre del cliente',
     'venHintComentarios'      : 'Comentarios sobre esta venta',
     'venHintSucursal'         : 'Código y Nombre de la sucursal',
     // ── Tipos de documento (códigos '01'..'14' en listValores) ──────────
@@ -74,7 +74,7 @@ abstract final class ClaseIdiomasVentas {
     'venGravadas10'           : 'Taxables 10%',
     'venGravadas5'            : 'Taxables 5%',
     'venHora'                 : 'Heure',
-    'venIdentificacion'       : 'Id. N°',
+    'venIdentificacion'       : 'Identification N°',
     'venIva10'                : 'T.V.A. 10%',
     'venIva5'                 : 'T.V.A. 5%',
     'venMostrarEnLibro'       : 'Afficher dans le Livre des Ventes',
@@ -97,7 +97,7 @@ abstract final class ClaseIdiomasVentas {
     'venImporteNoImputable'   : 'Montant non imputable',
     'venTotalComprobante'     : 'Total du document',
     // ── Hints ────────────────────────────────────────────────────────────
-    'venHintCliente'          : 'Nom du client',
+    'venHintCliente'          : 'Code et nom du client',
     'venHintComentarios'      : 'Commentaires sur cette vente',
     'venHintSucursal'         : 'Code et nom de la succursale',
         // ── Types de document (codes '01'..'14' dans listValores) ───────────

@@ -1,22 +1,23 @@
 RUTA ORIGINAL: lib/generales/idiomas/idiomas_terceros.dart
 PARTE 2 DE 3
 ---
-    : 'Identificación N°',
+n'    : 'Identificación N°',
     'prvTipoProveedor'     : 'Tipo de proveedor',
     'prvEsServicioPublico' : 'Es servicio público',
-    'prvHintNombre'        : 'Nombre del proveedor',
+    'prvHintNombre'        : 'Nombre de este proveedor',
+    'prvHintDireccion'     : 'Calle y N° donde reside',
     'prvHintTelefono'      : 'Nro teléfono',
     'prvHintCelular'       : 'Nro celular',
-    'prvHintLocalidad'     : 'Nombre de la localidad',
+    'prvHintLocalidad'     : 'Localidad de su domicilio',
     'prvHintEmail'         : 'Correo electrónico',
-    'prvHintIdentificacion': 'Número de identidad',
+    'prvHintIdentificacion': 'N° documento',
 
     // ── Timbrados (claves usadas en las dos pantallas) ───────────────
     'timUltimoDocumento'   : 'Número del último documento',
     'timPrvNombre'         : 'Nombre del proveedor',
     'timPrvRuc'            : 'R.U.C.',
-    'timPrvHintNombre'     : 'Nombre del proveedor',
-    'timPrvHintRuc'        : 'Número de RUC del proveedor',
+    'timPrvHintNombre'     : 'Nombre fiscal del proveedor',
+    'timPrvHintRuc'        : 'RUC proveedor',
 
     // ── Timbrados (campos comunes, ClaseTimbradosComun) ──────────────
     'timTimbrado'          : 'N° de timbrado',
@@ -93,5 +94,3 @@ PARTE 2 DE 3
     'cliTelefono'           : 'Téléphone',
 
     // ── Pantalla Clientes (claves que usa clientes.dart) ─────────────
-    'cliCodigo'            : 'Code',
-    'cliNomb

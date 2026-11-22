@@ -3,6 +3,7 @@ import 'idiomas_compras.dart';
 import 'idiomas_cuentas.dart';
 import 'idiomas_general.dart';
 import 'idiomas_interfaz.dart';
+import 'idiomas_retenciones.dart';
 import 'idiomas_tablas.dart';
 import 'idiomas_terceros.dart';
 import 'idiomas_validaciones.dart';
@@ -24,6 +25,7 @@ abstract final class ClaseIdiomas {
     ...ClaseIdiomasTerceros.mapEs,
     ...ClaseIdiomasCuentas.mapEs,
     ...ClaseIdiomasCompras.mapEs,
+    ...ClaseIdiomasRetenciones.mapEs,
     ...ClaseIdiomasVentas.mapEs,    
   };
 
@@ -36,6 +38,7 @@ abstract final class ClaseIdiomas {
     ...ClaseIdiomasTerceros.mapFr,
     ...ClaseIdiomasCuentas.mapFr,
     ...ClaseIdiomasCompras.mapFr,
+    ...ClaseIdiomasRetenciones.mapFr,
     ...ClaseIdiomasVentas.mapFr,    
   };
 

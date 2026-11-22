@@ -19,7 +19,7 @@ abstract final class ClaseIdiomasCompras {
     'comHintSucursal'         : 'Código y Nombre de la sucursal',
     'comProveedor'            : 'Proveedor',
     'comTipoIdentificacion'   : 'Identificación',
-    'comIdentificacion'       : 'Id. N°',
+    'comIdentificacion'       : 'Identificación N°',
     'comTimbrado'             : 'Timbrado N°',
     'comVigenteDesde'         : 'Vigente desde el día',
     'comVigenteHasta'         : 'Vigente hasta el día',
@@ -44,7 +44,7 @@ abstract final class ClaseIdiomasCompras {
     'comImporteNoImputable'   : 'Importe no imputable',
     'comTotalComprobante'     : 'Total del comprobante',
     // ── Hints ────────────────────────────────────────────────────────────
-    'comHintProveedor'        : 'Nombre del proveedor',
+    'comHintProveedor'        : 'Código y Nombre del proveedor',
     'comHintComentarios'      : 'Comentarios sobre esta compra',
     'comHintCuenta'           : 'Número de cuenta',
     'comHintNombreCuenta'     : 'Nombre de la cuenta contable',
@@ -72,4 +72,4 @@ abstract final class ClaseIdiomasCompras {
     'comTipoDoc16'            : 'Boleto de Loterías, juegos de azar',
     'comTipoDoc17'            : 'Boleto o Ticket de Transporte Aéreo',
     'comTipoDoc18'            : 'Entrada a espectáculos públicos',
-    // ── Validaciones cruza
+    // ─

@@ -141,7 +141,7 @@ abstract final class ClaseComprasCampos {
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
-        iAnchoEtiqueta        : 15,
+        iAnchoEtiqueta        : 17,
         iFila                 : 4,
         oTipo                 : EnumTipoCampoAbm.texto,
         sClave                : 'identificacion',

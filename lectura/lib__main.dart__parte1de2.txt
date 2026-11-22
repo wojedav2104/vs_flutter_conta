@@ -25,6 +25,7 @@ Future<void> main() async {
   runApp(ClaseAplicacion(oPreferencias: oPreferencias));
 }
 
+
 /// Aplicación raíz de VS_CONTA.
 class ClaseAplicacion extends StatefulWidget {
 
@@ -100,4 +101,4 @@ class ClaseEstadoAplicacion extends State<ClaseAplicacion>
 
       home                       : ClaseLogin(
                                     funcAlCambiar : alCambiar,
-                                    oPreferencias : widget.oPreferenci
+                                    oPreferencias : widget.oPreferen

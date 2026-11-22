@@ -18,7 +18,7 @@ abstract final class ClaseIdiomasVentas {
     'venGravadas10'           : 'Gravadas 10%',
     'venGravadas5'            : 'Gravadas 5%',
     'venHora'                 : 'Hora',
-    'venIdentificacion'       : 'Id. N°',
+    'venIdentificacion'       : 'Identificación N°',
     'venIva10'                : 'I.V.A. 10%',
     'venIva5'                 : 'I.V.A. 5%',
     'venMostrarEnLibro'       : 'Mostrar en Libro Ventas',
@@ -41,7 +41,7 @@ abstract final class ClaseIdiomasVentas {
     'venImporteNoImputable'   : 'Importe no imputable',
     'venTotalComprobante'     : 'Total del comprobante',
     // ── Hints ────────────────────────────────────────────────────────────
-    'venHintCliente'          : 'Nombre del cliente',
+    'venHintCliente'          : 'Código y Nombre del cliente',
     'venHintComentarios'      : 'Comentarios sobre esta venta',
     'venHintSucursal'         : 'Código y Nombre de la sucursal',
     // ── Tipos de documento (códigos '01'..'14' en listValores) ──────────
@@ -74,4 +74,4 @@ abstract final class ClaseIdiomasVentas {
     'venEjercicio'            : 'Exercice comptable',
     'venExentas'              : 'Exonérées',
     'venFecha'                : 'Date de la vente',
-    'venGravadas10'      
+    '

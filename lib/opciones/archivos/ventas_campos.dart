@@ -144,7 +144,7 @@ abstract final class ClaseVentasCampos {
       ClaseCampoAbm(
         bSiempreDeshabilitado : true,
         iAnchoCaracteres      : 15,
-        iAnchoEtiqueta        :  6,
+        iAnchoEtiqueta        : 17,
         iFila                 :  4,
         oTipo                 : EnumTipoCampoAbm.texto,
         sClave                : 'identificacion',
