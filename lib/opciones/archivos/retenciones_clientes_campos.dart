@@ -1,8 +1,8 @@
 import '../../generales/idiomas/idiomas.dart';
 import '../../generales/modelos/campo_abm.dart';
 import '../../generales/modelos/documentos.dart';
+import '../../generales/utilitarios/formatos.dart';
 import '../../generales/validaciones/cap_validar.dart';
-import '../../generales/varios/listas.dart';
 
 /// Campos de Retenciones a Clientes (specs 02_05_01 y 02_05_02): cabecera
 /// con dos grupos (Generales y Detalles) y columnas de la grilla de detalles.

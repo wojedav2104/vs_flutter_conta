@@ -3,9 +3,9 @@ Grupo 2: Detalles
 - I.V.A. incluido en la transacción (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0
 - Valor total de la transacción ((numérico, 15, máscara de entrada: "999.999.999.999", deshabilitado). Validación. Es la suma de los dos anteriores
 - Retención I.V.A. % (numérico, 2, máscara de entrada: "99"). Por defecto: 30
-- Importe retenido del I.V.A. (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0
+- Importe retenido del I.V.A. (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0. Su valor es "I.V.A. incluido en la transacción" multiplicado por "Retención I.V.A. %". Por ejemplo, si "I.V.A. incluido en la transacción" es 60.000 y "Retención I.V.A. %" es 30, entonces "Importe retenido del I.V.A." es 60.000 * 30 / 100 = 18.000
 - Retención Renta % (numérico, 2, máscara de entrada: "99").
-- Importe retenido de renta (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0
+- Importe retenido de renta (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0. Su valor es "Valor de la transacción sin I.V.A." multiplicado por "Retención Renta %". Por ejemplo, si "Valor de la transacción sin I.V.A." es 600.000 y ""Retención Renta %"" es 4, entonces "Importe retenido de renta" es 600.000 * 4 / 100 = 24.000
 - Importe total de la retención (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Es la suma de "Importe retenido del I.V.A." + "Importe retenido de renta"
 
 Debajo de todos los campos anteriores del Grupo 2 hay que colocar una grilla de entrada de datos, con las siguientes columnas:

@@ -1,0 +1,28 @@
+Grupo 2: Detalles
+- Valor de la transacción sin I.V.A. (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0
+- I.V.A. incluido en la transacción (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0
+- Valor total de la transacción ((numérico, 15, máscara de entrada: "999.999.999.999", deshabilitado). Validación. Es la suma de los dos anteriores
+- Retención I.V.A. % (numérico, 2, máscara de entrada: "99"). Por defecto: 30
+- Importe retenido del I.V.A. (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0. Su valor es "I.V.A. incluido en la transacción" multiplicado por "Retención I.V.A. %". Por ejemplo, si "I.V.A. incluido en la transacción" es 60.000 y "Retención I.V.A. %" es 30, entonces "Importe retenido del I.V.A." es 60.000 * 30 / 100 = 18.000
+- Retención Renta % (numérico, 2, máscara de entrada: "99").
+- Importe retenido de renta (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Debe ser >= 0. Su valor es "Valor de la transacción sin I.V.A." multiplicado por "Retención Renta %". Por ejemplo, si "Valor de la transacción sin I.V.A." es 600.000 y ""Retención Renta %"" es 4, entonces "Importe retenido de renta" es 600.000 * 4 / 100 = 24.000
+- Importe total de la retención (numérico, 15, máscara de entrada: "999.999.999.999"). Validación. Es la suma de "Importe retenido del I.V.A." + "Importe retenido de renta"
+
+Debajo de todos los campos anteriores del Grupo 2 hay que colocar una grilla de entrada de datos, con las siguientes columnas:
+- Cuenta N° (carácter, 16, "Número de cuenta", opcional). NOTA: Cuando haya conexión con la Base de Datos si a) el campo está vacío y el usuario presionó la tecla [ENTER] o la tecla [TAB] o hizo tap, se le mostrarán todas las cuentas para que seleccione una de ellas y si, b) escribió un número de cuenta, se validará que esa cuenta exista. En ambos casos, si la cuenta existe se la mostrará en el campo "Nombre de la cuenta"
+- Subc. (carácter, 5, opcional). Validación: cuando haya conexión con la Base de Datos si se escribe un número de subcuenta entonces se validará que existan el número de la cuenta y el número de la subcuenta
+- Nombre de la cuenta (carácter, 40, "Nombre de la cuenta contable", obligatorio si existe Cuenta N°). NOTA: Siempre tiene que estar deshabilitado, su valor será obtenido desde una tabla SQL
+- Debe (numérico, 15, máscara de entrada: "999.999.999.999", obligatorio si existe Cuenta N° y "Haber" = 0).
+- Haber (numérico, 15, máscara de entrada: "999.999.999.999", obligatorio si existe Cuenta N° y "Debe" = 0).
+- Concepto (carácter, 60, opcional)
+
+Nota 1: Los campos de detalle se colocarán en una grilla la cual tendrá un icono en cada fila para que si el usuario hace clic/tap sobre ese icono el contenido de toda esa fila se borre
+
+Nota 2: Debajo de la columna del Debe se mostrará la suma de esa columna, con un backcolor y un forecolor diferentes al de la grilla, para que esa suma resalte
+
+Nota 3: Debajo de la columna del Haber se mostrará la suma de esa columna, con un backcolor y un forecolor diferentes al de la grilla, para que esa suma resalte
+
+Nota 4: El backcolor y el forecolor del total del Debe y del total del Haber tienen que ser idénticos a los usados en asientos.dart
+
+Nota 5: Debajo de esos totales estará el campo de "Comentarios" que corresponde a la cabecera.
+

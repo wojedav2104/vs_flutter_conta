@@ -12,21 +12,26 @@ abstract final class ClaseRetencionesClientesLogica {
 
   // ── Auto-cálculos del Grupo 2 ────────────────────────────────────────────
 
-  /// Auto-cálculos según la spec de Retenciones a Clientes:
+  /// Auto-cálculos según la spec de Retenciones a Clientes (02_05_02):
   ///   · Valor total de la transacción = valor sin I.V.A. + I.V.A. incluido.
+  ///   · Importe retenido del I.V.A. = I.V.A. incluido * Retención I.V.A. % / 100.
+  ///   · Importe retenido de renta = valor sin I.V.A. * Retención Renta % / 100.
   ///   · Importe total de la retención = importe retenido del I.V.A. +
   ///     importe retenido de renta.
-  /// Los porcentajes y los importes retenidos son manuales (decisión del
-  /// contador: no se calcula nada con ellos).
   static Map<String, String>? actualizarCampos(Map<String, String> mapValores) {
 
-    final double dSinIva   = funcParsearNumero(mapValores['valorTransaccionSinIva'] ?? '') ?? 0;
-    final double dIva      = funcParsearNumero(mapValores['ivaIncluido']            ?? '') ?? 0;
-    final double dRetIva   = funcParsearNumero(mapValores['importeRetenidoIva']     ?? '') ?? 0;
-    final double dRetRenta = funcParsearNumero(mapValores['importeRetenidoRenta']   ?? '') ?? 0;
+    final double dSinIva   = funcParsearNumero(mapValores['valorTransaccionSinIva']  ?? '') ?? 0;
+    final double dIva      = funcParsearNumero(mapValores['ivaIncluido']             ?? '') ?? 0;
+    final double dPorcIva  = funcParsearNumero(mapValores['retencionIvaPorcentaje']  ?? '') ?? 30;
+    final double dPorcRenta= funcParsearNumero(mapValores['retencionRentaPorcentaje'] ?? '') ?? 0;
+
+    final double dRetIva   = dIva * dPorcIva / 100;
+    final double dRetRenta = dSinIva * dPorcRenta / 100;
 
     return <String, String>{
       'valorTotalTransaccion' : funcFormatearNumeroPlano(dSinIva + dIva),
+      'importeRetenidoIva'    : funcFormatearNumeroPlano(dRetIva),
+      'importeRetenidoRenta'  : funcFormatearNumeroPlano(dRetRenta),
       'importeTotalRetencion' : funcFormatearNumeroPlano(dRetIva + dRetRenta),
     };
   }

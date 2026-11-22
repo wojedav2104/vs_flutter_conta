@@ -9,7 +9,7 @@ Los campos de la cabecera son:
 - Número del asiento (numérico, 6, deshabilitado). Este número se irá poniendo automáticamente cuando haya conexión con una Base de Datos
 - Fecha de la retención (fecha, obligatorio). Validación: El año tiene que ser el actual o el anterior
 - Cliente (carácter, 48, "Código y Nombre del cliente", obligatorio). Validación: se buscará el cliente en una tabla y se colocarán automáticamente su Tipo de Identificación y su Identificación N° en los siguientes campos
-- Tipo de identificación (se mostrará uno de los siguientes: R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera, Sin Nombre, Diplomático). NOTA: Será puesto automáticamente cuando se seleccione a un cliente
+- Tipo Id (se mostrará uno de los siguientes: R.U.C., Cédula de Identidad, Pasaporte, Cédula Extranjera, Sin Nombre, Diplomático). NOTA: Será puesto automáticamente cuando se seleccione a un cliente
 - Identificación N° (carácter, 15, deshabilitado). NOTA: Será puesto automáticamente cuando se seleccione a un cliente
 - Comprobante de Retención N° (carácter, 15, obligatorio). Validación: debe tener la máscara de entrada '999-999-9999999' donde cada 9 representa un dígito entre 0 y 9. Siempre debe tener 13 dígitos, nunca más ni menos.
 - Timbrado N° (carácter, 8, máscara de entrada: "99999999"). Validación: debe tener 8 dígitos, ni más ni menos

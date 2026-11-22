@@ -11,6 +11,8 @@ abstract final class ClaseIdiomasRetenciones {
     'retNumeroAsiento'            : 'Número del asiento',
     'retFecha'                    : 'Fecha de la retención',
     'retCliente'                  : 'Cliente',
+    'retProveedor'                : 'Proveedor',
+    'retProveedor'                : 'Proveedor',
     'retTipoIdentificacion'       : 'Tipo de identificación',
     'retIdentificacion'           : 'Identificación N°',
     'retComprobanteRetencion'     : 'Comprobante de Retención N°',
@@ -37,6 +39,7 @@ abstract final class ClaseIdiomasRetenciones {
     // ── Hints ─────────────────────────────────────────────────────────────
     'retHintSucursal'             : 'Código y Nombre de la sucursal',
     'retHintCliente'              : 'Código y Nombre del cliente',
+    'retHintProveedor'            : 'Código y Nombre del proveedor',
     'retHintComentarios'          : 'Comentarios sobre esta retención',
   };
 
