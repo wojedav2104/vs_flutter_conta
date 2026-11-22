@@ -6,6 +6,7 @@ import '../generales/varios/pantalla_proximamente.dart';
 import '../opciones/archivos/asientos.dart';
 import '../opciones/archivos/compras.dart';
 import '../opciones/archivos/retenciones_clientes.dart';
+import '../opciones/archivos/retenciones_proveedores.dart';
 import '../opciones/archivos/ventas.dart';
 import '../opciones/archivos/cuentas.dart';
 
@@ -120,6 +121,13 @@ Route<dynamic> funcGenerarRuta(
     return MaterialPageRoute<dynamic>(
       settings : oConfiguracion,
       builder  : (oContexto) => ClaseRetencionesClientes(oPreferencias: oPreferencias),
+    );
+  }
+
+  if (oConfiguracion.name == ClaseRutas.rutaRetencionesProveedores) {
+    return MaterialPageRoute<dynamic>(
+      settings : oConfiguracion,
+      builder  : (oContexto) => ClaseRetencionesProveedores(oPreferencias: oPreferencias),
     );
   }
 

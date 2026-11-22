@@ -1,5 +1,5 @@
 {
   "$schema": "https://opencode.ai",
-  "disabled_providers": ["opencode", "opencode-go"]
+  "enabled_providers": ["google"]
 }
 

@@ -12,7 +12,6 @@ abstract final class ClaseIdiomasRetenciones {
     'retFecha'                    : 'Fecha de la retención',
     'retCliente'                  : 'Cliente',
     'retProveedor'                : 'Proveedor',
-    'retProveedor'                : 'Proveedor',
     'retTipoIdentificacion'       : 'Tipo de identificación',
     'retIdentificacion'           : 'Identificación N°',
     'retComprobanteRetencion'     : 'Comprobante de Retención N°',
