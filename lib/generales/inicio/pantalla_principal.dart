@@ -13,8 +13,7 @@ import 'menu_lateral.dart';
 
 /// Pantalla principal de VS_CONTA.
 ///
-/// El drawer se abre automáticamente al ingresar y cada vez que el usuario
-/// regresa desde un formulario, para que nunca se sienta perdido.
+/// El drawer se abre automáticamente al ingresar y cada vez que el usuario regresa desde un formulario, para que nunca se sienta perdido.
 class ClasePantallaPrincipal extends StatefulWidget {
 
   const ClasePantallaPrincipal({
@@ -28,7 +27,9 @@ class ClasePantallaPrincipal extends StatefulWidget {
 
   @override
   State<ClasePantallaPrincipal> createState() => ClaseEstadoPantallaPrincipal();
+
 }
+
 
 class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
     with RouteAware {
@@ -71,8 +72,8 @@ class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
   @override
   Widget build(BuildContext oContexto) {
     return Scaffold(
-      key   : oClaveAndamio,
-      appBar: AppBar(
+      key    : oClaveAndamio,
+      appBar : AppBar(
         title : Column(
           crossAxisAlignment : CrossAxisAlignment.start,
           mainAxisAlignment  : MainAxisAlignment.center,
@@ -99,7 +100,16 @@ class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
         ],
       ),
       drawer : ClaseMenuLateral(oPreferencias: widget.oPreferencias),
-      body   : const SizedBox.shrink(),
+
+body: SizedBox.expand(
+  child: Image.asset(
+    'assets/imagenes/principal.jpg',
+    fit: BoxFit.cover,
+  ),
+),
+
+
+//const SizedBox.shrink(),
     );
   }
 

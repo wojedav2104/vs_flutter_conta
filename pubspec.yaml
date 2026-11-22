@@ -16,6 +16,7 @@ dependencies:
   flutter_localizations:      # para los textos en español/francés
     sdk: flutter
   cupertino_icons: ^2.0.0
+  flutter_riverpod: ^2.6.1
   intl: ^0.20.3
   shared_preferences: ^2.5.6
   web: ^1.1.0
@@ -30,6 +31,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/datos/
+    - assets/imagenes/principal.jpg
+
   fonts:
     - family: Roboto
       fonts:
