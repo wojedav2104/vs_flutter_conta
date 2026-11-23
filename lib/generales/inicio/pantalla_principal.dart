@@ -102,8 +102,7 @@ class ClaseEstadoPantallaPrincipal extends State<ClasePantallaPrincipal>
       drawer : ClaseMenuLateral(oPreferencias: widget.oPreferencias),
 
 body: SizedBox.expand(
-  child: Image.asset(
-    'assets/imagenes/principal.jpg',
+  child: Image.asset('assets/imagenes/principal.jpg',
     fit: BoxFit.cover,
   ),
 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'generales/idiomas/idiomas.dart';
 import 'generales/inicio/login.dart';
@@ -19,7 +20,7 @@ Future<void> main() async {
   final ClasePreferencias oPreferencias = ClasePreferencias();
   await oPreferencias.cargar();
   ClaseGenEstilosTexto.dFactorTexto = oPreferencias.getTextoGrande() ? ClaseGenEstilosTexto.dFactorTextoGrande : 1.0;
-  runApp(ClaseAplicacion(oPreferencias: oPreferencias));
+  runApp(ProviderScope(child: ClaseAplicacion(oPreferencias: oPreferencias)));
 }
 
 

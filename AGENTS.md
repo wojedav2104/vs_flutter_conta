@@ -55,7 +55,9 @@ dart run tool/partir_lectura.dart   # regenera el espejo lectura/ (no editar a m
 - `lib/opciones/archivos/` — libro contable: `compras`, `ventas`, `asientos`, `cuentas`. `lib/opciones/tablas/` — ABM: `empresa`, `clientes`, `proveedores`, etc.
 - Módulos grandes van partidos: `X.dart` → `X` + `X_campos` + `X_logica` + `X_datos` (patrón de `compras`/`ventas`). `formulario_cabecera_detalle.dart` → `formulario_cabecera_detalle` + `grilla_detalles` + `detalle_validar`. Clases de campos: `abstract final class` con métodos estáticos. Seguir ese patrón al dividir.
 - Nota pendiente: en `grilla_detalles.dart` uniformizar el import estilo `package:vs_conta/...` de `campo_formulario.dart` a relativo.
-- Varias carpetas están **vacías a propósito** (placeholders): `lib/generales/basesdatos`, `lib/generales/errores`, `lib/opciones/{sistema,procesos,consultas,informes,impresiones,graficos,utilitarios}`. No borrar; no inventar contenido.
+- `lib/generales/basesdatos/` — Base de datos oficial: Firebird 2.5.9 (con compatibilidad futura a Firebird 5/6 usando SQL Dialect 3, `NEXT VALUE FOR`, `FIRST/SKIP` y `NUMERIC(18,4)`).
+- Gestor de estado oficial: Riverpod (`flutter_riverpod` sin codegen).
+- Varias carpetas están **vacías a propósito** (placeholders): `lib/generales/errores`, `lib/opciones/{sistema,procesos,consultas,informes,impresiones,graficos,utilitarios}`. No borrar; no inventar contenido.
 - Países con datos: `PRY`, `PER` (lista en `lib/opciones/tablas/empresa.dart`); `FRA` solo consulta. Catálogo: `assets/datos/paises.json`.
 
 ## Estado y pendientes (sesión 19/20-nov-2026)
